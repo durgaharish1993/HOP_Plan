@@ -1,0 +1,4810 @@
+--------Round Number:0
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:1
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:2
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:3
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:4
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:5
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:6
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:7
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:8
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Round Number:9
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u2, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u5, $Ambulance);]
+--------Step Number :8
+[dispatch($u2, $Ambulance);]
+--------Step Number :9
+[dispatch($u2, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]
+--------Step Number :11
+[dispatch($u5, $Ambulance);]
+--------Step Number :12
+[dispatch($u2, $Ambulance);]
+--------Step Number :13
+[dispatch($u5, $Ambulance);]
+--------Step Number :14
+[dispatch($u2, $Ambulance);]
+--------Step Number :15
+[dispatch($u5, $Ambulance);]
+--------Step Number :16
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :17
+[dispatch($u5, $Ambulance);]
+--------Step Number :18
+[dispatch($u5, $Ambulance);]
+--------Step Number :19
+[dispatch($u2, $Ambulance);]
+--------Step Number :20
+[dispatch($u5, $Ambulance);]
+--------Step Number :21
+[]
+--------Step Number :22
+[dispatch($u2, $Ambulance);]
+--------Step Number :23
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :24
+[dispatch($u5, $Ambulance);]
+--------Step Number :25
+[dispatch($u2, $Ambulance);]
+--------Step Number :26
+[dispatch($u5, $Ambulance);]
+--------Step Number :27
+[dispatch($u2, $Ambulance);]
+--------Step Number :28
+[dispatch($u5, $Ambulance);]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[dispatch($u3, $Engine);]
+--------Step Number :34
+[dispatch($u5, $Ambulance);]
+--------Step Number :35
+[dispatch($u2, $Ambulance);]
+--------Step Number :36
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :37
+[dispatch($u2, $Ambulance);]
+--------Step Number :38
+[dispatch($u5, $Ambulance);]
+--------Step Number :39
+[dispatch($u2, $Ambulance);]
+--------Step Number :40
+[dispatch($u2, $Ambulance);]
+--------Step Number :41
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :42
+[]
+--------Step Number :43
+[dispatch($u5, $Ambulance);]
+--------Step Number :44
+[dispatch($u2, $Ambulance);]
+--------Step Number :45
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :46
+[]
+--------Step Number :47
+[]
+--------Step Number :48
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :49
+[dispatch($u2, $Ambulance);]
+--------Step Number :50
+[dispatch($u3, $Engine);]
+--------Step Number :51
+[]
+--------Step Number :52
+[dispatch($u2, $Ambulance);]
+--------Step Number :53
+[dispatch($u5, $Ambulance);]
+--------Step Number :54
+[dispatch($u2, $Ambulance);]
+--------Step Number :55
+[dispatch($u3, $Engine);]
+--------Step Number :56
+[]
+--------Step Number :57
+[]
+--------Step Number :58
+[dispatch($u3, $Engine);]
+--------Step Number :59
+[dispatch($u5, $Ambulance);]
+--------Step Number :60
+[dispatch($u2, $Ambulance);]
+--------Step Number :61
+[dispatch($u5, $Ambulance);]
+--------Step Number :62
+[dispatch($u2, $Ambulance);]
+--------Step Number :63
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :64
+[dispatch($u5, $Ambulance);]
+--------Step Number :65
+[dispatch($u2, $Ambulance);]
+--------Step Number :66
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :67
+[]
+--------Step Number :68
+[]
+--------Step Number :69
+[]
+--------Step Number :70
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :71
+[]
+--------Step Number :72
+[]
+--------Step Number :73
+[]
+--------Step Number :74
+[dispatch($u3, $Engine);]
+--------Step Number :75
+[]
+--------Step Number :76
+[dispatch($u5, $Ambulance);]
+--------Step Number :77
+[dispatch($u2, $Ambulance);]
+--------Step Number :78
+[dispatch($u5, $Ambulance);]
+--------Step Number :79
+[]
+--------Step Number :80
+[dispatch($u3, $Engine);]
+--------Step Number :81
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :82
+[dispatch($u5, $Ambulance);]
+--------Step Number :83
+[]
+--------Step Number :84
+[dispatch($u5, $Ambulance);]
+--------Step Number :85
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :86
+[dispatch($u5, $Ambulance);]
+--------Step Number :87
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :88
+[dispatch($u2, $Ambulance);]
+--------Step Number :89
+[dispatch($u3, $Engine);]
+--------Step Number :90
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :91
+[]
+--------Step Number :92
+[dispatch($u2, $Ambulance);]
+--------Step Number :93
+[dispatch($u5, $Ambulance);]
+--------Step Number :94
+[dispatch($u2, $Ambulance);]
+--------Step Number :95
+[dispatch($u2, $Ambulance);]
+--------Step Number :96
+[dispatch($u2, $Ambulance);]
+--------Step Number :97
+[dispatch($u3, $Engine);]
+--------Step Number :98
+[dispatch($u2, $Ambulance);]
+--------Step Number :99
+[dispatch($u5, $Ambulance);]
+--------Step Number :100
+[]
+--------Step Number :101
+[dispatch($u2, $Ambulance);]
+--------Step Number :102
+[]
+--------Step Number :103
+[dispatch($u3, $Engine);]
+--------Step Number :104
+[dispatch($u5, $Ambulance);]
+--------Step Number :105
+[dispatch($u3, $Engine);]
+--------Step Number :106
+[dispatch($u2, $Ambulance);]
+--------Step Number :107
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :108
+[]
+--------Step Number :109
+[]
+--------Step Number :110
+[]
+--------Step Number :111
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :112
+[dispatch($u2, $Ambulance);]
+--------Step Number :113
+[dispatch($u5, $Ambulance);]
+--------Step Number :114
+[dispatch($u5, $Ambulance);]
+--------Step Number :115
+[dispatch($u2, $Ambulance);]
+--------Step Number :116
+[dispatch($u5, $Ambulance);]
+--------Step Number :117
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :118
+[]
+--------Step Number :119
+[dispatch($u2, $Ambulance);]
+--------Step Number :120
+[dispatch($u5, $Ambulance);]
+--------Step Number :121
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :122
+[dispatch($u2, $Ambulance);]
+--------Step Number :123
+[dispatch($u5, $Ambulance);]
+--------Step Number :124
+[dispatch($u2, $Ambulance);]
+--------Step Number :125
+[dispatch($u2, $Ambulance);]
+--------Step Number :126
+[dispatch($u3, $Engine);]
+--------Step Number :127
+[dispatch($u2, $Ambulance);]
+--------Step Number :128
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :129
+[]
+--------Step Number :130
+[]
+--------Step Number :131
+[]
+--------Step Number :132
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :133
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :134
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :135
+[dispatch($u2, $Ambulance);]
+--------Step Number :136
+[dispatch($u3, $Engine);]
+--------Step Number :137
+[dispatch($u5, $Ambulance);]
+--------Step Number :138
+[dispatch($u2, $Ambulance);]
+--------Step Number :139
+[dispatch($u5, $Ambulance);]
+--------Step Number :140
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :141
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :142
+[dispatch($u5, $Ambulance);]
+--------Step Number :143
+[]
+--------Step Number :144
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :145
+[]
+--------Step Number :146
+[dispatch($u5, $Ambulance);]
+--------Step Number :147
+[]
+--------Step Number :148
+[]
+--------Step Number :149
+[]
+--------Step Number :150
+[dispatch($u2, $Ambulance);]
+--------Step Number :151
+[dispatch($u5, $Ambulance);]
+--------Step Number :152
+[]
+--------Step Number :153
+[dispatch($u5, $Ambulance);]
+--------Step Number :154
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :155
+[dispatch($u5, $Ambulance);]
+--------Step Number :156
+[dispatch($u5, $Ambulance);]
+--------Step Number :157
+[dispatch($u2, $Ambulance);]
+--------Step Number :158
+[dispatch($u5, $Ambulance);]
+--------Step Number :159
+[dispatch($u2, $Ambulance);]
+--------Step Number :160
+[]
+--------Step Number :161
+[dispatch($u3, $Engine);]
+--------Step Number :162
+[dispatch($u5, $Ambulance);]
+--------Step Number :163
+[dispatch($u2, $Ambulance);]
+--------Step Number :164
+[dispatch($u2, $Ambulance);]
+--------Step Number :165
+[dispatch($u2, $Ambulance);]
+--------Step Number :166
+[dispatch($u5, $Ambulance);]
+--------Step Number :167
+[dispatch($u5, $Ambulance);]
+--------Step Number :168
+[dispatch($u5, $Ambulance);]
+--------Step Number :169
+[dispatch($u3, $Engine);]
+--------Step Number :170
+[dispatch($u2, $Ambulance);]
+--------Step Number :171
+[dispatch($u5, $Ambulance);]
+--------Step Number :172
+[dispatch($u2, $Ambulance);]
+--------Step Number :173
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :174
+[dispatch($u5, $Ambulance);]
+--------Step Number :175
+[dispatch($u5, $Ambulance);]
+--------Step Number :176
+[]
+--------Step Number :177
+[dispatch($u3, $Engine);]
+--------Step Number :178
+[dispatch($u2, $Ambulance);]
+--------Step Number :179
+[dispatch($u5, $Ambulance);]
+--------Step Number :180
+[dispatch($u2, $Ambulance);]
+--------Step Number :181
+[dispatch($u5, $Ambulance);]
+--------Step Number :182
+[]
+--------Step Number :183
+[]
+--------Step Number :184
+[]
+--------Step Number :185
+[]
+--------Step Number :186
+[]
+--------Step Number :187
+[]
+--------Step Number :188
+[dispatch($u3, $Engine);]
+--------Step Number :189
+[]
+--------Step Number :190
+[dispatch($u2, $Ambulance);]
+--------Step Number :191
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :192
+[dispatch($u5, $Ambulance);]
+--------Step Number :193
+[dispatch($u2, $Ambulance);]
+--------Step Number :194
+[dispatch($u5, $Ambulance);]
+--------Step Number :195
+[dispatch($u2, $Ambulance);]
+--------Step Number :196
+[dispatch($u5, $Ambulance);]
+--------Step Number :197
+[]
+--------Step Number :198
+[dispatch($u2, $Ambulance);]
+--------Step Number :199
+[dispatch($u2, $Ambulance);]
+--------Step Number :200
+[dispatch($u5, $Ambulance);]
+--------Step Number :201
+[dispatch($u2, $Ambulance);]
+--------Step Number :202
+[dispatch($u5, $Ambulance);]
+--------Step Number :203
+[]
+--------Step Number :204
+[dispatch($u2, $Ambulance);]
+--------Step Number :205
+[dispatch($u2, $Ambulance);]
+--------Step Number :206
+[dispatch($u3, $Engine);]
+--------Step Number :207
+[dispatch($u5, $Ambulance);]
+--------Step Number :208
+[dispatch($u3, $Engine);]
+--------Step Number :209
+[dispatch($u2, $Ambulance);]
+--------Step Number :210
+[dispatch($u4, $Ladder);, dispatch($u1, $Command);]
+--------Step Number :211
+[dispatch($u2, $Ambulance);]
+--------Step Number :212
+[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :213
+[dispatch($u5, $Ambulance);]
+--------Step Number :214
+[dispatch($u2, $Ambulance);]
+--------Step Number :215
+[dispatch($u3, $Engine);]
+--------Step Number :216
+[]
+--------Step Number :217
+[dispatch($u5, $Ambulance);]
+--------Step Number :218
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :219
+[dispatch($u5, $Ambulance);]
+--------Step Number :220
+[dispatch($u3, $Engine);, dispatch($u2, $Ambulance);]
+--------Step Number :221
+[]
+--------Step Number :222
+[]
+--------Step Number :223
+[dispatch($u2, $Ambulance);]
+--------Step Number :224
+[]
+--------Step Number :225
+[dispatch($u5, $Ambulance);]
+--------Step Number :226
+[dispatch($u2, $Ambulance);]
+--------Step Number :227
+[dispatch($u2, $Ambulance);]
+--------Step Number :228
+[dispatch($u5, $Ambulance);]
+--------Step Number :229
+[dispatch($u3, $Engine);]
+--------Step Number :230
+[dispatch($u2, $Ambulance);]
+--------Step Number :231
+[dispatch($u5, $Ambulance);]
+--------Step Number :232
+[]
+--------Step Number :233
+[dispatch($u5, $Ambulance);]
+--------Step Number :234
+[dispatch($u2, $Ambulance);]
+--------Step Number :235
+[dispatch($u5, $Ambulance);]
+--------Step Number :236
+[]
+--------Step Number :237
+[dispatch($u2, $Ambulance);]
+--------Step Number :238
+[dispatch($u5, $Ambulance);]
+--------Step Number :239
+[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u1, $Command);]

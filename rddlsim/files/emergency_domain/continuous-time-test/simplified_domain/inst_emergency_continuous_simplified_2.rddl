@@ -1,0 +1,101 @@
+non-fluents nf_emergency_continuous_simplified_3 {
+	domain = emergency_continuous_time_multiple_units_test;
+	objects {
+		coordinate : {xpos,ypos};
+		unit : {u1,u2,u3};
+		cause : {Code1Medical,Code3Med,Code3Trauma,Fire};
+		role : {Engine, Ambulance};
+	};
+	
+	non-fluents {
+		MapUpperBound(xpos)=1500;
+		MapUpperBound(ypos)=80;
+		MapLowerBound(xpos)=1300;
+		MapLowerBound(ypos)=30;
+		
+		BEFORE(Code1Medical,Code3Med)=true;
+		BEFORE(Code1Medical,Code3Trauma)=true;
+		BEFORE(Code1Medical,Fire)=true;
+		
+		
+		BEFORE(Code3Med,Code3Trauma)=true;
+		BEFORE(Code3Med,Fire)=true;
+		BEFORE(Code3Trauma,Fire)=true;
+		
+		
+		
+		
+				
+		
+		
+		
+		CauseRequirement(Fire,Engine)=1;
+		CauseRequirement(Code1Medical,Ambulance)=1;
+		CauseRequirement(Code3Med,Ambulance)=1;
+		CauseRequirement(Code3Trauma,Engine)=1;
+		
+
+		
+		RoleServiceTime(Engine)=0.917;
+		//RoleServiceTime(Command)=0.75;
+		//RoleServiceTime(Ladder)=0.583;
+		RoleServiceTime(Ambulance)=0.75;
+		
+		
+
+
+		
+		//unitHome(u1,xpos)=1418.0; unitHome(u1,ypos)=65.0;	
+		//unitHome(u2,xpos)=1415.0; unitHome(u2,ypos)=64.0;	
+		//unitHome(u3,xpos)=1416.0; unitHome(u3,ypos)=66.0;	
+
+		unitHome(u1,xpos)=1350.0; unitHome(u1,ypos)=50.0;	
+		unitHome(u2,xpos)=1350.0; unitHome(u2,ypos)=50.0;	
+		unitHome(u3,xpos)=1450.0; unitHome(u3,ypos)=50.0;	
+
+
+
+		//unitHome(u4,xpos)=1417.0; unitHome(u4,ypos)=63.0;	
+		//unitHome(u5,xpos)=1415.0; unitHome(u5,ypos)=66.0;
+	
+		//HasCapability(u1,Command)=true;
+		HasCapability(u1,Ambulance)=true;
+		HasCapability(u2,Engine)=true;
+		HasCapability(u3,Ambulance)=true;
+		//HasCapability(u4,Ladder)=true;
+		//HasCapability(u5,Ambulance)=true;
+		
+	};
+}
+
+instance inst_emergency_continuous_simplified_3 {
+	domain = domain_emergency_continuous_simplified;
+	non-fluents = nf_emergency_continuous_simplified_3;
+	
+	init-state {
+		
+		currentCall(xpos)=1420;
+		currentCall(ypos)=64;
+		currentCallTime=0.0;
+		
+		//lastUnitService(u1,xpos)=1418.0; lastUnitService(u1,ypos)=65.0;
+		//lastUnitService(u2,xpos)=1415.0; lastUnitService(u2,ypos)=64.0;
+		//lastUnitService(u3,xpos)=1416.0; lastUnitService(u3,ypos)=66.0;
+		
+		lastUnitService(u1,xpos)=1350.0; lastUnitService(u1,ypos)=50.0;
+		lastUnitService(u2,xpos)=1350.0; lastUnitService(u2,ypos)=50.0;
+		lastUnitService(u3,xpos)=1450.0; lastUnitService(u3,ypos)=50.0;
+	
+
+
+		//lastUnitService(u4,xpos)=1417.0; lastUnitService(u4,ypos)=63.0;
+		//lastUnitService(u5,xpos)=1415.0; lastUnitService(u5,ypos)=66.0;
+		
+		currentCallCode(Ambulance)=true;
+		
+	};
+	
+	//max-nondef-actions = 10;
+	horizon  = 240;
+	discount = 1.0;
+}

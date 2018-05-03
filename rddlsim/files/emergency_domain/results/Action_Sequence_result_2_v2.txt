@@ -1,0 +1,5 @@
+--------Round Number:0
+--------Step Number :0
+[dispatch($u1, $Command);, dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :1
+[dispatch($u2, $Ambulance);, dispatch($u3, $Engine);]

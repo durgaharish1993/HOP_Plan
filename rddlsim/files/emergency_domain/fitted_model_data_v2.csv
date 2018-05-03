@@ -1,0 +1,1001 @@
+C3mCall,r,date,time,,X,Y
+1,Code3Med,2011-01-01,00:20:16,0NW6thSTCorvallis,7475431.768,326986.0536
+2,Code3Med,2011-01-01,00:43:57,200NW25THSTCorvallis,7498275.727,328603.6843
+3,Code3Med,2011-01-01,02:19:38,1000NW23RD                                             STCORVALLIS      ,7494189.183,314871.7306
+4,Code3Med,2011-01-01,04:20:47,0NW15TH                                             AVECORVALLIS      ,7497360.084,372529.9483
+5,Code3Med,2011-01-01,06:48:59,200NW9thSTCorvallis,7496686.438,351052.5182
+6,Code3Med,2011-01-01,13:05:16,23900Hwy 34HWYPhilomath,7495999.418,319774.933
+7,Code3Med,2011-01-01,14:17:42,100NW9TH                                              STCORVALLIS      ,7469285.345,344866.0702
+8,Code3Med,2011-01-01,14:53:46,1200NWCLEVELAND                                        AVECORVALLIS      ,7488719.169,344520.348
+9,Code3Med,2011-01-01,15:44:20,1700MCBEE                                            RDPHILOMATH      ,7481980.032,355249.4872
+10,Code3Med,2011-01-01,16:56:19,4900SWHOLLYHOCK                                        CIRCORVALLIS      ,7502861.538,338872.0335
+11,Code3Med,2011-01-01,17:14:07,200NECONIFER                                          BLVDCORVALLIS      ,7489407.488,334811.0787
+12,Code3Med,2011-01-02,00:06:04,3300SOUTHWOOD                                        DRPHILOMATH      ,7492991.378,339047.3818
+13,Code3Med,2011-01-02,00:26:05,300NW21stSTCorvallis,7502055.243,322686.0789
+14,Code3Med,2011-01-02,00:43:19,4500NEHIGHWAY 20                                       HWYCORVALLIS      ,7485277.509,324073.5735
+15,Code3Med,2011-01-02,04:00:34,0TANGENT                                          RDAlbany,7489221.216,360321.4626
+16,Code3Med,2011-01-02,08:49:27,800NW9TH                                              STCORVALLIS      ,7516958.613,338797.1149
+17,Code3Med,2011-01-02,08:53:49,29500WeslinnDRCorvallis,7459448.77,352485.2491
+18,Code3Med,2011-01-02,10:00:52,200NECONIFER                                          BLVDCORVALLIS      ,7491166.008,361474.5103
+19,Code3Med,2011-01-02,11:00:25,600NW2ND                                              STCORVALLIS      ,7487949.151,319324.1432
+20,Code3Med,2011-01-02,13:22:08,2700NWHIGHLAND                                         DRCORVALLIS      ,7467829.079,334772.2486
+21,Code3Med,2011-01-02,13:23:33,400NWMAXINE                                           AVECORVALLIS      ,7501590.637,341717.3672
+22,Code3Med,2011-01-02,14:29:04,200NECONIFER                                          BLVDCORVALLIS      ,7472897.48,340735.9483
+23,Code3Med,2011-01-02,18:09:10,900SEBRIDGEWAY                                        AVECORVALLIS      ,7502689.489,335742.0565
+24,Code3Med,2011-01-02,20:37:09,5100NEELLIOTT                                          CIRcorvallis,7491237.838,347301.0564
+25,Code3Med,2011-01-02,22:37:48,2700SW3rdSTCorvallis,7519361.272,320981.6471
+26,Code3Med,2011-01-02,22:43:19,8000NEBARBERRY                                         DRADAIR          ,7486885.742,316747.4919
+27,Code3Med,2011-01-03,01:17:15,3600NWSAMARITAN                                        DRCORVALLIS      ,7499520.567,324884.9653
+28,Code3Med,2011-01-03,02:19:36,600NWJacksonAVECorvallis,7490867.653,366537.9242
+29,Code3Med,2011-01-03,03:12:55,500SWMonroeAVECorvallis,7507203.871,357714.3047
+30,MVA,2011-01-03,03:24:35,3600NWSAMARITAN                                        DRCORVALLIS      ,7526675.646,352531.903
+31,Code3Med,2011-01-03,04:21:11,0NW6thSTCorvallis,7501961.796,310049.2198
+32,Code3Med,2011-01-03,04:38:20,4700SWHollyHockCIRCorvallis,7481324.232,334258.7218
+33,Code3Med,2011-01-03,04:41:12,29200HIGHWAY 34                                       HWYCorvallis,7487466.93,349498.6606
+34,Code3Med,2011-01-03,08:33:48,3800NWLINCOLN                                          AVECORVALLIS      ,7500646.224,343078.6847
+35,Code3Med,2011-01-03,08:33:52,2900NWROOSEVELT                                        DRCORVALLIS      ,7491637.456,360806.4578
+36,Code3Med,2011-01-03,13:27:11,300NW9TH                                              STCORVALLIS      ,7486195.969,339772.469
+37,Code3Med,2011-01-03,14:01:28,1700NW13TH                                             STCORVALLIS      ,7492102.724,330149.8965
+38,Code3Med,2011-01-03,15:08:49,15thSW WashingtonWAYCORVALLIS      ,7487983.39,348197.5005
+39,Code3Med,2011-01-03,17:19:50,6100NEEBONY                                            LNADAIR          ,7500143.636,359226.7013
+40,Code3Med,2011-01-03,17:43:16,500SW3rdSTCorvallis,7504129.759,368828.7944
+41,Code3Med,2011-01-03,19:33:55,800NW23RD                                             STCORVALLIS      ,7478113.766,323045.1757
+42,Code3Med,2011-01-03,19:46:52,29900Hwy 34HWYCorvallis,7510497.34,343195.605
+43,Code3Med,2011-01-03,20:06:46,0FAYETTEVILLE                                     RDHalsey,7468353.882,351447.1324
+44,MVA,2011-01-03,22:47:17,3600NWSAMARITAN                                        DRCORVALLIS      ,7520167.171,364908.3907
+45,Code3Med,2011-01-04,00:22:56,1500SWASTCorvallis,7478907.959,311541.8701
+46,Code3Med,2011-01-04,00:49:32,3600NWSAMARITAN                                        DRCORVALLIS      ,7478812.119,361935.1281
+47,Code3Med,2011-01-04,05:38:18,5900SWQUIET CREEK                                      DRCORVALLIS      ,7461154.29,353666.5077
+48,Code3Med,2011-01-04,07:14:07,3700NWSAMARITAN                                        DRCORVALLIS      ,7466197.746,326604.1848
+49,Code3Med,2011-01-04,08:16:56,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7495555.738,354227.7281
+50,Code3Med,2011-01-04,08:52:12,27400STOW PIT                                         RDMonroe,7482083.821,295166.6961
+51,Code3Med,2011-01-04,11:16:04,600SWMADISON                                          AVECORVALLIS      ,7461080.831,354230.2114
+52,Code3Med,2011-01-04,12:38:42,400SW26TH                                             STOSU            ,7484131.316,334043.726
+53,Code3Med,2011-01-04,19:49:48,0NW9TH                                              AVECORVALLIS      ,7481384.035,327524.6883
+54,Code3Med,2011-01-04,22:18:55,800SWC                                                AVECORVALLIS      ,7486458.44,374563.3725
+55,Code3Med,2011-01-04,23:29:15,3600NWSAMARITAN                                        DRCORVALLIS      ,7506080.457,304687.9205
+56,Code3Med,2011-01-04,23:57:08,2200NWVAN BUREN                                        AVECORVALLIS      ,7463283.764,331769.292
+57,Transport,2011-01-05,01:17:10,2500SWCAMPUS                                           WAYOSU            ,7518806.658,354335.1546
+58,Code3Med,2011-01-05,01:31:27,1700NWDIVISION                                         STCORVALLIS      ,7499783.437,315874.4596
+59,Code3Med,2011-01-05,02:05:30,28300IRISH BEND                                       RDMONROE         ,7512523.406,346344.5639
+60,Code3Med,2011-01-05,03:41:19,1700NWDIVISION                                         STCORVALLIS      ,7515954.087,329047.2822
+61,Code3Med,2011-01-05,03:59:09,2900NW29TH                                             STCORVALLIS      ,7481753.55,355154.6539
+62,Code3Med,2011-01-05,04:03:27,5500NWOAK CREEK                                        DRCorvallis,7483070.1,312791.1386
+63,Code3Med,2011-01-05,05:10:07,1700MAPLE                                            STPHILOMATH      ,7481392.673,364377.3569
+64,Code3Med,2011-01-05,05:17:11,2200NWMULKEY                                           AVECORVALLIS      ,7517496.472,312115.925
+65,Code3Med,2011-01-05,05:30:13,700NW5TH                                              STCORVALLIS      ,7498922.878,328325.1256
+66,Code3Med,2011-01-05,05:33:28,100NW14TH                                             STCORVALLIS      ,7477800.622,312092.2655
+67,Code3Med,2011-01-05,05:33:59,100NW25TH                                             STCORVALLIS      ,7483237.9,346041.7858
+68,Code3Med,2011-01-05,06:29:24,3000NWGREENBRIAR                                       PLCORVALLIS      ,7479052.635,355562.5782
+69,Code3Med,2011-01-05,09:07:27,22900HIGHWAY 34                                       HWYPHILOMATH      ,7482889.389,363981.8748
+70,Code3Med,2011-01-05,11:52:44,3700NWSAMARITAN                                        DRCORVALLIS      ,7512015.746,330612.6824
+71,Code3Med,2011-01-05,12:25:30,2500SWPICKFORD                                         STCORVALLIS      ,7502171.311,370657.1233
+72,Code3Med,2011-01-05,13:46:00,26700NWSULPHUR SPRINGS                                  RDCorvallis,7484939.254,310173.5586
+73,Code3Med,2011-01-05,16:16:50,28000BellfountainRDMonroe,7481570.128,347980.8235
+74,Code3Med,2011-01-05,17:28:23,30100BEAVER CREEK                                     RDCorvallis,7500200.61,354232.8011
+75,Code3Med,2011-01-05,18:36:18,5600SWWEST HILLS                                       RDCORVALLIS      ,7480880.734,353110.2801
+76,Code3Med,2011-01-05,18:48:55,3600NWSAMARITAN                                        DRCORVALLIS      ,7489161.604,334953.2405
+77,Code3Med,2011-01-05,18:48:58,1000NWHayesAVECorvallis,7492978.174,323152.5635
+78,Code3Med,2011-01-05,18:50:02,1400NWDIXON                                            STCORVALLIS      ,7506157.105,341207.4007
+79,Code3Med,2011-01-06,03:26:46,3300NWSILKTASSEL                                       DRCORVALLIS      ,7498717.323,331720.1913
+80,Code3Med,2011-01-06,06:56:27,400SWMADISON                                          AVECORVALLIS      ,7488816.867,359800.4265
+81,Code3Med,2011-01-06,07:39:27,200NECONIFER                                          BLVDCORVALLIS      ,7510855.853,372540.3564
+82,Code3Med,2011-01-06,10:55:42,24500OLD PEAK                                         RDMonroe,7518354.986,344576.1043
+83,Code3Med,2011-01-06,11:06:54,0NW4TH                                              AVECORVALLIS      ,7481355.297,382596.574
+84,Code3Med,2011-01-06,18:20:20,0SWWashingtonAVECORVALLIS      ,7492186.7,323176.6661
+85,Code3Med,2011-01-06,18:35:05,3700NWSAMARITAN                                        DRCORVALLIS      ,7505308.245,327813.1312
+86,MVA,2011-01-06,19:31:21,300SW8thSTCorvallis,7516032.756,366061.5993
+87,Code3Med,2011-01-06,21:01:30,3600NWSAMARITAN                                        DRCORVALLIS      ,7463241.721,390573.1332
+88,Code3Med,2011-01-06,22:30:32,1300NWKAINUI                                           DRCorvallis,7479903.993,345129.946
+89,Code3Med,2011-01-06,22:38:32,100NW21ST                                             STCORVALLIS      ,7492323.193,337276.507
+90,Code3Med,2011-01-06,23:14:24,2700NWHIGHLAND                                         DRCORVALLIS      ,7485694.729,352885.6051
+91,Code3Med,2011-01-07,01:10:23,1100NW9thSTCorvallis,7502088.711,360982.4623
+92,Code3Med,2011-01-07,02:16:34,0NWCircleBLVDCorvallis,7502243.182,323513.1256
+93,Code3Med,2011-01-07,02:24:11,600NWHARRISON                                         BLVDCORVALLIS      ,7493489.803,310609.0354
+94,Code3Med,2011-01-07,03:58:00,700NW12thSTCorvallis,7510189.072,313235.2238
+95,Code3Med,2011-01-07,04:13:08,300NECONIFER                                          BLVDCORVALLIS      ,7518867.37,325801.2707
+96,Code3Med,2011-01-07,07:34:17,6200NWPonderosaAVECorvallis,7501215.524,317715.4956
+97,Code3Med,2011-01-07,08:42:54,0ALSEA DEADWOOD HWY                               RDAlsea,7460055.289,321599.1891
+98,Code3Med,2011-01-07,08:55:43,2600NWROLLING GREEN                                    DRCORVALLIS      ,7492656.056,350568.9131
+99,MVA,2011-01-07,16:36:16,2300NWKINGS                                            BLVDCORVALLIS      ,7516608.273,355155.3525
+100,Code3Med,2011-01-07,20:28:34,1400NW20TH                                             STCORVALLIS      ,7467717.92,354687.5859
+101,Code3Med,2011-01-07,20:53:41,300NECONIFER                                          BLVDCORVALLIS      ,7470420.705,321988.9603
+102,Code3Med,2011-01-07,21:14:45,3600NWSAMARITAN                                        DRCORVALLIS      ,7493485.356,384227.2716
+103,Code3Med,2011-01-07,22:06:45,400SW26TH                                             STOSU            ,7470266.53,353796.1728
+104,Code3Med,2011-01-07,22:31:44,3600NWSAMARITAN                                        DRCORVALLIS      ,7494826.02,343470.7545
+105,Code3Med,2011-01-08,04:53:10,300NW26TH                                             STCORVALLIS      ,7495758.05,357881.7673
+106,Code3Med,2011-01-08,07:48:50,4700SWBIRDSONG                                         DRCORVALLIS      ,7508618.756,353967.3172
+107,Code3Med,2011-01-08,08:11:51,400SWMONROE                                           AVECORVALLIS      ,7484581.982,317299.4468
+108,Code3Med,2011-01-08,08:45:51,24400HIGHWAY 99W                                      HWYMonroe,7498660.944,348553.9801
+109,Code3Med,2011-01-08,09:23:26,2400SWLEONARD                                          STCORVALLIS      ,7482579.998,306201.5288
+110,Code3Med,2011-01-08,11:01:58,600NW13TH                                             STCORVALLIS      ,7488961.181,334574.9347
+111,Code3Med,2011-01-08,11:17:07,3600NWSAMARITAN                                        DRCORVALLIS      ,7494765.536,330357.0304
+112,MVA,2011-01-08,12:17:21,200NECONIFER                                          BLVDCORVALLIS      ,7504965.634,311547.6936
+113,Code3Med,2011-01-08,13:00:07,5000SWWEST HILLS                                       RDCORVALLIS      ,7444286.28,340498.7295
+114,Code3Med,2011-01-08,13:10:21,800NW9thSTCorvallis,7496164.201,332591.0861
+115,Code3Med,2011-01-08,16:53:09,400NWMonroeAVECorvallis,7502573.596,353284.1435
+116,Code3Med,2011-01-08,17:45:28,200NECONIFER                                          BLVDCORVALLIS      ,7486649.067,329584.0799
+117,Code3Med,2011-01-08,19:45:15,019TH                                             STPHILOMATH      ,7490871.276,360800.8271
+118,Code3Med,2011-01-08,21:27:15,1700SW3RD                                              STCORVALLIS      ,7489141.147,328278.348
+119,Code3Med,2011-01-08,21:49:38,0NEHIGHWAY 99W                                      AVEAdair Village,7482755.015,348600.613
+120,Code3Med,2011-01-08,22:09:20,3600NWSAMARITAN                                        DRCORVALLIS      ,7507451.092,343441.062
+121,Code3Med,2011-01-09,00:34:53,26800BellfountainRDBellfount,7487975.546,331634.6225
+122,Code3Med,2011-01-09,00:36:28,500SW3rdSTCorvallis,7505474.001,365292.8038
+123,Code3Med,2011-01-09,04:55:20,300SW9TH                                              STCORVALLIS      ,7494306.054,363027.8772
+124,Code3Med,2011-01-09,05:42:10,200NWMonroeAVECorvallis,7488614.267,288048.8131
+125,Code3Med,2011-01-09,06:49:20,100NECONIFER                                          BLVDCORVALLIS      ,7463281.483,368675.9673
+126,Code3Med,2011-01-09,11:20:53,1500NWJACKSON                                          AVECORVALLIS      ,7492211.326,329788.3787
+127,Code3Med,2011-01-09,11:49:24,2200NWSUNVIEW                                          DRCORVALLIS      ,7485332.677,341631.4715
+128,Code3Med,2011-01-09,12:26:58,2900SWCAMPUS                                           WAYOSU            ,7488379.187,346263.4593
+129,Code3Med,2011-01-09,13:22:49,9100NWARBORETUM                                        RDCORVALLIS      ,7481139.599,334788.057
+130,Code3Med,2011-01-09,13:33:42,2000SECrystal LakeDRCorvallis,7507494.993,328033.4338
+131,Code3Med,2011-01-09,14:31:26,1000NWSPRUCE                                           AVECORVALLIS      ,7474498.887,337385.0121
+132,Code3Med,2011-01-09,15:54:43,3500NWSamaritanDRCorvallis,7487096.597,362770.2308
+133,Code3Med,2011-01-09,17:08:12,24700STOVALL                                          LNPhilomath,7503685.905,353314.99
+134,Code3Med,2011-01-09,17:52:18,400SW4thSTCorvallis,7467837.89,340023.1827
+135,Code3Med,2011-01-09,18:26:36,1700MCBEE                                            RDPHILOMATH      ,7477727.733,319229.4144
+136,Code3Med,2011-01-09,21:46:55,700SW26TH                                             STOSU            ,7495619.88,340827.6597
+137,Code3Med,2011-01-10,00:38:59,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7474736.266,316499.4091
+138,Code3Med,2011-01-10,01:07:34,300NW23RD                                             STCORVALLIS      ,7503150.313,325617.9476
+139,Code3Med,2011-01-10,01:30:22,2700NWHIGHLAND                                         DRCORVALLIS      ,7496220.959,307929.8229
+140,Code3Med,2011-01-10,01:51:30,700SW56TH                                             STCORVALLIS      ,7464152.21,315518.0003
+141,Code3Med,2011-01-10,02:19:38,800NE2ndSTCorvallis,7513947.371,369962.8846
+142,Code3Med,2011-01-10,03:00:42,3100NEPOWDERHORN                                       PLCORVALLIS      ,7506106.535,377080.6022
+143,Code3Med,2011-01-10,03:23:18,400NW11TH                                             STCORVALLIS      ,7497885.089,359695.16
+144,Code3Med,2011-01-10,04:50:23,200NECONIFER                                          BLVDCORVALLIS      ,7501723.829,374488.8647
+145,Code3Med,2011-01-10,07:19:05,1100NW11TH                                             STCORVALLIS      ,7484123.382,315392.8124
+146,Code3Med,2011-01-10,07:28:25,3000NWORCHARD                                          AVECORVALLIS      ,7506356.041,344487.1843
+147,Code3Med,2011-01-10,07:31:18,5200SWMEADOW FLOWER                                    DRCORVALLIS      ,7506011.462,350073.4709
+148,Code3Med,2011-01-10,09:36:21,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7482992.662,335671.7422
+149,Code3Med,2011-01-10,10:36:02,300SWPLEASANT                                         PLCORVALLIS      ,7495688.832,342659.0877
+150,Code3Med,2011-01-10,11:15:37,100NW7TH                                              STCORVALLIS      ,7503330.297,349023.0399
+151,Code3Med,2011-01-10,12:00:24,200SWTWIN OAKS                                        CIRCORVALLIS      ,7489708.985,312412.8647
+152,Code3Med,2011-01-10,15:32:35,3000NWGARFIELD                                         AVECORVALLIS      ,7505952.48,366640.3736
+153,Code3Med,2011-01-10,17:43:41,1000MAIN                                             STPHILOMATH      ,7502308.763,321715.8145
+154,Code3Med,2011-01-10,21:41:56,1000NECONIFER                                          BLVDCORVALLIS      ,7478508.706,371566.2492
+155,Code3Med,2011-01-10,22:31:34,2200WOODED KNOLLS                                    RDPhilomath,7501274.991,309575.222
+156,Code3Med,2011-01-10,23:55:09,0HIGHWAY 99W                                      HWYMonroe,7467865.513,328822.7853
+157,Code3Med,2011-01-11,00:27:28,0NW29TH                                             BLVDCORVALLIS      ,7465280.252,359917.9074
+158,Code3Med,2011-01-11,00:35:41,2700NWHIGHLAND                                         DRCORVALLIS      ,7467878.672,359127.9013
+159,Code3Med,2011-01-11,01:45:16,5000SWROSEBERRY                                        STCORVALLIS      ,7495133.89,317198.2033
+160,Code3Med,2011-01-11,05:41:13,800NW23RD                                             STCORVALLIS      ,7473406.198,329399.3423
+161,Code3Med,2011-01-11,06:27:51,400NWELKS                                             DRCORVALLIS      ,7495710.079,331522.5279
+162,Code3Med,2011-01-11,07:35:16,3600NWSAMARITAN                                        DRCORVALLIS      ,7483632.397,314008.4912
+163,Code3Med,2011-01-11,08:35:29,3500NELANCASTER                                        STCORVALLIS      ,7497867.337,383441.6179
+164,Code3Med,2011-01-11,09:41:53,0SWPHILOMATH                                        BLVDCORVALLIS      ,7488746.861,320221.4189
+165,Code3Med,2011-01-11,13:37:07,0NWKINGS                                            AVECORVALLIS      ,7485839.789,336465.665
+166,Code3Med,2011-01-11,17:30:21,400NWELKS                                             DRCORVALLIS      ,7476658.439,305339.0274
+167,Code3Med,2011-01-11,19:38:35,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7492935.005,326517.8573
+168,Code3Med,2011-01-11,20:05:13,400SWWEATHERFORD                                      PLOSU            ,7481920.509,321443.2408
+169,Code3Med,2011-01-11,22:02:24,1700MAIN                                             STPHILOMATH      ,7487412.1,371898.1095
+170,Code3Med,2011-01-12,00:56:19,7300CUTLER                                           LNPhilomath,7510132.722,391403.0585
+171,Code3Med,2011-01-12,03:51:17,1900NWHIGHLAND                                         DRCORVALLIS      ,7509000.106,357605.8937
+172,Code3Med,2011-01-12,04:27:34,400NEPLYMOUTH                                         CIRCORVALLIS      ,7489045.395,327983.799
+173,Code3Med,2011-01-12,06:39:34,7300CUTLER                                           LNPhilomath,7514066.187,345430.1677
+174,Code3Med,2011-01-12,08:00:59,4700SWHollyhockCIRCorvallis,7506023.479,367866.857
+175,Code3Med,2011-01-12,08:08:50,800NE2ND                                              STCORVALLIS      ,7519908.047,331831.9224
+176,Code3Med,2011-01-12,08:30:52,500NW27TH                                             STCORVALLIS      ,7503350.945,335174.5371
+177,Code3Med,2011-01-12,09:12:21,39400LUCKIAMUTE                                       RDPhilomath,7501771.805,342309.6133
+178,Code3Med,2011-01-12,11:14:45,1900NWESTAVIEW                                         DRCORVALLIS      ,7491031.784,328036.7411
+179,Code3Med,2011-01-12,12:36:07,3300NWFIREFERN                                         PLCORVALLIS      ,7485812.6,352192.5362
+180,Code3Med,2011-01-12,12:49:29,2700NWHIGHLAND                                         DRCORVALLIS      ,7468802.24,334678.3706
+181,Code3Med,2011-01-12,15:10:06,3600NWSamaritanDRCorvallis,7494358.416,320599.9446
+182,Code3Med,2011-01-12,16:49:42,0SW15thSTOSU            ,7498438.778,353022.9967
+183,MVA,2011-01-12,23:26:48,3700NWSAMARITAN                                        DRCORVALLIS      ,7520102.905,349197.4853
+184,Code3Med,2011-01-13,00:38:00,0NWWalnutAVECorvallis,7482549.956,376793.9413
+185,Transport,2011-01-13,05:27:52,1000NWGarfieldAVECorvallis,7506101.659,354366.1436
+186,Code3Med,2011-01-13,08:32:37,800MARILYN                                          DRPHILOMATH      ,7483830.729,364759.7461
+187,Code3Med,2011-01-13,09:41:36,4700SWHollyhockCIRCorvallis,7482282.329,336094.4641
+188,Code3Med,2011-01-13,10:16:40,1000NWHOBART                                           AVECORVALLIS      ,7497340.044,371125.1552
+189,Code3Med,2011-01-13,11:33:22,1300MAIN                                             STPHILOMATH      ,7478983.871,316475.1485
+190,Code3Med,2011-01-13,13:43:51,24700STOVALL                                          LNPhilomath,7490898.775,329405.0566
+191,Code3Med,2011-01-13,16:17:12,3600NWSAMARITAN                                        DRCORVALLIS      ,7507232.463,328910.4394
+192,MVA,2011-01-13,19:27:04,34400COLORADO LAKE                                    DRCorvallis,7515417.655,348949.0824
+193,Code3Med,2011-01-13,19:46:41,500SEALEXANDER                                        AVECORVALLIS      ,7485633.158,316843.6843
+194,Code3Med,2011-01-13,22:04:58,4000NWWALNUT                                           CTCORVALLIS      ,7471624.251,360918.4835
+195,Code3Med,2011-01-14,02:48:15,300NW35TH                                             STCORVALLIS      ,7494753.155,346124.0919
+196,Code3Med,2011-01-14,03:42:57,700NW5TH                                              STCORVALLIS      ,7484688.034,366388.41
+197,Code3Med,2011-01-14,03:59:28,2700SWWAKE ROBIN                                       PLCORVALLIS      ,7502775.986,309935.7152
+198,Code3Med,2011-01-14,04:10:06,600NWLINDEN                                           AVECORVALLIS      ,7477033.012,332504.7418
+199,Code3Med,2011-01-14,04:21:56,400SWWEATHERFORD                                      PLOSU            ,7521853.348,335981.3591
+200,Code3Med,2011-01-14,07:42:41,600SEHATHAWAY                                         PLCORVALLIS      ,7487589.923,368117.6151
+201,Code3Med,2011-01-14,08:19:33,600N 20thPLPhilomath,7474519.82,363701.2454
+202,Code3Med,2011-01-14,08:54:01,400NWELKS                                             DRCORVALLIS      ,7490859.532,378491.9049
+203,Code3Med,2011-01-14,09:54:39,4200NWWitham HillDRCorvallis,7494661.248,337810.4061
+204,MVA,2011-01-14,12:25:59,2000NWSUNVIEW                                          DRCORVALLIS      ,7498334.201,306967.4935
+205,Code3Med,2011-01-14,17:28:35,2700NWFIREWEED                                         PLCORVALLIS      ,7495569.99,341367.8751
+206,Code3Med,2011-01-14,18:10:31,700NW2ND                                              STCORVALLIS      ,7492114.151,334247.405
+207,Code3Med,2011-01-14,18:29:12,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7483133.58,342769.3131
+208,MVA,2011-01-14,23:49:39,1200NWGARFIELD                                         AVECORVALLIS      ,7534834.729,371093.9082
+209,Code3Med,2011-01-15,01:00:08,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7492532.157,382021.2773
+210,Code3Med,2011-01-15,08:39:14,200NW4TH                                              STCORVALLIS      ,7505795.645,329502.6491
+211,Code3Med,2011-01-15,09:02:51,3200SEMIDVALE                                          DRCORVALLIS      ,7481814.158,325985.0399
+212,Code3Med,2011-01-15,09:09:25,0NECONIFER                                          BLVDCORVALLIS      ,7477636.242,324073.0329
+213,Code3Med,2011-01-15,10:07:21,0NWHwy 99HWYCorvallis,7506488.075,332922.7214
+214,Code3Med,2011-01-15,14:30:51,25100KYLE                                             RDMonroe,7505921.197,336109.4993
+215,Code3Med,2011-01-15,15:25:01,1500NWJACKSON                                          AVECORVALLIS      ,7475992.038,366653.5088
+216,MVA,2011-01-15,16:10:14,400NWELKS                                             DRCORVALLIS      ,7504157.297,313382.2681
+217,Code3Med,2011-01-15,16:45:54,96600ADAMS                                            LNMonroe,7476224.128,355807.4282
+218,Code3Med,2011-01-15,17:13:45,700NW36TH                                             STCORVALLIS      ,7490457.698,354071.2075
+219,Code3Med,2011-01-15,19:06:16,1700NWDIVISION                                         STCORVALLIS      ,7474051.421,363640.7213
+220,Code3Med,2011-01-15,19:09:57,100Neabeack HillDRPhilomath,7471457.161,360684.4821
+221,Code3Med,2011-01-15,19:53:43,3000NWTAYLOR                                           AVECORVALLIS      ,7491332.516,328725.8271
+222,Code3Med,2011-01-15,20:17:50,1600SW3RD                                              STCORVALLIS      ,7508562.492,332530.8346
+223,Code3Med,2011-01-15,21:05:18,30900BELLFOUNTAIN                                     RDPhilomath,7480043.429,367276.2529
+224,Code3Med,2011-01-15,21:52:34,600NWMONROE                                           AVECORVALLIS      ,7510768.168,376760.9214
+225,Code3Med,2011-01-16,03:26:27,5900SWBALSAM                                           DRCORVALLIS      ,7512013.804,339933.7954
+226,Code3Med,2011-01-16,06:44:10,3900NEHIGHWAY 20                                       HWYCorvallis,7488585.276,341557.7733
+227,Code3Med,2011-01-16,06:48:15,0SE3RD                                              STCORVALLIS      ,7501191.702,350533.2342
+228,Code3Med,2011-01-16,06:48:38,400SW26TH                                             STOSU            ,7495248.787,314410.5586
+229,Code3Med,2011-01-16,08:06:33,1400NW29thSTCorvallis,7511908.823,334944.6428
+230,Code3Med,2011-01-16,09:28:26,5200SWPhilomathBLVDCorvallis,7490281.671,346855.5446
+231,Code3Med,2011-01-16,10:27:25,1600NWWOODLAND                                         DRCORVALLIS      ,7500583.708,349751.8294
+232,Code3Med,2011-01-16,12:56:07,1500NWKingsBLVDCorvallis,7495005.743,343359.2497
+233,Code3Med,2011-01-16,18:47:26,29800Hwy 34HWYAlbany,7519132.459,326203.9779
+234,Code3Med,2011-01-16,20:48:46,300NW25thSTCorvallis,7477673.905,367484.5532
+235,MVA,2011-01-17,01:34:15,1500NWDIVISION                                         STCORVALLIS      ,7542284.508,354010.1237
+236,Code3Med,2011-01-17,01:46:16,1000NWSPRUCE                                           AVECORVALLIS      ,7516547.606,349085.2596
+237,Code3Med,2011-01-17,04:02:21,33100White OakDRCorvallis,7503304.855,341974.9346
+238,Code3Med,2011-01-17,04:37:24,200NECONIFER                                          BLVDCORVALLIS      ,7509749.061,319742.8618
+239,Code3Med,2011-01-17,05:59:04,6100SWCOUNTRY CLUB                                     DRCorvallis,7508761.947,297607.0616
+240,Code3Med,2011-01-17,11:39:38,300NW35TH                                             STCORVALLIS      ,7474705.447,333002.8414
+241,Code3Med,2011-01-17,12:02:26,200NECONIFER                                          BLVDCORVALLIS      ,7471676.772,375319.9373
+242,Code3Med,2011-01-17,14:06:01,2100APPLEGATE                                        STPHILOMATH      ,7468479.751,355290.8736
+243,Code3Med,2011-01-17,15:38:54,400NWHEMLOCK                                          AVECORVALLIS      ,7504944.147,344828.4133
+244,MVA,2011-01-17,16:21:07,0HIGHWAY 34                                       HWYPhilomath,7514492.335,351721.5165
+245,Code3Med,2011-01-17,20:38:08,300NECONIFER                                          BLVDCORVALLIS      ,7467643.651,347737.5787
+246,Code3Med,2011-01-17,23:49:25,100SW53RD                                             STCorvallis,7482639.937,329520.1521
+247,Code3Med,2011-01-18,00:24:03,4200SW3RD                                              STCORVALLIS      ,7493339.998,311962.6738
+248,Code3Med,2011-01-18,00:54:22,900NEGRANGER                                          AVECorvallis,7489450.453,343971.9652
+249,Code3Med,2011-01-18,01:14:56,900NEGRANGER                                          AVECorvallis,7485743.36,317870.132
+250,Code3Med,2011-01-18,05:05:05,100NW3RD                                              STCORVALLIS      ,7482049.438,327993.7515
+251,Code3Med,2011-01-18,05:06:24,34400WOLCOTT                                          STCorvallis,7486814.929,324519.8443
+252,Code3Med,2011-01-18,05:10:15,1600NWHILLCREST                                        DRCORVALLIS      ,7500881.165,333883.4748
+253,Code3Med,2011-01-18,05:38:30,800MAIN                                             STMONROE         ,7466882.016,323966.4318
+254,Code3Med,2011-01-18,06:32:31,2800SWCAMPUS                                           WAYOSU            ,7484171.58,281624.556
+255,Code3Med,2011-01-18,10:08:56,3700NWSAMARITAN                                        DRCORVALLIS      ,7498024.43,344604.486
+256,Code3Med,2011-01-18,12:43:14,600SWMadisonAVECorvallis,7486204.65,322052.1531
+257,Code3Med,2011-01-18,12:54:32,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7507867.237,349309.7966
+258,Code3Med,2011-01-18,12:54:56,2700NWHIGHLAND                                         DRCORVALLIS      ,7476556.488,312172.1275
+259,Code3Med,2011-01-18,14:10:34,400SW8thSTCorvallis,7448890.06,303127.4114
+260,MVA,2011-01-18,14:13:27,3600SEMIDVALE                                          DRCORVALLIS      ,7531632.57,353968.7827
+261,Code3Med,2011-01-18,21:41:59,3600NWSAMARITAN                                        DRCORVALLIS      ,7481553.85,330607.0461
+262,Code3Med,2011-01-18,23:32:45,26800BellfountainRDBellfount,7487813.773,337997.4483
+263,MVA,2011-01-19,02:46:58,600SELILLY                                            AVECORVALLIS      ,7515695.951,355208.8221
+264,MVA,2011-01-19,04:07:10,31500FERN                                             RDPhilomath,7529427.215,362827.7048
+265,Code3Med,2011-01-19,04:32:22,2300NWVAN BUREN                                        AVECORVALLIS      ,7498494.958,314461.4251
+266,Code3Med,2011-01-19,06:09:45,3100NWAUTUMN                                           STCORVALLIS      ,7499334.805,279844.5762
+267,Code3Med,2011-01-19,06:38:28,900NWREIMAN                                           AVECORVALLIS      ,7498795.56,350780.856
+268,Code3Med,2011-01-19,06:56:01,3600NWSAMARITAN                                        DRCORVALLIS      ,7490813.721,354880.4029
+269,Code3Med,2011-01-19,07:45:00,200NECEDAR                                            STADAIR          ,7496497.155,357522.3467
+270,Code3Med,2011-01-19,08:53:20,1900NWDIVISION                                         STCORVALLIS      ,7505124.821,345108.499
+271,Code3Med,2011-01-19,11:16:27,300NW23rdSTCorvallis,7470057.011,363817.3549
+272,Code3Med,2011-01-19,14:31:20,400S 27TH                                             STPHILOMATH      ,7495516.376,317991.3187
+273,Code3Med,2011-01-19,14:38:59,4700SWHollyhockCIRCorvallis,7496319.507,356364.72
+274,Code3Med,2011-01-19,16:31:10,4200NELaurelDRAdair Village,7482243.255,335114.8777
+275,Code3Med,2011-01-19,17:54:55,0NWHARRISON                                         STCORVALLIS      ,7508543.039,349785.1485
+276,Code3Med,2011-01-19,21:09:12,0SW15thSTCorvallis,7508103.245,337293.3969
+277,Code3Med,2011-01-19,21:33:40,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7494531.77,342056.7867
+278,Code3Med,2011-01-19,22:05:51,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7506343.165,337734.6374
+279,Code3Med,2011-01-20,02:14:28,600SWMADISON                                          AVECORVALLIS      ,7490956.926,343289.9017
+280,Code3Med,2011-01-20,02:53:49,700SW10TH                                             STCORVALLIS      ,7487089.552,365518.6634
+281,Code3Med,2011-01-20,03:26:50,2700NWHIGHLAND                                         DRCORVALLIS      ,7481065.185,339407.8959
+282,Code3Med,2011-01-20,10:38:00,2700NEWTON                                           STPHILOMATH      ,7493596.784,354752.5814
+283,Code3Med,2011-01-20,11:11:40,800NECIRCLE                                           BLVDCORVALLIS      ,7495630.266,337155.8622
+284,Code3Med,2011-01-20,11:15:26,300SEPARK                                             AVECORVALLIS      ,7484320.307,353970.3514
+285,Code3Med,2011-01-20,15:49:48,6800NWCONCORD                                          DRCorvallis,7477014.628,356931.657
+286,Code3Med,2011-01-20,17:14:42,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7473343.413,322674.6107
+287,Code3Med,2011-01-20,19:08:20,600MAIN                                             STMONROE         ,7496412.3,366111.2811
+288,Code3Med,2011-01-20,20:00:49,1000NWSPRUCE                                           AVECORVALLIS      ,7517562.916,313021.941
+289,Code3Med,2011-01-20,22:56:27,800NW23rdSTCorvallis,7503025.53,320685.3949
+290,Code3Med,2011-01-20,22:59:03,0SW2ND                                              AVECORVALLIS      ,7512485.21,306089.973
+291,Code3Med,2011-01-20,23:03:05,100SWMemorialPLCorvallis,7503832.391,302671.9138
+292,Code3Med,2011-01-20,23:04:34,0NW9TH                                              AVECORVALLIS      ,7462688.986,350842.5945
+293,Code3Med,2011-01-20,23:10:35,200N 13TH                                             STPHILOMATH      ,7487768.348,358509.5896
+294,Code3Med,2011-01-21,02:12:33,3600NWSamaritanDRCorvallis,7474566.186,363117.2003
+295,Code3Med,2011-01-21,03:28:35,2100NWTaylorAVECorvallis,7489261.525,369051.9561
+296,Code3Med,2011-01-21,06:36:56,4700SWHollyhockCIRCorvallis,7498577.85,346436.8483
+297,Code3Med,2011-01-21,08:04:49,600NW28thSTCorvallis,7479211.138,328576.5143
+298,Code3Med,2011-01-21,11:23:41,900SECENTERPOINTE                                     DRCORVALLIS      ,7497480.677,370101.666
+299,Code3Med,2011-01-21,11:56:25,2500NWGARRYANNA                                        DRCORVALLIS      ,7489867.685,324979.021
+300,Code3Med,2011-01-21,11:57:59,400SWWeatherfordPLOSU,7495135.512,315444.5023
+301,Code3Med,2011-01-21,12:43:51,400NWELKS                                             DRCORVALLIS      ,7477187.004,330694.4326
+302,Code3Med,2011-01-21,14:55:16,400NWELKS                                             DRCORVALLIS      ,7476460.525,350427.2615
+303,Code3Med,2011-01-21,15:24:32,2100NWELMWOOD                                          DRCORVALLIS      ,7499384.261,335076.609
+304,Code3Med,2011-01-21,16:00:21,4700SWHollyhockCIRCorvallis,7497611.052,336136.9421
+305,Code3Med,2011-01-21,17:14:24,5200SWPhilomathBLVDCorvallis,7501716.572,379792.5806
+306,Code3Med,2011-01-22,04:25:18,0S MAIN                                             STPHILOMATH      ,7485477.174,339999.2206
+307,Code3Med,2011-01-22,04:56:16,500SW3RD                                              STCORVALLIS      ,7460559.943,374117
+308,Code3Med,2011-01-22,06:32:05,3700NWSAMARITAN                                        DRCORVALLIS      ,7497292.379,356505.6556
+309,Code3Med,2011-01-22,10:38:13,300SWJeffersonAVECorvallis,7493531.8,298229.9248
+310,Code3Med,2011-01-22,11:03:02,200SW5thSTCorvallis,7503600.864,315481.4251
+311,Code3Med,2011-01-22,12:47:13,0HIGHWAY 34                                       HWYCorvallis,7512587.865,311171.6894
+312,Code3Med,2011-01-22,13:10:56,5600SWWEST HILLS                                       RDCORVALLIS      ,7486055.529,315610.132
+313,Code3Med,2011-01-22,13:24:08,1000NWHAYES                                            AVECORVALLIS      ,7492384.599,335627.5702
+314,Code3Med,2011-01-22,15:30:53,1800NWKINGS                                            BLVDCORVALLIS      ,7496829.411,335882.6685
+315,Code3Med,2011-01-22,16:22:57,1500SWBirdieDRCorvallis,7500502.343,317089.8371
+316,Code3Med,2011-01-22,16:59:19,700N 11TH                                             STPHILOMATH      ,7494014.758,321755.4737
+317,Code3Med,2011-01-22,17:06:46,25100WebsterLNMonroe,7482697.074,342713.7398
+318,Code3Med,2011-01-22,17:33:00,400NW5TH                                              STCORVALLIS      ,7501655.476,319768.9576
+319,Code3Med,2011-01-22,17:33:47,4700SWHollyhockCIRCorvallis,7507259.777,353837.7787
+320,Code3Med,2011-01-22,18:04:00,3400SEHathawayDRCorvallis,7486266.986,338974.5813
+321,Code3Med,2011-01-22,20:49:11,400NWELKS                                             DRCORVALLIS      ,7503468.736,346698.3385
+322,Code3Med,2011-01-22,20:53:34,1200APPLEGATE                                        STPHILOMATH      ,7468389.278,340456.9101
+323,Code3Med,2011-01-22,21:10:36,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7480731.796,362087.264
+324,Code3Med,2011-01-22,22:09:22,1100NW27TH                                             STCORVALLIS      ,7482032.937,356375.5517
+325,Code3Med,2011-01-23,00:59:29,300NECONIFER                                          BLVDCORVALLIS      ,7482877.383,322141.728
+326,Code3Med,2011-01-23,03:11:16,2600NWROOSEVELT                                        DRCORVALLIS      ,7488513.554,333004.174
+327,Code3Med,2011-01-23,06:26:53,29400BEAVER CREEK                                     RDPHILOMATH      ,7477560.606,327024.6462
+328,Code3Med,2011-01-23,06:27:13,800MAIN                                             STMONROE         ,7468234.116,376306.1089
+329,Code3Med,2011-01-23,06:46:48,400SW26TH                                             STOSU            ,7484357.447,332624.6932
+330,Code3Med,2011-01-23,07:05:12,3700NWSAMARITAN                                        DRCORVALLIS      ,7467378.963,382933.0498
+331,Code3Med,2011-01-23,10:06:47,500N 12TH                                             STPHILOMATH      ,7480557.34,323312.9625
+332,Code3Med,2011-01-23,11:06:06,100NECONIFER                                          BLVDCORVALLIS      ,7459437.233,338526.0549
+333,Code3Med,2011-01-23,12:31:06,3600NWSAMARITAN                                        DRCORVALLIS      ,7483885.601,341023.1291
+334,Code3Med,2011-01-23,13:13:45,0SE3RD                                              STCORVALLIS      ,7470336.889,344055.0844
+335,Code3Med,2011-01-23,15:50:13,600NWOAK                                              AVECORVALLIS      ,7482621.051,317304.112
+336,Code3Med,2011-01-23,15:54:25,200NW30TH                                             STCORVALLIS      ,7498266.107,343037.7047
+337,Code3Med,2011-01-23,16:51:29,300NECONIFER                                          BLVDCORVALLIS      ,7525996.097,334859.683
+338,Code3Med,2011-01-23,21:38:17,4900SWHOLLYHOCK                                        CIRCORVALLIS      ,7503526.4,345078.4128
+339,Code3Med,2011-01-24,04:57:32,4400NWHIGHLAND                                         DRCorvallis,7482480.049,329412.5695
+340,Code3Med,2011-01-24,05:16:12,2500SWPICKFORD                                         STCORVALLIS      ,7483896.64,356102.5725
+341,Code3Med,2011-01-24,06:08:07,100N 10TH                                             STPHILOMATH      ,7482344.064,359511.8603
+342,Code3Med,2011-01-24,06:23:25,1000NWSPRUCE                                           AVECORVALLIS      ,7494920.289,321156.5607
+343,Code3Med,2011-01-24,08:53:21,200NEAZALEA                                           DRADAIR          ,7502798.948,340234.2298
+344,Code3Med,2011-01-24,08:55:24,100SWWASHINGTON                                       AVECORVALLIS      ,7503707.673,310165.662
+345,Code3Med,2011-01-24,18:08:25,2600NWLEGACY                                           PLCORVALLIS      ,7504295.118,376940.7046
+346,Code3Med,2011-01-24,18:33:10,500N 13thSTPhilomath,7470617.935,355767.4182
+347,Code3Med,2011-01-24,19:08:13,200SWTWIN OAKS                                        CIRCORVALLIS      ,7493180.487,367738.0889
+348,Code3Med,2011-01-25,03:32:08,6600SWPHILOMATH                                        BLVDCORVALLIS      ,7520975.191,334015.9856
+349,Code3Med,2011-01-25,06:32:09,3600NWSAMARITAN                                        DRCORVALLIS      ,7490890.171,363344.9516
+350,MVA,2011-01-25,06:38:44,400SW30thSTOSU,7532361.053,350188.8472
+351,Code3Med,2011-01-25,09:17:53,1400SWJEFFERSON                                        WAYOSU            ,7495631.994,347579.0269
+352,Code3Med,2011-01-25,12:10:17,100SW4TH                                              STCORVALLIS      ,7496405.616,365065.9946
+353,Code3Med,2011-01-25,13:05:22,0NW9TH                                              STCORVALLIS      ,7502250.42,305424.3836
+354,MVA,2011-01-25,17:24:29,2600NWTaylorAVECorvallis,7507800.18,311295.1129
+355,Code3Med,2011-01-25,21:06:54,3400NEOXFORD                                           CIRCORVALLIS      ,7498529.579,383287.6055
+356,Code3Med,2011-01-25,22:57:34,4700SWHollyHockCIRCorvallis,7491086.711,342410.965
+357,Code3Med,2011-01-25,22:58:29,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7485107.278,313619.4929
+358,Code3Med,2011-01-25,23:19:48,2800NW9TH                                              STCORVALLIS      ,7490900.168,354061.0325
+359,Code3Med,2011-01-26,01:25:06,400NWELKS                                             DRCORVALLIS      ,7511305.074,337066.3783
+360,Code3Med,2011-01-26,01:25:32,5600SWWest HillsRDCorvallis,7471875.455,311882.0973
+361,Code3Med,2011-01-26,01:27:40,300NECONIFER                                          BLVDCORVALLIS      ,7499646.375,316376.5601
+362,Code3Med,2011-01-26,01:50:54,0MainSTPhilomath,7464085.602,342972.7722
+363,Code3Med,2011-01-26,02:20:18,0SW4TH                                              AVECORVALLIS      ,7479277.325,369046.9784
+364,Code3Med,2011-01-26,03:00:31,600SWMADISON                                          AVECORVALLIS      ,7502504.247,326577.8964
+365,Code3Med,2011-01-26,03:12:04,1800NWARTHUR                                           CIRCORVALLIS      ,7513592.036,350606.495
+366,Code3Med,2011-01-26,03:47:35,29500WESLINN                                          DRCorvallis,7496030.503,308357.8497
+367,Code3Med,2011-01-26,05:12:36,3600NWSamaritanDRCorvallis,7500199.335,306420.8426
+368,Code3Med,2011-01-26,05:12:37,300NECONIFER                                          BLVDCORVALLIS      ,7500490.754,332072.4845
+369,Code3Med,2011-01-26,06:05:14,1800NWWOODLAND                                         DRCORVALLIS      ,7514817.86,322336.9474
+370,Code3Med,2011-01-26,09:16:38,1600NWFORESTGREEN                                      AVECORVALLIS      ,7490215.447,344368.4788
+371,Code3Med,2011-01-26,12:25:35,400NWMONROE                                           AVECORVALLIS      ,7493669.254,368939.2166
+372,Code3Med,2011-01-26,13:01:45,3200NWGREENBRIAR                                       PLCORVALLIS      ,7505252.838,326089.7496
+373,Code3Med,2011-01-26,13:30:06,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7486190.791,349202.677
+374,Code3Med,2011-01-26,19:24:12,3200NWGREENBRIAR                                       PLCORVALLIS      ,7484757.399,352995.1458
+375,Code3Med,2011-01-26,21:06:50,400NWELKS                                             DRCORVALLIS      ,7480689.152,346179.8386
+376,Code3Med,2011-01-27,04:28:37,400NWELKS                                             DRCORVALLIS      ,7488925.623,357859.6044
+377,Code3Med,2011-01-27,09:11:30,2000NESEAVY                                            AVECorvallis,7516099.908,375391.8692
+378,Code3Med,2011-01-27,12:33:35,4600SWRESEARCH                                         WAYCORVALLIS      ,7485247.982,336033.0302
+379,MVA,2011-01-27,13:20:33,1000NWSEQUOIA                                          AVECORVALLIS      ,7519787.881,357855.605
+380,Code3Med,2011-01-27,13:25:03,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7500689.132,330482.2205
+381,Code3Med,2011-01-27,14:29:50,100NECONIFER                                          BLVDCORVALLIS      ,7500741.624,364518.7958
+382,Code3Med,2011-01-27,16:40:47,0HIGHWAY 34                                       HWYCorvallis,7503783.537,327446.4508
+383,Code3Med,2011-01-27,18:29:47,600NWELKS                                             DRCORVALLIS      ,7486991.386,349264.1327
+384,Code3Med,2011-01-27,20:32:40,500NWRIVENDELL                                        LNCorvallis,7500538.605,325913.3447
+385,Code3Med,2011-01-27,21:37:30,0HIGHWAY 34                                       HWYCorvallis,7504879.406,340846.5614
+386,Code3Med,2011-01-27,23:55:04,400NWELKS                                             DRCORVALLIS      ,7480299.671,371090.8618
+387,Code3Med,2011-01-28,00:26:04,600SWMADISON                                          AVECORVALLIS      ,7464394.062,344802.5398
+388,Code3Med,2011-01-28,02:17:49,3600SWCHINTIMINI                                       AVECORVALLIS      ,7488038.849,360073.9104
+389,Code3Med,2011-01-28,03:20:30,500SW2ndSTCorvallis,7507255.408,370134.7359
+390,Code3Med,2011-01-28,04:49:09,2100SWMayWAYOSU,7494597.618,337586.0317
+391,Code3Med,2011-01-28,05:18:43,7400NWOak CreekDRCorvallis,7492383.676,340922.3941
+392,Code3Med,2011-01-28,07:28:09,800NW23RD                                             STCORVALLIS      ,7503080.894,337568.9645
+393,Code3Med,2011-01-28,10:44:33,1700NWGARFIELD                                         AVECORVALLIS      ,7494552.773,344508.2781
+394,Code3Med,2011-01-28,13:29:02,5300SWPHILOMATH                                        BLVDCORVALLIS      ,7491046.374,360210.7626
+395,Code3Med,2011-01-28,15:28:12,24100HIGHWAY 20                                       HWYPhilomath,7502319.694,360406.05
+396,Code3Med,2011-01-28,15:38:15,200NW9TH                                              STCORVALLIS      ,7460921.425,372110.367
+397,Code3Med,2011-01-28,17:16:55,0NWHIGHWAY 99W                                      DRCorvallis,7493425.597,324539.9085
+398,Code3Med,2011-01-28,21:06:21,5500SWAIRPORT                                          PLCORVALLIS      ,7480964.353,353065.6464
+399,Code3Med,2011-01-28,21:42:19,1000NWSPRUCE                                           AVECORVALLIS      ,7503280.345,349568.9736
+400,Code3Med,2011-01-28,23:47:06,2900SWDEARMOND                                         DRCORVALLIS      ,7470897.725,388663.1583
+401,Code3Med,2011-01-29,01:31:14,500NWSURVISTA                                         AVECORVALLIS      ,7490706.8,348132.5822
+402,Code3Med,2011-01-29,01:48:27,3600NWSamaritanDRCorvallis,7490516.398,338557.8618
+403,Code3Med,2011-01-29,02:34:55,7200NWRAMONA                                           LNCORVALLIS      ,7512092.148,328702.1948
+404,MVA,2011-01-29,03:38:33,0SWPhilomathBLVDCORVALLIS      ,7511089.778,358005.7812
+405,Code3Med,2011-01-29,08:09:41,3500NWSAMARITAN                                        DRCORVALLIS      ,7480081.15,299633.9809
+406,Code3Med,2011-01-29,08:43:47,2500SWJeffersonWAYOSU,7498997.188,321191.8783
+407,Code3Med,2011-01-29,09:05:11,200NECONIFER                                          BLVDCORVALLIS      ,7483460.045,349340.0292
+408,Code3Med,2011-01-29,09:44:09,200NW4TH                                              STCORVALLIS      ,7507620.342,325854.8839
+409,Code3Med,2011-01-29,09:50:19,2700SW45thSTCorvallis,7483458.545,315138.1633
+410,MVA,2011-01-29,12:32:42,7200NWRAMONA                                           LNCORVALLIS      ,7532676.391,343009.1215
+411,Code3Med,2011-01-29,13:53:06,200NECONIFER                                          BLVDCORVALLIS      ,7497412.636,328855.3247
+412,Code3Med,2011-01-29,17:44:02,100SWMEMORIAL                                         PLOSU            ,7488861.514,335139.5867
+413,Code3Med,2011-01-29,17:52:36,400NWELKS                                             DRCORVALLIS      ,7498879.304,333788.7774
+414,MVA,2011-01-29,17:55:16,100NW7TH                                              STCORVALLIS      ,7502600.218,301397.793
+415,Code3Med,2011-01-29,18:30:36,1900NWKINGS                                            BLVDCORVALLIS      ,7497269.11,377216.4094
+416,Code3Med,2011-01-29,18:35:22,5600SWPHILOMATH                                        BLVDCORVALLIS      ,7495785.694,357785.9105
+417,Code3Med,2011-01-29,21:09:50,200NW14TH                                             STCORVALLIS      ,7481852.991,341307.133
+418,Code3Med,2011-01-29,21:17:09,200SWTWIN OAKS                                        CIRCORVALLIS      ,7496406.301,331337.0221
+419,Code3Med,2011-01-29,21:18:25,4400NWHIGHLAND                                         DRCorvallis,7473289.595,347088.5716
+420,Code3Med,2011-01-29,23:01:23,1600SECRYSTAL LAKE                                     DRCORVALLIS      ,7503403.439,311290.5685
+421,Code3Med,2011-01-29,23:07:43,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7490359.577,329585.4832
+422,Code3Med,2011-01-30,00:16:46,200N 7TH                                              STMONROE         ,7495521.71,354810.5043
+423,Code3Med,2011-01-30,02:18:45,1600NWHillcrestDRCorvallis,7492504.386,354219.4505
+424,Code3Med,2011-01-30,02:19:02,200N 7TH                                              STMONROE         ,7477891.898,327364.4056
+425,Code3Med,2011-01-30,02:40:44,100NW7thSTCorvallis,7492126.797,320222.7344
+426,Code3Med,2011-01-30,05:07:34,3400SW3RD                                              STCORVALLIS      ,7500028.208,369132.6034
+427,Code3Med,2011-01-30,07:19:22,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7492900.048,331297.879
+428,Code3Med,2011-01-30,07:20:00,900SECENTERPOINTE                                     DRCORVALLIS      ,7491000.449,365037.9489
+429,Code3Med,2011-01-30,09:57:01,100NECONIFER                                          BLVDCORVALLIS      ,7520871.21,325186.1847
+430,Code3Med,2011-01-30,11:45:05,700NWKingsBLVDCorvallis,7495153.27,326368.5167
+431,Code3Med,2011-01-30,12:31:24,3400NWOrchardAVECorvallis,7485482.049,335210.4747
+432,Code3Med,2011-01-30,15:26:33,3600NWSAMARITAN                                        DRCORVALLIS      ,7471856.107,376697.7401
+433,Code3Med,2011-01-30,15:50:20,0SW15TH                                             WAYOSU            ,7481210.195,365534.7835
+434,Code3Med,2011-01-30,19:32:51,300NW25thSTCorvallis,7486962.749,372986.1368
+435,Code3Med,2011-01-30,22:53:56,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7491706.471,360317.4415
+436,Code3Med,2011-01-30,22:54:56,2000SW53rdSTCorvallis,7476983.636,335860.1594
+437,Code3Med,2011-01-30,23:05:51,24300HIGHWAY 20                                       HWYPhilomath,7478252.651,365148.1605
+438,Code3Med,2011-01-31,03:58:54,0SW11thSTCORVALLIS      ,7509426.163,352508.3776
+439,Code3Med,2011-01-31,06:25:21,33800PEORIA                                           RDCorvallis,7506390.404,331527.846
+440,Code3Med,2011-01-31,09:58:12,500NWRIVENDELL                                        LNAdair Village,7483792.929,349139.8868
+441,Code3Med,2011-01-31,11:35:09,2100SWMayWAYOSU,7505287.537,356668.9286
+442,Code3Med,2011-01-31,11:37:02,25100DIKE                                             RDMONROE         ,7485627.515,375978.4635
+443,Code3Med,2011-01-31,12:41:57,2900SWJEFFERSON                                        WAYOSU,7492193.969,352501.1452
+444,Code3Med,2011-01-31,13:10:54,400N 5TH                                              STMONROE         ,7471642.608,305442.2656
+445,Code3Med,2011-01-31,15:29:40,0NWMONROE                                           STCORVALLIS      ,7479421.854,346112.5763
+446,Code3Med,2011-01-31,17:05:51,3600NWSAMARITAN                                        DRCORVALLIS      ,7479803.462,337075.9909
+447,Code3Med,2011-01-31,17:25:25,1700NWDIVISION                                         STCORVALLIS      ,7501858.524,344621.9454
+448,Code3Med,2011-01-31,18:45:23,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7496823.305,324843.434
+449,Code3Med,2011-01-31,19:15:52,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7483189.446,334415.1721
+450,Code3Med,2011-01-31,23:20:51,2000SWWESTERN                                          BLVDOSU,7476265.037,356890.2424
+451,Code3Med,2011-02-01,00:07:58,200NECONIFERBLVDCorvallis,7506222.206,322607.4929
+452,Code3Med,2011-02-01,00:09:55,700NWFOX                                              PLCORVALLIS      ,7496681.917,305935.0021
+453,Code3Med,2011-02-01,01:07:42,2400NWHARRISON                                         BLVDCORVALLIS      ,7488339.756,370852.5499
+454,Code3Med,2011-02-01,03:14:27,33300WHITE OAK                                        DRCorvallis,7481273.311,350649.0116
+455,Code3Med,2011-02-01,03:47:33,5600SWWest HillsRDCorvallis,7480359.426,319837.3009
+456,Code3Med,2011-02-01,05:58:23,800NW23rdSTCorvallis,7506693.15,333971.3668
+457,Code3Med,2011-02-01,06:58:10,5600SWREDTOP                                           PLCORVALLIS      ,7502918.794,335811.6964
+458,Code3Med,2011-02-01,07:50:54,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7501440.443,343281.1089
+459,Code3Med,2011-02-01,08:23:42,2800SW53RD                                             STCorvallis,7484419.246,305960.6087
+460,Code3Med,2011-02-01,09:29:10,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7506323.978,339700.1527
+461,Code3Med,2011-02-01,13:23:40,22800GOODRICH                                         LNPhilomath,7492861.393,340104.5442
+462,Code3Med,2011-02-01,15:28:44,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7495436.895,346693.3344
+463,Code3Med,2011-02-01,19:18:18,3500SESHORELINE                                        DRCORVALLIS      ,7495368.959,325549.9313
+464,Code3Med,2011-02-01,19:56:34,700SW4TH                                              STCORVALLIS      ,7481614.552,339672.9
+465,Code3Med,2011-02-01,20:05:30,25100DIKE                                             RDMONROE         ,7490945.704,340071.3946
+466,Code3Med,2011-02-02,04:56:39,600NWVAN BUREN                                        AVECORVALLIS      ,7525281.135,328390.3398
+467,Code3Med,2011-02-02,05:05:02,1300NWKLINE                                            PLCORVALLIS      ,7485174.987,374492.3901
+468,Code3Med,2011-02-02,05:32:39,400SW11TH                                             STCORVALLIS      ,7505439.883,356844.3467
+469,Code3Med,2011-02-02,08:13:36,200NW53RD                                             STCorvallis,7490676.991,325083.4698
+470,Code3Med,2011-02-02,10:32:03,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7486509.339,357359.0619
+471,MVA,2011-02-02,12:12:14,2400NWROLLING GREEN                                    DRCORVALLIS      ,7496731.058,308505.1069
+472,Code3Med,2011-02-02,13:05:30,100NECONIFER                                          BLVDCORVALLIS      ,7517903.402,332398.2139
+473,Code3Med,2011-02-02,13:54:24,2300NWKINGS                                            BLVDCORVALLIS      ,7518632.688,314593.5352
+474,Code3Med,2011-02-02,14:34:19,3600NWSAMARITAN                                        DRCORVALLIS      ,7510463.147,322823.9594
+475,Code3Med,2011-02-02,15:03:28,900CommercialSTMonroe,7494347.28,334644.1929
+476,Code3Med,2011-02-02,15:35:17,1000NWSYCAMORE                                         AVECORVALLIS      ,7497163.009,330932.0405
+477,Code3Med,2011-02-02,18:43:08,3600NWSAMARITAN                                        DRCORVALLIS      ,7504864.828,349082.1926
+478,MVA,2011-02-02,20:19:16,0SWWeatherfordPLOSU,7494361.023,311041.1293
+479,Code3Med,2011-02-02,22:24:45,300SWTWIN OAKS                                        CIRCORVALLIS      ,7520058.098,377660.3162
+480,Code3Med,2011-02-02,22:25:02,6700NEELLIOTT                                          CIRCORVALLIS      ,7487024.319,330842.1236
+481,Code3Med,2011-02-02,22:32:12,3200SEMIDVALE                                          DRCORVALLIS      ,7504096.392,341743.3842
+482,Code3Med,2011-02-02,22:33:30,1400SWADAMS                                            AVEOSU            ,7492170.417,350806.9069
+483,Code3Med,2011-02-02,22:44:47,4000SWWesternBLVDCorvallis,7508215.591,341493.9184
+484,Code3Med,2011-02-02,23:03:30,7700NWMOUNTAIN VIEW                                    DRCorvallis,7493240.122,360342.1815
+485,Code3Med,2011-02-03,01:39:31,400NWELKS                                             DRCORVALLIS      ,7508312.096,345675.3642
+486,Code3Med,2011-02-03,01:56:53,1000SWESTCorvallis,7508654.741,356240.8364
+487,Code3Med,2011-02-03,03:08:06,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7496895.727,321854.2337
+488,Code3Med,2011-02-03,05:51:22,2900NWGREELEY                                          AVECORVALLIS      ,7488011.661,373963.2917
+489,Code3Med,2011-02-03,07:55:20,2100SWMAY                                              WAYOSU            ,7495429.297,336748.4329
+490,Code3Med,2011-02-03,08:15:21,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7476553.543,338687.5695
+491,Code3Med,2011-02-03,08:31:36,600NWELKS                                             DRCORVALLIS      ,7504747.253,373845.4736
+492,Code3Med,2011-02-03,08:49:21,400NWHARRISON                                         BLVDCORVALLIS      ,7493765.398,360078.8922
+493,Code3Med,2011-02-03,09:50:01,0NWSHOOTING STAR                                    DRCORVALLIS      ,7492951.144,339766.8553
+494,Code3Med,2011-02-03,11:09:46,3500NECANTERBURY                                       CIRCORVALLIS      ,7480472.926,334089.3129
+495,Code3Med,2011-02-03,14:50:39,0SE3RD                                              STCORVALLIS      ,7489480.193,390371.511
+496,Code3Med,2011-02-03,15:01:10,600SWMADISON                                          AVECORVALLIS      ,7478719.924,345805.6201
+497,MVA,2011-02-03,17:21:16,500NWRIVENDELL                                        LNAdair,7514649.825,351607.5004
+498,Code3Med,2011-02-03,17:51:24,3400SESHORELINE                                        DRCORVALLIS      ,7511209.951,332803.5557
+499,Code3Med,2011-02-03,18:17:52,1600SWBROOKLANE                                        DRCorvallis,7498009.317,340906.0105
+500,Code3Med,2011-02-03,21:42:13,200SWWALDO                                            PLOSU            ,7499288.668,343322.2139
+501,Code3Med,2011-02-03,22:04:11,400NWELKS                                             DRCORVALLIS      ,7503868.079,340892.3795
+502,Code3Med,2011-02-04,02:08:32,3900NWWITHAM HILL                                      DRCORVALLIS      ,7498601.405,352501.0953
+503,Code3Med,2011-02-04,02:25:22,3000NWLynwoodCIRCorvallis,7510629.949,295337.4114
+504,Code3Med,2011-02-04,05:12:09,6000NEHwy 20HWYCorvallis,7492936.927,321894.3604
+505,MVA,2011-02-04,07:58:29,800NECIRCLE                                           BLVDCORVALLIS      ,7519602.209,368806.9899
+506,Code3Med,2011-02-04,08:43:25,1100NWCLEVELAND                                        AVECORVALLIS      ,7492814.811,353432.2438
+507,Code3Med,2011-02-04,08:43:55,200NW14TH                                             STCORVALLIS      ,7471931.779,306160.7232
+508,Code3Med,2011-02-04,09:11:25,2500SWJEFFERSON                                        WAYOSU            ,7491738.414,350494.4443
+509,Code3Med,2011-02-04,11:55:21,2700NWHIGHLAND                                         DRCORVALLIS      ,7500957.835,318163.6198
+510,Code3Med,2011-02-04,14:25:53,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7479993.413,363254.9833
+511,Code3Med,2011-02-04,15:13:39,200SELILLY                                            AVECORVALLIS      ,7521797.243,332935.3569
+512,Code3Med,2011-02-04,18:23:03,200SELILLY                                            AVECORVALLIS      ,7496967.355,343070.631
+513,Code3Med,2011-02-04,19:37:23,0SW3RD                                              AVECORVALLIS      ,7501680.178,325419.3547
+514,Code3Med,2011-02-04,19:45:01,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7485916.898,334764.7653
+515,Code3Med,2011-02-04,20:02:31,1400SWJEFFERSON                                        WAYOSU            ,7452897.411,350479.069
+516,Code3Med,2011-02-04,21:37:11,3300NWFIREFERN                                         PLCORVALLIS      ,7471280.373,366618.8079
+517,Code3Med,2011-02-04,22:04:55,2700NWHIGHLAND                                         DRCORVALLIS      ,7501952.189,326950.3524
+518,Code3Med,2011-02-04,22:29:07,3200SEHATHAWAY                                         DRCORVALLIS      ,7483771.018,333804.1023
+519,Code3Med,2011-02-04,23:56:27,700SW55TH                                             STCORVALLIS      ,7514739.817,312726.5074
+520,Code3Med,2011-02-05,02:53:19,3300NELANCASTER                                        STCORVALLIS      ,7488960.729,335749.0293
+521,Code3Med,2011-02-05,03:28:23,1700NWDIVISION                                         STCORVALLIS      ,7490144.011,330894.6335
+522,Code3Med,2011-02-05,04:15:38,23800DAWSON                                           RDMonroe,7485326.904,339837.5334
+523,Code3Med,2011-02-05,06:08:24,800NW23rdSTCorvallis,7496708.351,324598.3865
+524,Code3Med,2011-02-05,06:13:43,33100WHITE OAK                                        DRCorvallis,7491878.743,328524.7613
+525,Code3Med,2011-02-05,08:26:59,3700NWSAMARITAN                                        DRCORVALLIS      ,7494343.18,364090.2087
+526,MVA,2011-02-05,09:40:23,3500SWJEFFERSON                                        WAYOSU            ,7514094.546,364299.7229
+527,Code3Med,2011-02-05,16:07:53,2800NW29TH                                             STCORVALLIS      ,7476457.46,345055.8675
+528,Code3Med,2011-02-05,22:23:00,2800NW29TH                                             STCORVALLIS      ,7456399.49,354541.8147
+529,Code3Med,2011-02-06,00:56:06,2500NW9TH                                              STCORVALLIS      ,7507380.615,349227.5504
+530,Code3Med,2011-02-06,04:01:19,400S 31ST                                             STPHILOMATH      ,7485868.638,365565.4153
+531,Code3Med,2011-02-06,05:10:15,100N 10TH                                             STPHILOMATH      ,7502441.649,302668.4739
+532,Code3Med,2011-02-06,06:13:11,3600NWSAMARITAN                                        DRCORVALLIS      ,7503243.95,359750.0745
+533,Code3Med,2011-02-06,08:39:36,25000ORCHARD TRACT                                    RDMONROE         ,7505647.637,295631.1098
+534,Code3Med,2011-02-06,08:52:54,1300NW30TH                                             STCORVALLIS      ,7497381.723,327394.6806
+535,Code3Med,2011-02-06,08:54:28,0SWJeffersonAVECorvallis,7475578.518,311247.2709
+536,Code3Med,2011-02-06,11:20:56,1600SW35thSTCorvallis,7495758.724,348694.1563
+537,Code3Med,2011-02-06,12:09:53,2100NEHIGHWAY 20                                       HWYCorvallis,7492711.751,364843.5897
+538,Code3Med,2011-02-06,14:08:42,5500SWAIRPORT                                          PLCORVALLIS      ,7501351.446,336110.5324
+539,Code3Med,2011-02-06,15:26:43,2400APPLEGATE                                        STPHILOMATH      ,7501402.706,325955.6587
+540,MVA,2011-02-06,15:40:57,3700NWSAMARITAN                                        DRCORVALLIS      ,7528299.352,346646.5911
+541,Code3Med,2011-02-06,16:39:25,1600SW53rdSTCorvallis,7503932.899,331529.6085
+542,Code3Med,2011-02-06,20:43:27,400SWSACKETT                                          PLOSU            ,7495681.861,355707.3733
+543,Code3Med,2011-02-06,22:15:17,0NWHarrisonBLVDCorvallis,7490447.604,319089.9065
+544,Code3Med,2011-02-06,22:48:38,100NW10thSTCorvallis,7477755.382,305810.1323
+545,MVA,2011-02-07,03:14:36,300NW25thSTCorvallis,7523570.765,365314.1804
+546,Code3Med,2011-02-07,03:53:09,700SW4thSTCorvallis,7483625.564,377525.3459
+547,Code3Med,2011-02-07,03:59:50,0NW21ST                                             BLVDCORVALLIS      ,7483269.765,327567.1851
+548,MVA,2011-02-07,06:01:38,2900NWHarrisonBLVDCorvallis,7512498.73,355977.886
+549,Code3Med,2011-02-07,06:57:37,200NECONIFER                                          BLVDCORVALLIS      ,7499266.19,330257.594
+550,Code3Med,2011-02-07,09:20:41,3000NWELMWOOD                                          DRCORVALLIS      ,7492451.017,331098.9245
+551,MVA,2011-02-07,09:39:11,3600NWSAMARITAN                                        DRCORVALLIS      ,7514582.371,352780.506
+552,Code3Med,2011-02-07,10:15:00,3400NWORCHARD                                          AVEOSU            ,7501397.593,328266.9079
+553,Code3Med,2011-02-07,13:16:13,0NWKINGS                                            AVECORVALLIS      ,7496697.307,323354.5516
+554,Code3Med,2011-02-07,13:40:35,2100NW17thSTCorvallis,7486040.082,303241.6724
+555,Code3Med,2011-02-07,15:12:39,700SW30TH                                             STOSU            ,7507837.045,320690.977
+556,Code3Med,2011-02-07,15:44:07,1500SWBIRDIE                                           DRCORVALLIS      ,7478589.363,334924.3211
+557,Code3Med,2011-02-07,17:26:35,300NW35TH                                             STCORVALLIS      ,7506523.848,382930.2531
+558,Code3Med,2011-02-07,17:43:15,1300NWBecaAVECorvallis,7496419.818,367494.3934
+559,Code3Med,2011-02-07,18:32:04,2600NEJACK LONDON                                      STCORVALLIS      ,7501636.835,340128.5007
+560,Code3Med,2011-02-07,20:02:04,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7475252.569,376609.8337
+561,Code3Med,2011-02-07,22:42:20,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7476671.468,360391.3489
+562,Code3Med,2011-02-07,23:24:41,200NECONIFER                                          BLVDCORVALLIS      ,7480136.515,363086.5144
+563,Code3Med,2011-02-08,07:32:40,2600NEJACK LONDON                                      STCORVALLIS      ,7460509.534,343173.7451
+564,MVA,2011-02-08,09:03:30,700ORCHARD                                          STMONROE         ,7516911.05,353942.0864
+565,Code3Med,2011-02-08,10:20:44,200NECONIFER                                          BLVDCORVALLIS      ,7495588.642,363795.773
+566,Code3Med,2011-02-08,13:11:47,900NWGARFIELD                                         AVECORVALLIS      ,7493100.578,332292.9336
+567,Code3Med,2011-02-08,14:56:23,1600NWTAYLOR                                           AVECORVALLIS      ,7488648.381,379430.2524
+568,Code3Med,2011-02-08,16:44:00,33800SETERRA                                            CIRCorvallis,7486627.098,347499.8584
+569,MVA,2011-02-08,19:21:25,3600NWSAMARITAN                                        DRCORVALLIS      ,7512172.097,362372.8128
+570,Code3Med,2011-02-08,20:33:44,500SW3rdSTCorvallis,7474057.43,322423.4985
+571,MVA,2011-02-08,20:40:53,600NWVAN BUREN                                        AVECORVALLIS      ,7519244.24,352028.6143
+572,Code3Med,2011-02-08,22:11:32,4900NEELLIOTT                                          CIRCorvallis,7487328.859,373802.427
+573,Code3Med,2011-02-09,00:18:27,200NW3rdSTCorvallis,7470979.924,303001.7232
+574,Code3Med,2011-02-09,01:00:01,200NECONIFER                                          BLVDCORVALLIS      ,7483166.857,353469.3808
+575,Code3Med,2011-02-09,02:03:55,900NWGRANT                                            AVECORVALLIS      ,7511360.973,364911.4965
+576,Code3Med,2011-02-09,03:00:18,2800NW29TH                                             STCORVALLIS      ,7508816.441,336543.6248
+577,Code3Med,2011-02-09,03:01:48,800SWC                                                AVECORVALLIS      ,7509857.648,323688.7325
+578,Code3Med,2011-02-09,03:11:55,5300NEELLIOTT                                          CIRCorvallis,7464007.489,362309.2429
+579,Code3Med,2011-02-09,06:40:30,5300NEELLIOTT                                          CIRCorvallis,7471068.018,374337.3986
+580,Code3Med,2011-02-09,09:58:51,5300NEELLIOTT                                          CIRCorvallis,7474334.244,325844.6496
+581,MVA,2011-02-09,10:43:31,4400NWWALNUT                                           BLVDCORVALLIS      ,7497572.111,310187.4577
+582,Code3Med,2011-02-09,11:13:52,600NECIRCLE                                           BLVDCORVALLIS      ,7483931.969,352546.9377
+583,Transport,2011-02-09,15:04:19,300NECONIFER                                          BLVDCORVALLIS      ,7499159.647,354305.8533
+584,Code3Med,2011-02-09,16:02:33,1300NWVAN BUREN                                        AVECORVALLIS      ,7501913.498,316273.3052
+585,Code3Med,2011-02-09,16:36:08,2500SWWESTERN                                          BLVDOSU            ,7500673.165,284573.6598
+586,Code3Med,2011-02-09,18:10:17,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7463875.749,320478.806
+587,Code3Med,2011-02-09,18:10:42,25000HIDDEN VALLEY                                    RDPhilomath,7503470.939,349626.5518
+588,MVA,2011-02-09,20:03:03,400SW26TH                                             STOSU            ,7521859.425,350381.4159
+589,MVA,2011-02-09,20:09:50,100SWMEMORIAL                                         PLOSU,7522490.09,351127.3417
+590,Code3Med,2011-02-09,20:44:24,0NWFillmoreAVECORVALLIS      ,7469245.201,349688.2287
+591,Code3Med,2011-02-09,20:57:54,4400NWHIGHLAND                                         DRCorvallis,7512724.696,335250.3047
+592,Code3Med,2011-02-09,21:45:16,400NW11TH                                             STCORVALLIS      ,7523575.009,338835.485
+593,Code3Med,2011-02-09,22:41:08,4700SWHollyhockCIRCorvallis,7500941.208,334151.5265
+594,Code3Med,2011-02-09,22:48:11,3300NELANCASTER                                        STCORVALLIS      ,7519422.925,337834.2785
+595,Code3Med,2011-02-09,23:06:57,400NWELKS                                             DRCORVALLIS      ,7491808.368,312152.9958
+596,Code3Med,2011-02-10,02:16:46,0SW26TH                                             AVEOSU            ,7488141.917,320251.2305
+597,Code3Med,2011-02-10,03:12:38,7500ToddDRCorvallis,7497612.716,317135.4466
+598,Code3Med,2011-02-10,03:32:26,200NECONIFER                                          BLVDCORVALLIS      ,7506712.525,351785.8493
+599,Code3Med,2011-02-10,03:35:39,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7485680.071,377997.628
+600,Code3Med,2011-02-10,04:47:56,7100NWRAMONA                                           LNCORVALLIS      ,7504523.037,353204.8951
+601,Code3Med,2011-02-10,05:38:38,21400HIGHWAY 20                                       HWYBlodgett,7498061.714,356304.3641
+602,Code3Med,2011-02-10,10:22:38,oSW53rdSTCorvallis,7498985.938,354841.1002
+603,MVA,2011-02-10,13:13:27,0SW53RD                                             STCORVALLIS      ,7509323.531,311351.0171
+604,Code3Med,2011-02-10,15:28:27,300NW35TH                                             STCORVALLIS      ,7484704.028,330991.5002
+605,Code3Med,2011-02-10,16:09:30,2500NWWAYLAND                                          STCORVALLIS      ,7505796.428,348700.3372
+606,Code3Med,2011-02-10,18:00:13,2630099WHWYMonro,7480494.68,337292.3907
+607,Code3Med,2011-02-10,18:10:32,2900SW45thSTCorvallis,7485887.405,343778.1248
+608,Code3Med,2011-02-10,22:08:29,0SW3RD                                              AVECORVALLIS      ,7495453.903,340458.2529
+609,Code3Med,2011-02-11,03:51:17,700NW2ndSTCorvallis,7483172.001,312751.3458
+610,Code3Med,2011-02-11,05:36:55,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7497800.592,337004.0197
+611,Code3Med,2011-02-11,07:33:37,400NWELKS                                             DRCORVALLIS      ,7486622.266,299147.4106
+612,Code3Med,2011-02-11,08:04:29,3600NWSamaritanDRCorvallis,7504242.116,390374.4694
+613,Code3Med,2011-02-11,08:43:24,5200SWPhilomathBLVDCorvallis,7509070.872,330966.0921
+614,Code3Med,2011-02-11,12:40:25,500NW27TH                                             STCORVALLIS      ,7487721.228,345233.7728
+615,Code3Med,2011-02-11,14:23:08,0NW11TH                                             BLVDCORVALLIS      ,7487512.192,269296.8492
+616,Code3Med,2011-02-11,14:33:20,0NE Hwy 20HWYCorvallis,7483183.705,358622.7193
+617,Code3Med,2011-02-11,17:04:28,29600PHEASANT                                         AVECorvallis,7493139.244,347119.722
+618,Code3Med,2011-02-11,21:38:16,2700NWHIGHLAND                                         DRCORVALLIS      ,7510521.151,343518.1029
+619,Code3Med,2011-02-12,03:48:37,400SW8TH                                              STCORVALLIS      ,7472803.495,339538.1436
+620,MVA,2011-02-12,05:01:11,300N 10TH                                             STPHILOMATH      ,7518604.42,365908.5015
+621,Code3Med,2011-02-12,06:25:39,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7500302.017,326790.818
+622,Code3Med,2011-02-12,07:08:10,500NW34thSTCorvallis,7488134.818,359107.2497
+623,Code3Med,2011-02-12,07:09:01,0HIGHWAY 20                                       HWYCORVALLIS      ,7490620.668,364665.642
+624,Code3Med,2011-02-12,11:05:26,800SELillyAVECorvallis,7476046.512,316494.1353
+625,Code3Med,2011-02-12,16:29:02,4700SWHollyHockCIRCorvallis,7495108.479,363753.0547
+626,Code3Med,2011-02-12,16:32:02,29200Hwy 34HWYCorvallis,7489162.066,334855.0619
+627,Code3Med,2011-02-12,16:32:04,3900NWWITHAM HILL                                      DRCORVALLIS      ,7483286.433,307376.4143
+628,Code3Med,2011-02-12,18:42:59,1000SEMasonPLCorvallis,7504174.437,331158.5684
+629,Code3Med,2011-02-12,19:13:57,0NW10thSTCorvallis,7482951.907,347492.1419
+630,Code3Med,2011-02-12,20:33:59,5200SWPhilomathBLVDCorvallis,7467901.553,283287.7948
+631,Code3Med,2011-02-12,21:31:14,600NW5TH                                              STCORVALLIS      ,7493177.709,350441.1919
+632,Code3Med,2011-02-12,21:31:19,3600NWSAMARITAN                                        DRCORVALLIS      ,7490085.652,337310.1756
+633,Code3Med,2011-02-12,23:54:31,400SWTUNISON                                          AVECORVALLIS      ,7517307.741,318794.5638
+634,Code3Med,2011-02-13,04:11:17,1000MAINSTPhilomath,7501046.391,319512.4578
+635,Code3Med,2011-02-13,06:20:27,600SWMADISON                                          AVECORVALLIS      ,7501332.63,276501.7606
+636,Code3Med,2011-02-13,07:06:51,0NEHWY 20HWYCorvallis,7487920.763,336331.4336
+637,Code3Med,2011-02-13,07:25:01,1300NW29TH                                             STCORVALLIS      ,7494314.824,316504.0708
+638,MVA,2011-02-13,07:34:47,2900NW29TH                                             STCORVALLIS      ,7526613.271,347394.5636
+639,Code3Med,2011-02-13,09:50:11,800NECIRCLE                                           BLVDCORVALLIS      ,7491332.702,333017.5252
+640,Code3Med,2011-02-13,10:09:46,300SEGOODNIGHT                                        AVECORVALLIS      ,7474486.188,332761.4807
+641,Code3Med,2011-02-13,18:59:16,500NW23RD                                             STCORVALLIS      ,7485750.84,354579.495
+642,Code3Med,2011-02-13,19:29:13,1100SWSTOPP                                            PLCORVALLIS      ,7482120.56,304068.9012
+643,MVA,2011-02-13,20:58:49,600KELLY                                            STMONROE         ,7496123.57,311590.6687
+644,Code3Med,2011-02-13,21:26:47,900SEBETHEL                                           PLCORVALLIS      ,7480997.396,372370.7551
+645,Code3Med,2011-02-13,23:52:02,4100NWPINECONE                                         PLCORVALLIS      ,7496175.445,317202.7871
+646,Code3Med,2011-02-14,01:46:41,0NWBuchananAVECorvallis,7502544.914,350521.9719
+647,Code3Med,2011-02-14,02:26:20,25400ORCHARD TRACT                                    RDMONROE         ,7490225.176,352978.7713
+648,Code3Med,2011-02-14,03:23:17,3500NWSAMARITAN                                        DRCORVALLIS      ,7479105.622,335424.0123
+649,Code3Med,2011-02-14,05:41:59,0NEHwy 20HWYCorvallis,7514583.724,332882.1616
+650,Code3Med,2011-02-14,06:42:49,1500SWJEFFERSON                                        WAYOSU            ,7462790.378,350812.9036
+651,Code3Med,2011-02-14,09:53:44,2200SERYAN                                             STCORVALLIS      ,7490452.526,361832.1865
+652,Code3Med,2011-02-14,12:52:08,2100APPLEGATE                                        STPHILOMATH      ,7484934.243,317236.8475
+653,Code3Med,2011-02-14,13:49:17,0NW4TH                                              STCORVALLIS      ,7482283.566,316509.1751
+654,Code3Med,2011-02-14,15:55:04,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7500583.716,373925.3757
+655,Code3Med,2011-02-14,18:08:37,34400COLORADO LAKE                                    DRCorvallis,7497641.775,356748.7845
+656,Code3Med,2011-02-14,19:57:26,1700NWDIVISION                                         STCORVALLIS      ,7507014.734,338222.9372
+657,Code3Med,2011-02-14,22:09:43,1900NWHIGHLAND                                         DRCORVALLIS      ,7503710.497,351861.8661
+658,Code3Med,2011-02-15,00:39:47,700NW5TH                                              STCORVALLIS      ,7496791.409,363262.3325
+659,Code3Med,2011-02-15,01:42:59,400SW26TH                                             STCorvallis,7496676.296,322022.9083
+660,Code3Med,2011-02-15,04:54:31,2300NWPROFESSIONAL                                     DRCORVALLIS      ,7506087.208,328270.9835
+661,Code3Med,2011-02-15,10:44:04,0NW3RD                                              AVECORVALLIS      ,7482333.659,326095.324
+662,Code3Med,2011-02-15,10:58:51,400SW26TH                                             STOSU            ,7489381.625,356511.8145
+663,Code3Med,2011-02-15,12:13:56,29800SHADY OAK                                        DRCorvallis,7466878.806,323951.7863
+664,Code3Med,2011-02-15,16:00:33,300NW21ST                                             STCORVALLIS      ,7504016.374,320732.0569
+665,Code3Med,2011-02-15,16:31:35,1100NW33RD                                             STCORVALLIS      ,7501926.942,367726.4033
+666,Code3Med,2011-02-15,17:18:32,100SW2ndSTCorvallis,7479416.798,348010.7178
+667,Code3Med,2011-02-15,17:34:34,900NWKINGS                                            BLVDCORVALLIS      ,7491997.046,335745.5254
+668,Code3Med,2011-02-15,18:36:54,0NW9thSTCorvallis,7486657.298,317074.3358
+669,Code3Med,2011-02-15,20:45:24,4700SWHollyhockCIRCorvallis,7487612.626,346855.5013
+670,Code3Med,2011-02-15,21:43:46,900NWGARFIELD                                         AVECORVALLIS      ,7506268.816,352637.3696
+671,Code3Med,2011-02-15,22:42:41,800NW23RD                                             STCORVALLIS      ,7480146.961,376187.7572
+672,Code3Med,2011-02-15,23:30:36,1400NWBUCHANAN                                         AVECORVALLIS      ,7523399.49,331443.0455
+673,Code3Med,2011-02-16,02:10:48,1400NW20TH                                             STCORVALLIS      ,7483616.153,336553.3034
+674,Code3Med,2011-02-16,02:27:02,400SWMonroeAVECorvallis,7525539.435,330889.8674
+675,Code3Med,2011-02-16,02:58:37,4400NWHONEYSUCKLE                                      DRCORVALLIS      ,7514141.161,368367.1962
+676,Code3Med,2011-02-16,03:49:07,1900NWKINGS                                            BLVDCORVALLIS      ,7475461.023,359781.9497
+677,Code3Med,2011-02-16,04:17:45,600NW10TH                                             STCORVALLIS      ,7503607.811,339979.1135
+678,Code3Med,2011-02-16,04:23:40,6300SWQUIET CREEK                                      DRCORVALLIS      ,7487173.367,344315.8694
+679,Code3Med,2011-02-16,04:31:05,24300BUNKER HILL                                      RDMonroe,7498428.732,315881.266
+680,Code3Med,2011-02-16,05:18:17,800NECircleBLVDCorvallis,7501870.731,315901.6877
+681,Code3Med,2011-02-16,12:33:54,600SWmadisonAVECorvallis,7500531.834,319414.0415
+682,Code3Med,2011-02-16,13:14:20,1100NW9thSTCorvallis,7516193.934,333811.1873
+683,Code3Med,2011-02-16,16:13:51,2900NWVAN BUREN                                        AVECORVALLIS      ,7494999.373,338625.0058
+684,MVA,2011-02-16,16:28:16,400SWWeatherfordPLOSU,7508632.742,303908.8184
+685,Code3Med,2011-02-16,16:39:47,2100NWBECA                                             AVECORVALLIS      ,7492367.476,355797.3584
+686,Code3Med,2011-02-16,17:44:26,300SW10thSTCorvallis,7493163.732,369580.4888
+687,Code3Med,2011-02-16,20:17:02,0NWJacksonAVECorvallis,7512171.956,340086.5073
+688,Code3Med,2011-02-16,23:02:56,100SW2ND                                              STCORVALLIS      ,7507832.438,345830.5889
+689,Code3Med,2011-02-17,02:03:05,900SWGarfieldAVECorvallis,7494408.985,360318.1377
+690,Code3Med,2011-02-17,04:19:18,400NW11TH                                             STCORVALLIS      ,7497258.367,339499.8202
+691,Code3Med,2011-02-17,05:52:07,500SELillyAVECorvallis,7491949.059,336379.4322
+692,Code3Med,2011-02-17,06:14:19,2700NWHIGHLAND                                         DRCORVALLIS      ,7501484.503,322826.1057
+693,Code3Med,2011-02-17,07:02:48,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7490759.176,345722.7416
+694,Code3Med,2011-02-17,10:15:52,200NW5TH                                              STCORVALLIS      ,7511550.535,378750.2407
+695,Code3Med,2011-02-17,10:21:46,1500NW9TH                                              STCORVALLIS      ,7484903.081,336537.1221
+696,Code3Med,2011-02-17,12:10:58,3000NWORCHARD                                          AVECORVALLIS      ,7510536.58,311232.4772
+697,Code3Med,2011-02-17,13:49:42,3600NWHARRISON                                         BLVDCORVALLIS      ,7489455.02,306075.6443
+698,Code3Med,2011-02-17,14:28:06,700SW26TH                                             STOSU            ,7494598.15,323498.3234
+699,Code3Med,2011-02-17,14:44:34,4700SWHollyhockCIRCorvallis,7499208.207,343151.0926
+700,Code3Med,2011-02-17,16:46:24,600NWMONROE                                           AVECORVALLIS      ,7497114.647,346398.3262
+701,Code3Med,2011-02-17,20:49:34,4700SWHollyhockCIRCorvallis,7515625.745,326838.9849
+702,Code3Med,2011-02-17,23:45:01,24100Hwy 20HWYPhilomath,7511032.892,327531.6155
+703,Code3Med,2011-02-18,00:12:38,39400LuckiamuteRDPhilomath,7498878.196,354046.939
+704,Code3Med,2011-02-18,03:35:29,1600NWFORESTGREEN                                      AVECORVALLIS      ,7491886.361,362982.0263
+705,Code3Med,2011-02-18,07:16:12,1000NWHayesAVECorvallis,7482398.103,352567.1704
+706,Code3Med,2011-02-18,09:19:30,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7484193.981,343454.7671
+707,Code3Med,2011-02-18,10:23:24,2600NWGARRYANNA                                        DRCORVALLIS      ,7509566.678,317687.4926
+708,Code3Med,2011-02-18,11:11:39,500NW36TH                                             STCORVALLIS      ,7516929.713,329620.8633
+709,Code3Med,2011-02-18,11:29:00,5100NWHIGHWAY 99W                                      HWYCorvallis,7502311.116,356238.6956
+710,Code3Med,2011-02-18,19:07:04,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7490019.117,357393.1127
+711,Code3Med,2011-02-18,19:47:53,3600NWSAMARITAN                                        DRCORVALLIS      ,7485785.387,323074.898
+712,Code3Med,2011-02-18,21:05:26,400NW2ND                                              STCORVALLIS      ,7486920.158,349417.1837
+713,Code3Med,2011-02-18,21:43:26,100SWWASHINGTON                                       AVECORVALLIS      ,7483004.342,327743.6181
+714,Code3Med,2011-02-18,22:28:27,1000NWALDER CREEK                                      DRCorvallis,7483754.596,326961.831
+715,Code3Med,2011-02-18,22:40:04,500SERICHLAND                                         AVECORVALLIS      ,7460068.681,341613.8328
+716,Code3Med,2011-02-19,00:27:31,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7470611.708,319782.5614
+717,Code3Med,2011-02-19,01:54:38,2100NWHAYES                                            AVECORVALLIS      ,7485947.397,350027.2462
+718,Code3Med,2011-02-19,05:42:09,1300N 19TH                                             STPHILOMATH      ,7506547.817,365435.1351
+719,Code3Med,2011-02-19,06:25:17,100N 15TH                                             STPHILOMATH      ,7496577.692,375928.1758
+720,Code3Med,2011-02-19,08:12:20,1300N 19TH                                             STPHILOMATH      ,7509152.072,338078.2264
+721,Code3Med,2011-02-19,09:39:52,0SWJEFFERSON                                        WAYOSU            ,7488604.214,326355.2116
+722,Code3Med,2011-02-19,10:23:41,4700SWHollyhockAVECorvallis,7480364.635,329160.9698
+723,Code3Med,2011-02-19,14:01:03,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7496505.788,345990.1519
+724,Code3Med,2011-02-19,14:44:56,800NW23RD                                             STCORVALLIS      ,7492225.956,351622.3123
+725,Code3Med,2011-02-19,16:33:26,2600NEJACK LONDON                                      STCORVALLIS      ,7494681.098,359068.7416
+726,Code3Med,2011-02-19,18:14:32,900NW4TH                                              STCORVALLIS      ,7471058.551,308384.5995
+727,Code3Med,2011-02-20,02:23:23,1100NW9TH                                              STCORVALLIS      ,7496742.289,315447.5544
+728,Code3Med,2011-02-20,07:06:48,800NW23RD                                             STCORVALLIS      ,7496982.133,347582.4068
+729,Code3Med,2011-02-20,09:05:16,34400COLORADO LAKE                                    DRCorvallis,7473918.77,357883.868
+730,Code3Med,2011-02-20,11:39:52,1300NW9TH                                              STCORVALLIS      ,7486756.677,356345.2825
+731,Code3Med,2011-02-20,12:52:57,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7497482.097,344820.7481
+732,Code3Med,2011-02-20,14:11:17,200NECONIFER                                          BLVDCORVALLIS      ,7491866.577,329803.7335
+733,Code3Med,2011-02-20,14:14:42,3200SWJEFFERSON                                        WAYOSU            ,7517134.515,329792.9734
+734,Code3Med,2011-02-20,14:45:37,3500NWSAMARITAN                                        DRCORVALLIS      ,7488777.834,350273.9668
+735,Code3Med,2011-02-20,16:08:13,3600NWSamaritanDRCorvallis,7494810.442,325593.8971
+736,Code3Med,2011-02-20,16:09:27,400SWWEATHERFORD                                      PLOSU            ,7500550.819,359817.1258
+737,Code3Med,2011-02-20,16:22:30,25800LARKIN                                           RDALPINE         ,7498814.392,357804.9562
+738,Code3Med,2011-02-20,17:14:33,900SW10thSTCorvallis,7475552.456,339918.7271
+739,Code3Med,2011-02-20,17:19:57,1800NW9thSTCorvallis,7501486.323,357633.74
+740,Code3Med,2011-02-20,17:20:13,25000ORCHARD TRACT                                    RDMONROE         ,7495101.766,323662.5651
+741,Code3Med,2011-02-20,17:38:20,300NW35TH                                             STCORVALLIS      ,7479479.738,313136.7709
+742,Code3Med,2011-02-20,18:20:39,800NW23rdSTCorvallis,7496523.957,348739.6058
+743,Code3Med,2011-02-21,03:55:10,1200SWJeffersonWAYOSU,7451438.363,380741.2196
+744,Code3Med,2011-02-21,05:58:00,3600NWSamaritanDRCorvallis,7497017.438,359879.6892
+745,Code3Med,2011-02-21,06:09:00,2000SWWesternBLVDCorvallis,7483836.854,368920.2695
+746,Code3Med,2011-02-21,06:42:50,5200SWPhilomathBLVDCorvallis,7485240.574,337024.3105
+747,Code3Med,2011-02-21,06:54:20,1900NWHIGHLAND                                         DRCORVALLIS      ,7464526.629,407122.7154
+748,Code3Med,2011-02-21,09:58:54,3700NWSAMARITAN                                        DRCORVALLIS      ,7504192.853,354249.1852
+749,Code3Med,2011-02-21,10:34:17,1000SW3RD                                              STCORVALLIS      ,7503511.113,324914.6229
+750,Code3Med,2011-02-21,15:34:15,1000NWSEQUOIA                                          AVECORVALLIS      ,7512769.801,331662.6308
+751,Code3Med,2011-02-21,17:45:19,0NWEDGEWOOD                                         DRCORVALLIS      ,7499542.391,319359.1209
+752,Code3Med,2011-02-21,21:40:08,400NWHARRISON                                         BLVDCORVALLIS      ,7498505.843,348724.1762
+753,Code3Med,2011-02-21,23:54:20,100SEMAYBERRY                                         AVECORVALLIS      ,7479827.774,357609.5589
+754,Code3Med,2011-02-21,23:55:49,3600NWSAMARITAN                                        DRCORVALLIS      ,7488753.208,360460.2381
+755,Code3Med,2011-02-22,04:19:20,2700NWSATINWOOD                                        STCORVALLIS      ,7468337.556,328857.5341
+756,Code3Med,2011-02-22,04:26:33,300NECONIFER                                          BLVDCORVALLIS      ,7481066.453,301661.7831
+757,Code3Med,2011-02-22,05:20:13,3600NWSAMARITAN                                        DRCORVALLIS      ,7524541.319,335971.761
+758,Code3Med,2011-02-22,05:52:14,1700NWDIVISION                                         STCORVALLIS      ,7488487.387,345092.456
+759,Code3Med,2011-02-22,07:15:06,0HIGHWAY 99W                                      RDMonroe,7485367.46,341013.2783
+760,Code3Med,2011-02-22,07:27:04,200NW30TH                                             STCORVALLIS      ,7489306.668,329831.5116
+761,Code3Med,2011-02-22,11:37:08,100NECONIFER                                          BLVDCORVALLIS      ,7480670.31,329942.21
+762,Code3Med,2011-02-22,12:03:14,0NW2ND                                              AVECORVALLIS      ,7487995.432,343811.4252
+763,MVA,2011-02-22,12:10:35,600SW4TH                                              STCORVALLIS      ,7498893.052,313279.8663
+764,Code3Med,2011-02-22,13:19:01,3900NWWITHAM HILL                                      DRCORVALLIS      ,7488709.199,334715.2438
+765,Code3Med,2011-02-22,13:49:50,200NW17TH                                             STCORVALLIS      ,7499793.988,363176.583
+766,Code3Med,2011-02-22,14:05:55,300SEGOODNIGHT                                        AVECORVALLIS      ,7493709.412,366806.9799
+767,Code3Med,2011-02-22,15:49:56,200E MAIN                                             STALSEA          ,7471893.082,340910.6543
+768,Code3Med,2011-02-22,16:45:38,1000SEBETHEL                                           PLCORVALLIS      ,7488117.129,360071.9601
+769,Code3Med,2011-02-22,19:22:21,400SW26TH                                             STOSU            ,7485634.269,338170.0822
+770,Code3Med,2011-02-22,21:34:44,700SW4TH                                              STCORVALLIS      ,7464499.316,335224.2287
+771,Code3Med,2011-02-22,21:43:02,200NECONIFER                                          BLVDCORVALLIS      ,7489137.253,319409.407
+772,Code3Med,2011-02-22,22:02:07,900NWCIRCLE                                           BLVDCORVALLIS      ,7482884.833,361630.5694
+773,Code3Med,2011-02-22,22:55:53,1400NWMONROE                                           AVECORVALLIS      ,7502112.788,327040.6585
+774,Code3Med,2011-02-23,06:16:48,500NW3RD                                              STCORVALLIS      ,7491860.662,356023.5018
+775,Code3Med,2011-02-23,06:33:30,1500SWJEFFERSON                                        WAYOSU            ,7497489.179,320031.579
+776,Code3Med,2011-02-23,11:32:54,26800BELLFOUNTAIN                                     RDBELLFOUNT      ,7493687.262,337971.1223
+777,Code3Med,2011-02-23,12:29:23,300NECONIFER                                          BLVDCORVALLIS      ,7493537.289,360459.9335
+778,Code3Med,2011-02-23,12:45:43,2300NWHARRISON                                         BLVDCORVALLIS      ,7497433.388,337566.0512
+779,MVA,2011-02-23,14:10:41,3200NWRooseveltAVECorvallis,7528953.408,354456.72
+780,Code3Med,2011-02-23,15:28:52,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7502697.35,347826.9933
+781,Code3Med,2011-02-23,15:35:40,7700NWMCDONALD                                         CIRCorvallis,7505865.499,327046.9985
+782,Code3Med,2011-02-23,17:30:47,800NW23RD                                             STCORVALLIS      ,7497462.64,379990.733
+783,Code3Med,2011-02-23,18:12:36,400NWELKS                                             DRCORVALLIS      ,7502164.414,318735.7695
+784,Code3Med,2011-02-23,19:12:08,600NWPolkAVECorvallis,7493933.832,349697.954
+785,Code3Med,2011-02-23,19:29:24,1000NWSPRUCE                                           AVECORVALLIS      ,7498529.01,323834.6465
+786,Code3Med,2011-02-23,20:08:11,24000HIGHWAY 99W                                      HWYMonroe,7509889.73,387021.6689
+787,Code3Med,2011-02-23,22:08:32,600NECIRCLE                                           BLVDCORVALLIS      ,7506956.62,335262.8932
+788,Code3Med,2011-02-24,02:11:49,3600NWSamaritanDRCorvallis,7491070.323,341298.0695
+789,Code3Med,2011-02-24,04:33:16,2100SWMayWAYOSU,7488277.026,332351.8466
+790,Code3Med,2011-02-24,04:39:49,0NW13thSTCorvallis,7496593.851,363078.1147
+791,Code3Med,2011-02-24,05:26:42,2400NWHAYES                                            AVECORVALLIS      ,7492786.451,363404.5795
+792,Code3Med,2011-02-24,06:22:47,1700SW49TH                                             STCORVALLIS      ,7489401.639,332015.0369
+793,Code3Med,2011-02-24,08:01:57,1600SW53RD                                             STCORVALLIS      ,7478117.464,350182.0695
+794,Code3Med,2011-02-24,09:10:12,700NWBUCHANAN                                         AVECORVALLIS      ,7500275.893,331359.6932
+795,Code3Med,2011-02-24,15:18:28,400NWELKS                                             DRCORVALLIS      ,7499377.424,348625.3813
+796,Code3Med,2011-02-24,16:48:24,7200NWRAMONA                                           LNCORVALLIS      ,7464685.804,322961.6049
+797,Code3Med,2011-02-24,18:09:36,33700SETERRA                                            CIRCorvallis,7498180.454,329869.5656
+798,Code3Med,2011-02-24,22:48:19,4700SWHollyhockCIRCorvallis,7477932.947,306114.2497
+799,Code3Med,2011-02-24,23:11:56,0MAIN                                             RDPHILOMATH      ,7513726.999,346422.5173
+800,Code3Med,2011-02-25,04:12:47,2300NWKINGS                                            BLVDCORVALLIS      ,7485708.896,364581.0449
+801,Code3Med,2011-02-25,06:16:09,1100NEBURKE                                            PLCORVALLIS      ,7480733.738,344124.4109
+802,Code3Med,2011-02-25,11:41:41,900SW26TH                                             STOSU            ,7494694.029,329580.9002
+803,Code3Med,2011-02-25,11:47:34,200N 10TH                                             STPHILOMATH      ,7514711.438,343472.9168
+804,Code3Med,2011-02-25,11:48:35,0NWMonroeAVECORVALLIS      ,7486518.617,338962.4202
+805,Code3Med,2011-02-25,11:54:36,1300NWCIRCLE                                           BLVDCORVALLIS      ,7485070.01,344709.1965
+806,Code3Med,2011-02-25,12:31:23,7000SWAIRPORT                                          AVECorvallis,7463589.804,339895.4243
+807,Code3Med,2011-02-25,16:24:39,4400NWWITHAM HILL                                      DRCORVALLIS      ,7498058.892,335215.1191
+808,Code3Med,2011-02-25,17:29:40,3600NWSAMARITAN                                        DRCORVALLIS      ,7510150.434,348657.563
+809,Code3Med,2011-02-25,21:15:31,2000SWWesternBLVDOSU,7483037.037,330861.2082
+810,Code3Med,2011-02-25,21:19:24,37100Soap CreekRDAdair Village,7493439.324,372681.181
+811,Code3Med,2011-02-25,21:31:47,400NW9TH                                              STCORVALLIS      ,7509516.356,367117.3688
+812,Code3Med,2011-02-25,21:37:29,6100NWROSEWOOD                                         DRCorvallis,7506374.096,314382.7791
+813,Code3Med,2011-02-25,21:56:36,1700NWDIVISION                                         STCORVALLIS      ,7495183.219,315164.6541
+814,Code3Med,2011-02-25,22:08:05,2600NEJACK LONDON                                      STCORVALLIS      ,7496168.005,292921.6541
+815,Code3Med,2011-02-25,23:21:33,200NECONIFER                                          BLVDCORVALLIS      ,7488995.624,328226.4717
+816,Code3Med,2011-02-26,02:48:54,1700NWDIVISION                                         STCORVALLIS      ,7490604.048,356280.3642
+817,Code3Med,2011-02-26,03:20:13,0SW1ST                                              AVECORVALLIS      ,7482000.656,347350.1385
+818,Code3Med,2011-02-26,04:21:23,3600NWSAMARITAN                                        DRCORVALLIS      ,7480088.212,336831.4971
+819,Code3Med,2011-02-26,04:44:54,200NECONIFER                                          BLVDCORVALLIS      ,7482316.103,333173.3978
+820,Code3Med,2011-02-26,05:39:58,3600NWSAMARITAN                                        DRCORVALLIS      ,7474122.292,329555.4251
+821,Code3Med,2011-02-26,05:50:49,200NECONIFER                                          BLVDCORVALLIS      ,7491434.512,339028.3869
+822,Code3Med,2011-02-26,06:18:44,2600SERYAN                                             STCORVALLIS      ,7504288.704,312050.481
+823,Code3Med,2011-02-26,09:04:22,300NECONIFER                                          BLVDCORVALLIS      ,7496491.777,391505.2657
+824,Code3Med,2011-02-26,09:56:51,1700NWDIVISION                                         STCORVALLIS      ,7497297.661,329606.4987
+825,Code3Med,2011-02-26,13:14:57,32800OAKVILLE                                         RDAlbany,7480880.665,373225.4844
+826,Code3Med,2011-02-26,13:27:27,200NW5TH                                              STCORVALLIS      ,7478191.671,315511.158
+827,Code3Med,2011-02-26,13:35:59,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7505203.938,344080.0285
+828,Code3Med,2011-02-26,16:29:43,3600NWSAMARITAN                                        DRCORVALLIS      ,7486856.227,339555.5032
+829,Code3Med,2011-02-26,17:55:05,100N 2ND                                              STALSEA          ,7529340.214,334216.6373
+830,Code3Med,2011-02-26,17:57:38,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7485340.15,346738.2768
+831,Code3Med,2011-02-26,18:34:23,1900NWHIGHLAND                                         DRCORVALLIS      ,7493315.824,325681.0038
+832,Code3Med,2011-02-26,20:53:33,0SWJEFFERSON                                        STOSU            ,7502721.938,316972.7217
+833,Code3Med,2011-02-26,23:09:15,700SW26TH                                             STOSU            ,7473260.136,321990.9939
+834,Code3Med,2011-02-26,23:24:51,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7485495.839,367203.7974
+835,Code3Med,2011-02-26,23:34:23,400NWELKS                                             DRCORVALLIS      ,7497372.622,347469.9465
+836,Code3Med,2011-02-27,00:49:55,6800NWCONCORD                                          DRCorvallis,7485533.704,381551.6766
+837,Code3Med,2011-02-27,01:38:39,100NECONIFER                                          BLVDCORVALLIS      ,7487115.666,337395.2672
+838,Code3Med,2011-02-27,02:44:09,1300NW9TH                                              STCORVALLIS      ,7539549.957,338626.0897
+839,Code3Med,2011-02-27,10:36:59,2400ApplegateSTPhilomath,7488442.249,332100.2473
+840,Code3Med,2011-02-27,12:06:00,1000NWCIRCLE                                           BLVDCORVALLIS      ,7499993.523,344891.7176
+841,Code3Med,2011-02-27,12:54:03,27600Reese CreekRDMonroe,7491303.328,316448.3778
+842,Code3Med,2011-02-27,14:51:32,100NECONIFER                                          BLVDCORVALLIS      ,7484637.482,391360.7165
+843,Code3Med,2011-02-27,15:49:51,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7482790.058,340051.9738
+844,Code3Med,2011-02-27,19:25:19,29400Beaver CreekRDPhilomath,7484181.589,376802.1538
+845,Code3Med,2011-02-27,20:09:25,2900SWJEFFERSON                                        WAYOSU            ,7483882.998,336023.435
+846,Code3Med,2011-02-27,21:42:53,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7503955.455,339283.4693
+847,Code3Med,2011-02-28,02:07:46,3300NELANCASTER                                        STCORVALLIS      ,7501646.226,340997.2299
+848,MVA,2011-02-28,02:45:17,800NE2ND                                              STCORVALLIS      ,7522650.544,355196.6971
+849,Code3Med,2011-02-28,04:42:06,2900NW29TH                                             STCORVALLIS      ,7494784.192,376859.4567
+850,Code3Med,2011-02-28,05:15:51,300NW23rdSTCorvallis,7499579.109,325139.5368
+851,Code3Med,2011-02-28,07:08:27,1400SWAllenSTCorvallis,7467867.985,334128.1616
+852,Code3Med,2011-02-28,13:10:33,0NEConiferBLVDCorvallis,7502049.535,367581.5011
+853,Code3Med,2011-02-28,15:02:14,5900NWBURGUNDY                                         DRCorvallis,7474983.424,335672.5303
+854,Code3Med,2011-02-28,15:17:56,0NWClevelandAVECORVALLIS      ,7510395.07,323738.5913
+855,Code3Med,2011-02-28,16:06:26,3300NEOXFORD                                           CIRCORVALLIS      ,7478557.877,308226.7608
+856,Code3Med,2011-02-28,16:52:01,30000TANGENT                                          DRAlbany,7466664.096,357007.467
+857,Code3Med,2011-02-28,19:39:00,24700STOVALL                                          LNPhilomath,7509429.075,347379.6793
+858,Code3Med,2011-02-28,19:44:11,25000ORCHARD TRACT                                    RDMONROE         ,7496499.614,353767.0342
+859,MVA,2011-02-28,21:36:25,1400SWALLEN                                            STCorvallis,7517939.869,354048.2565
+860,Code3Med,2011-03-01,00:43:27,3700NWOLEANDER                                         PLCORVALLIS      ,7489987.34,345475.7637
+861,Code3Med,2011-03-01,05:33:11,4700SWHollyhockCIRCorvallis,7490038.252,341718.9223
+862,Code3Med,2011-03-01,06:01:45,3500SWCountry ClubDRCorvallis,7476452.271,343194.9695
+863,Code3Med,2011-03-01,08:59:13,400NWELKS                                             DRCORVALLIS      ,7519840.41,313786.1444
+864,Code3Med,2011-03-01,09:05:30,700GrousePLPhilomath,7462260.809,317238.458
+865,Code3Med,2011-03-01,09:59:33,100SEMAYBERRY                                         AVECORVALLIS      ,7506400.494,359861.3045
+866,Code3Med,2011-03-01,11:48:06,100NECONIFER                                          BLVDCORVALLIS      ,7492774.329,354860.9644
+867,Code3Med,2011-03-01,16:22:15,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7471420.767,309939.4302
+868,Code3Med,2011-03-01,16:58:27,0HIGHWAY 34                                       RDAlbany,7486233.821,354506.7549
+869,MVA,2011-03-01,17:09:13,0NW4TH                                              STCORVALLIS      ,7511486.533,356389.6591
+870,Code3Med,2011-03-01,18:53:52,0SW5TH                                              AVECORVALLIS      ,7495181.054,291568.6886
+871,Code3Med,2011-03-01,19:36:53,3200SESUMMERFIELD                                      DRCORVALLIS      ,7483490.394,322057.2117
+872,Code3Med,2011-03-01,20:33:13,1000NECIRCLE                                           BLVDCorvallis,7479095.21,340176.9169
+873,Code3Med,2011-03-01,21:16:56,400NWELKS                                             DRCORVALLIS      ,7485908.515,368469.5011
+874,Code3Med,2011-03-01,22:23:24,3300NWPOPPY                                            DRCORVALLIS      ,7507023.66,363474.8516
+875,Code3Med,2011-03-01,23:39:44,1400APPLEGATE                                        STPHILOMATH      ,7502925.902,330022.1739
+876,Code3Med,2011-03-02,03:19:03,1900NW14TH                                             STCORVALLIS      ,7491727.042,363185.2938
+877,MVA,2011-03-02,03:26:04,6000NEELLIOTT                                          CIRCORVALLIS      ,7527926.371,340559.2203
+878,Code3Med,2011-03-02,03:38:46,25700ALPINE                                           RDALPINE         ,7468598.765,327494.611
+879,Code3Med,2011-03-02,05:25:58,600KELLY                                            STMONROE         ,7498986.729,346556.7328
+880,MVA,2011-03-02,05:57:21,100W ALDER                                            STALSEA          ,7513759.084,356464.5169
+881,Code3Med,2011-03-02,06:56:41,2500NWGARRYANNA                                        DRCORVALLIS      ,7491985.272,349921.5783
+882,Code3Med,2011-03-02,09:01:43,3600NWSAMARITAN                                        DRCORVALLIS      ,7521279.361,317713.0669
+883,Code3Med,2011-03-02,10:01:39,1500NW20TH                                             STCORVALLIS      ,7494022.618,350817.3392
+884,Code3Med,2011-03-02,12:08:09,900NWSYCAMORE                                         AVECORVALLIS      ,7493450.187,380789.7269
+885,MVA,2011-03-02,15:45:59,6700NWBURGUNDY                                         DRCorvallis,7516251.04,357095.3918
+886,Code3Med,2011-03-02,16:38:11,100SWPARK TERRACE                                     PLOSU            ,7497510.578,327089.4932
+887,Code3Med,2011-03-02,19:08:33,300NW35TH                                             STCORVALLIS      ,7498918.666,359429.7801
+888,Code3Med,2011-03-02,19:49:29,3700NWSAMARITAN                                        DRCORVALLIS      ,7502084.593,323047.9474
+889,Code3Med,2011-03-02,21:50:15,7400NWMADRONE                                          WAYCorvallis,7482938.621,335852.3894
+890,Code3Med,2011-03-03,01:24:46,3600NWSAMARITAN                                        DRCORVALLIS      ,7474214.19,362914.4184
+891,Code3Med,2011-03-03,05:10:47,1700NWDIVISION                                         STCORVALLIS      ,7488119.329,364193.4417
+892,Code3Med,2011-03-03,07:01:24,2400NWGREEN                                            CIRCORVALLIS      ,7477648.13,338566.9849
+893,Code3Med,2011-03-03,10:04:31,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7477748.541,341310.166
+894,Code3Med,2011-03-03,10:12:34,3000NWORCHARD                                          AVECORVALLIS      ,7493874.205,357688.8209
+895,Code3Med,2011-03-03,11:25:38,0NEHwy 99HWYCorvallis,7491186.565,352436.9737
+896,Code3Med,2011-03-03,14:58:07,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7501706.427,321981.0677
+897,Code3Med,2011-03-03,23:15:15,800NW23RD                                             STCORVALLIS      ,7502551.946,286438.3459
+898,Code3Med,2011-03-04,00:19:56,400NWELKS                                             DRCORVALLIS      ,7481765.057,368733.9774
+899,Code3Med,2011-03-04,01:13:24,0SW3RD                                              AVECORVALLIS      ,7456158.552,329567.4538
+900,Code3Med,2011-03-04,01:35:59,400NW17thSTCorvallis,7493526.825,355788.1862
+901,Code3Med,2011-03-04,02:10:42,400SWTUNISON                                          AVECORVALLIS      ,7503939.528,370950.7985
+902,Code3Med,2011-03-04,03:04:32,400SW30TH                                             STOSU            ,7523053.992,334609.7223
+903,Code3Med,2011-03-04,05:30:52,24700HIGHWAY 34                                       HWYPhilomath,7500108.661,337141.2311
+904,Code3Med,2011-03-04,05:46:54,3600NWSamaritanDRCorvallis,7467683.915,347192.7695
+905,Code3Med,2011-03-04,08:27:06,1600NWHILLCREST                                        DRCORVALLIS      ,7473755.474,337307.8193
+906,Code3Med,2011-03-04,08:40:25,2700NW9TH                                              STCORVALLIS      ,7483776.06,342301.4444
+907,Code3Med,2011-03-04,10:10:18,34000COLORADO LAKE                                    DRCorvallis,7473242.786,343457.1903
+908,Code3Med,2011-03-04,13:39:00,28200Hwy 34HWYCorvallis,7496797.462,337398.3706
+909,Code3Med,2011-03-04,15:14:18,3600NWSamaritanDRCorvallis,7493656.248,333580.9548
+910,Code3Med,2011-03-04,18:08:38,100SW2ndSTCorvallis,7505375.05,377007.4452
+911,Code3Med,2011-03-04,19:34:28,27200Old RiverRDCorvallis,7479622.355,348811.4675
+912,Code3Med,2011-03-04,20:01:17,200N 5TH                                              STMONROE         ,7492175.939,331207.8085
+913,Code3Med,2011-03-04,20:01:25,400NWELKS                                             DRCORVALLIS      ,7477460.096,330732.4565
+914,Code3Med,2011-03-04,22:18:42,37100SOAP CREEK                                       RDCorvallis,7488459.731,345854.4985
+915,Code3Med,2011-03-04,22:30:31,700NWLINDEN                                           AVECORVALLIS      ,7501710.184,339455.7523
+916,Code3Med,2011-03-05,00:10:06,2600NEJACK LONDON                                      STCORVALLIS      ,7520255.689,313605.3575
+917,Code3Med,2011-03-05,01:34:36,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7493888.031,370891.2367
+918,MVA,2011-03-05,02:25:11,0NWHIGHWAY 99W                                      AVECorvallis,7514532.381,353415.901
+919,Code3Med,2011-03-05,03:46:34,1900NWSUNVIEW                                          DRCORVALLIS      ,7481134.141,338609.4275
+920,Code3Med,2011-03-05,03:58:54,4700SW47TH                                             PLCORVALLIS      ,7491028.154,348580.8617
+921,Code3Med,2011-03-05,05:56:09,900NWREIMAN                                           AVECORVALLIS      ,7496164.825,347883.2983
+922,Code3Med,2011-03-05,13:26:21,600SWMONROE                                           AVECORVALLIS      ,7472028.595,312918.0308
+923,Code3Med,2011-03-05,16:42:31,700APPLEGATE                                        STPHILOMATH      ,7494970.937,360069.9889
+924,Code3Med,2011-03-05,21:54:21,1400SWADAMS                                            AVEOSU            ,7490309.302,331911.7569
+925,Code3Med,2011-03-05,22:33:57,7200NWRAMONA                                           LNCORVALLIS      ,7481249.542,357582.9831
+926,Code3Med,2011-03-06,00:43:13,3600NWSAMARITAN                                        DRCORVALLIS      ,7509747.369,346231.4863
+927,Code3Med,2011-03-06,05:50:31,5200SWHILLVIEW                                         AVECORVALLIS      ,7488759.018,389888.4892
+928,Code3Med,2011-03-06,10:30:21,0SE3RD                                              STCORVALLIS      ,7483004.003,354178.9823
+929,Code3Med,2011-03-06,10:43:11,1800NWLocustSTCorvallis,7495765.757,340013.7107
+930,Code3Med,2011-03-06,13:34:16,2600NEJACK LONDON                                      STCORVALLIS      ,7506849.829,327265.9666
+931,Code3Med,2011-03-06,14:20:01,34400COLORADO LAKE                                    DRCorvallis,7487208.105,311145.3501
+932,Code3Med,2011-03-06,20:39:40,7100NWMOUNTAIN VIEW                                    DRCorvallis,7503585.574,334308.918
+933,Code3Med,2011-03-07,02:55:44,1000NWVan BurenAVECorvallis,7505499.057,304587.8051
+934,Code3Med,2011-03-07,04:01:38,3300NEOXFORD                                           CIRCORVALLIS      ,7487921.693,361959.764
+935,Code3Med,2011-03-07,08:41:26,4200SW53RD                                             STCorvallis,7508986.564,340100.0691
+936,Code3Med,2011-03-07,10:50:19,5200NEWILLAMETTE                                       AVECorvallis,7481030.465,329242.8284
+937,Code3Med,2011-03-07,14:30:27,300S 5TH                                              STMONROE         ,7480175.53,346764.1548
+938,Code3Med,2011-03-07,15:24:21,4700SWHOLLYHOCK                                        CIRCORVALLIS      ,7493745.254,336579.788
+939,Code3Med,2011-03-07,16:02:26,1600NWDIVISION                                         STCORVALLIS      ,7467128.842,321375.2285
+940,MVA,2011-03-07,16:09:12,2800NEWTON                                           STPHILOMATH      ,7512264.538,304867.247
+941,Code3Med,2011-03-07,17:16:29,700NW18thSTCorvallis,7479366.514,335502.2927
+942,Code3Med,2011-03-07,18:44:21,1700NWGRANT                                            AVECORVALLIS      ,7464675.368,338820.9493
+943,Code3Med,2011-03-07,20:56:14,1000NWCIRCLE                                           BLVDCORVALLIS      ,7500426.313,300461.0312
+944,Code3Med,2011-03-07,21:37:37,4700SWHollyhockCIRCorvallis,7489186.47,310352.7105
+945,Code3Med,2011-03-07,21:41:39,0NEHIGHWAY 99W                                      BLVDCorvallis,7488367.344,314616.0078
+946,Code3Med,2011-03-08,00:54:05,0SW3rdSTCORVALLIS      ,7486834.718,361673.2901
+947,Code3Med,2011-03-08,01:36:57,3600NWSamaritanDRCorvallis,7498605.543,297407.4968
+948,Code3Med,2011-03-08,01:55:03,600SWMONROE                                           AVECORVALLIS      ,7505729.216,347614.527
+949,Code3Med,2011-03-08,02:46:26,2000NWGRANT                                            AVECORVALLIS      ,7488408.773,349929.9587
+950,Code3Med,2011-03-08,04:40:37,0NWWithhan HillAVECORVALLIS      ,7504401.306,309510.8815
+951,Code3Med,2011-03-08,06:11:19,1100SWWest HillsPLCorvallis,7466320.151,362505.4621
+952,Code3Med,2011-03-08,07:26:04,1500NW12TH                                             STCORVALLIS      ,7501513.905,347908.4421
+953,Code3Med,2011-03-08,07:49:47,200NW9TH                                              STCORVALLIS      ,7507363.349,373742.2975
+954,Code3Med,2011-03-08,12:39:39,1600NWDIXON                                            STCORVALLIS      ,7476332.025,354454.6383
+955,Code3Med,2011-03-08,13:32:44,32500OAKVILLE                                         RDAlbany,7512213.825,340679.2203
+956,Code3Med,2011-03-08,17:27:34,200NECONIFER                                          BLVDCORVALLIS      ,7483015.972,315273.8246
+957,Code3Med,2011-03-08,18:25:18,0NWGARFIELD                                         STCORVALLIS      ,7476264.887,346445.2788
+958,Code3Med,2011-03-08,22:41:48,3300NWLYNWOOD                                          CIRCORVALLIS      ,7493064.569,345106.8201
+959,Code3Med,2011-03-09,05:33:16,33400PEORIA                                           RDCorvallis,7513792.969,343958.8184
+960,Code3Med,2011-03-09,06:34:40,900NWTYLER                                            AVECORVALLIS      ,7490275.905,331036.5053
+961,Code3Med,2011-03-09,06:37:21,400NWPONDEROSA                                        AVECORVALLIS      ,7496037.762,359685.2688
+962,Code3Med,2011-03-09,07:15:00,400SW26TH                                             STOSU            ,7492978.938,321826.84
+963,Code3Med,2011-03-09,09:42:12,2100NWWOODLAND                                         DRCORVALLIS      ,7520923,287052.7028
+964,Code3Med,2011-03-09,09:55:58,2900SEPARK                                             PLCORVALLIS      ,7496400.526,336605.2917
+965,Code3Med,2011-03-09,11:11:00,200NECONIFER                                          BLVDCORVALLIS      ,7473020.754,329331.3561
+966,Code3Med,2011-03-09,11:32:16,1900NWHIGHLAND                                         DRCORVALLIS      ,7507695.771,354964.6089
+967,Code3Med,2011-03-09,12:54:25,3200NELANCASTER                                        STCORVALLIS      ,7513073.574,307997.5643
+968,Code3Med,2011-03-09,19:26:20,500NWLEWISBURG                                        AVECorvallis,7483056.378,366786.0166
+969,Transport,2011-03-10,02:25:18,2200NWKLEINSCHMIDT                                     PLCORVALLIS      ,7495640.043,354359.6917
+970,Code3Med,2011-03-10,07:57:46,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7473234.277,332301.3629
+971,Code3Med,2011-03-10,09:02:52,2900NWROLLING GREEN                                    DRCORVALLIS      ,7499878.579,294828.1591
+972,Code3Med,2011-03-10,11:35:05,500NWWALNUT                                           BLVDCORVALLIS      ,7512141.227,329079.4608
+973,Code3Med,2011-03-10,11:51:20,200NW4TH                                              STCORVALLIS      ,7501241.997,334280.8804
+974,Code3Med,2011-03-10,13:41:55,34400Colorado LakeDRCorvallis,7511064.889,319175.5232
+975,Code3Med,2011-03-10,16:28:46,400NWELKS                                             DRCORVALLIS      ,7477590.375,343625.8271
+976,Code3Med,2011-03-10,16:42:22,3700NWSAMARITAN                                        DRCORVALLIS      ,7465004.205,342353.5646
+977,Code3Med,2011-03-10,17:33:06,400NWELKS                                             DRCORVALLIS      ,7492620.36,375540.8051
+978,Code3Med,2011-03-10,23:15:34,2000SWWESTERN                                          BLVDOSU            ,7499316.98,336304.7444
+979,Code3Med,2011-03-11,00:57:06,3000NWGLENRIDGE                                        DRCORVALLIS      ,7477798.144,328758.6816
+980,Code3Med,2011-03-11,00:57:09,200NECONIFER                                          BLVDCORVALLIS      ,7464871.132,323619.9143
+981,Code3Med,2011-03-11,01:25:20,25600BELLFOUNTAIN                                     RDMonroe,7497068.97,376153.3372
+982,Code3Med,2011-03-11,01:29:25,3500NWSAMARITAN                                        DRCORVALLIS      ,7506522.255,354534.8424
+983,Code3Med,2011-03-11,01:41:50,5200SWPHILOMATH                                        BLVDCORVALLIS      ,7484892.92,326460.8754
+984,Code3Med,2011-03-11,05:10:25,400SW26TH                                             STOSU            ,7481616.379,342436.4975
+985,Code3Med,2011-03-11,06:14:12,29500HIGHWAY 34                                       DRCorvallis,7478849.068,314506.374
+986,Code3Med,2011-03-11,06:33:34,2100NWHAYES                                            AVECORVALLIS      ,7505943.6,329314.4198
+987,Code3Med,2011-03-11,07:36:37,3600NWSAMARITAN                                        DRCORVALLIS      ,7493007.462,322494.6226
+988,Code3Med,2011-03-11,07:40:43,26700CEMETERY                                         RDMONROE         ,7503089.115,362165.2467
+989,Code3Med,2011-03-11,08:45:36,5500NEHIGHWAY 20                                       HWYCorvallis,7483768.999,304791.9186
+990,Code3Med,2011-03-11,10:18:12,300NECIRCLE                                           BLVDCORVALLIS      ,7467572.029,330472.6668
+991,Code3Med,2011-03-11,11:15:17,800NW23rdSTCorvallis,7495857.092,341894.3287
+992,Code3Med,2011-03-11,15:27:13,0NEHwy 20HWYCorvallis,7509159.432,355115.9454
+993,Code3Med,2011-03-11,18:53:20,6500SWPhilomathBLVDCorvallis,7487727.605,354952.9366
+994,Code3Med,2011-03-11,19:10:50,0NWHarrisonBLVDCorvallis,7517768.233,330550.1192
+995,Code3Med,2011-03-11,20:00:03,400NWELKS                                             DRCORVALLIS      ,7480936.083,373641.4789
+996,Code3Med,2011-03-11,20:00:22,200NECONIFER                                          BLVDCORVALLIS      ,7470964.02,360892.2033
+997,Code3Med,2011-03-11,21:38:31,4400NWHoneysuckleDRCorvallis,7491699.189,342126.5226
+998,Code3Med,2011-03-11,22:13:56,3500NWSAMARITAN                                        DRCORVALLIS      ,7466923.055,339102.7174
+999,Code3Med,2011-03-11,23:24:28,2600NEJACK LONDON                                      STCORVALLIS      ,7489686.543,357641.3073
+1000,Code3Med,2011-03-12,00:11:10,2600NW9TH                                              STCORVALLIS      ,7469697.473,345127.5649

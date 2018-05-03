@@ -1,0 +1,22 @@
+--------Step Number :0
+[dispatch($u2, $Ambulance);]
+--------Step Number :1
+[dispatch($u2, $Ambulance);, dispatch($u3, $Engine);]
+--------Step Number :2
+[dispatch($u5, $Ambulance);]
+--------Step Number :3
+[dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :4
+[dispatch($u2, $Ambulance);]
+--------Step Number :5
+[dispatch($u2, $Ambulance);]
+--------Step Number :6
+[dispatch($u5, $Ambulance);]
+--------Step Number :7
+[dispatch($u2, $Ambulance);]
+--------Step Number :8
+[dispatch($u5, $Ambulance);]
+--------Step Number :9
+[dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :10
+[dispatch($u3, $Engine);]

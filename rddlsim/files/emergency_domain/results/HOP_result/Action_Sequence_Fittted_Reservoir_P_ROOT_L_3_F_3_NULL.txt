@@ -1,0 +1,655 @@
+--------Round Number:0
+--------Step Number :0
+[yMove = -9.849646081;, xMove = -2.150353919;]
+--------Step Number :1
+[xMove = -0.435229735;]
+--------Step Number :2
+[]
+--------Step Number :3
+[yMove = 9.494084465;]
+--------Step Number :4
+[yMove = -0.141522535;]
+--------Step Number :5
+[]
+--------Step Number :6
+[yMove = -58491.554212117;]
+--------Step Number :7
+[xMove = -462709.945351444;]
+--------Step Number :8
+[yMove = 1.0E-9;]
+--------Step Number :9
+[yMove = 1.0E-9;]
+--------Step Number :10
+[]
+--------Step Number :11
+[yMove = -185926.056070278;, xMove = -32279.330519468;]
+--------Step Number :12
+[xMove = 137656.611551028;]
+--------Step Number :13
+[]
+--------Step Number :14
+[yMove = -122926.431458928;]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[yMove = -1.0E-9;]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:1
+--------Step Number :0
+[yMove = -2.256864848;, xMove = -9.743135152;]
+--------Step Number :1
+[yMove = 1.0E-9;]
+--------Step Number :2
+[]
+--------Step Number :3
+[yMove = 1.0E-9;]
+--------Step Number :4
+[xMove = 7.688468042;]
+--------Step Number :5
+[]
+--------Step Number :6
+[yMove = -12475.739913342;]
+--------Step Number :7
+[yMove = 1.0E-9;]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[xMove = 1.0E-9;]
+--------Step Number :11
+[xMove = 1.0E-9;]
+--------Step Number :12
+[yMove = -446251.757381689;]
+--------Step Number :13
+[xMove = 1.0E-9;]
+--------Step Number :14
+[yMove = 442115.42381241;]
+--------Step Number :15
+[xMove = -47520.540191097;]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:2
+--------Step Number :0
+[xMove = -11.999999997;]
+--------Step Number :1
+[yMove = -471229.928950264;]
+--------Step Number :2
+[yMove = -1.0E-9;]
+--------Step Number :3
+[yMove = 402905.37574471;]
+--------Step Number :4
+[]
+--------Step Number :5
+[yMove = -125848.895915706;]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:3
+--------Step Number :0
+[yMove = -2.103339715;, xMove = -9.896660285;]
+--------Step Number :1
+[xMove = 1.0E-9;]
+--------Step Number :2
+[]
+--------Step Number :3
+[xMove = 1.0E-9;]
+--------Step Number :4
+[xMove = 413496.28933969;]
+--------Step Number :5
+[xMove = -436447.818273209;]
+--------Step Number :6
+[xMove = -150055.642387099;]
+--------Step Number :7
+[snapPicture;]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:4
+--------Step Number :0
+[xMove = -468094.775932307;]
+--------Step Number :1
+[xMove = 431074.462946475;]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[xMove = -100840.31561484;]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:5
+--------Step Number :0
+[]
+--------Step Number :1
+[yMove = -9.637031439;, xMove = -2.362968561;]
+--------Step Number :2
+[xMove = 1.0E-9;]
+--------Step Number :3
+[]
+--------Step Number :4
+[xMove = 1.0E-9;]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[xMove = -464302.09541077;]
+--------Step Number :8
+[yMove = 1.0E-9;]
+--------Step Number :9
+[xMove = 56080.122579509;]
+--------Step Number :10
+[xMove = 1.0E-9;]
+--------Step Number :11
+[xMove = -71619.10991941;]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[xMove = 1.0E-9;]
+--------Step Number :16
+[yMove = 2.0E-9;]
+--------Step Number :17
+[xMove = 407998.422090304;]
+--------Step Number :18
+[]
+--------Step Number :19
+[snapPicture;]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:6
+--------Step Number :0
+[yMove = -9.56492252;, xMove = -2.43507748;]
+--------Step Number :1
+[yMove = 445139.751193843;]
+--------Step Number :2
+[snapPicture;]
+--------Step Number :3
+[yMove = -454127.715326495;]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[yMove = -100723.321227438;]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:7
+--------Step Number :0
+[snapPicture;]
+--------Step Number :1
+[xMove = -11.75;]
+--------Step Number :2
+[yMove = -2.102197704;]
+--------Step Number :3
+[]
+--------Step Number :4
+[yMove = 1.0E-9;]
+--------Step Number :5
+[]
+--------Step Number :6
+[yMove = 1.0E-9;]
+--------Step Number :7
+[xMove = 1.0E-9;]
+--------Step Number :8
+[xMove = 15.725781358;]
+--------Step Number :9
+[yMove = -467613.150064912;, xMove = -0.095330774;]
+--------Step Number :10
+[snapPicture;]
+--------Step Number :11
+[xMove = -5.14954062;]
+--------Step Number :12
+[]
+--------Step Number :13
+[xMove = -261766.797847151;]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[yMove = 270596.479237478;]
+--------Step Number :18
+[snapPicture;]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:8
+--------Step Number :0
+[yMove = -2.401862552;, xMove = -9.598137448;]
+--------Step Number :1
+[xMove = 7.985922462;]
+--------Step Number :2
+[yMove = 1.0E-9;, snapPicture;]

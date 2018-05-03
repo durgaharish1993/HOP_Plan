@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<round-end><instance-name>inst_simple_mars_rover_pics3</instance-name><client-name>HOPPlanner</client-name><round-num>0</round-num><round-reward>0.0</round-reward><turns-used>40</turns-used><time-used>1420</time-used><time-left>1078580</time-left><immediate-reward>0.0</immediate-reward></round-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>inst_simple_mars_rover_pics3</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>1420</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1078580</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<round-end><instance-name>inst_simple_mars_rover_pics3</instance-name><client-name>HOPPlanner</client-name><round-num>0</round-num><round-reward>0.0</round-reward><turns-used>40</turns-used><time-used>1293</time-used><time-left>1078707</time-left><immediate-reward>0.0</immediate-reward></round-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>inst_simple_mars_rover_pics3</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>1293</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1078707</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<session-end><instance-name>recon_demo_inst_mdp__1</instance-name><total-reward>0.0</total-reward><rounds-used>0</rounds-used><time-used>0</time-used><client-name>HOPPlanner</client-name><session-id>1</session-id><time-left>1080000</time-left></session-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<round-end><instance-name>inst_simple_mars_rover_pics3</instance-name><client-name>HOPPlanner</client-name><round-num>0</round-num><round-reward>0.0</round-reward><turns-used>40</turns-used><time-used>1443</time-used><time-left>1078557</time-left><immediate-reward>0.0</immediate-reward></round-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<round-end><instance-name>inst_simple_mars_rover_pics3</instance-name><client-name>HOPPlanner</client-name><round-num>0</round-num><round-reward>0.0</round-reward><turns-used>40</turns-used><time-used>1271</time-used><time-left>1078729</time-left><immediate-reward>0.0</immediate-reward></round-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<round-end><instance-name>crossing_traffic_demo_inst_mdp__1</instance-name><client-name>HOPPlanner</client-name><round-num>0</round-num><round-reward>-50.0</round-reward><turns-used>50</turns-used><time-used>2211</time-used><time-left>1077789</time-left><immediate-reward>-1.0</immediate-reward></round-end>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>
+<?xml version="1.0" encoding="UTF-8"?>
+<client-info><client-hostname>localhost</client-hostname><client-ip>127.0.0.1</client-ip></client-info>

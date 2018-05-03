@@ -1,0 +1,81 @@
+--------Round Number:0
+--------Step Number :0
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :1
+--------Action taken by Optimizer :[dispatch($u3, $Engine);, dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :2
+--------Action taken by Optimizer :[dispatch($u1, $Command);, dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :3
+--------Action taken by Optimizer :[dispatch($u1, $Command);, dispatch($u2, $Ambulance);]
+--------Step Number :4
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :5
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u5, $Ambulance);]
+--------Step Number :6
+--------Action taken by Optimizer :[dispatch($u3, $Engine);]
+--------Step Number :7
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :8
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :9
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u3, $Engine);]
+--------Step Number :10
+--------Action taken by Optimizer :[dispatch($u4, $Ladder);]
+--------Step Number :11
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :12
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :13
+--------Action taken by Optimizer :[dispatch($u1, $Command);, dispatch($u5, $Ambulance);]
+--------Step Number :14
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u3, $Engine);, dispatch($u4, $Ladder);]
+--------Step Number :15
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :16
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :17
+--------Action taken by Optimizer :[dispatch($u3, $Engine);]
+--------Step Number :18
+--------Action taken by Optimizer :[dispatch($u4, $Ladder);, dispatch($u5, $Ambulance);]
+--------Step Number :19
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :20
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :21
+--------Action taken by Optimizer :[dispatch($u4, $Ladder);]
+--------Step Number :22
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u3, $Engine);]
+--------Step Number :23
+--------Action taken by Optimizer :[dispatch($u1, $Command);, dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :24
+--------Action taken by Optimizer :[]
+--------Step Number :25
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :26
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :27
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :28
+--------Action taken by Optimizer :[dispatch($u3, $Engine);, dispatch($u5, $Ambulance);]
+--------Step Number :29
+--------Action taken by Optimizer :[]
+--------Step Number :30
+--------Action taken by Optimizer :[dispatch($u4, $Ladder);]
+--------Step Number :31
+--------Action taken by Optimizer :[dispatch($u1, $Command);]
+--------Step Number :32
+--------Action taken by Optimizer :[]
+--------Step Number :33
+--------Action taken by Optimizer :[]
+--------Step Number :34
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :35
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);, dispatch($u4, $Ladder);]
+--------Step Number :36
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :37
+--------Action taken by Optimizer :[dispatch($u2, $Ambulance);]
+--------Step Number :38
+--------Action taken by Optimizer :[dispatch($u5, $Ambulance);]
+--------Step Number :39
+--------Action taken by Optimizer :[dispatch($u1, $Command);, dispatch($u2, $Ambulance);, dispatch($u4, $Ladder);]

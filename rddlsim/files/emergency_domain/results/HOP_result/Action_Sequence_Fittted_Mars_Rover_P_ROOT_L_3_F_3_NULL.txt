@@ -1,0 +1,1758 @@
+--------Round Number:0
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:1
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:2
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:3
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:4
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:5
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:6
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:7
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:8
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:9
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:10
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:11
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:12
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:13
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:14
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:15
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:16
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:17
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:18
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:19
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:20
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
+--------Step Number :28
+[]
+--------Step Number :29
+[]
+--------Step Number :30
+[]
+--------Step Number :31
+[]
+--------Step Number :32
+[]
+--------Step Number :33
+[]
+--------Step Number :34
+[]
+--------Step Number :35
+[]
+--------Step Number :36
+[]
+--------Step Number :37
+[]
+--------Step Number :38
+[]
+--------Step Number :39
+[]
+--------Round Number:21
+--------Step Number :0
+[]
+--------Step Number :1
+[]
+--------Step Number :2
+[]
+--------Step Number :3
+[]
+--------Step Number :4
+[]
+--------Step Number :5
+[]
+--------Step Number :6
+[]
+--------Step Number :7
+[]
+--------Step Number :8
+[]
+--------Step Number :9
+[]
+--------Step Number :10
+[]
+--------Step Number :11
+[]
+--------Step Number :12
+[]
+--------Step Number :13
+[]
+--------Step Number :14
+[]
+--------Step Number :15
+[]
+--------Step Number :16
+[]
+--------Step Number :17
+[]
+--------Step Number :18
+[]
+--------Step Number :19
+[]
+--------Step Number :20
+[]
+--------Step Number :21
+[]
+--------Step Number :22
+[]
+--------Step Number :23
+[]
+--------Step Number :24
+[]
+--------Step Number :25
+[]
+--------Step Number :26
+[]
+--------Step Number :27
+[]
