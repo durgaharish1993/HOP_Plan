@@ -292,7 +292,7 @@ public class Client {
 						instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
 						domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
 						domain._exprReward, instance._nNonDefActions);
-				msg = createXMLRoundRequest();
+				msg = createXMLRoundRequest("yes");
 				Server.sendOneMessage(osw, msg);
 				isrc = Server.readOneMessage(isr);
 				timeLeft = processXMLRoundInit(p, isrc, r+1);
@@ -430,13 +430,14 @@ public class Client {
 		}
 	}
 
-	static String createXMLRoundRequest() {
+	static String createXMLRoundRequest(String decide) {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document dom = db.newDocument();
 			Element rootEle = dom.createElement(Server.ROUND_REQUEST);
 			dom.appendChild(rootEle);
+			Server.addOneText(dom,rootEle, Server.EXECUTE_POLICY,decide);
 			return serialize(dom);
 		} catch (Exception e) {
 			return null;
