@@ -84,7 +84,12 @@ public abstract class Policy {
 		return "Policy for '" + _sInstanceName + "'";
 	}
 
-	public void runRandompolicy(State s)throws Exception{}
+
+	public void runRandompolicyForState(State s) throws Exception{}
+
+
+
+	protected void runRandompolicy(State s, int trajectory_length, int number_trajectories, Random rand1)throws Exception{}
 
 	public void convertNPWLtoPWL(State s) throws Exception{}
 
