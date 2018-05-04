@@ -55,7 +55,7 @@ import util.Timer;
 public class Server implements Runnable {
 
 	public static final boolean SHOW_ACTIONS = true;
-	public static final boolean SHOW_XML = false;
+	public static final boolean SHOW_XML = true;
 	public static final boolean SHOW_MSG = false;
 	public static final boolean SHOW_TIMING = false;
 
@@ -865,7 +865,7 @@ public class Server implements Runnable {
 			turnNum.appendChild(textTurnNum);
 			rootEle.appendChild(turnNum);
 			Element timeElem = dom.createElement(TIME_LEFT);
-			Text textTimeElem = dom.createTextNode(timeLeft + "");
+			Text textTimeElem = dom.createTextNode((long)timeLeft + "");
 			timeElem.appendChild(textTimeElem);
 			rootEle.appendChild(timeElem);
 			Element immediateRewardElem = dom.createElement(IMMEDIATE_REWARD);

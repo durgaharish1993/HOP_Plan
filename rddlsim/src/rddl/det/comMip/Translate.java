@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,8 @@ import gurobi.GRBExpr;
 import gurobi.GRBLinExpr;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
+import org.apache.commons.math3.random.RandomDataGenerator;
+import org.rosuda.JRI.Rengine;
 import rddl.EvalException;
 import rddl.RDDL;
 import rddl.RDDL.BOOL_CONST_EXPR;
@@ -57,11 +60,18 @@ import rddl.State;
 import rddl.parser.ParseException;
 import rddl.policy.Policy;
 import rddl.viz.StateViz;
+import util.Pair;
 import util.Timer;
 import java.util.Random;
 
 
 public class Translate extends Policy { //  extends rddl.policy.Policy {
+
+	//This is added by Harish
+	protected RandomDataGenerator rand;
+	protected boolean SHOW_LEVEL_1 = true;
+	protected boolean SHOW_LEVEL_2 = false;
+
 
 	private static final int GRB_INFUNBDINFO = 1;
 	private static final int GRB_DUALREDUCTIONS = 0;
@@ -148,7 +158,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 	protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> pre_buffer_state = new ArrayList<>();
 	protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> pre_buffer_action = new ArrayList<>();
 	protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
-	protected Integer number_of_iterations = 10;
+	protected Integer number_of_iterations = 30;
 
 
 
@@ -380,7 +390,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 //										//System.out.println("Adding var " + new_var.get(StringAttr.VarName) + " " + this_t );
 //									} catch (GRBException e) {
 //										e.printStackTrace();
-//										System.exit(1);
+//										////System.exit(1);
 //									}
 //									
 									
@@ -396,12 +406,12 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		
 	}
 
-	public ArrayList<Map<EXPR, Double>> doPlanInitState( ) throws Exception{
+	public Pair<ArrayList<Map<EXPR, Double>>,Integer> doPlanInitState( ) throws Exception{
 		return doPlan( getSubsWithDefaults(rddl_state), RECOVER_INFEASIBLE ); 
 	}
 
-	public ArrayList<Map< EXPR, Double >> doPlan(  HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs ,
-			final boolean recover ) throws Exception{
+	public Pair<ArrayList<Map< EXPR, Double >>,Integer> doPlan(HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs ,
+															   final boolean recover ) throws Exception{
 		//deterministic : model is already prepared except for initial state
 		ArrayList<Map< EXPR, Double >> ret_obj = new ArrayList<Map< EXPR, Double >>();
 //		final GRBModel dynamic_grb_model = new GRBModel( static_grb_model );
@@ -435,7 +445,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		}
 		modelSummary( static_grb_model );		
 		
-		return ret_obj;
+		return new Pair<>(ret_obj,exit_code);
 	}
 	
 	protected void handleOOM(GRBModel grb_model) throws GRBException {
@@ -453,7 +463,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 //			Thread.sleep(1*1000);
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
-//			System.exit(1);
+//			////System.exit(1);
 //		}//8 second stall
 		
 		firstTimeModel( );
@@ -524,7 +534,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			grb_env = null;
 		} catch (GRBException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//////System.exit(1);
 		} 
 	}
 
@@ -567,7 +577,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 				}catch(GRBException exc){
 						System.out.println(exc.getErrorCode());
 						exc.printStackTrace();
-						System.exit(1);
+						//////System.exit(1);
 				}
 				grb_model.remove( constr );		
 				grb_model.update();
@@ -599,7 +609,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 //					throw new Exception("Cache cannot find/ delete expr : " + expr );
 //				}catch( Exception exc ){
 //					exc.printStackTrace();
-//					System.exit(1);
+//					////System.exit(1);
 //				}
 //			}
 //		}
@@ -847,7 +857,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 							   ret.put( subs_t, grb_var.get( DoubleAttr.X ) );
 						   } catch (GRBException e) {
 								e.printStackTrace();
-								System.exit(1);
+								////System.exit(1);
 						   }
 						}
 				});
@@ -1190,7 +1200,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		if (nonFluents != null && !instance._sDomain.equals(nonFluents._sDomain)) {
 			System.err.println("Domain name of instance and fluents do not match: " +
 					instance._sDomain + " vs. " + nonFluents._sDomain);
-			System.exit(1);
+			////System.exit(1);
 		}
 
 
@@ -1299,14 +1309,14 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		} catch (ParseException e) {
 			e.printStackTrace();
 			System.out.println("domain file did not parse.");
-			System.exit(1);
+			////System.exit(1);
 		}
 		try {
 			instance_rddl = rddl.parser.parser.parse( new File( instance_file ) );
 		} catch (ParseException e) {
 			e.printStackTrace();
 			System.out.println("instance file did not parse.");
-			System.exit(1);
+			////System.exit(1);
 		}
 
 		this.rddl_obj = new RDDL();
@@ -1538,8 +1548,18 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		}
 		
 		try {
-			ArrayList<Map<EXPR, Double>> ret_expr = doPlan( subs, RECOVER_INFEASIBLE );
+			Pair<ArrayList<Map<EXPR, Double>>,Integer> out_put = doPlan( subs, RECOVER_INFEASIBLE );
+			ArrayList<Map<EXPR, Double>> ret_expr = out_put._o1;
+
+
+
+
+			//This is the exit code.
+			Integer exit_code = out_put._o2;
 			//ArrayList<ArrayList<PVAR_INST_DEF>> ret_list = new ArrayList<ArrayList<PVAR_INST_DEF>>();
+
+
+
 			ret_list.clear();
 			for(int i =0;i<ret_expr.size();i++){
 
@@ -1551,6 +1571,52 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 			//System.out.println("####################################################");
 			System.out.println("These are Root Actions:" + ret_list.get(0).toString());
+			ArrayList<PVAR_INST_DEF> returning_action = ret_list.get(0);
+
+
+			if(exit_code.equals(2)){
+				//Solution is infeasible.
+				HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>  copiedState = deepCopyState(rddl_state);
+				ArrayList<PVAR_INST_DEF> act = getRandomActionForSimulation(s,new Random(1));
+				Double avg_reward_random = runActionSimulation(s,30, act);
+				Double avg_reward_noop   = runActionSimulation(s,30, ret_list.get(0));
+
+
+				if(avg_reward_random>avg_reward_noop){
+
+					returning_action = act;
+					if(SHOW_LEVEL_1)
+						System.out.println("Choosing Random Action");
+
+
+				}
+				else {
+
+					returning_action = ret_list.get(0);
+
+
+
+				}
+
+
+
+
+
+
+
+
+			}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1571,7 +1637,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 //			}catch( EvalException exc ){
 //				System.out.println("Violates state-action constraints.");
 //				exc.printStackTrace();
-//				System.exit(1);;
+//				////System.exit(1);;
 ////				ret_expr = doPlan( subs , true );
 ////				ret = getRootActions(ret_expr);
 //			}
@@ -1611,10 +1677,10 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 //			static_grb_model.dispose();
 //			static_grb_model = null;
 			
-			return ret_list.get(0);
+			return returning_action;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(1);
+			//////System.exit(1);
 		}
 		return null;
 	}
@@ -1656,7 +1722,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			prepareModel( );
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(1);
+			//////System.exit(1);
 		}		
 		
 	}
@@ -1743,7 +1809,25 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		
 		return ret;
 	}
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	@Override
 	public void roundEnd(double reward) {
 		super.roundEnd(reward);
@@ -1751,9 +1835,12 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			handleOOM( static_grb_model );
 		} catch (GRBException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//////System.exit(1);
 		}
 	}
+
+
+
 
 
 
@@ -1828,6 +1915,1113 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 	}
+
+
+
+
+
+
+
+
+
+	protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(PVAR_NAME action_var, TYPE_NAME action_type, Random rand){
+		//This function gives the intansiations of the parameters.
+		//
+
+
+
+
+		HashMap<ArrayList<LCONST>,Object> action_terms_assign = new HashMap<>();
+
+		ArrayList<TYPE_NAME> temp_objects = object_type_name.get(action_var);
+		ArrayList<LCONST> action_terms    = new ArrayList<>();
+
+
+
+		for(int i = 0;i<temp_objects.size();i++){
+			ArrayList<LCONST> temp_array =rddl_state._hmObject2Consts.get(temp_objects.get(i));
+			//This is selecting the object value and creating a ArrayList<LCONST> whichs goes as _alTerms
+			int j = rand.nextInt(temp_array.size());
+			LCONST val = temp_array.get(j);
+			if(val instanceof RDDL.OBJECT_VAL){
+
+
+				RDDL.OBJECT_VAL new_val = new RDDL.OBJECT_VAL(val._sConstValue);
+
+				action_terms.add(new_val);
+
+
+
+			}
+
+		}
+
+
+		//Selecting the value of each object.
+		if(action_type.equals(TYPE_NAME.REAL_TYPE)){
+			//select_range Has values [min,max]
+			ArrayList<Double> select_range = value_range.get(action_var);
+			Double take_action_val = select_range.get(0) + ((select_range.get(1)-select_range.get(0)) * rand.nextFloat());
+			action_terms_assign.put(action_terms,take_action_val);
+
+		}
+
+
+
+
+		if(action_type.equals(TYPE_NAME.BOOL_TYPE)){
+
+			ArrayList<Boolean>  select_range = value_range.get(action_var);
+			int j = rand.nextInt(select_range.size());
+
+			Boolean take_action_val = select_range.get(j);
+			action_terms_assign.put(action_terms,take_action_val);
+
+
+		}
+
+
+
+
+
+		return action_terms_assign;
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+	protected ArrayList<PVAR_INST_DEF> getRandomAction(State s, Random randint) throws EvalException{
+		//Need to Write Function for Getting a Random Action.
+
+
+
+
+
+
+
+		ArrayList<PVAR_INST_DEF> final_output_actions  = new ArrayList<>();
+
+		//This is  a buffer list to check the instansiations are already exists or not.
+		ArrayList<ArrayList<LCONST>> alaction_terms  = new ArrayList<>();
+
+
+
+
+		for(PVAR_NAME action_var : rddl_action_vars.keySet()){
+
+			TYPE_NAME type_val = s._hmPVariables.get(action_var)._typeRange;
+
+			HashMap<ArrayList<LCONST>,Object> final_action_val = new HashMap<>();
+
+
+
+			//This function instansiates t
+			HashMap<ArrayList<LCONST>,Object> action_terms_val = getActionInstantiations(action_var,type_val,randint);
+			for(ArrayList<LCONST> o : action_terms_val.keySet()){
+				if(!alaction_terms.contains(o)){
+
+					Double rand_number = randint.nextDouble();
+
+					if(! (rand_number< rejection_prob)){
+						alaction_terms.add(o);
+						final_action_val.put(o,action_terms_val.get(o));
+					}
+
+
+
+				}
+
+
+			}
+
+
+
+
+
+
+
+
+
+			ArrayList<PVAR_INST_DEF> output_actions = new ArrayList<>();
+			for(ArrayList<LCONST> key : final_action_val.keySet()){
+
+
+				PVAR_INST_DEF aa  = new PVAR_INST_DEF(action_var._sPVarName,final_action_val.get(key),key);
+
+				final_output_actions.add(aa);
+
+
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+		return final_output_actions;
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+	protected  ArrayList<PVAR_INST_DEF>  getRandomActionForSimulation(State s,Random rand1) throws EvalException {
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
+
+		boolean check_action_feasible = false;
+
+
+
+
+		check_action_feasible = false;
+		ArrayList<PVAR_INST_DEF> random_action =null;
+		int cur_while_check = 0;
+
+		while(!check_action_feasible && (cur_while_check<number_of_iterations)){
+			//System.out.println("ITERATION.");
+			cur_while_check = cur_while_check+1;
+
+
+			random_action = getRandomAction(s,rand1);
+			check_action_feasible = s.checkActionConstraints(random_action);
+
+
+
+		}
+
+
+		//When the actions are infeasible.
+		if(! check_action_feasible){
+
+
+			System.out.println("The actions are not feasible");
+
+
+
+		}
+
+		s.copyStateRDDLState(root_state,true);
+		return random_action;
+
+
+
+
+	}
+
+
+
+
+	protected Double runActionSimulation(State s, Integer num_rounds, ArrayList<PVAR_INST_DEF> act ) throws EvalException {
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
+		Double avg_reward = 0.0;
+
+
+		for(int i=0 ; i<num_rounds; i++){
+
+
+			s.computeNextState(act, new RandomDataGenerator());
+
+
+
+			final double immediate_reward = ((Number)rddl_domain._exprReward.sample(
+					new HashMap<LVAR,LCONST>(),rddl_state, rand)).doubleValue();
+
+
+
+			avg_reward += immediate_reward;
+			s.copyStateRDDLState(root_state,true);
+
+
+
+
+
+
+		}
+
+
+		return avg_reward/num_rounds;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	protected void runRandomPolicy(final State rddl_state , int trajectory_length, int number_trajectories, Random rand1) throws EvalException {
+
+
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_inital_state  = deepCopyState(rddl_state);
+
+		buffer_state.clear();
+		buffer_action.clear();
+		buffer_reward.clear();
+
+
+
+
+		for(int j=0;j<number_trajectories; j++){
+			//HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_state_values  = deepCopyState(rddl_state);
+
+			rddl_state.copyStateRDDLState(traj_inital_state,true);
+			traj_inital_state = deepCopyState(rddl_state);
+
+
+			ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>> store_traj_states = new ArrayList<>();
+			ArrayList<Double> store_traj_rewards = new ArrayList<>();
+			ArrayList<ArrayList<PVAR_INST_DEF>> store_traj_actions = new ArrayList<>();
+			boolean check_action_feasible = false;
+			boolean all_infeasible        = false;
+
+			for(int i=0;i<trajectory_length;i++){
+
+
+				check_action_feasible = false;
+				ArrayList<PVAR_INST_DEF> traj_action =null;
+
+
+				int cur_while_check = 0;
+
+				while(!check_action_feasible && (cur_while_check<number_of_iterations)){
+					//System.out.println("ITERATION.");
+					cur_while_check = cur_while_check+1;
+
+
+					traj_action = getRandomAction(rddl_state,rand1);
+					check_action_feasible = rddl_state.checkActionConstraints(traj_action);
+
+
+
+				}
+
+
+				//When the actions are infeasible.
+				if(! check_action_feasible){
+
+
+					System.out.println("The actions are not feasible");
+					all_infeasible = true;
+					break;
+
+
+
+				}
+
+
+
+
+
+
+
+
+
+				//Check the action Constraint
+
+
+
+
+
+				HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> store_state =  deepCopyState(rddl_state);
+
+
+
+
+				store_traj_states.add(store_state);
+
+				//Advance to Next State
+				rddl_state.computeNextState(traj_action, new RandomDataGenerator());
+
+				//Calculate Immediate Reward
+				final double immediate_reward = ((Number)rddl_domain._exprReward.sample(
+						new HashMap<LVAR,LCONST>(),rddl_state, rand)).doubleValue();
+
+
+				store_traj_rewards.add(immediate_reward);
+				store_traj_actions.add(traj_action);
+
+
+
+
+
+
+				//System.out.println("Immediate Reward :"+ immediate_reward);
+
+
+
+
+
+				rddl_state.advanceNextState();
+
+
+
+
+
+
+			}
+
+
+
+			//This is checking the trajectory turned out to be bad.
+			if(check_action_feasible && all_infeasible){
+				// we are overriding the pre_buffer_state values.
+				int traj_id = rand1.nextInt(pre_buffer_state.size());
+				store_traj_states  = pre_buffer_state.get(traj_id);
+				store_traj_actions = pre_buffer_action.get(traj_id);
+				store_traj_rewards = pre_buffer_reward.get(traj_id);
+
+
+
+			}
+
+
+			buffer_state.add(store_traj_states);
+			buffer_action.add(store_traj_actions);
+			buffer_reward.add(store_traj_rewards);
+
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+
+
+	protected void checkNonLinearExpressions(final State rddl_state) throws Exception {
+		//Clear the things
+		not_pwl_expr.clear();
+
+
+
+		//This is for Constraints
+		ArrayList<BOOL_EXPR> constraints = new ArrayList<>();
+
+		constraints.addAll(rddl_state._alActionPreconditions); constraints.addAll(rddl_state._alStateInvariants);
+
+
+		//Need to Handle for Action Constraints and State Invariants.
+//		for(BOOL_EXPR e : constraints){
+//
+//			System.out.println("dkfjdkjfkd");
+//
+//
+//
+//		}
+//
+
+
+
+		//This is for State_vars, Interm_vars, Observ_vars.
+		ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> pvar_variables = new ArrayList<>();
+
+		pvar_variables.add(rddl_state_vars); pvar_variables.add(rddl_interm_vars); pvar_variables.add(rddl_observ_vars);
+
+
+
+		for( final HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> map : pvar_variables ) {
+
+			for (final PVAR_NAME p : map.keySet()) {
+
+				Map<LVAR, LCONST> subs = new HashMap<>();
+				CPF_DEF cpf = null;
+
+
+				if (rddl_state_vars.containsKey(p)) {
+					cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName + "'"));
+
+				} else {
+					cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName));
+				}
+
+				ArrayList<RDDL.LTERM> raw_terms =cpf._exprVarName._alTerms;
+				ArrayList<EXPR> final_pwl_cond = new ArrayList<>();
+				ArrayList<EXPR> final_pwl_true = new ArrayList<>();
+
+				//This loop is for $t1, $t2, $t3..........
+				for (final ArrayList<LCONST> terms : map.get(p)) {
+					//This piece of code is Changed by HARISH
+					//System.out.println( "CPT for " + p.toString() + terms );
+					Map<LVAR,LCONST> subs1 = getSubs( cpf._exprVarName._alTerms, terms );
+
+
+					//new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
+					if(!cpf._exprEquals.substitute(subs1,constants,objects).isPiecewiseLinear(constants,objects)){
+
+						if(!not_pwl_expr.contains(cpf._exprEquals)){
+							not_pwl_expr.add(cpf._exprEquals);
+
+						}
+
+
+
+						EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects), raw_terms);
+
+
+
+						//This is Getting Condition.
+
+						BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
+
+						for(int i=0;i<terms.size();i++){
+
+							BOOL_EXPR cur_cond_statement = conditional_state;
+
+							RDDL.COMP_EXPR temp_expr = new RDDL.COMP_EXPR(raw_terms.get(i), terms.get(i), "==");
+
+							conditional_state = new RDDL.CONN_EXPR(cur_cond_statement,temp_expr,"^");
+
+
+
+
+						}
+
+
+						final_pwl_true.add(final_expr);
+						final_pwl_cond.add(conditional_state);
+
+
+
+
+
+
+
+
+
+						//System.out.println("dkjfkdjfkdj");
+
+
+
+
+
+					}
+
+
+
+				}
+
+				EXPR ifelse_expr = new BOOL_CONST_EXPR(true);
+				if(!final_pwl_cond.isEmpty()){
+
+					ifelse_expr = recursiveAdditionIfElse(final_pwl_cond,final_pwl_true,1);
+
+					replace_cpf_pwl.put(p,ifelse_expr); }
+
+
+
+
+
+			}
+		}
+
+
+
+
+	}
+
+	public EXPR recursiveAdditionIfElse(List<EXPR> condition_part,List<EXPR> true_part,Integer check_first){
+
+		EXPR cond_expr=condition_part.get(0);
+		EXPR true_expr=true_part.get(0);
+		if(condition_part.size()==1){
+
+			return new RDDL.IF_EXPR(cond_expr,true_expr,new REAL_CONST_EXPR(0.0));
+
+		}
+
+
+
+		List<EXPR> true_sub_list = new ArrayList<>();
+		List<EXPR> cond_sub_list = new ArrayList<>();
+		true_sub_list = true_part.subList(1,true_part.size());
+		cond_sub_list = condition_part.subList(1,condition_part.size());
+
+
+		return new RDDL.IF_EXPR(cond_expr,true_expr,recursiveAdditionIfElse(cond_sub_list,true_sub_list,2));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+
+
+	//This will generate Data.
+	public EXPR generateDataForPWL(EXPR e, ArrayList<LTERM> raw_terms) throws Exception {
+
+
+
+		//Getting desired format  as  a String
+		ArrayList<PVAR_NAME> input_variables = new ArrayList<>();
+		HashMap<Integer,ArrayList<Object>> input_array = new HashMap();
+
+		HashMap<Integer,String> input_R_array = new HashMap<Integer, String>();
+		String output_R_array = new String();
+		output_R_array = "c(";
+
+
+
+
+
+
+
+		ArrayList<Object> output_array       = new ArrayList<>();
+		for(int i=0;i<buffer_state.size();i++){
+			ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>> state_trajectory  = buffer_state.get(i);
+			ArrayList<ArrayList<PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
+
+
+			for(int j=0;j<buffer_state.get(i).size();j++){
+
+				HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value = state_trajectory.get(j);
+				ArrayList<PVAR_INST_DEF> action_value = action_trajectory.get(j);
+
+
+				//This is a global temp variable which stores the values.m
+				variables_names.clear();
+
+
+				EXPR temp  = recursionSubstitution(e,state_value,action_value);
+				Double val = temp.getDoubleValue(constants,objects);
+
+
+				if(i==0 && j==0 && !variables_names.isEmpty()){
+
+					input_variables.addAll(variables_names.keySet());
+
+
+				}
+
+
+
+
+				for(int k=0;k<input_variables.size();k++){
+
+					if(input_array.containsKey(k)){
+						input_array.get(k).add(variables_names.get(input_variables.get(k)));
+						String temp_str =input_R_array.get(k);
+						input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
+
+
+						//System.out.println("dkjfkdjfkdfkd");
+
+
+					}
+					else{
+						ArrayList<Object> temp_array = new ArrayList<>();
+						temp_array.add(variables_names.get(input_variables.get(k)));
+						input_array.put(k,temp_array);
+						String temp_str ="c(";
+						input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
+
+					}
+
+
+
+
+
+				}
+				output_array.add(val);
+				String temp_str = output_R_array;
+				output_R_array = temp_str + val.toString() + ", ";
+
+
+
+
+
+
+
+			}
+
+
+
+
+
+		}
+
+
+
+
+		//Making Sure to close the brackets.
+		HashMap<PVAR_NAME,String> final_input_R_data = new HashMap<>();
+
+		for( Map.Entry<Integer,String> entry1 : input_R_array.entrySet()){
+
+			input_variables.get(entry1.getKey());
+
+			String temp_str = entry1.getValue();
+
+			temp_str = temp_str.trim();
+			temp_str = temp_str.substring(0,temp_str.length()-1) + ")";
+
+			//System.out.println("Dkfjdkfkdfkj");
+			final_input_R_data.put(input_variables.get(entry1.getKey()),temp_str);
+
+
+
+
+		}
+
+
+
+
+		String final_output_R_data = output_R_array.trim().substring(0,output_R_array.trim().length()-1) + ")";
+
+
+
+
+
+
+
+
+		//////////??????#############################################################################
+		//Getting R functions.
+
+
+		//Not thinking about optimizing the code, Just make it work.
+		//This is for number of examples
+
+		long start_timer = System.currentTimeMillis();
+		Rengine engine = Rengine.getMainEngine();
+		if(engine == null)
+			engine = new Rengine(new String[] {"--vanilla"}, false, null);
+
+		//Rengine engine  = new Rengine(new String[] {"--no-save"},false,null);
+		engine.eval("library(earth)");
+		String feature_format = new String();
+		Integer check = 0;
+		for( Map.Entry<PVAR_NAME,String> entry1 : final_input_R_data.entrySet()){
+			engine.eval(entry1.getKey()._sPVarName + "<-"+ entry1.getValue());
+			if(check==0){
+				feature_format = entry1.getKey()._sPVarName;
+				check =1;
+
+			}
+			else{
+				feature_format.concat(" + "+ entry1.getKey()._sPVarName);
+			}
+
+
+
+		}
+
+		engine.eval("target <-" + final_output_R_data );
+
+		engine.eval("model<-earth( target ~ " + feature_format + ",nprune=2)");
+		String rss_val =engine.eval("format(model$rss)").asString();
+		String gcv_val =engine.eval("format(model$gcv)").asString();
+
+		engine.eval("print(summary(model))");
+		System.out.println("THE GCV VALUE :" + gcv_val);
+		System.out.println("The RSS VALUE :" + rss_val);
+
+		engine.eval("a=predict(model,1)");
+
+
+		String earth_output = engine.eval("format(model,style='bf')").asString();
+
+		long end_timer = System.currentTimeMillis();
+
+
+
+
+		running_R_api = (double) end_timer - start_timer;
+
+
+
+
+
+
+		//System.out.println(earth_output);
+
+
+		//This will parse and give a EXPR Output.
+		EXPR final_expr =parseEarthROutput(earth_output,input_variables,raw_terms);
+
+		return(final_expr);
+
+
+
+
+
+
+	}
+
+
+	public EXPR parseEarthROutput(String earthOutput, ArrayList<PVAR_NAME> input_variables, ArrayList<LTERM> raw_terms) throws Exception {
+
+
+
+		String[] list_output = earthOutput.split("\n");
+
+
+		ArrayList<String> string_pvar = new ArrayList<>();
+		for(int i=0;i<input_variables.size();i++){
+			string_pvar.add(input_variables.get(i)._sPVarName);
+
+		}
+
+
+		HashMap<String,Double> coefficient_mapping = new HashMap<>();
+		HashMap<String,EXPR> hinge_function  = new HashMap<>();
+
+		Double bias = 0.0;
+		//Parsing things with equations.
+		for(int i=0;i<list_output.length;i++){
+			String temp_str = list_output[i].trim();
+			//System.out.println(temp_str);
+
+			if(temp_str.equals("")){continue;}
+
+			//This is for Bias,
+			if(!(temp_str.contains("-") || temp_str.contains("+"))){
+				bias =Double.parseDouble(temp_str);
+				//System.out.println(bias);
+
+			}
+
+
+			//This is for : - 0.08444618 * bf1
+			if(temp_str.contains("*")){
+				temp_str = temp_str.replaceAll("\\s","");
+				temp_str = temp_str.replaceAll("\\+","");
+				String [] term_val = temp_str.split("\\*");
+				NumberFormat format = NumberFormat.getInstance();
+
+				Double coeffic = format.parse(term_val[0]).doubleValue();
+
+				coefficient_mapping.put(term_val[1],coeffic);
+
+
+			}
+
+
+			//This is for : bf1  h(53.2847-rlevel)
+
+			if(temp_str.contains("bf") && temp_str.contains("h(")){
+				//System.out.println("dkjfkdfkdfj");
+				String[] term_val =temp_str.split("\\s");
+
+				String key_val = term_val[0];
+				String hinge_str = term_val[2];
+
+				hinge_str = hinge_str.replace("h(","");
+				hinge_str = hinge_str.replace(")","");
+
+				String [] hinge_values = hinge_str.split("-");
+
+				Double real_val = 0.0;
+
+
+
+				if(string_pvar.contains(hinge_values[0])){
+
+					real_val = Double.parseDouble(hinge_values[1]);
+
+					PVAR_EXPR temp_pvar_expr        = new PVAR_EXPR(hinge_values[0],raw_terms);
+					REAL_CONST_EXPR temp_const_expr = new REAL_CONST_EXPR(real_val);
+
+					RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_pvar_expr,temp_const_expr,"-");
+					RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
+
+					hinge_function.put(key_val,max_oper_expr);
+					//System.out.println(max_oper_expr.toString());
+
+
+
+
+
+
+
+
+
+
+
+
+				}
+				if(string_pvar.contains(hinge_values[1])){
+					real_val = Double.parseDouble(hinge_values[0]);
+					PVAR_EXPR temp_pvar_expr        = new PVAR_EXPR(hinge_values[1],raw_terms);
+					REAL_CONST_EXPR temp_const_expr = new REAL_CONST_EXPR(real_val);
+
+					RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_const_expr,temp_pvar_expr,"-");
+					RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
+
+					hinge_function.put(key_val,max_oper_expr);
+					//System.out.println(max_oper_expr.toString());
+
+
+
+
+				}
+
+
+			}
+
+
+
+
+
+
+
+
+
+		}
+
+
+		REAL_CONST_EXPR bias_expr = new REAL_CONST_EXPR(bias);
+		RDDL.OPER_EXPR final_expr =new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0),bias_expr,"+");
+
+
+		Integer temp_count = 0;
+
+		for(String key: coefficient_mapping.keySet()){
+
+			Double real_value = coefficient_mapping.get(key);
+			REAL_CONST_EXPR temp_real_expr= new REAL_CONST_EXPR(real_value);
+			RDDL.OPER_EXPR temp_oper_expr  = new RDDL.OPER_EXPR(temp_real_expr,hinge_function.get(key),"*");
+
+			RDDL.OPER_EXPR temp_final_expr = final_expr;
+			final_expr = new RDDL.OPER_EXPR(temp_final_expr,temp_oper_expr,"+");
+		}
+
+
+
+		return(final_expr);
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+	public EXPR recursionSubstitution(EXPR e, HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value, ArrayList<PVAR_INST_DEF> action_value) throws Exception {
+
+
+
+		if(e.isConstant(constants,objects)){
+
+			double val        = e.getDoubleValue(constants,objects);
+			EXPR real_expr    = new REAL_CONST_EXPR(val);
+
+			return real_expr;
+
+		}
+
+
+
+		if(e instanceof PVAR_EXPR){
+
+
+
+			PVAR_NAME key = ((PVAR_EXPR) e)._pName;
+
+
+
+			if(state_value.containsKey(key)){
+				HashMap<ArrayList<LCONST>,Object> t = state_value.get(((PVAR_EXPR) e)._pName);
+
+				//Value is Available
+				if(t.containsKey(((PVAR_EXPR) e)._alTerms)){
+					Object val = t.get(((PVAR_EXPR) e)._alTerms);
+
+					if(val instanceof Double){
+
+						variables_names.put(key,val);
+						return new REAL_CONST_EXPR((Double) val);
+
+
+
+					}
+					else{
+						throw new EvalException("THis case not Handled");
+					}
+
+
+
+
+				}
+				else{
+
+					//Get the Default Value.
+
+					Object val = rddl_state_default.get(key);
+
+					if(val instanceof Double){
+						variables_names.put(key,val);
+
+						return new REAL_CONST_EXPR((Double) val);
+
+
+
+					}
+					else{
+						throw new EvalException("THis case not Handled");
+					}
+
+
+
+
+
+				}
+
+
+
+			}
+
+
+
+
+
+
+
+
+
+		}
+
+
+
+
+
+		if(e instanceof RDDL.OPER_EXPR){
+
+			EXPR e1   = ((RDDL.OPER_EXPR) e)._e1;
+			EXPR e2   = ((RDDL.OPER_EXPR) e)._e2;
+			String op = ((RDDL.OPER_EXPR) e)._op;
+
+
+
+			EXPR real_expr_1  = recursionSubstitution(e1,state_value,action_value);
+			EXPR real_expr_2  = recursionSubstitution(e2,state_value,action_value);
+
+
+			EXPR new_oper = new RDDL.OPER_EXPR( real_expr_1, real_expr_2,op);
+
+			return new_oper;
+
+
+
+
+
+
+
+		}
+
+
+
+
+
+
+		return null;
+
+
+
+	}
+
+
+
+
+
+
+
+
 
 
 

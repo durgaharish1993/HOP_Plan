@@ -243,7 +243,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
                                                                 GRB.EQUAL, static_grb_model, constants, objects, type_map);
 
                                                         e.printStackTrace();
-                                                        System.exit(1);
+                                                        //System.exit(1);
                                                     }
                                                 }
                                             }
@@ -409,7 +409,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
 
                                                             } catch (GRBException e) {
                                                                 e.printStackTrace();
-                                                                System.exit(1);
+                                                                //System.exit(1);
                                                             }
 
                                                         }
@@ -442,8 +442,9 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
 
 
 
+    // This is a wrapper function
     @Override
-    public void runRandompolicy(State s)throws Exception{
+    public void runRandompolicyForState(State s)throws Exception{
 
 
         //Copying the state

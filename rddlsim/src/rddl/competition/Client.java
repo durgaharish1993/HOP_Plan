@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,6 +48,8 @@ import rddl.policy.Policy;
 import rddl.policy.RandomBoolPolicy;
 import rddl.policy.RandomEnumPolicy;
 import rddl.viz.StateViz;
+import util.Pair;
+
 /** The SocketClient class is a simple example of a TCP/IP Socket Client.
  *
  */
@@ -121,22 +124,6 @@ public class Client {
 		port = Integer.valueOf(args[4]);
 		instanceName = args[6];
 		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(args).subList(7,args.length-2));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		double timeLeft = 0;
 		try {
@@ -253,16 +240,16 @@ public class Client {
 
 
 			//This is new change to this file.
-			// Note: following constructor approach suggested by Alan Olsen
-			Policy policy = (Policy)c.getConstructor(
-					new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
-
-
-
-			//policy.setRDDL(rddl);
-			policy.setRandSeed(randomSeed);
-
-
+//			// Note: following constructor approach suggested by Alan Olsen
+//			Policy policy = (Policy)c.getConstructor(
+//					new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
+//
+//
+//
+//			//policy.setRDDL(rddl);
+//			policy.setRandSeed(randomSeed);
+//
+//
 
 
 			// Not strictly enforcing flags anymore...
@@ -274,26 +261,80 @@ public class Client {
 
 
 
+			Policy policy = (Policy)c.getConstructor(
+					new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
+			policy.setRDDL(rddl);
+			policy.setRandSeed(randomSeed);
+
+
+
+
+
 
 
 			//##################################################################################################
-
+			//These are the things which are needed for exploration.
+			HashMap<Integer, Pair<Integer,Double>> exploration_rewards = new HashMap<>();
+			//Policy policy = null;
+			//HashMap<Integer,Double> round_avg_time = new HashMap<>();
+			ArrayList<Double> round_reward = new ArrayList<>();
+			int exploration_rounds = 5;
+			Integer current_lookAhead = 1;
+			Integer next_lookahead = current_lookAhead;
+			Boolean exploration = true;
+			Double max_time_allowed = 2.5;
+			Integer best_lookahead = current_lookAhead;
 
 			int r = 0;
 			for( ; r < client.numRounds; r++ ) {
+
+
+
+				state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
+						domain._hmTypes, domain._hmPVariables, domain._hmCPF,
+						instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
+						domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
+						domain._exprReward, instance._nNonDefActions);
+
+
+//				//Exploration phase for 20 rounds.. To fix lookahead values.
+//				exploration = false;
+//				if( r < exploration_rounds){
+//					policy = null;
+//					exploration = true;
+//					//This is to set lookahead value.
+//					parameters.set(2,current_lookAhead.toString());
+//					policy = (Policy)c.getConstructor(
+//							new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
+//					policy.setRDDL(rddl);
+//					policy.setRandSeed(randomSeed);
+//					//This is for next round
+//				}
+//
+//				else{
+//					exploration = false;
+//					parameters.set(2,best_lookahead.toString());
+//					policy = (Policy)c.getConstructor(
+//							new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
+//					policy.setRDDL(rddl);
+//					policy.setRandSeed(randomSeed);
+//
+//				}
+//
+
+
+
+
 				if (SHOW_MEMORY_USAGE)
 					System.out.print("[ Memory usage: " +
 							_df.format((RUNTIME.totalMemory() - RUNTIME.freeMemory())/1e6d) + "Mb / " +
 							_df.format(RUNTIME.totalMemory()/1e6d) + "Mb" +
 							" = " + _df.format(((double) (RUNTIME.totalMemory() - RUNTIME.freeMemory()) /
 											   (double) RUNTIME.totalMemory())) + " ]\n");
-				state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
-						domain._hmTypes, domain._hmPVariables, domain._hmCPF,
-						instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
-						domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
-						domain._exprReward, instance._nNonDefActions);
-				msg = createXMLRoundRequest("yes");
+
+				msg = createXMLRoundRequest();
 				Server.sendOneMessage(osw, msg);
+				//isr.reset();
 				isrc = Server.readOneMessage(isr);
 				timeLeft = processXMLRoundInit(p, isrc, r+1);
 				policy.roundInit(timeLeft, instance._nHorizon, r+1 /*round*/, client.numRounds);
@@ -303,7 +344,12 @@ public class Client {
 				int h =0;
 				//System.out.println(instance._nHorizon);
 				boolean round_ended_early = false;
+				long exploration_round_time = 0l;
 				for(; h < instance._nHorizon; h++ ) {
+
+					long startTime = System.currentTimeMillis();
+
+
 					if (SHOW_MSG) System.out.println("Reading turn message");
 					isrc = Server.readOneMessage(isr);
 					Element e = parseMessage(p, isrc);
@@ -327,13 +373,39 @@ public class Client {
 						state.setPVariables(state._state, obs);
 					}
 
+
+
+
+					policy.runRandompolicyForState(state);
+					policy.convertNPWLtoPWL(state);
+
+
+
+
+
+
+
 					ArrayList<PVAR_INST_DEF> actions =
 						policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
 					if (SHOW_MSG)
 						System.out.println("Sending: " + msg);
 					Server.sendOneMessage(osw, msg);
+
+					long endTime = System.currentTimeMillis();
+					exploration_round_time +=  (endTime - startTime);
+
+
+
+
+
 				}
+
+
+
+
+
+
 				if ( h < instance._nHorizon ) {
 					break;
 				}
@@ -343,6 +415,34 @@ public class Client {
 				double reward = processXMLRoundEnd(round_end_msg);
 				policy.roundEnd(reward);
 				//System.out.println("Round reward: " + reward);
+
+
+//				//This is the change made for exploration.
+//				exploration_rewards.put(r,new Pair<>(current_lookAhead,reward));
+//				double avg_exploration_time  = (double)exploration_round_time;
+//				avg_exploration_time = avg_exploration_time/(1000*instance._nHorizon);
+//
+//				if(exploration){
+//					if(avg_exploration_time < max_time_allowed){
+//						current_lookAhead = getLookAheadValue(current_lookAhead,true);
+//					}
+//					else{
+//						current_lookAhead = getLookAheadValue(current_lookAhead,false);
+//					}
+//
+//					if(r==exploration_rounds-1){
+//
+//						System.out.println("dkfjdkfjkdjfkdjfkjdkfjdjfkd");
+//						//I need to do to find the best lookAhead for the domain .
+//
+//					}
+//				}
+//
+
+
+
+
+
 
 				if (getTimeLeft(round_end_msg) <= 0l)
 					break;
@@ -361,9 +461,49 @@ public class Client {
 		}
 	}
 
+
+
+
+
+	static Integer getLookAheadValue(Integer current_lookahead, Boolean change){
+
+
+		int next_look_ahead = current_lookahead;
+		if(change){
+			if(current_lookahead==1){
+				next_look_ahead = 2;
+			}
+			else {
+				next_look_ahead = next_look_ahead *2 ; }
+		}
+		else{
+			next_look_ahead = current_lookahead;
+		}
+
+		return next_look_ahead;
+
+
+
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+
 	static Element parseMessage(DOMParser p, InputSource isrc) throws RDDLXMLException {
 		try {
 			p.parse(isrc);
+
+
+
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -430,14 +570,14 @@ public class Client {
 		}
 	}
 
-	static String createXMLRoundRequest(String decide) {
+	static String createXMLRoundRequest() {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document dom = db.newDocument();
 			Element rootEle = dom.createElement(Server.ROUND_REQUEST);
 			dom.appendChild(rootEle);
-			Server.addOneText(dom,rootEle, Server.EXECUTE_POLICY,decide);
+			Server.addOneText(dom,rootEle, Server.EXECUTE_POLICY,"yes");
 			return serialize(dom);
 		} catch (Exception e) {
 			return null;
@@ -548,12 +688,17 @@ public class Client {
 	}
 
 	static double processXMLRoundInit(DOMParser p, InputSource isrc,
-			int curRound) throws RDDLXMLException {
+									  int curRound) throws RDDLXMLException {
 		try {
+
+
 			p.parse(isrc);
+
+
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+
 			throw new RDDLXMLException("sax exception");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -574,12 +719,13 @@ public class Client {
 		}
 		return Double.valueOf(r.get(0));
 	}
-
 	static long getTimeLeft(Element e) {
 		ArrayList<String> r = Server.getTextValue(e, Server.TIME_LEFT);
 		if ( r == null ) {
 			return -1;
 		}
+		//Double val = Double.valueOf(r.get(0));
+		//return val;
 		return Long.valueOf(r.get(0));
 	}
 
@@ -634,8 +780,20 @@ public class Client {
 	}
 
 	static double processXMLSessionEnd(DOMParser p, InputSource isrc) throws RDDLXMLException {
+		Document d = null;
 		try {
-			p.parse(isrc);
+
+
+
+			//InputSource xmlSource = new InputSource(reader);
+			isrc.setEncoding("UTF-8");
+
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			d = docBuilder.parse(isrc);
+
+
+			//p.parse(isrc);
 		} catch (SAXException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -644,8 +802,10 @@ public class Client {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw new RDDLXMLException("io exception");
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
 		}
-		Element e = p.getDocument().getDocumentElement();
+		Element e = d.getDocumentElement();
 		if ( e.getNodeName().equals(Server.SESSION_END) ) {
 			ArrayList<String> text = Server.getTextValue(e, Server.TOTAL_REWARD);
 			if ( text == null ) {
