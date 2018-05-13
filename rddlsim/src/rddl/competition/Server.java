@@ -55,7 +55,7 @@ import util.Timer;
 public class Server implements Runnable {
 
 	public static final boolean SHOW_ACTIONS = true;
-	public static final boolean SHOW_XML = true;
+	public static final boolean SHOW_XML = false;
 	public static final boolean SHOW_MSG = false;
 	public static final boolean SHOW_TIMING = false;
 

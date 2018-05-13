@@ -37,7 +37,7 @@ public class RDDL {
 	public static boolean USE_PREFIX = false;
 	public static boolean SUPPRESS_OBJECT_CAST = false;
 
-	public static ArrayList<EXPR> notPWLexprs = new ArrayList<>();
+
 
 	public RDDL() { }
 
@@ -1039,15 +1039,50 @@ public class RDDL {
 
 
 		//This is added by Harish.
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
+
+			throw new Exception("This cannot be invoked here, no implementation");
+
+		}
+
+
+		@Override
+		public  double getDoubleValue(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			throw new Exception("This cannot be invoked here, no implementation");
+
+		}
+
+
+
+
+
+		public abstract boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception;
+
+
+
 		public abstract LTERM substitute(Map<LVAR, LCONST> subs,
 										 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF > objects );
 
+
+
+
+
+
+		//This is Changed by Harish after discussion with Aswin.
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
-			return GRB.CONTINUOUS;
+				Map<PVAR_NAME, Character> type_map) throws  UnsupportedOperationException {
+			throw new UnsupportedOperationException("This class should not convert this to GRB Type");
 		}
 
 
@@ -1069,6 +1104,13 @@ public class RDDL {
 
 
 		//This is Start of Harish Added
+
+
+		@Override
+		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			throw new Exception("Should not be invoked, LVAR (?u), should not be invoked as isConstant()");
+		}
+
 
 
 		@Override
@@ -1172,6 +1214,11 @@ public class RDDL {
 		//This is Start of Harish Added
 
 		@Override
+		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			throw new Exception("This method cannot be invoked by isConstant(), check the def. ");
+		}
+
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			return this;
 		}
@@ -1202,6 +1249,8 @@ public class RDDL {
 			}
 			return false;
 		}
+
+
 
 		@Override
 		public LTERM substitute(Map<LVAR, LCONST> subs,
@@ -1258,6 +1307,24 @@ public class RDDL {
 
 
 		//This is Start of Harish Added
+
+		@Override
+		public boolean isConstant(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
+			return _pvarExpr.isConstant(constants, objects);
+		}
+
+
+		@Override
+		public boolean isPiecewiseLinear(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
+			return _pvarExpr.isPiecewiseLinear(constants, objects);
+		}
+
+
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			return this;
@@ -1312,12 +1379,7 @@ public class RDDL {
 
 
 
-		@Override
-		public boolean isConstant(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return _pvarExpr.isConstant(constants, objects);
-		}
+
 
 		@Override
 		public GRBVar addGRBObjectiveTerm(GRBModel model,
@@ -1343,12 +1405,6 @@ public class RDDL {
 			return _pvarExpr.getGRBConstr(sense, model, constants, objects, type_map);
 		}
 
-		@Override
-		public boolean isPiecewiseLinear(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return _pvarExpr.isPiecewiseLinear(constants, objects);
-		}
 
 
 
@@ -1399,11 +1455,15 @@ public class RDDL {
 
 		//This is Start of Harish Added
 
-		@Override
-		public Object clone() throws CloneNotSupportedException {
 
-			return super.clone();
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			throw new Exception("This cannot be invoked here, no implementation");
+
 		}
+
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
@@ -1417,11 +1477,7 @@ public class RDDL {
 
 
 
-		@Override
-		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-								   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			return true;
-		}
+
 
 		@Override
 		public LCONST substitute(Map<LVAR, LCONST> subs,
@@ -1439,7 +1495,7 @@ public class RDDL {
 		public String toString() {
 			return _sConstValue;
 		}
-		
+
 		public abstract String toSuppString();
 		
 		// Precomputed
@@ -1572,6 +1628,9 @@ public class RDDL {
 		}
 
 
+		//LVAR,LT
+
+
 
 		//This is End of Harish Addition
 
@@ -1649,7 +1708,7 @@ public class RDDL {
 		public static final String ENUM   = "[Enum]".intern();
 		public static final String STRUCT = "[Struct]".intern();
 
-		public static final int M = (int)1e6;//Integer.MAX_VALUE;
+		public static final int M = (int)1e6; //Integer.MAX_VALUE;
 
 		//This is added by Harish.
 
@@ -1674,7 +1733,7 @@ public class RDDL {
 		//This is Added by Harish.
 		public abstract EXPR substitute( final Map<LVAR,LCONST> subs,
 										 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										 final Map< TYPE_NAME, OBJECTS_DEF > objects );
+										 final Map< TYPE_NAME, OBJECTS_DEF > objects ) ;
 
 
 
@@ -1682,15 +1741,13 @@ public class RDDL {
 
 
 
-		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
-			return false;
-		}
+		public abstract boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception;
 
-		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
-			return true;
-		}
+
+		public abstract boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception;
+
 
 		public EXPR sampleDeterminization( final RandomDataGenerator rand ) throws Exception {
 			try{
@@ -1702,34 +1759,40 @@ public class RDDL {
 			return null;
 		}
 
-		public double getDoubleValue(
+		public abstract double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			assert( isConstant(constants, objects ) );
-			try{
-				throw new Exception("getDoubleValue called for " + toString() );
-			}catch(Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
-			}
-			return Double.NaN;
-		}
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception;
 
-		public char upper( char... types ){
-			char ret = types[0];
-			for( int i = 0 ; i < types.length; ++i ){
-				if( types[i] == ret ){
-					continue;
-				}else if( types[i] == GRB.CONTINUOUS ){
-					ret = GRB.CONTINUOUS;
-				}else if( types[i] == GRB.INTEGER && ret == GRB.BINARY ){
-					ret = GRB.INTEGER;
-				}
-			}
-			return ret;
-		}
 
-		public char upper( List<Character> types ){
+//			assert( isConstant(constants, objects ) );
+//			try{
+//				throw new Exception("getDoubleValue called for " + toString() );
+//			}catch(Exception exc ){
+//				exc.printStackTrace();
+//				System.exit(1);
+//			}
+//			return Double.NaN;
+//		}
+//
+//		public char upper( char... types ){
+//			char ret = types[0];
+//			for( int i = 0 ; i < types.length; ++i ){
+//				if( types[i] == ret ){
+//					continue;
+//				}else if( types[i] == GRB.CONTINUOUS ){
+//					ret = GRB.CONTINUOUS;
+//				}else if( types[i] == GRB.INTEGER && ret == GRB.BINARY ){
+//					ret = GRB.INTEGER;
+//				}
+//			}
+//			return ret;
+//		}
+
+
+
+
+
+		public static char upper( List<Character> types ){
 			char ret = types.get(0);
 			for( int i = 0 ; i < types.size(); ++i ){
 				if( types.get(i) == ret ){
@@ -1760,20 +1823,35 @@ public class RDDL {
 
 		public static double getGRB_LB( final char grb_type ){
 			// -Double.MAX_VALUE  This is changed by harish.
-			return grb_type == GRB.CONTINUOUS ? -Double.MAX_VALUE:
-					grb_type == GRB.INTEGER ? Integer.MIN_VALUE : grb_type == GRB.BINARY ? 0 : Double.NaN;
+
+
+			return grb_type == GRB.CONTINUOUS ? -M:
+					grb_type == GRB.INTEGER ? -M : grb_type == GRB.BINARY ? 0 : Double.NaN;
+
+
+
+			//return grb_type == GRB.CONTINUOUS ? -Double.MAX_VALUE:
+			//		grb_type == GRB.INTEGER ? Integer.MIN_VALUE : grb_type == GRB.BINARY ? 0 : Double.NaN;
 		}
 
 		public static double getGRB_UB( final char grb_type ){
-			return grb_type == GRB.CONTINUOUS ? Double.MAX_VALUE :
-					grb_type == GRB.INTEGER ? Integer.MAX_VALUE :
+
+			return grb_type == GRB.CONTINUOUS ? M :
+					grb_type == GRB.INTEGER ? M :
 							grb_type == GRB.BINARY ? 1 : Double.NaN;
+
+
+
+			//return grb_type == GRB.CONTINUOUS ? M :
+			//		grb_type == GRB.INTEGER ? Integer.MAX_VALUE :
+			//				grb_type == GRB.BINARY ? 1 : Double.NaN;
 		}
 
 		//need typemap from RDDL TODO
 		protected abstract char getGRB_Type(
 				final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants ,
-				final Map< PVAR_NAME, Character > type_map ) ;
+				final Map< PVAR_NAME, Character > type_map ) throws UnsupportedOperationException ;
+
 
 
 
@@ -1856,6 +1934,8 @@ public class RDDL {
 				final ArrayList<LTYPED_VAR> lvars,
 				final Map<TYPE_NAME, OBJECTS_DEF> objects,
 				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ){
+
+
 			assert( objects != null );
 
 			List<OBJECTS_DEF> consts = lvars.stream().map( m -> objects.get( m._sType ) ) //possibly null
@@ -1872,7 +1952,10 @@ public class RDDL {
 			boolean done = false;
 			while( !done ){
 				final HashMap<LVAR,LCONST> subs = getSubs( lvars, consts_queue, assign_index );
+				System.out.println(e.toString());
+				System.out.println(subs.toString());
 				final EXPR one = e.substitute(subs, constants, objects);
+				System.out.println(one.toString());
 				ret.add( one );
 				done = incrementArray( assign_index, consts_sizes );
 			}
@@ -1916,7 +1999,7 @@ public class RDDL {
 		public static GRBVar getGRBVar(
 				final EXPR expr, final GRBModel model,
 				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				final Map< TYPE_NAME, OBJECTS_DEF > objects, final Map< PVAR_NAME, Character> type_map ) {
+				final Map< TYPE_NAME, OBJECTS_DEF > objects, final Map< PVAR_NAME, Character> type_map ) throws Exception {
 //			assert( expr.isPiecewiseLinear(constants, objects) ); cant check without expanding quantifier
 
 			/*
@@ -1958,6 +2041,13 @@ public class RDDL {
 				reverse_name_map.put( next_name, exp_string );
 
 				//System.out.println("Internal name : " + exp_string + " : " + next_name);
+
+//				if(Character.toString(type).equals("I")){
+//					System.out.println("dkfjdkjfdjkfjdkf");
+//
+//
+//				}
+
 
 				double lb = getGRB_LB(type); double ub = getGRB_UB(type);
 				GRBVar new_var = null;
@@ -2018,7 +2108,7 @@ public class RDDL {
 		public GRBVar addGRBObjectiveTerm( final GRBModel model ,
 										   final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										   final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-										   Map<PVAR_NAME, Character> type_map ){
+										   Map<PVAR_NAME, Character> type_map ) throws Exception {
 //			assert( isPiecewiseLinear(constants, objects) ); cant check here without expansion of quantifiers
 
 			try {
@@ -2042,7 +2132,7 @@ public class RDDL {
 		public GRBVar getGRBConstr( final char sense, final GRBModel model ,
 									final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
 									final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-									Map<PVAR_NAME, Character> type_map ){
+									Map<PVAR_NAME, Character> type_map ) throws Exception {
 
 			assert( isPiecewiseLinear(constants, objects) );
 
@@ -2087,11 +2177,39 @@ public class RDDL {
 
 		//This is start of Harish Addition
 
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, has to be use sample determination");
+
+
+		}
+
+
+
+
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return _exprRealValue.sampleDeterminization(rand);
 		}
+
 
 
 		@Override
@@ -2186,10 +2304,36 @@ public class RDDL {
 
 		//This is Start of Harish Addition
 
+
+
+
+
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+		@Override
+		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) {
+			return false;
+		}
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			throw new Exception("This method cannot be invoked, has to be use sample determination");
+		}
+
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return new KronDelta( _exprIntValue.sampleDeterminization(rand) );
 		}
+
+
 
 		public EXPR _exprIntValue;
 
@@ -2197,6 +2341,9 @@ public class RDDL {
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return _exprIntValue.getMean(objects);
 		}
+
+
+
 
 		@Override
 		protected char getGRB_Type(
@@ -2288,6 +2435,33 @@ public class RDDL {
 
 
 		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, has to be use sample determination");
+
+
+		}
+
+
+
+
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			EXPR lower_determ = _exprLowerReal.sampleDeterminization(rand);
 			EXPR upper_determ = _exprUpperReal.sampleDeterminization(rand);
@@ -2312,6 +2486,7 @@ public class RDDL {
 
 		public EXPR _exprLowerReal;
 		public EXPR _exprUpperReal;
+
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
@@ -2343,7 +2518,11 @@ public class RDDL {
 		@Override
 		public boolean equals(Object obj) {
 			if( isConstant(null, null) ){
-				return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
+				try {
+					return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 
 			if( obj instanceof Uniform ){
@@ -2426,6 +2605,31 @@ public class RDDL {
 		//This is Start of Harish Addition
 
 
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, has to be use sample determination");
+
+
+		}
+
+
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
@@ -2438,35 +2642,35 @@ public class RDDL {
 			//and implement the Normal that YOU want in RDDL directly
 
 			//This is written by Harish which includes cases with OPER_EXPR in Variance.
-			if(!_normalVarReal.isConstant(null,null)){
+			// This has to changed.
+//			if(!_normalVarReal.isConstant(null,null)){
+//
+//				EXPR temp_expr = _normalVarReal.sampleDeterminization(rand);
+//
+//				final double sample = rand.nextGaussian(0, Math.sqrt(1.0) );
+//				OPER_EXPR temp_oper = new OPER_EXPR(temp_expr, new REAL_CONST_EXPR(sample), OPER_EXPR.TIMES);
+//
+//				System.out.println(temp_oper);
+//				return new OPER_EXPR( _normalMeanReal,temp_oper, OPER_EXPR.PLUS);
+//
+//
+//
+//
+//			}
+//			else{
+			assert( _normalVarReal.isConstant( null, null ) );
+			final double var = _normalVarReal.getDoubleValue( null, null );
 
-				EXPR temp_expr = _normalVarReal.sampleDeterminization(rand);
-
-				final double sample = rand.nextGaussian(0, Math.sqrt(1.0) );
-				OPER_EXPR temp_oper = new OPER_EXPR(temp_expr, new REAL_CONST_EXPR(sample), OPER_EXPR.TIMES);
-
-				System.out.println(temp_oper);
-				return new OPER_EXPR( _normalMeanReal,temp_oper, OPER_EXPR.PLUS);
-
-
-
-
-			}
-			else{
-
-				assert( _normalVarReal.isConstant( null, null ) );
-				final double var = _normalVarReal.getDoubleValue( null, null );
-
-				final double sample = rand.nextGaussian(0, Math.sqrt(var) );
+			final double sample = rand.nextGaussian(0, Math.sqrt(var) );
 				//This is commented by HARISH.
 				//System.out.println("Sampled future for normal : " + this + " " + sample );
-				return new OPER_EXPR( _normalMeanReal, new REAL_CONST_EXPR( sample ) , OPER_EXPR.PLUS );
+			return new OPER_EXPR( _normalMeanReal, new REAL_CONST_EXPR( sample ) , OPER_EXPR.PLUS );
 
 
 
 
 
-			}
+			//}
 
 
 
@@ -2509,7 +2713,11 @@ public class RDDL {
 			}else if( obj instanceof EXPR ){
 				EXPR expr = ((EXPR) obj);
 				if( expr.isConstant(null, null) ){
-					return new REAL_CONST_EXPR( getDoubleValue( null, null ) ).equals( obj );
+					try {
+						return new REAL_CONST_EXPR( getDoubleValue( null, null ) ).equals( obj );
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			return false;
@@ -2525,6 +2733,7 @@ public class RDDL {
 
 
 		//This is End of Harish Additon
+
 
 
 
@@ -2586,6 +2795,31 @@ public class RDDL {
 
 
 		//This is Start of Harish Addition
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, has to be use sample determination");
+
+
+		}
+
 
 
 		@Override
@@ -2729,6 +2963,31 @@ public class RDDL {
 		
 
 		//This is start of Harish Addition
+
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
@@ -2898,6 +3157,32 @@ public class RDDL {
 
 
 		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
+
+
+
+		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception
 		{
 			return new Discrete( _sTypeName._STypeName,
@@ -3058,6 +3343,32 @@ public class RDDL {
 
 		//this is start of harish addition
 
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
+
+
 		@Override
 		public boolean equals(Object obj) {
 			if( obj instanceof Exponential ){
@@ -3140,6 +3451,32 @@ public class RDDL {
 
 
 		//This is start of Harish Addition
+
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
+
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
@@ -3236,6 +3573,31 @@ public class RDDL {
 		
 		public EXPR _exprShape;
 		public EXPR _exprScale;
+
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
 
 
 		//Note Not implementing a best thing here Assuming the scale and shape are real_const.
@@ -3370,6 +3732,36 @@ public class RDDL {
 		public EXPR _exprMean;
 
 		// This is start of harish addition
+
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
+
+
+
+
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return _exprMean.getMean(objects);
@@ -3451,6 +3843,32 @@ public class RDDL {
 		//This is start of Harish addition
 
 		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method cannot be invoked, use sample determination");
+
+
+		}
+
+
+
+		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<PVAR_NAME, Character> type_map) {
@@ -3464,7 +3882,8 @@ public class RDDL {
 			//B ~ bern(p); X ~ U(0,1)
 			//B = ( X > 1 - p )
 			final double sample = rand.nextUniform(0, 1);
-			System.out.println("Sampled future for bernoulli " + this + " " + sample );
+
+			//System.out.println("Sampled future for bernoulli " + this + " " + sample );
 			try {
 				return new COMP_EXPR( new REAL_CONST_EXPR( sample ),
                         new OPER_EXPR( new REAL_CONST_EXPR(1d), _exprProb , OPER_EXPR.MINUS ), COMP_EXPR.GREATER );
@@ -3603,7 +4022,7 @@ public class RDDL {
 
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map< ArrayList<LCONST>,Object > > constants, Map<TYPE_NAME,OBJECTS_DEF> objects,
-								   Map<PVAR_NAME, Character> type_map ) {
+								   Map<PVAR_NAME, Character> type_map ) throws Exception {
 //			if( grb_cache.containsKey( this ) ){
 //				return grb_cache.get( this );
 //			}
@@ -3789,6 +4208,9 @@ public class RDDL {
 			_bDet = true;
 		}
 
+
+
+
 		public STRUCT_EXPR(ArrayList sub_expr) {
 			_sType     = STRUCT;
 			_alSubExpr = (ArrayList<STRUCT_EXPR_MEMBER>)sub_expr;
@@ -3807,6 +4229,38 @@ public class RDDL {
 		public ArrayList<STRUCT_EXPR_MEMBER> _alSubExpr;
 
 		//Its start of Harish Addition
+
+
+		@Override
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
+
+			return false;
+		}
+
+
+
+
+
+		@Override
+		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+
+			return false;
+
+		}
+
+
+		@Override
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
+
+			throw new Exception("This method is not implemented");
+
+
+		}
+
+
+
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
 							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
@@ -3942,6 +4396,17 @@ public class RDDL {
 		//This is start of harish addition
 
 		@Override
+		public boolean isConstant(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+			EXPR reducible = reduce( _e1, _e2, _op, constants , objects);
+			if( reducible instanceof OPER_EXPR ){
+				return _e1.isConstant(constants, objects) && _e2.isConstant(constants, objects);
+			}
+			return reducible.isConstant(constants, objects);//CONST_EXPR
+		}
+
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			try {
 				return new OPER_EXPR( _e1.sampleDeterminization(rand), _e2.sampleDeterminization(rand), _op );
@@ -3984,7 +4449,7 @@ public class RDDL {
 
 			}
 
-			assert( isPiecewiseLinear(constants, objects) );
+			//assert( isPiecewiseLinear(constants, objects) );
 
 			GRBLinExpr exp = new GRBLinExpr();
 			try{
@@ -4153,17 +4618,10 @@ public class RDDL {
 			return false;
 		}
 
-		@Override
-		public boolean isConstant(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			EXPR reducible = reduce( _e1, _e2, _op, constants , objects);
-			if( reducible instanceof OPER_EXPR ){
-				return _e1.isConstant(constants, objects) && _e2.isConstant(constants, objects);
-			}
-			return reducible.isConstant(constants, objects);//CONST_EXPR
-		}
 
+
+
+		//need to write a new Implementation.
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -4520,6 +4978,56 @@ public class RDDL {
 
 		//This is Start of Harish Addition
 
+
+
+		@Override
+		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+									  Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+			assert( isConstant(constants, objects ) );
+			EXPR result = expandArithmeticQuantifier(constants, objects );
+			assert( result.isConstant(constants , objects) );
+			return result.getDoubleValue(constants, objects );
+		}
+
+		@Override
+		public boolean isConstant(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
+			if( _e.isConstant(constants, objects) && _op.equals( PROD ) ){
+				return true;
+			}
+
+			if( _alVariables.isEmpty() ){
+				return _e.isConstant(constants, objects);
+			}
+
+//			this is too expensive
+//			if( objects != null ){
+//				EXPR result = expandArithmeticQuantifier(constants, objects );
+//				return result.isConstant(constants, objects);
+//			}
+
+			return false;
+		}
+
+		@Override
+		public boolean isPiecewiseLinear(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
+			if( isConstant(constants, objects) ){
+				return true;
+			}
+
+			//too expensive
+//			EXPR result = expandArithmeticQuantifier(constants, objects );
+			return _e.isPiecewiseLinear(constants, objects) && ( _alVariables.isEmpty()  || !_op.equals(PROD) );
+			//product of pwl is not pwl
+		}
+
+
+
+
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
 			return new AGG_EXPR( _op, _alVariables, _e.sampleDeterminization(rand) );
@@ -4587,49 +5095,6 @@ public class RDDL {
 
 
 
-		@Override
-		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										 Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			assert( isConstant(constants, objects ) );
-			EXPR result = expandArithmeticQuantifier(constants, objects );
-			assert( result.isConstant(constants , objects) );
-			return result.getDoubleValue(constants, objects );
-		}
-
-		@Override
-		public boolean isConstant(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			if( _e.isConstant(constants, objects) && _op.equals( PROD ) ){
-				return true;
-			}
-
-			if( _alVariables.isEmpty() ){
-				return _e.isConstant(constants, objects);
-			}
-
-//			this is too expensive
-//			if( objects != null ){
-//				EXPR result = expandArithmeticQuantifier(constants, objects );
-//				return result.isConstant(constants, objects);
-//			}
-
-			return false;
-		}
-
-		@Override
-		public boolean isPiecewiseLinear(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			if( isConstant(constants, objects) ){
-				return true;
-			}
-
-			//too expensive
-//			EXPR result = expandArithmeticQuantifier(constants, objects );
-			return _e.isPiecewiseLinear(constants, objects) && ( _alVariables.isEmpty()  || !_op.equals(PROD) );
-			//product of pwl is not pwl
-		}
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
@@ -4665,9 +5130,10 @@ public class RDDL {
 						}
 						try {
 							//Changed by Harish.( Changed because of too much length.
-							//name_map.get(toString())+"="+sum_str);
-							model.addConstr( this_var , GRB.EQUAL, total, name_map.get(toString()));
-							model.update();
+							//name_map.get(this.toString())+"="+sum_str);
+							//model.addConstr( this_var , GRB.EQUAL, total, name_map.get(toString()));
+							model.addConstr( this_var , GRB.EQUAL, total, name_map.get(toString())+"="+sum_str );
+							//model.update();
 							return this_var;
 						} catch (GRBException e1) {
 							e1.printStackTrace();
@@ -5977,7 +6443,7 @@ public class RDDL {
 //			assert( isPiecewiseLinear(constants, objects) );
 			GRBVar this_var = getGRBVar( this, model, constants, objects, type_map);
 			/* [y = if E<=F then E1 else E2] is
-			 *		E <= F + M(1-z)
+			 *		E <= F + M(1-z)  when z=1 then  E<=F,
 			 *		y <= E1 + M(1-z)
 			 *		y >= E1 - M(1-z)
 			 *

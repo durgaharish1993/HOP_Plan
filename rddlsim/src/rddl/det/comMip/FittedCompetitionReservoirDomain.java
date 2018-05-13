@@ -60,6 +60,10 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
     private static final String xPos = "xPos";
     private static final String yPos = "yPos";
     private static final String rainFall ="rainfall";
+    private static final String obstacle ="obstacle-at";
+    private static final String collide = "collided";
+    //private static final String agent_at = "agent-at";
+
 
 
     //private EmergencyDomainDataReel reel;
@@ -217,13 +221,9 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
                                                         GRBVar lhs_var = lhs_future.getGRBConstr(
                                                                 GRB.EQUAL, static_grb_model, constants, objects, type_map);
 
-                                                        if(rhs_future.toString().equals("if (damaged($l1, $time0, $future0)) then [~[exists_{?r : rover} repair(?r, $l1, $time0, $future0)]] else [(0.18924808898947454 > (1.0 - (sum_{?loc : location, ?r : rover} ((move(?r, ?loc, $time0, $future0) * TOOL-ON($l1, ?r)) * DAMAGE-PROB(?loc)))))]")){
-                                                            System.out.println("dkjfkd");
 
-
-                                                        }
-
-                                                        System.out.println(rhs_future.toString());
+                                                        if(SHOW_GUROBI_ADD)
+                                                            System.out.println(rhs_future.toString());
 
                                                         GRBVar rhs_var = rhs_future.getGRBConstr(
                                                                 GRB.EQUAL, static_grb_model, constants, objects, type_map);
@@ -270,7 +270,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
     final Set<String> stochasticVars = new HashSet<String>(Arrays.asList(
             new String[]{rainFall, xPos, yPos,
                     gumbelNoisePvarName, gapTimePvarName,
-                    tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall }));
+                    tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall,obstacle,collide }));
 
     @Override
     protected void translateCPTs(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> subs,
@@ -314,10 +314,9 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
                                 PVAR_NAME p = entry.getKey();
 
                                 if( !isStochastic(p._sPVarName) && !replace_cpf_pwl.containsKey(p) ){
-                                    //System.out.println("This is not stochastic Pvar : "+p._sPVarName);
+                                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<This is not stochastic Pvar ---------->>>>>>>>>> : "+p._sPVarName);
                                     return;
                                 }
-
 
 
 
@@ -431,8 +430,6 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
         grb_model.update();
         long endTime1 = System.currentTimeMillis();
         double t3 = ((double)endTime1-(double)startTime1)/1000;
-        System.out.println("Time Taken for TranslateCPT Without Emergency Data:" + t3);
-
 
     }
 

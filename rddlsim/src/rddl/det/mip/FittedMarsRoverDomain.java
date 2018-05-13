@@ -59,8 +59,10 @@ public class FittedMarsRoverDomain extends HOPTranslate {
 	private static final String currentCall = "currentCall";
 	private static final String xPos = "xPos";
 	private static final String yPos = "yPos";
+	private static final String obstacle ="obstacle-at";
+	private static final String agent_at = "agent-at";
 
-	
+
 	private EmergencyDomainDataReel reel;
 	private FileWriter outFile;
 	private static FileWriter fw;
@@ -237,7 +239,7 @@ public class FittedMarsRoverDomain extends HOPTranslate {
 	final Set<String> stochasticVars = new HashSet<String>(Arrays.asList( 
 		new String[]{xPos,yPos,
 				gumbelNoisePvarName, gapTimePvarName,
-				tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall }));
+				tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall,agent_at,obstacle }));
 
 	@Override
 	protected void translateCPTs(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> subs,

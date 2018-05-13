@@ -10,6 +10,7 @@ package rddl.policy;
 
 import java.util.*;
 
+import gurobi.GRBException;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
 import rddl.*;
@@ -22,6 +23,9 @@ public abstract class Policy {
 	public RandomDataGenerator _random = new RandomDataGenerator();
 	public String _sInstanceName;
 	public RDDL _rddl;
+	public int lookahead;
+	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
+	public double TIME_LIMIT_MINS = 10;
 
 	public Policy() {
 		
@@ -92,6 +96,10 @@ public abstract class Policy {
 	protected void runRandompolicy(State s, int trajectory_length, int number_trajectories, Random rand1)throws Exception{}
 
 	public void convertNPWLtoPWL(State s) throws Exception{}
+
+	public void dispose_Gurobi() throws GRBException {}
+
+
 
 
 	

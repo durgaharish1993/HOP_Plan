@@ -68,9 +68,16 @@ import java.util.Random;
 public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 	//This is added by Harish
+
+	protected static final boolean OUTPUT_LP_FILE = false;
 	protected RandomDataGenerator rand;
 	protected boolean SHOW_LEVEL_1 = true;
 	protected boolean SHOW_LEVEL_2 = false;
+	protected boolean SHOW_GUROBI_ADD = true;
+	protected boolean SHOW_PWL_NON_PWL = false;
+
+
+
 
 
 	private static final int GRB_INFUNBDINFO = 1;
@@ -81,14 +88,15 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 	private static final int GRB_IISMethod = 1;
 	
 	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
+	protected static final LVAR future_PREDICATE = new LVAR( "?future" );
 	private static final TYPE_NAME TIME_TYPE = new TYPE_NAME( "time" );
-	protected static final boolean OUTPUT_LP_FILE = false;
+
 	private static final boolean GRB_LOGGING_ON = false;
 	protected static final boolean RECOVER_INFEASIBLE = true;
-	protected double TIME_LIMIT_MINS = 10; 
+	//protected double TIME_LIMIT_MINS = 10;
 	
 	protected RDDL rddl_obj;
-	protected int lookahead;
+	//protected int lookahead;
 	protected State rddl_state;
 	protected DOMAIN rddl_domain;
 	protected INSTANCE rddl_instance;
@@ -134,6 +142,8 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 	protected List<EXPR> root_policy_expr = new ArrayList<>();
 	protected List<GRBConstr> root_policy_constr = new ArrayList<>();
+
+
 
 
 
@@ -410,6 +420,14 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		return doPlan( getSubsWithDefaults(rddl_state), RECOVER_INFEASIBLE ); 
 	}
 
+
+
+
+
+
+
+
+
 	public Pair<ArrayList<Map< EXPR, Double >>,Integer> doPlan(HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs ,
 															   final boolean recover ) throws Exception{
 		//deterministic : model is already prepared except for initial state
@@ -422,6 +440,10 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		
 		int exit_code = -1;
 		try{
+
+
+
+
 			exit_code = goOptimize( static_grb_model );
 		}catch( GRBException exc ){
 			int error_code = exc.getErrorCode();
@@ -708,6 +730,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 		grb_model.update();
 		System.out.println("Optimizing.............");
+		grb_model.write("/Users/dimbul/Desktop/Output.lp");
 		grb_model.optimize();
 		int constraint_unsatisfied = 0;
 
@@ -1418,7 +1441,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		grb_env.set( IntParam.InfUnbdInfo , GRB_INFUNBDINFO );
 		grb_env.set( IntParam.DualReductions, GRB_DUALREDUCTIONS );
 		grb_env.set( IntParam.IISMethod, GRB_IISMethod );
-		
+		grb_env.set( IntParam.NumericFocus, 3);
 		grb_env.set( IntParam.MIPFocus, 1);
 		grb_env.set( DoubleParam.FeasibilityTol, 1e-9 );// Math.pow(10,  -(State._df.getMaximumFractionDigits() ) ) ); 1e-6
 		grb_env.set( DoubleParam.IntFeasTol,  1e-9);//Math.pow(10,  -(State._df.getMaximumFractionDigits() ) ) ); //Math.pow( 10 , -(1+State._df.getMaximumFractionDigits() ) ) );
@@ -1427,9 +1450,10 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		grb_env.set( IntParam.Quad, 1 );
 		grb_env.set( IntParam.Method, 1 );
 		grb_env.set( DoubleParam.NodefileStart, 0.5 );
+
 		//grb_env.set(GRB.IntParam.Presolve,0);
 		//grb_env.set(DoubleParam.OptimalityTol, 1e-2);
-		//grb_env.set(GRB.IntParam.NumericFocus, 3);
+		grb_env.set(GRB.IntParam.NumericFocus, 3);
 //		grb_env.set( IntParam.SolutionLimit, 5);
 
 		System.out.println("current nodefile directly " + grb_env.get( StringParam.NodefileDir ) );
@@ -1574,7 +1598,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			ArrayList<PVAR_INST_DEF> returning_action = ret_list.get(0);
 
 
-			if(exit_code.equals(2)){
+			if(exit_code.equals(3)){
 				//Solution is infeasible.
 				HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>  copiedState = deepCopyState(rddl_state);
 				ArrayList<PVAR_INST_DEF> act = getRandomActionForSimulation(s,new Random(1));
@@ -1809,24 +1833,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		
 		return ret;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	@Override
 	public void roundEnd(double reward) {
@@ -2422,7 +2428,15 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 					//new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
-					if(!cpf._exprEquals.substitute(subs1,constants,objects).isPiecewiseLinear(constants,objects)){
+					if(SHOW_PWL_NON_PWL)
+						System.out.println(cpf._exprEquals.toString());
+
+
+
+					Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects).isPiecewiseLinear(constants,objects);
+					if(SHOW_PWL_NON_PWL)
+						System.out.println(check_PWL);
+					if(!check_PWL){
 
 						if(!not_pwl_expr.contains(cpf._exprEquals)){
 							not_pwl_expr.add(cpf._exprEquals);
@@ -2455,19 +2469,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 						final_pwl_true.add(final_expr);
 						final_pwl_cond.add(conditional_state);
-
-
-
-
-
-
-
-
-
-						//System.out.println("dkjfkdjfkdj");
-
-
-
 
 
 					}
@@ -2594,7 +2595,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 						input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
 
 
-						//System.out.println("dkjfkdjfkdfkd");
 
 
 					}
@@ -2645,7 +2645,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			temp_str = temp_str.trim();
 			temp_str = temp_str.substring(0,temp_str.length()-1) + ")";
 
-			//System.out.println("Dkfjdkfkdfkj");
+
 			final_input_R_data.put(input_variables.get(entry1.getKey()),temp_str);
 
 
@@ -2703,9 +2703,10 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		String gcv_val =engine.eval("format(model$gcv)").asString();
 
 		engine.eval("print(summary(model))");
-		System.out.println("THE GCV VALUE :" + gcv_val);
-		System.out.println("The RSS VALUE :" + rss_val);
-
+		if(SHOW_PWL_NON_PWL) {
+			System.out.println("THE GCV VALUE :" + gcv_val);
+			System.out.println("The RSS VALUE :" + rss_val);
+		}
 		engine.eval("a=predict(model,1)");
 
 
@@ -2719,11 +2720,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		running_R_api = (double) end_timer - start_timer;
 
 
-
-
-
-
-		//System.out.println(earth_output);
 
 
 		//This will parse and give a EXPR Output.
@@ -2760,19 +2756,17 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		//Parsing things with equations.
 		for(int i=0;i<list_output.length;i++){
 			String temp_str = list_output[i].trim();
-			//System.out.println(temp_str);
+
 
 			if(temp_str.equals("")){continue;}
 
 			//This is for Bias,
 			if(!(temp_str.contains("-") || temp_str.contains("+"))){
 				bias =Double.parseDouble(temp_str);
-				//System.out.println(bias);
 
 			}
 
 
-			//This is for : - 0.08444618 * bf1
 			if(temp_str.contains("*")){
 				temp_str = temp_str.replaceAll("\\s","");
 				temp_str = temp_str.replaceAll("\\+","");
@@ -2790,7 +2784,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 			//This is for : bf1  h(53.2847-rlevel)
 
 			if(temp_str.contains("bf") && temp_str.contains("h(")){
-				//System.out.println("dkjfkdfkdfj");
 				String[] term_val =temp_str.split("\\s");
 
 				String key_val = term_val[0];
@@ -2816,16 +2809,8 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
 
 					hinge_function.put(key_val,max_oper_expr);
-					//System.out.println(max_oper_expr.toString());
-
-
-
-
-
-
-
-
-
+					if(SHOW_PWL_NON_PWL)
+						System.out.println("PWL_NON_PWL ::: " + max_oper_expr.toString());
 
 
 
@@ -2839,7 +2824,8 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
 
 					hinge_function.put(key_val,max_oper_expr);
-					//System.out.println(max_oper_expr.toString());
+					if(SHOW_PWL_NON_PWL)
+						System.out.println("PWL_NON_PWL ::: "+ max_oper_expr.toString());
 
 
 
@@ -3020,8 +3006,27 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 
+	// This is added by Harish.
+	public void dispose_Gurobi() throws GRBException {
+
+		System.out.println("Cleaning Gurobi");
+
+//		static_grb_model.dispose();
+//
+//		grb_env.dispose();
+//
 
 
+		cleanUp(static_grb_model);
+		static_grb_model.getEnv().dispose();
+		static_grb_model.dispose();
+
+		RDDL.EXPR.cleanUpGRB();
+		System.gc();
+
+
+
+	}
 
 
 

@@ -96,7 +96,7 @@ public class HOPTranslate extends Translate {
 
 	protected int exit_code ;
 	
-	protected static final LVAR future_PREDICATE = new LVAR( "?future" );
+
 	private static final TYPE_NAME future_TYPE = new TYPE_NAME( "future" );
 	protected ArrayList< LCONST > future_TERMS = new ArrayList<>();
 	protected enum HINDSIGHT_STRATEGY { 
@@ -105,6 +105,8 @@ public class HOPTranslate extends Translate {
 	protected HINDSIGHT_STRATEGY hindsight_method;
 	protected HashMap< HashMap<EXPR, Object>, Integer > all_votes = new HashMap<>();
 	private FileWriter fileRootConsensus;
+
+
 
 
 
@@ -228,8 +230,7 @@ public class HOPTranslate extends Translate {
 									@Override
 									public void accept(LCONST future_term) {
 										//System.out.println(this_t.toString());
-										EXPR this_tf = 
-												this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
+										EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
 										
 										
 										synchronized( static_grb_model ){
@@ -502,6 +503,7 @@ public class HOPTranslate extends Translate {
 						//System.out.println( subs_tf );//"Reward_" + time_term + "_" + future_term );
 						
 						synchronized( grb_model ){
+
 							GRBVar this_future_var = subs_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
 							saved_expr.add( subs_tf );
 							//System.out.println(saved_expr);
@@ -638,7 +640,9 @@ public class HOPTranslate extends Translate {
 									 	.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
 								synchronized( grb_model ){
 									try {
-										System.out.println(this_tf);
+
+										if(SHOW_GUROBI_ADD)
+											System.out.println(this_tf);
 										GRBVar constrained_var = this_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
 										
 										String nam = RDDL.EXPR.getGRBName(this_tf);
@@ -648,7 +652,7 @@ public class HOPTranslate extends Translate {
 										//saved_vars.add( constrained_var );
 									} catch (GRBException e) {
 										e.printStackTrace();
-										////System.exit(1);
+										System.exit(1);
 									}
 								}
 							}
@@ -883,7 +887,8 @@ public class HOPTranslate extends Translate {
 							for( final LCONST future : future_TERMS ){
 
 								EXPR addedd = this_t.substitute( Collections.singletonMap( future_PREDICATE, future), constants, objects);
-								System.out.println(addedd.toString());
+								if(SHOW_GUROBI_ADD)
+									System.out.println(addedd.toString());
 								try {
 									ret.add( new COMP_EXPR( ref_expr, addedd, COMP_EXPR.EQUAL ) );
 								} catch (Exception e) {
@@ -1103,6 +1108,115 @@ public class HOPTranslate extends Translate {
 		return ret;
 	}
 
+
+
+
+
+
+
+	public void setActionVariables(ArrayList<PVAR_INST_DEF> action_zero, GRBModel static_grb_model){
+
+
+
+		//I need to work on setting initialization.
+		Object val = null;
+
+		HashMap<EXPR,Object> action_value = new HashMap<>();
+
+		for(int i =0; i<action_zero.size();i++){
+
+			PVAR_INST_DEF act = action_zero.get(i);
+			if( act._oValue instanceof Double){
+				 val = (Double) act._oValue; }
+			else if(act._oValue instanceof Boolean){
+				 val = (Boolean) act._oValue; }
+			else{
+				val = (Integer) act._oValue; }
+
+			for(int j=0; j<future_TERMS.size();j++){
+
+				EXPR action_var =new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
+						.addTerm(TIME_PREDICATE,constants,objects)
+						.addTerm(future_PREDICATE,constants,objects)
+						.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
+						.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(j) ), constants, objects);
+
+
+
+				action_value.put(action_var,val);
+
+
+			}
+
+
+
+
+
+		}
+
+		if(action_value.size()==0){
+			return;
+
+		}
+
+
+		HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> src= new HashMap<>();
+		src.putAll(rddl_action_vars);
+
+
+
+		src.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>> >() {
+			@Override
+			public void accept(PVAR_NAME pvar, ArrayList<ArrayList<LCONST>> u) {
+				u.parallelStream().forEach( new Consumer<ArrayList<LCONST>>() {
+					@Override
+					public void accept(ArrayList<LCONST> terms) {
+						//System.out.print(pvar.toString());
+						EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms )
+								.addTerm(TIME_PREDICATE, constants, objects)
+								.addTerm( future_PREDICATE, constants, objects );
+						//System.out.println("HERE IS THE ERROR");
+
+						future_TERMS.forEach( new Consumer<LCONST>() {
+							@Override
+							public void accept(LCONST future_term) {
+								EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms )
+										.addTerm(TIME_PREDICATE, constants, objects)
+										.addTerm(future_PREDICATE, constants, objects)
+										.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
+										.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
+
+
+
+								try {
+
+									GRBVar this_var = EXPR.grb_cache.get(action_var);
+									this_var.set(DoubleAttr.Start,(Double) action_value.get(action_var));
+
+								} catch (GRBException e) {
+
+									e.printStackTrace();
+								}
+
+
+
+
+
+
+
+
+
+
+							}
+						});
+					}
+				});
+			}
+		});
+
+
+
+	}
 
 
 
@@ -1407,6 +1521,9 @@ public class HOPTranslate extends Translate {
 		exit_code = -1;
 		try{
 			System.out.println("----------------------------------------------THIS IS WERE STARTING OPTIMIZATION(HOPTranslate.java)!!!");
+
+			if(gurobi_initialization!=null)
+				setActionVariables(gurobi_initialization,static_grb_model);
 			exit_code = goOptimize( static_grb_model);
 			
 		}
