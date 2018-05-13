@@ -1708,11 +1708,9 @@ public class RDDL {
 		public static final String ENUM   = "[Enum]".intern();
 		public static final String STRUCT = "[Struct]".intern();
 
-		public static final int M = (int)1e6; //Integer.MAX_VALUE;
+		public static final int M = (int)1e4; //Integer.MAX_VALUE;
 
 		//This is added by Harish.
-
-
 
 		String  _sType = UNKNOWN; // real, int, bool, enum
 		public boolean _bDet  = false;    // deterministic?  (if not, then stochastic)
@@ -1724,7 +1722,7 @@ public class RDDL {
 		// Can support a prefix notation if requested
 		//public abstract String toPrefix();
 		
-		// Recurses until distribution then samples parameters (assuming deterministic)
+		// Recurses until distribution then samples parameters (given the state)
 		public abstract EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException;
 
 
@@ -1735,29 +1733,13 @@ public class RDDL {
 										 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 										 final Map< TYPE_NAME, OBJECTS_DEF > objects ) ;
 
-
-
-
-
-
-
 		public abstract boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception;
-
 
 		public abstract boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception;
 
-
-		public EXPR sampleDeterminization( final RandomDataGenerator rand ) throws Exception {
-			try{
-				throw new UnsupportedOperationException("sampleDeterminization not implemented for " + toString() );
-			}catch( Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
-			}
-			return null;
-		}
+		public abstract EXPR sampleDeterminization( final RandomDataGenerator rand ) throws Exception;
 
 		public abstract double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -1774,23 +1756,19 @@ public class RDDL {
 //			return Double.NaN;
 //		}
 //
-//		public char upper( char... types ){
-//			char ret = types[0];
-//			for( int i = 0 ; i < types.length; ++i ){
-//				if( types[i] == ret ){
-//					continue;
-//				}else if( types[i] == GRB.CONTINUOUS ){
-//					ret = GRB.CONTINUOUS;
-//				}else if( types[i] == GRB.INTEGER && ret == GRB.BINARY ){
-//					ret = GRB.INTEGER;
-//				}
-//			}
-//			return ret;
-//		}
-
-
-
-
+		public static char upper( char... types ){
+			char ret = types[0];
+			for( int i = 0 ; i < types.length; ++i ){
+				if( types[i] == ret ){
+					continue;
+				}else if( types[i] == GRB.CONTINUOUS ){
+					ret = GRB.CONTINUOUS;
+				}else if( types[i] == GRB.INTEGER && ret == GRB.BINARY ){
+					ret = GRB.INTEGER;
+				}
+			}
+			return ret;
+		}
 
 		public static char upper( List<Character> types ){
 			char ret = types.get(0);
@@ -1822,26 +1800,16 @@ public class RDDL {
 		public abstract boolean equals(Object obj);
 
 		public static double getGRB_LB( final char grb_type ){
-			// -Double.MAX_VALUE  This is changed by harish.
-
-
 			return grb_type == GRB.CONTINUOUS ? -M:
 					grb_type == GRB.INTEGER ? -M : grb_type == GRB.BINARY ? 0 : Double.NaN;
-
-
-
 			//return grb_type == GRB.CONTINUOUS ? -Double.MAX_VALUE:
 			//		grb_type == GRB.INTEGER ? Integer.MIN_VALUE : grb_type == GRB.BINARY ? 0 : Double.NaN;
 		}
 
 		public static double getGRB_UB( final char grb_type ){
-
 			return grb_type == GRB.CONTINUOUS ? M :
 					grb_type == GRB.INTEGER ? M :
 							grb_type == GRB.BINARY ? 1 : Double.NaN;
-
-
-
 			//return grb_type == GRB.CONTINUOUS ? M :
 			//		grb_type == GRB.INTEGER ? Integer.MAX_VALUE :
 			//				grb_type == GRB.BINARY ? 1 : Double.NaN;
@@ -1851,12 +1819,6 @@ public class RDDL {
 		protected abstract char getGRB_Type(
 				final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants ,
 				final Map< PVAR_NAME, Character > type_map ) throws UnsupportedOperationException ;
-
-
-
-
-
-
 
 		public abstract EXPR addTerm( final LVAR new_term ,
 									  final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects );
@@ -1874,10 +1836,6 @@ public class RDDL {
 		public static TreeMap< String, String> name_map = new TreeMap<>();
 //		new ReferenceMap<>(
 //				AbstractReferenceMap.ReferenceStrength.HARD, AbstractReferenceMap.ReferenceStrength.HARD, true );
-
-
-
-
 
 		public static TreeMap<String, String> reverse_name_map = new TreeMap<>(
 				new Comparator<String>() {
@@ -1926,15 +1884,11 @@ public class RDDL {
 			return name_map.get(expr_string);
 		}
 
-
-
-
 		protected static List<EXPR> expandQuantifier(
 				final EXPR e,
 				final ArrayList<LTYPED_VAR> lvars,
 				final Map<TYPE_NAME, OBJECTS_DEF> objects,
 				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ){
-
 
 			assert( objects != null );
 
@@ -2036,38 +1990,27 @@ public class RDDL {
 				//max length is 255 chars
 				String next_name = nextName();
 				final String exp_string = expr.toString();
-
 				name_map.put( exp_string, next_name );
 				reverse_name_map.put( next_name, exp_string );
 
 				//System.out.println("Internal name : " + exp_string + " : " + next_name);
-
 //				if(Character.toString(type).equals("I")){
 //					System.out.println("dkfjdkjfdjkfjdkf");
-//
-//
 //				}
-
 
 				double lb = getGRB_LB(type); double ub = getGRB_UB(type);
 				GRBVar new_var = null;
 				synchronized( model ){
 					new_var = model.addVar( lb, ub, 1.0d, type, next_name  );
-
 					grb_cache.put( expr, new_var );
 					//if(expr.getClass().getName().toString() =="rddl.RDDL$REAL_CONST_EXPR") {
 //					System.out.println("------------------>");
 //					System.out.println(grb_cache.get(expr).toString() +  "   " +expr.toString());
 //					System.out.println("------------------>");
-
 					//}
-
-
-
 					model.update();
 				}
 				//System.out.println("Adding var " + expr.toString() + " " + new_var + "[" + lb + "," + ub + "]" + " type : " + type );
-
 				return new_var;
 			} catch (GRBException e) {
 				e.printStackTrace();
@@ -2126,26 +2069,22 @@ public class RDDL {
 			return null;
 		}
 
-
-
-
-		public GRBVar getGRBConstr( final char sense, final GRBModel model ,
+		public abstract GRBVar getGRBConstr( final char sense, final GRBModel model ,
 									final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
 									final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-									Map<PVAR_NAME, Character> type_map ) throws Exception {
-
-			assert( isPiecewiseLinear(constants, objects) );
-
-			try{
-				throw new UnsupportedOperationException("not GRB EXPR " + toString() );
-			}catch( Exception e ){
-				e.printStackTrace();
-				System.exit(1);
-			}
-			return null;
-		}
-
-
+									Map<PVAR_NAME, Character> type_map ) throws Exception;
+//		{
+//
+//			assert( isPiecewiseLinear(constants, objects) );
+//
+//			try{
+//				throw new UnsupportedOperationException("not GRB EXPR " + toString() );
+//			}catch( Exception e ){
+//				e.printStackTrace();
+//				System.exit(1);
+//			}
+//			return null;
+//		}
 
 		public abstract int hashCode();
 
@@ -2155,68 +2094,44 @@ public class RDDL {
 			reverse_name_map.clear();
 			nameId = 0;
 		}
-
-
-
-
-
-
-
 	}
 	
 	////////////////////////////////////////////////////////// 
 	
 	public static class DiracDelta extends EXPR {
 
-
 		public DiracDelta(EXPR expr) {
 			_exprRealValue = expr;
 			_bDet = expr._bDet;
 		}
 
-
-		//This is start of Harish Addition
-
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map< TYPE_NAME, OBJECTS_DEF >  objects ){
-
-			return false;
+											Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
+			return _exprRealValue.isConstant(constants, objects);
 		}
 
 		@Override
-		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
-
-			return false;
-
+		public boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
+			return _exprRealValue.isPiecewiseLinear(constants, objects);
 		}
-
 
 		@Override
-		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects)  throws Exception{
-
-			throw new Exception("This method cannot be invoked, has to be use sample determination");
-
-
+		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+					Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			return _exprRealValue.getDoubleValue(constants, objects);
 		}
-
-
-
-
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return _exprRealValue.sampleDeterminization(rand);
 		}
 
-
-
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return _exprRealValue.getMean(objects);
 		}
-
 
 		@Override
 		protected char getGRB_Type(
@@ -2247,7 +2162,6 @@ public class RDDL {
 			return false;
 		}
 
-
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -2255,13 +2169,6 @@ public class RDDL {
 			return new DiracDelta( _exprRealValue.substitute(subs, constants, objects) );
 		}
 
-
-
-		//This is end of Harish Addition
-
-
-
-		
 		public EXPR _exprRealValue;
 		
 		public String toString() {
@@ -2273,8 +2180,8 @@ public class RDDL {
 		
 		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
 			Object o = _exprRealValue.sample(subs, s, r);
-			if (!(o instanceof Double))
-				throw new EvalException("RDDL: DiracDelta only applies to real-valued data.\n" + this);
+			if (!(o instanceof Number))
+				throw new EvalException("RDDL: DiracDelta only applies to numbers.\n" + this);
 			return o;
 		}
 
@@ -2287,12 +2194,6 @@ public class RDDL {
 			throws EvalException {
 			_exprRealValue.collectGFluents(subs, s, gfluents);
 		}
-
-
-
-
-
-
 	}
 	
 	public static class KronDelta extends EXPR {
@@ -2302,38 +2203,27 @@ public class RDDL {
 			_bDet = expr._bDet;
 		}
 
-		//This is Start of Harish Addition
-
-
-
-
-
-
 		@Override
 		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
-
-			return false;
-
+										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
+			return _exprIntValue.isPiecewiseLinear(constants, objects);
 		}
 
 		@Override
-		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return false;
+		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			return _exprIntValue.isConstant(constants, objects);
 		}
 
 		@Override
 		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			throw new Exception("This method cannot be invoked, has to be use sample determination");
+			return _exprIntValue.getDoubleValue(constants, objects);
 		}
-
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			return new KronDelta( _exprIntValue.sampleDeterminization(rand) );
+			return _exprIntValue.sampleDeterminization(rand);
 		}
-
-
 
 		public EXPR _exprIntValue;
 
@@ -2341,9 +2231,6 @@ public class RDDL {
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return _exprIntValue.getMean(objects);
 		}
-
-
-
 
 		@Override
 		protected char getGRB_Type(
@@ -2373,23 +2260,12 @@ public class RDDL {
 			return false;
 		}
 
-
-
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
 			return new KronDelta( _exprIntValue.substitute(subs, constants, objects ) );
 		}
-
-
-
-		//This is End of Harish Addition
-
-
-
-		
-
 		
 		public String toString() {
 			if (USE_PREFIX) 
@@ -2419,7 +2295,6 @@ public class RDDL {
 			throws EvalException {
 			_exprIntValue.collectGFluents(subs, s, gfluents);
 		}
-
 	}
 	
 	public static class Uniform extends EXPR {
