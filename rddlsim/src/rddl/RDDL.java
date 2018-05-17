@@ -5944,34 +5944,56 @@ public class RDDL {
 		public LTERM    _termVal;
 		public EXPR     _expr;
 
-
-
-		public CASE getMean( Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-			return new CASE( _termVal, _expr.getMean(objects) );
+		public CASE substitute( final Map<LVAR,LCONST> subs,
+				 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+				 final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+			return new CASE(_termVal.substitute(subs, constants, objects), 
+							_expr.substitute(subs, constants, objects));
 		}
 
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
+			return false;
+		}
+		
+		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+						  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
+			return _expr.isPiecewiseLinear(constants, objects);
+		}
+
+		public CASE getMean( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return new CASE( _termVal, _expr.getMean(constants, objects) );
+		}
+		
+		public EXPR sampleDeterminization( final RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return new CASE(_termVal, 
+				_expr.sampleDeterminization(rand, constants, objects));
+		}
+		
 		@Override
 		public int hashCode() {
-			return Objects.hash( _bDefaultCase, _termVal, _expr );
+			return Objects.hash( "CASE", _bDefaultCase, _termVal, _expr );
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if( obj instanceof CASE ){
 				CASE c = (CASE)obj;
-				return _bDefaultCase == c._bDefaultCase && _termVal.equals( c._termVal) && _expr.equals( c._expr );
+				return _bDefaultCase == c._bDefaultCase 
+						&& _termVal.equals( c._termVal) && _expr.equals( c._expr );
 			}
 			return false;
 		}
 
-		
 		public String toString() {
 			if (USE_PREFIX)
 				return "(" + (_bDefaultCase ? "default" : "case " + _termVal) + " : " + _expr + ")";
 			else
 				return (_bDefaultCase ? "default" : "case " + _termVal) + " : " + _expr;
 		}
-
 	}
 	
 	public static class SWITCH_EXPR extends EXPR {
@@ -5987,19 +6009,20 @@ public class RDDL {
 		public LTERM _term; 
 		public ArrayList<CASE> _cases = null;
 
-
-		//This is start addition
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			throw new Exception("This is not defined, SWITCH_EXPR");
+		public EXPR sampleDeterminization(RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			//TODO - implement using map() on CASE
+			... return new SWITCH(_term, _cases.stream()
+					.map(m->m.sampleDeterminization(rand, constants, objects))
+					.collect(Collectors.toList()))
 		}
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new Exception("This is not defined, SWITCH_EXPR");
 		}
-
-
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
@@ -6070,8 +6093,6 @@ public class RDDL {
 					_cases.stream().map( m -> new CASE( m._termVal, m._expr.addTerm(new_term, constants, objects) ) )
 							.collect( Collectors.toList() ) ) );
 		}
-
-
 
 		@Override
 		public int hashCode() {
