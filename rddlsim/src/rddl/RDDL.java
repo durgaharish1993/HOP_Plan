@@ -39,8 +39,6 @@ public class RDDL {
 	public static boolean USE_PREFIX = false;
 	public static boolean SUPPRESS_OBJECT_CAST = false;
 
-
-
 	public RDDL() { }
 
 	// public RDDL(RDDL rddl) { 
@@ -1768,9 +1766,7 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
-
 				throw new UnsupportedOperationException(toString());
-
 		}
 
 		public static char upper( char... types ){
@@ -1817,12 +1813,8 @@ public class RDDL {
 		public abstract boolean equals(Object obj);
 
 		public static double getGRB_LB( final char grb_type ){
-
 			return grb_type == GRB.CONTINUOUS ? -(100 * M):
 					grb_type == GRB.INTEGER ? -(100 * M) : grb_type == GRB.BINARY ? 0 : Double.NaN;
-
-
-
 //			return grb_type == GRB.CONTINUOUS ? -Double.MAX_VALUE:
 //					grb_type == GRB.INTEGER ? -Integer.MAX_VALUE : grb_type == GRB.BINARY ? 0 : Double.NaN;
 		}
@@ -1832,12 +1824,9 @@ public class RDDL {
 //			return grb_type == GRB.CONTINUOUS ? Double.MAX_VALUE :
 //					grb_type == GRB.INTEGER ? Integer.MAX_VALUE :
 //							grb_type == GRB.BINARY ? 1 : Double.NaN;
-
 			return grb_type == GRB.CONTINUOUS ? 100 * M:
 					grb_type == GRB.INTEGER ? 100 * M:
 							grb_type == GRB.BINARY ? 1 : Double.NaN;
-
-
 		}
 
 		//need typemap from RDDL TODO
@@ -1995,8 +1984,6 @@ public class RDDL {
 //				System.out.println("I need to see whats happening");
 //
 //			}
-
-
 			if( grb_cache.containsKey( expr ) ){
 				//System.out.println("Its Already Parsed to Gurboi Constraint");
 //				if(expr.getClass().getName().toString() =="rddl.RDDL$REAL_CONST_EXPR") {
@@ -2016,7 +2003,6 @@ public class RDDL {
 				final String exp_string = expr.toString();
 				name_map.put( exp_string, next_name );
 				reverse_name_map.put( next_name, exp_string );
-
 
 				double lb = getGRB_LB(type); double ub = getGRB_UB(type);
 				GRBVar new_var = null;
@@ -2088,19 +2074,10 @@ public class RDDL {
 			_bDet = expr._bDet;
 		}
 
-
-
-
-
-
-
-
-
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented,DiracDelta" + this.toString());
 		}
-
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
@@ -2175,9 +2152,6 @@ public class RDDL {
 			_exprIntValue = expr;
 			_bDet = expr._bDet;
 		}
-
-
-
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
@@ -2262,11 +2236,6 @@ public class RDDL {
 			_bDet = false;
 		}
 
-
-
-
-
-
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Uniform" + this.toString());
@@ -2293,7 +2262,6 @@ public class RDDL {
 
 		public EXPR _exprLowerReal;
 		public EXPR _exprUpperReal;
-
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
@@ -2380,11 +2348,6 @@ public class RDDL {
 			_normalVarReal  = var;
 			_bDet = false;
 		}
-
-
-
-
-
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
@@ -2492,23 +2455,13 @@ public class RDDL {
 			_bDet = false;
 		}
 
-
-
-
-
 		public TYPE_NAME _sTypeName = null;
 		public EXPR      _exprAlpha = null;
-
-
-
-
-
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented, Dirichlet"+ this.toString());
 		}
-
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
@@ -2628,12 +2581,10 @@ public class RDDL {
 			_bDet = false;
 		}
 
-
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Multinomial" + this.toString());
 		}
-
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
@@ -2791,8 +2742,11 @@ public class RDDL {
 
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
-			throw new NotImplementedException("This method is not implemented,Discrete" + this.toString());
+		public GRBVar getGRBConstr(char sense, GRBModel model, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+				Map<TYPE_NAME, OBJECTS_DEF> objects, 
+				Map<PVAR_NAME, Character> type_map) throws Exception {
+			throw new NotImplementedException("This method is not implemented " + this.toString());
 		}
 
 
@@ -3581,9 +3535,6 @@ public class RDDL {
 
 	}
 
-
-
-
 	public static class INT_CONST_EXPR extends CONST_EXPR {
 		
 		public INT_CONST_EXPR(Integer i) {
@@ -3592,7 +3543,6 @@ public class RDDL {
 			_sType = INT;
 			_bDet = true;
 		}
-
 
 		@Override
 		protected char getGRB_Type(
@@ -3619,7 +3569,6 @@ public class RDDL {
 //			throws EvalException {
 //			// Nothing to collect
 //		}
-
 	}
 
 	public static class REAL_CONST_EXPR extends CONST_EXPR {
@@ -3630,7 +3579,6 @@ public class RDDL {
 			_sType  = REAL;
 			_bDet = true;
 		}
-
 
 		@Override
 		protected char getGRB_Type(
@@ -3670,8 +3618,30 @@ public class RDDL {
 		public LCONST _sLabel;
 		public EXPR   _expr;
 		
+		public EXPR substitute( final Map<LVAR,LCONST> subs,
+				 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+				 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
+			try{
+				return new STRUCT_EXPR_MEMBER(_sLabel, _expr.substitute(constants, objects));
+			}catch( Exception exc ){
+				exc.printStackTrace();
+				throw exc;
+			}
+		}
+
+		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+		   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
+			return false;
+		}
+
+		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+				  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
+			return _expr.isPiecewiseLinear(constants, objects);
+		}
+
 		public int hashCode() {
-			return _sLabel.hashCode() + _expr.hashCode();
+			return Objects.hash("STRUCT_EXPR_MEMBER", 
+					_sLabel.hashCode() + _expr.hashCode());
 		}
 		
 		public boolean equals(Object o) {
@@ -3679,7 +3649,7 @@ public class RDDL {
 				STRUCT_EXPR_MEMBER s = (STRUCT_EXPR_MEMBER)o;
 				return _sLabel.equals(s._sLabel) && _expr.equals(s._expr);
 			} else
-				return false;
+			return false;
 		}
 		
 		public String toString() {
@@ -3694,9 +3664,6 @@ public class RDDL {
 			_alSubExpr = new ArrayList<STRUCT_EXPR_MEMBER>();
 			_bDet = true;
 		}
-
-
-
 
 		public STRUCT_EXPR(ArrayList sub_expr) {
 			_sType     = STRUCT;
@@ -3715,59 +3682,29 @@ public class RDDL {
 
 		public ArrayList<STRUCT_EXPR_MEMBER> _alSubExpr;
 
-		//Its start of Harish Addition
-
-
-		public  GRBVar getGRBConstr( final char sense, final GRBModel model ,
-											 final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-											 final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-											 Map<PVAR_NAME, Character> type_map ) throws Exception{
-
-			throw new Exception(" This is not defined, STRUCT_EXPR_Class");
-
-
-
-
+		public  GRBVar getGRBConstr( final char sense, final GRBModel model ,													 
+				final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,													 
+				final Map< TYPE_NAME, OBJECTS_DEF > objects ,													 
+				Map<PVAR_NAME, Character> type_map ) throws Exception{
+			throw new UnsupportedOperationException(toString());
 		}
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			throw new Exception("This is not Defined, STRUCT_EXPR CLASS");
+			throw new UnsupportedOperationException(toString());
 		}
-
-
 
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map< TYPE_NAME, OBJECTS_DEF >  objects ){
-
 			return false;
 		}
-
-
-
-
 
 		@Override
 		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 										  final Map< TYPE_NAME, OBJECTS_DEF > objects ){
-
 			return false;
-
 		}
-
-
-
-
-		@Override
-		public double getDoubleValue(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects){
-
-			throw new UnsupportedOperationException("This method is not implemented");
-
-
-		}
-
-
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
@@ -3790,7 +3727,6 @@ public class RDDL {
 			return false;
 		}
 
-
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return new STRUCT_EXPR( new ArrayList<STRUCT_EXPR_MEMBER>(
@@ -3800,42 +3736,28 @@ public class RDDL {
 									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.getMean(objects) );
 								} catch (Exception e) {
 									e.printStackTrace();
+									throw e;
 								}
-								return null;
 							})
 							.collect( Collectors.toList( ) ) ) );
-		}
-
-
-
-		@Override
-		protected char getGRB_Type(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
-			try{
-				throw new UnsupportedOperationException("grb type of struct expr");
-			}catch( Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
-			}
-			return GRB.CONTINUOUS;
 		}
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   Map<TYPE_NAME, OBJECTS_DEF > objects  ) {
-			try{
-				throw new Exception("I don't know what this class is.");
-			}catch( Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
-			}
-			return null;
+			return new STRUCT_EXPR( new ArrayList<STRUCT_EXPR_MEMBER>(
+					_alSubExpr.stream().map(
+							m -> {
+								try {
+									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.substitute(subs, constants, objects) );
+								} catch (Exception e) {
+									e.printStackTrace();
+									throw e;
+								}
+							})
+							.collect( Collectors.toList( ) ) ) );
 		}
-
-		//Its end of Harish Addition
-
 
 		public void addMember(LCONST label, EXPR expr) {
 			_alSubExpr.add(new STRUCT_EXPR_MEMBER(label, expr));
@@ -3879,11 +3801,9 @@ public class RDDL {
 			for (STRUCT_EXPR_MEMBER m : _alSubExpr)
 				m._expr.collectGFluents(subs, s, gfluents);
 		}
-	
 	}
 	
 	public static class OPER_EXPR extends EXPR {
-
 
 		static double doubleTemp;
 		public static final String PLUS  = "+".intern();
@@ -3897,11 +3817,6 @@ public class RDDL {
 		public static final Integer  I_ZERO = Integer.valueOf(0);
 		public static final Boolean  B_ZERO = Boolean.valueOf(false);
 		public static final ENUM_VAL E_ZERO = new ENUM_VAL("@0");
-
-
-
-
-		//This is start of harish addition
 
 		@Override
 		public boolean isConstant (
@@ -3920,8 +3835,8 @@ public class RDDL {
 				return new OPER_EXPR( _e1.sampleDeterminization(rand), _e2.sampleDeterminization(rand), _op );
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
@@ -3937,9 +3852,8 @@ public class RDDL {
 						_e2.addTerm(new_term, constants, objects ), _op );
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
@@ -3950,21 +3864,11 @@ public class RDDL {
 				return grb_cache.get( this );
 			}
 
-
-			if(!isPiecewiseLinear(constants,objects)){
-				isPiecewiseLinear(constants,objects);
-				//System.out.println(this.toString());
-
-			}
-
-			//assert( isPiecewiseLinear(constants, objects) );
+			assert( isPiecewiseLinear(constants, objects) );
 
 			GRBLinExpr exp = new GRBLinExpr();
 			try{
-
 				GRBVar this_var = getGRBVar(this, model, constants, objects , type_map );
-
-
 				//If Reducible turns out to be a REAL_CONST_EXPR
 				EXPR reducible = reduce( _e1, _e2, _op, constants, objects );
 				if( !( reducible instanceof OPER_EXPR ) ){
@@ -3972,7 +3876,6 @@ public class RDDL {
 					model.addConstr(this_var, GRB.EQUAL, that_var, name_map.get(toString())+"="+name_map.get(reducible.toString()));
 					return this_var;
 				}
-
 				GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map );
 				GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map );
 
@@ -3991,7 +3894,6 @@ public class RDDL {
 						model.addConstr( this_var, sense, exp, nam );
 						break;
 					case "*" :
-
 						assert( _e1.isConstant(constants, objects) || _e2.isConstant(constants, objects) );
 						if( _e1.isConstant(constants, objects) ){
 							exp.addTerm( _e1.getDoubleValue(constants, objects), v2 );
@@ -4014,7 +3916,7 @@ public class RDDL {
 							model.addConstr( this_var, GRB.EQUAL, if_min_var,  nam );
 						} catch (Exception e) {
 							e.printStackTrace();
-							System.exit(1);
+							throw e;
 						}
 						break;
 					case "max" :
@@ -4024,7 +3926,7 @@ public class RDDL {
 							model.addConstr(this_var, GRB.EQUAL, ife_max_var, nam );
 						} catch (Exception e) {
 							e.printStackTrace();
-							System.exit(1);
+							throw e;
 						}
 						break;
 				}
@@ -4032,9 +3934,8 @@ public class RDDL {
 				return this_var;
 			} catch(Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-			return null;
 		}
 
 		@Override
@@ -4073,7 +3974,7 @@ public class RDDL {
 						throw new Exception("unknown op type " + toString() );
 					}catch( Exception exc ){
 						exc.printStackTrace();
-						System.exit(1);
+						throw exc;
 					}
 			}
 			return GRB.CONTINUOUS;
@@ -4144,28 +4045,22 @@ public class RDDL {
 			return false;
 		}
 
-
-
-
-		//need to write a new Implementation.
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			assert( isConstant(constants, objects) );
-			EXPR sub = substitute( Collections.EMPTY_MAP, constants, objects);
-			assert( sub.isConstant(constants, objects) );
-
-			if( sub instanceof OPER_EXPR ){//case not caught by isConstant()
-				try{
+			try{
+				assert( isConstant(constants, objects) );
+				EXPR sub = substitute( Collections.EMPTY_MAP, constants, objects);
+				assert( sub.isConstant(constants, objects) );
+				if( sub instanceof OPER_EXPR ){//case not caught by isConstant()
 					throw new Exception("isCOnstant() is true but substitution yielded OPER_EXPR");
-				}catch( Exception exc ){
-					exc.printStackTrace();
-					System.exit(1);
 				}
-				return Double.NaN;
+				return sub.getDoubleValue(constants, objects);
+			}catch( Exception exc ){
+				exc.printStackTrace();
+				throw exc;
 			}
-			return sub.getDoubleValue(constants, objects);
 		}
 
 		@Override
@@ -4177,23 +4072,8 @@ public class RDDL {
 
 			if( _op.equals(PLUS) || _op.equals(MINUS) || _op.equals(MIN) || _op.equals(MAX) ){
 				return _e1.isPiecewiseLinear(constants, objects) &&
-						_e2.isPiecewiseLinear(constants, objects);
+					   _e2.isPiecewiseLinear(constants, objects);
 			}else if( _op.equals(TIMES) ){
-
-//				Boolean b1 = ( _e1.isConstant(constants, objects) && _e2.isPiecewiseLinear(constants, objects) );
-//				Boolean b2 = ( _e2.isConstant(constants, objects) && _e1.isPiecewiseLinear(constants, objects) );
-//
-//				if(b1==false && b2==false){
-//					notPWLexprs.add(this);
-//
-//
-//				}
-//
-//				return b1 || b2 ;
-
-
-
-
 				return ( _e1.isConstant(constants, objects) && _e2.isPiecewiseLinear(constants, objects) )
 						|| ( _e2.isConstant(constants, objects) && _e1.isPiecewiseLinear(constants, objects) );
 			}else if( _op.equals(DIV) ){
@@ -4203,7 +4083,7 @@ public class RDDL {
 					throw new Exception("unhandled case.");
 				}catch(Exception exc ){
 					exc.printStackTrace();
-					System.exit(1);
+					throw exc;
 				}
 			}
 			return false;
@@ -4216,13 +4096,11 @@ public class RDDL {
 			try {
 				EXPR e1_sub = _e1.substitute(subs, constants, objects);
 				EXPR e2_sub = _e2.substitute(subs, constants, objects);
-
 				return reduce( e1_sub, e2_sub, _op, constants , objects );
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
 		private EXPR reduce( final EXPR e1_sub, final EXPR e2_sub, final String op,
@@ -4232,15 +4110,11 @@ public class RDDL {
 			final boolean e2_const = e2_sub.isConstant( constants , objects );
 			if( e1_const && e2_const ){
 				try {
-
 					return new REAL_CONST_EXPR( (double) ComputeArithmeticResult( e1_sub.getDoubleValue( constants, objects ),
 							e2_sub.getDoubleValue( constants, objects ), op ) );
-
-					//return new REAL_CONST_EXPR(doubleTemp+=0.1);
-					//Temp change from EvalException to Exception Eval
 				} catch (Exception e) {
 					e.printStackTrace();
-					System.exit(1);
+					throw e;
 				}
 			}
 
@@ -4276,7 +4150,7 @@ public class RDDL {
 							throw new ArithmeticException("divide by zero : " + toString() );
 						}catch( Exception exc ){
 							exc.printStackTrace();
-							System.exit(1);
+							throw exc;
 						}
 					}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 1d ){
 						return e1_sub;
@@ -4290,7 +4164,7 @@ public class RDDL {
 						return new OPER_EXPR( new REAL_CONST_EXPR(2d) , e1_sub, TIMES );
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.exit(1);
+						throw e;
 					}
 					case "-" : return new REAL_CONST_EXPR(0d);
 					case "/" : return new REAL_CONST_EXPR(1d);
@@ -4300,16 +4174,10 @@ public class RDDL {
 				return new OPER_EXPR( e1_sub, e2_sub, _op );
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
 			return null;
 		}
-
-
-		//This is end of harish addition
-
-
-
 
 		public OPER_EXPR(EXPR e1, EXPR e2, String op) throws Exception {
 
@@ -4396,7 +4264,6 @@ public class RDDL {
 			if (e2_eval == null)
 				_e2.collectGFluents(subs, s, gfluents);
 		}
-
 	}
 
 	public static Number ConvertToNumber(Object o) throws EvalException {
