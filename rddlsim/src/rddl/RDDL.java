@@ -5235,48 +5235,46 @@ public class RDDL {
 		public ArrayList<EXPR>   _alArgs  = null;
 		public ArrayList<Object> _alArgEval = new ArrayList<Object>(); // Used for evaluation
 
-
-
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return new FUN_EXPR( _sName, new ArrayList<EXPR>(
-					_alArgs.stream().map( m -> {
-						try {
-							return m.getMean(objects);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect( Collectors.toList() ) ) );
+		public EXPR getMean( 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
+			try {
+				return new FUN_EXPR( _sName, new ArrayList<EXPR>(
+						_alArgs.stream().map( m -> 
+							m.getMean(constants, objects))
+							.collect( Collectors.toList() ) ) );
+				return m.getMean(objects);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
 		}
 
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			return new FUN_EXPR( _sName, new ArrayList<EXPR>(
-					_alArgs.stream().map(m -> {
-						try {
-							return m.sampleDeterminization(rand);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect( Collectors.toList() ) ) );
+		public EXPR sampleDeterminization(RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
+			try{
+				return new FUN_EXPR( _sName, new ArrayList<EXPR>(
+					_alArgs.stream().map(m -> m.sampleDeterminization(rand))
+					.collect( Collectors.toList() ) ) );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
 		}
 
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			return _alArgs.stream().allMatch( m -> {
-				try {
-					return m.isConstant(constants, objects);
-				} catch (Exception e) {
-					e.printStackTrace();
-
-				}
-				return false;
-
-			});
+			try{
+				return _alArgs.stream().allMatch( m -> m.isConstant(constants, objects));
+			}catch(Exception exc){
+				exc.printStackTrace();
+				throw exc;
+			}
 		}
 
 		@Override
@@ -5287,36 +5285,32 @@ public class RDDL {
 				return true;
 			}
 
-			if( _sName.equals( MIN ) || _sName.equals( MAX )  || _sName.equals( ABS )
-					|| _sName.equals( SGN ) ){
-				 return _alArgs.stream().allMatch(m -> {
-					 try {
-						 return m.isPiecewiseLinear(constants, objects);
-					 } catch (Exception e) {
-						 e.printStackTrace();
-						 return false;
-					 }
-				 });
+			if( _sName.equals( MIN ) || _sName.equals( MAX )  
+					|| _sName.equals( ABS ) || _sName.equals( SGN ) ){
+				 try{
+					 return _alArgs.stream().allMatch(
+						 m -> m.isPiecewiseLinear(constants, objects));
+				 }catch(Exception exc){
+					 exc.printStackTrace();
+					 throw exc;
+				 }
 			}
-
-			return false;
-
-
 		}
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										 Map<TYPE_NAME, OBJECTS_DEF> objects) throws  Exception {
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws  Exception {
 			assert( isConstant(constants, objects) );
-			List<Double> evals = _alArgs.stream()
-					.map( m -> {
-						try {
-							return m.getDoubleValue( constants, objects);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect( Collectors.toList() );
+			List<Double> evals = null;
+			try{
+				evals = _alArgs.stream()
+					.map( m -> m.getDoubleValue( constants, objects))
+					.collect( Collectors.toList() );
+			}catch(Exception exc){
+				exc.printStackTrace();
+				throw exc;
+			}
+			
 			if( _sName.equals(MIN) ){
 				return evals.stream().reduce( Double.POSITIVE_INFINITY, Double::min );
 			}else if( _sName.equals( MAX ) ){
@@ -5395,12 +5389,12 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model,
-								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								   Map<TYPE_NAME, OBJECTS_DEF> objects,
-								   Map<PVAR_NAME, Character> type_map) throws Exception {
+					   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+					   Map<TYPE_NAME, OBJECTS_DEF> objects,
+					   Map<PVAR_NAME, Character> type_map) throws Exception {
 			if( isConstant(constants, objects) ){
 				return new REAL_CONST_EXPR( getDoubleValue(constants, objects) )
-						.getGRBConstr(sense, model, constants, objects, type_map);
+					.getGRBConstr(sense, model, constants, objects, type_map);
 			}
 
 			if( grb_cache.containsKey(this) ){
@@ -5411,28 +5405,18 @@ public class RDDL {
 			try{
 				EXPR ret = null;
 				if( _sName.equals( MIN ) ){
-					ret = _alArgs.stream().reduce( (a,b) -> {
-						try {
-							return new OPER_EXPR( a, b, OPER_EXPR.MIN );
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).get();
+					ret = _alArgs.stream().reduce( 
+							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MIN )).get();
 				}else if( _sName.equals( MAX ) ){
-					ret = _alArgs.stream().reduce( (a,b) -> {
-						try {
-							return new OPER_EXPR( a, b, OPER_EXPR.MAX );
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).get();
+					ret = _alArgs.stream().reduce( 
+							(a,b) -> OPER_EXPR( a, b, OPER_EXPR.MAX )).get();
 				}else if( _sName.equals( ABS ) ){
 					assert( _alArgs.size() == 1 );
-					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) , new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
+					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) , 
+						new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
 					ret = new IF_EXPR( comp_expr, _alArgs.get(0),
-							new OPER_EXPR( new REAL_CONST_EXPR(-1d), _alArgs.get(0), OPER_EXPR.TIMES ) );
+							new OPER_EXPR( new REAL_CONST_EXPR(-1d), 
+							_alArgs.get(0), OPER_EXPR.TIMES ) );
 				}
 //				else if( _sName.equals( MOD ) ){
 //					//x%y == x/y - floor(x/y)
@@ -5459,7 +5443,7 @@ public class RDDL {
 				return this_var;
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
 			return null;
 		}
@@ -5539,11 +5523,6 @@ public class RDDL {
 			return new FUN_EXPR( _sName, new ArrayList<EXPR>( x ) );
 		}
 
-
-
-
-
-		
 		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {		
 			
 			if (!KNOWN_FUNCTIONS.contains(_sName))
@@ -5692,36 +5671,39 @@ public class RDDL {
 		public EXPR _trueBranch;
 		public EXPR _falseBranch;
 
-
-		//This is start of addition
-
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			return new IF_EXPR( _test.sampleDeterminization(rand),
-					_trueBranch.sampleDeterminization(rand), _falseBranch.sampleDeterminization(rand) );
+		public EXPR sampleDeterminization(final RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			return new IF_EXPR( _test.sampleDeterminization(rand, constants, objects),
+					_trueBranch.sampleDeterminization(rand, constants, objects), 
+					_falseBranch.sampleDeterminization(rand, constants, objects) );
 		}
 
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return new IF_EXPR( _test.getMean(objects), _trueBranch.getMean(objects), _falseBranch.getMean(objects) );
+		public EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			return new IF_EXPR( _test.getMean(constants, objects), 
+					_trueBranch.getMean(constants, objects),
+					_falseBranch.getMean(constants, objects) );
 		}
-
-
-
-
 
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
+				Map<PVAR_NAME, Character> type_map) Exception {
 			try {
 				if( isConstant( constants, null ) ){
                     final double d = getDoubleValue(constants, null );
                     assert( d== 1d || d == 0d );
-                    return (d == 1) ? _trueBranch.getGRB_Type(constants, type_map) : _falseBranch.getGRB_Type(constants, type_map);
+                    return (d == 1) ? 
+                    		_trueBranch.getGRB_Type(constants, type_map) : 
+                			_falseBranch.getGRB_Type(constants, type_map);
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw e;
 			}
 			return upper( _trueBranch.getGRB_Type(constants, type_map),
 					_falseBranch.getGRB_Type(constants, type_map) );
@@ -5739,7 +5721,8 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( _test.isConstant(null, null ) ){
-                    return _test.getDoubleValue( null, null ) == 1d ?_trueBranch.equals(obj) : _falseBranch.equals(obj);
+                    return _test.getDoubleValue( null, null ) == 1d ?
+                    		_trueBranch.equals(obj) : _falseBranch.equals(obj);
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -5757,21 +5740,23 @@ public class RDDL {
 		public boolean isPiecewiseLinear(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			return _test.isConstant(constants, objects) || (
-					_test.isPiecewiseLinear( constants , objects ) && _trueBranch.isPiecewiseLinear(constants, objects)
-							&& _falseBranch.isPiecewiseLinear(constants, objects) );
+					_test.isPiecewiseLinear( constants , objects ) 
+					&& _trueBranch.isPiecewiseLinear(constants, objects)
+					&& _falseBranch.isPiecewiseLinear(constants, objects) );
 		}
 
 		public boolean isConstant( Map<PVAR_NAME, Map< ArrayList<LCONST>,Object> > constants ,
 								   Map< TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			return _test.isConstant(constants, objects ) &&
-					( _test.getDoubleValue(constants, objects) == 1d ? _trueBranch.isConstant(constants, objects)
-							: _falseBranch.isConstant(constants, objects) );
+					( _test.getDoubleValue(constants, objects) == 1d ? 
+						_trueBranch.isConstant(constants, objects)
+						: _falseBranch.isConstant(constants, objects) );
 		}
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			EXPR new_test = _test.substitute(subs, constants, objects);
 			try {
 				if( new_test.isConstant(constants, objects) ){
@@ -5788,16 +5773,14 @@ public class RDDL {
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF > objects, Map< PVAR_NAME, Character> type_map ) throws Exception{
-
-
+			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+			Map<TYPE_NAME, OBJECTS_DEF > objects, Map< PVAR_NAME, Character> type_map ) throws Exception{
 
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
@@ -5867,9 +5850,8 @@ public class RDDL {
 				return this_var;
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-			return null;
 		}
 
 		@Override
@@ -5881,34 +5863,24 @@ public class RDDL {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return Objects.hash( _test,  _trueBranch, _falseBranch );
+			return Objects.hash( "IF_EXPR", _test, _trueBranch, _falseBranch );
 		}
-
 
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
-			if( isConstant(constants , objects) ){
-				return _test.getDoubleValue(constants, objects) == 1d ? _trueBranch.getDoubleValue(constants, objects) :
-						_falseBranch.getDoubleValue(constants, objects);
-			}
 			try{
-				throw new Exception("double value undefined for " + toString() );
+				if( isConstant(constants , objects) ){
+					return _test.getDoubleValue(constants, objects) == 1d ? _trueBranch.getDoubleValue(constants, objects) :
+						_falseBranch.getDoubleValue(constants, objects);
+				}
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-			return Double.NaN;
 		}
 
-
-
-
-
-		//This is end of addition
-
-		
 		public String toString() {
 			if (USE_PREFIX) // TODO: Change prefix to if-then-else?
 				return "(if " + _test + " then " + _trueBranch + " else " + _falseBranch + ")";
