@@ -142,8 +142,8 @@ public class Client {
 			/** Establish a socket connetion */
 			//Socket connection = new Socket(address, port);
 			Socket connection = new Socket();
-                        connection.setSoTimeout(10000);
-                        connection.connect(new InetSocketAddress(address, port), 10000);
+			connection.setSoTimeout(10000);
+			connection.connect(new InetSocketAddress(address, port), 10000);
 
 
 
@@ -328,171 +328,179 @@ public class Client {
 
 			boolean exploration = true;
 			Integer best_lookahed = 10;
-//
-//			if(exploration){
-//
-//				Integer max_lookAhead= 10;
-//				Integer exp_steps = 8;
-//				Integer exp_rounds =10;
-//				HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
-//
-//				long start_time = System.currentTimeMillis();
-//
-//				for(int k = 1 ; k<max_lookAhead ; k++){
-//					Integer current_lookAhead = k;
-//
-//
-//					rddl = new RDDL("/tmp/temp_domain_instance.rddl");
-//					if (!rddl._tmInstanceNodes.containsKey(instanceName)) {
-//						System.out.println("Instance name '" + instanceName + "' not found in " + args[0] + "\nPossible choices: " + rddl._tmInstanceNodes.keySet());
-//						System.exit(1);
-//					}
-//					state = new State();
-//
-//
-//
-//					instance = rddl._tmInstanceNodes.get(instanceName);
-//					if (instance._sNonFluents != null) {
-//						nonFluents = rddl._tmNonFluentNodes.get(instance._sNonFluents);
-//					}
-//					domain = rddl._tmDomainNodes.get(instance._sDomain);
-//					if (nonFluents != null && !instance._sDomain.equals(nonFluents._sDomain)) {
-//						System.err.println("Domain name of instance and fluents do not match: " +
-//								instance._sDomain + " vs. " + nonFluents._sDomain);
-//						System.exit(1);
-//					}
-//
-//					state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
-//							domain._hmTypes, domain._hmPVariables, domain._hmCPF,
-//							instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
-//							domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
-//							domain._exprReward, instance._nNonDefActions);
-//
-//					// If necessary, correct the partially observed flag since this flag determines what content will be seen by the Client
-//					if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
-//							|| (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
-//						boolean observations_present = (state._alObservNames.size() > 0);
-//						System.err.println("WARNING: Domain '" + domain._sDomainName
-//								+ "' partially observed (PO) flag and presence of observations mismatched.\nSetting PO flag = " + observations_present + ".");
-//						domain._bPartiallyObserved = observations_present;
-//					}
-//
-//					///################################################################################################################
-//
-//					exploration = true;
-//					//This is to set lookahead value.
-//
-//
-//					parameters.set(2,current_lookAhead.toString());
-//
-//					policy = (Policy)c.getConstructor(
-//							new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
-//					policy.setRDDL(rddl);
-//					policy.setRandSeed(randomSeed);
-//					Double average_round_reward = 0.0;
-//					for(int j=0; j<exp_rounds; j++){
-//						state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
-//								domain._hmTypes, domain._hmPVariables, domain._hmCPF,
-//								instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
-//								domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
-//								domain._exprReward, instance._nNonDefActions);
-//
-//						Double round_reward = 0.0;
-//						ArrayList<PVAR_INST_DEF> round_best_action = new ArrayList<>();
-//						Double max_step_reward = -Double.MAX_VALUE;
-//						for(int n=0 ; n<exp_steps;n++){
-//
-//
-//							ArrayList<PVAR_INST_DEF> actions = policy.getActions(state);
-//							System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
-//
-//							if(!actions.toString().equals("[]"))
-//								System.out.println("dkjfkdjfkdfdf");
-//
-//							state.computeNextState(actions, rand);
-//
-//							final double immediate_reward = ((Number)domain._exprReward.sample(
-//									new HashMap<RDDL.LVAR,LCONST>(),state, rand)).doubleValue();
-//							state.advanceNextState();
-//							round_reward+=immediate_reward;
-//							if(immediate_reward> max_step_reward){
-//								round_best_action = actions;
-//								max_step_reward = immediate_reward;
-//								policy.gurobi_initialization = round_best_action;
-//							}
-//
-//
-//
-//
+
+			if(exploration){
+
+				Integer max_lookAhead= 10;
+				Integer exp_steps = 8;
+				Integer exp_rounds =10;
+				HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
+
+				long start_time = System.currentTimeMillis();
+				Integer current_lookAhead = 1;
+
+				for(int k = 1 ; k<5 ; k++){
+					Integer u=5;
+
+					while(u < 20) {
+						//Integer current_lookAhead = k;
+
+
+						rddl = new RDDL("/tmp/temp_domain_instance.rddl");
+						if (!rddl._tmInstanceNodes.containsKey(instanceName)) {
+							System.out.println("Instance name '" + instanceName + "' not found in " + args[0] + "\nPossible choices: " + rddl._tmInstanceNodes.keySet());
+							System.exit(1);
+						}
+						state = new State();
+
+
+						instance = rddl._tmInstanceNodes.get(instanceName);
+						if (instance._sNonFluents != null) {
+							nonFluents = rddl._tmNonFluentNodes.get(instance._sNonFluents);
+						}
+						domain = rddl._tmDomainNodes.get(instance._sDomain);
+						if (nonFluents != null && !instance._sDomain.equals(nonFluents._sDomain)) {
+							System.err.println("Domain name of instance and fluents do not match: " +
+									instance._sDomain + " vs. " + nonFluents._sDomain);
+							System.exit(1);
+						}
+
+						state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
+								domain._hmTypes, domain._hmPVariables, domain._hmCPF,
+								instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
+								domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
+								domain._exprReward, instance._nNonDefActions);
+
+						// If necessary, correct the partially observed flag since this flag determines what content will be seen by the Client
+						if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
+								|| (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
+							boolean observations_present = (state._alObservNames.size() > 0);
+							System.err.println("WARNING: Domain '" + domain._sDomainName
+									+ "' partially observed (PO) flag and presence of observations mismatched.\nSetting PO flag = " + observations_present + ".");
+							domain._bPartiallyObserved = observations_present;
+						}
+
+						///################################################################################################################
+
+						exploration = true;
+						//This is to set lookahead value.
+
+
+						parameters.set(2, current_lookAhead.toString());
+						parameters.set(5, Integer.valueOf(u).toString());
+
+						policy = (Policy) c.getConstructor(
+								new Class[]{ArrayList.class, RDDL.class, State.class}).newInstance(parameters, rddl, state);
+						policy.setRDDL(rddl);
+						policy.setRandSeed(randomSeed);
+						Double average_round_reward = 0.0;
+						for (int j = 0; j < exp_rounds; j++) {
+							state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
+									domain._hmTypes, domain._hmPVariables, domain._hmCPF,
+									instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
+									domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
+									domain._exprReward, instance._nNonDefActions);
+
+							Double round_reward = 0.0;
+							ArrayList<PVAR_INST_DEF> round_best_action = new ArrayList<>();
+							Double max_step_reward = -Double.MAX_VALUE;
+							for (int n = 0; n < exp_steps; n++) {
+
+
+								ArrayList<PVAR_INST_DEF> actions = policy.getActions(state);
+								System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
+
+								if (!actions.toString().equals("[]"))
+									System.out.println("dkjfkdjfkdfdf");
+
+								state.computeNextState(actions, rand);
+
+								final double immediate_reward = ((Number) domain._exprReward.sample(
+										new HashMap<RDDL.LVAR, LCONST>(), state, rand)).doubleValue();
+								state.advanceNextState();
+								round_reward += immediate_reward;
+								if (immediate_reward > max_step_reward) {
+									round_best_action = actions;
+									max_step_reward = immediate_reward;
+									policy.gurobi_initialization = round_best_action;
+								}
+
+
+							}
+
+
+							average_round_reward += round_reward;
+						}
+						exploration_rewards.put(new Pair<>(current_lookAhead, u), average_round_reward / exp_rounds);
+
+
+						policy.dispose_Gurobi();
+						long endtime = System.currentTimeMillis();
+
+//						if (endtime - start_time > 100000) {
+//							break;
 //
 //
 //						}
-//
-//
-//
-//
-//						average_round_reward+=round_reward;
-//					}
-//					exploration_rewards.put(new Pair<>(current_lookAhead,current_lookAhead),average_round_reward/exp_rounds);
-//
-//
-//					policy.dispose_Gurobi();
-//					long endtime = System.currentTimeMillis();
-//
-//					if(endtime-start_time > 10000){
-//						break;
-//
-//
-//					}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//				}
-//
-//
-//
-//
-//
-//
-//				Double max_reward = -Double.MAX_VALUE;
-//
-//				HashMap<Pair<Integer,Integer>,Double> equal_rewards = new HashMap<>();
-//
-//				for(Pair<Integer,Integer> key : exploration_rewards.keySet()){
-//					if(exploration_rewards.get(key)>=max_reward){
-//
-//						if(exploration_rewards.get(key).equals(max_reward)){
-//
-//							equal_rewards.put(key,max_reward);
-//
-//						}
-//						else{
-//
-//							max_reward = exploration_rewards.get(key);
-//							if(equal_rewards!=null){equal_rewards.clear();}
-//
-//							equal_rewards.put(key,max_reward);
-//						}
-//					}
-//
-//
-//				}
-//				for(Pair<Integer,Integer> key : equal_rewards.keySet()){
-//
-//
-//					if(key._o1 < best_lookahed){
-//
-//						best_lookahed = key._o1;
-//					}
-//				}
-//
-//			}
+
+
+						u = Double.valueOf(Math.pow(u,2)).intValue();
+
+
+					}
+
+					current_lookAhead=getLookAheadValue(current_lookAhead,true);
+
+
+
+
+
+
+
+				}
+
+
+
+
+
+
+				Double max_reward = -Double.MAX_VALUE;
+
+				HashMap<Pair<Integer,Integer>,Double> equal_rewards = new HashMap<>();
+
+				for(Pair<Integer,Integer> key : exploration_rewards.keySet()){
+					if(exploration_rewards.get(key)>=max_reward){
+
+						if(exploration_rewards.get(key).equals(max_reward)){
+
+							equal_rewards.put(key,max_reward);
+
+						}
+						else{
+
+							max_reward = exploration_rewards.get(key);
+							if(equal_rewards!=null){equal_rewards.clear();}
+
+							equal_rewards.put(key,max_reward);
+						}
+					}
+
+
+				}
+				for(Pair<Integer,Integer> key : equal_rewards.keySet()){
+
+
+					if(key._o1 < best_lookahed){
+
+						best_lookahed = key._o1;
+					}
+				}
+
+
+
+				System.out.println("dkjfkdjfjdkfdfkjdkfjdkjf");
+
+			}
 
 
 //			HashMap<Integer, Pair<Integer,Double>> exploration_rewards = new HashMap<>();
@@ -518,7 +526,7 @@ public class Client {
 							_df.format((RUNTIME.totalMemory() - RUNTIME.freeMemory())/1e6d) + "Mb / " +
 							_df.format(RUNTIME.totalMemory()/1e6d) + "Mb" +
 							" = " + _df.format(((double) (RUNTIME.totalMemory() - RUNTIME.freeMemory()) /
-											   (double) RUNTIME.totalMemory())) + " ]\n");
+							(double) RUNTIME.totalMemory())) + " ]\n");
 
 				msg = createXMLRoundRequest();
 				Server.sendOneMessage(osw, msg);
@@ -567,8 +575,8 @@ public class Client {
 						state.setPVariables(state._state, obs);
 					}
 
-//					policy.runRandompolicyForState(state);
-//					policy.convertNPWLtoPW
+					policy.runRandompolicyForState(state);
+					policy.convertNPWLtoPWL(state);
 
 
 
@@ -580,7 +588,7 @@ public class Client {
 					//policy.TIME_LIMIT_MINS
 					//policy.TIME_LIMIT_MINS = timeforOptimizer;
 					ArrayList<PVAR_INST_DEF> actions =
-						policy.getActions(obs == null ? null : state);
+							policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>The current State : "+state._state.toString());
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> Action Taken :"+actions.toString());
@@ -666,13 +674,13 @@ public class Client {
 	static Integer getLookAheadValue(Integer current_lookahead, Boolean change){
 
 
-		int next_look_ahead = current_lookahead;
+		Integer next_look_ahead = current_lookahead;
 		if(change){
 			if(current_lookahead==1){
 				next_look_ahead = 2;
 			}
 			else {
-				next_look_ahead = next_look_ahead +1 ; }
+				next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ; }
 		}
 		else{
 			next_look_ahead = current_lookahead;
@@ -822,7 +830,7 @@ public class Client {
 	}
 
 	static String createXMLAction(ArrayList<PVAR_INST_DEF> ds) {
-	//static String createXMLAction(State state, Policy policy) {
+		//static String createXMLAction(State state, Policy policy) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
@@ -877,7 +885,7 @@ public class Client {
 	}
 
 	static int getANumber (DOMParser p, InputSource isrc,
-			String parentName, String name) {
+						   String parentName, String name) {
 		Element e = p.getDocument().getDocumentElement();
 		if ( e.getNodeName().equals(parentName) ) {
 			String turnnum = Server.getTextValue(e, name).get(0);
@@ -929,7 +937,7 @@ public class Client {
 	}
 
 	static ArrayList<PVAR_INST_DEF> processXMLTurn (Element e,
-			State state) throws RDDLXMLException {
+													State state) throws RDDLXMLException {
 
 		if ( e.getNodeName().equals(Server.TURN) ) {
 

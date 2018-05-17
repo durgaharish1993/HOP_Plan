@@ -107,29 +107,6 @@ public class HOPTranslate extends Translate {
 	private FileWriter fileRootConsensus;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
 	//here is the constructor!!!.
 	public HOPTranslate( List<String> args, RDDL rddl_object, State s ) throws Exception{
 		
@@ -235,10 +212,14 @@ public class HOPTranslate extends Translate {
 										
 										synchronized( static_grb_model ){
 											//System.out.println(this_tf.toString());
-											
-											GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
-											
-											
+
+											try {
+												GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+
+
 											//just remember this is commented by HARISH
 											
 //											try {
@@ -376,9 +357,10 @@ public class HOPTranslate extends Translate {
 																	} catch (GRBException e) {
 																		e.printStackTrace();
 																		//System.exit(1);
+																	} catch (Exception e) {
+																		e.printStackTrace();
 																	}
 
-																	
 
 //																	saved_vars.add( lhs_var );
 //																	saved_vars.add( rhs_var );
@@ -504,7 +486,12 @@ public class HOPTranslate extends Translate {
 						
 						synchronized( grb_model ){
 
-							GRBVar this_future_var = subs_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							GRBVar this_future_var = null;
+							try {
+								this_future_var = subs_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							saved_expr.add( subs_tf );
 							//System.out.println(saved_expr);
 //							saved_vars.add( this_future_var );
@@ -569,8 +556,13 @@ public class HOPTranslate extends Translate {
 				}else if( rhs instanceof Integer ){
 					rhs_expr = new INT_CONST_EXPR( (int)rhs );
 				}
-				GRBVar rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map );
-				
+				GRBVar rhs_var = null;
+				try {
+					rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map );
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
 				EXPR non_stationary_pvar_expr = stationary_pvar_expr
 						.addTerm( TIME_PREDICATE, constants, objects )
@@ -582,9 +574,14 @@ public class HOPTranslate extends Translate {
 					EXPR this_future_init_state = non_stationary_pvar_expr
 					.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects)
 					.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(future_id) ), constants, objects);
-				
-					GRBVar lhs_var = this_future_init_state.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-					
+
+					GRBVar lhs_var = null;
+					try {
+						lhs_var = this_future_init_state.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					final String nam = RDDL.EXPR.getGRBName(this_future_init_state)+
 							"="+RDDL.EXPR.getGRBName(rhs_expr);
 					
@@ -624,7 +621,8 @@ public class HOPTranslate extends Translate {
 			@Override
 			public void accept(BOOL_EXPR e) {
 				// COMMENT SHOULD BE UNCOMMENTED NOTE CHANGED BY HARISH.
-				//System.out.println( "Translating Constraint " + e );	
+				//System.out.println( "Translating Constraint " + e );
+				System.out.println(e.toString());
 				final EXPR non_stationary_e = e.substitute( Collections.EMPTY_MAP, constants, objects)
 						.addTerm(TIME_PREDICATE, constants, objects )
 						.addTerm(future_PREDICATE, constants, objects);
@@ -653,6 +651,8 @@ public class HOPTranslate extends Translate {
 									} catch (GRBException e) {
 										e.printStackTrace();
 										System.exit(1);
+									} catch (Exception e1) {
+										e1.printStackTrace();
 									}
 								}
 							}
@@ -702,7 +702,12 @@ public class HOPTranslate extends Translate {
 			@Override
 			public void accept( BOOL_EXPR t) {
 				synchronized( grb_model ){
-					GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+					GRBVar gvar = null;
+					try {
+						gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					try {
 						GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
 						saved_expr.add( t ); // saved_vars.add( gvar );
@@ -767,8 +772,9 @@ public class HOPTranslate extends Translate {
 			@Override
 			public void accept( BOOL_EXPR t) {
 				synchronized( grb_model ){
-					GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
 					try {
+						GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+
 						GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
 						saved_expr.add( t ); // saved_vars.add( gvar );
 						root_policy_expr.add(t);
@@ -777,6 +783,8 @@ public class HOPTranslate extends Translate {
 					} catch (GRBException e) {
 						e.printStackTrace();
 						//System.exit(1);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}

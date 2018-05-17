@@ -232,6 +232,8 @@ public class EmergencyDomainHOPTranslate extends HOPTranslate {
 													} catch (GRBException e) {
 														e.printStackTrace();
 														System.exit(1);
+													} catch (Exception e) {
+														e.printStackTrace();
 													}
 												}
 											}
@@ -311,11 +313,12 @@ public class EmergencyDomainHOPTranslate extends HOPTranslate {
 			final EXPR lhs_future = pairFuture._o1;
 			final EXPR rhs_future = pairFuture._o2;
 			synchronized ( grb_model ) {
-				GRBVar lhs_var = lhs_future.getGRBConstr(
-						GRB.EQUAL, grb_model, constants, objects, type_map);
-				GRBVar rhs_var = rhs_future.getGRBConstr(
-						GRB.EQUAL, grb_model, constants, objects, type_map);
+
 				try {
+					GRBVar lhs_var = lhs_future.getGRBConstr(
+							GRB.EQUAL, grb_model, constants, objects, type_map);
+					GRBVar rhs_var = rhs_future.getGRBConstr(
+							GRB.EQUAL, grb_model, constants, objects, type_map);
 
 					//System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
 					final String nam = RDDL.EXPR.getGRBName(lhs_future)+"="+RDDL.EXPR.getGRBName(rhs_future);
@@ -330,6 +333,8 @@ public class EmergencyDomainHOPTranslate extends HOPTranslate {
 					System.out.println( e.getErrorCode() + " " +e.getMessage() );
 					e.printStackTrace();
 					System.exit(1);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}

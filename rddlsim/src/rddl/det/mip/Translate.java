@@ -320,9 +320,14 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 		
 		BOOL_CONST_EXPR true_expr = new BOOL_CONST_EXPR(true);
 		BOOL_CONST_EXPR false_expr = new BOOL_CONST_EXPR(false);
-		
-		true_expr.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map );
-		false_expr.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map );
+
+		try {
+			true_expr.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map );
+			false_expr.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		
 		saved_expr.add(true_expr);
 		saved_expr.add(false_expr);
@@ -345,7 +350,11 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 							public void accept(LCONST time_term ) {
 								EXPR this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), constants, objects);
 								synchronized( static_grb_model ){
-									GRBVar new_var = this_t.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
+									try {
+										GRBVar new_var = this_t.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 //									saved_vars.add( new_var );
 
 									//Just Remeber Commented this by HARISH.
@@ -927,9 +936,14 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 				PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
 				EXPR non_stationary_pvar_expr = stationary_pvar_expr
 						.addTerm( TIME_PREDICATE, constants, objects )
-						.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects); 
-				GRBVar lhs_var = non_stationary_pvar_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-				
+						.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects);
+				GRBVar lhs_var = null;
+				try {
+					lhs_var = non_stationary_pvar_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				EXPR rhs_expr = null;
 				if( rhs instanceof Boolean ){
 					rhs_expr = new BOOL_CONST_EXPR( (boolean) rhs );
@@ -938,8 +952,13 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 				}else if( rhs instanceof Integer ){
 					rhs_expr = new INT_CONST_EXPR( (int)rhs );
 				}
-				GRBVar rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-				
+				GRBVar rhs_var = null;
+				try {
+					rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				final String nam = RDDL.EXPR.getGRBName(non_stationary_pvar_expr)
 						+"="+RDDL.EXPR.getGRBName(rhs_expr);
 				
@@ -1002,18 +1021,31 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 							//FIXME : stationarity assumption
 							new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
 									.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t+1) ), constants, objects);
-							lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							try {
+								lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}else {
 							new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
 									.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects);
-							lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							try {
+								lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 						
 						//FIXME : stationarity assumption
 						EXPR new_rhs_non_stationary = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
 								.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects );
-						GRBVar rhs_var = new_rhs_non_stationary.getGRBConstr(GRB.EQUAL,  grb_model, constants, objects, type_map);
-						
+						GRBVar rhs_var = null;
+						try {
+							rhs_var = new_rhs_non_stationary.getGRBConstr(GRB.EQUAL,  grb_model, constants, objects, type_map);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
 						final String nam = RDDL.EXPR.getGRBName(new_lhs_non_stationary) + "=" + 
 												RDDL.EXPR.getGRBName(new_rhs_non_stationary);
 						GRBConstr new_constr = grb_model.addConstr( lhs_var, GRB.EQUAL, rhs_var, nam );

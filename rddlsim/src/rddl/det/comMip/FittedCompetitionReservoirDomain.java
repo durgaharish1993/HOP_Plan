@@ -63,6 +63,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
     private static final String obstacle ="obstacle-at";
     private static final String collide = "collided";
     //private static final String agent_at = "agent-at";
+    private static final String success = "success";
 
 
 
@@ -239,11 +240,12 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
                                                         saved_expr.add(rhs_future);
                                                     } catch (GRBException e) {
 
-                                                        GRBVar rhs_var = rhs_future.getGRBConstr(
-                                                                GRB.EQUAL, static_grb_model, constants, objects, type_map);
+
 
                                                         e.printStackTrace();
                                                         //System.exit(1);
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
                                                     }
                                                 }
                                             }
@@ -270,7 +272,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
     final Set<String> stochasticVars = new HashSet<String>(Arrays.asList(
             new String[]{rainFall, xPos, yPos,
                     gumbelNoisePvarName, gapTimePvarName,
-                    tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall,obstacle,collide }));
+                    tempCurrentCallComponentPvarName,nextCallPvarName,tempUniformCause,uniformNumber,currentCall,obstacle,collide,success  }));
 
     @Override
     protected void translateCPTs(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> subs,
@@ -409,6 +411,8 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
                                                             } catch (GRBException e) {
                                                                 e.printStackTrace();
                                                                 //System.exit(1);
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
                                                             }
 
                                                         }
