@@ -4795,52 +4795,44 @@ public class RDDL {
 		public final static LCONST DEFAULT = new ENUM_VAL("default");
 
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+		public EXPR sampleDeterminization(final RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
 		}
 
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
+		public EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) {
 			return this;
 		}
 
 		@Override
 		protected char getGRB_Type(
 				final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants ,
-				Map< PVAR_NAME, Character > type_map ) {
+				Map< PVAR_NAME, Character > type_map ) throws Exception {
 			//System.out.println("type : " + this + " " + type_map );
 			try{
 				assert( type_map.containsKey( this._pName ) );
+				return type_map.get(this._pName);
 			}catch( AssertionError exc ){
 				System.out.println(type_map);
 				System.out.println(this._pName);
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
 			//System.out.println("Type Map :: "+type_map);
 			//System.out.println("PName  :: "+this._pName);
-			try {
-				return type_map.get(this._pName);
-			}
-			catch( Exception e){
-				System.out.println("-----------------------------------------------------------------------------");
-				System.out.println("Catch Type Map :"+ type_map);
-				System.out.println("Catch Pname :"+ this._pName);
-				return type_map.get(this._pName);
-
-			}
-
 		}
 
-
-
 		@Override
-		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) {
+		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+				Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			//check constant here
 			if( constants.containsKey( _pName ) ){
 				return this;
 			}
-
 
 			if( !_alTerms.contains( new_term ) ){
 				ArrayList<LTERM> new_terms = new ArrayList<LTERM>( _alTerms );
@@ -4849,19 +4841,17 @@ public class RDDL {
 			}else{
 				return this;
 			}
-
 		}
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF > objects,  Map<PVAR_NAME, Character> type_map ) throws Exception {
+			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+			Map<TYPE_NAME, OBJECTS_DEF > objects,  Map<PVAR_NAME, Character> type_map ) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				final GRBVar lookup = grb_cache.get( this );
 				assert ( lookup != null );
 				return lookup;
 			}
-
 			assert( isPiecewiseLinear(constants, objects) );
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map);
 
@@ -4875,61 +4865,41 @@ public class RDDL {
 					return this_var;
 				} catch (GRBException e) {
 					e.printStackTrace();
-					System.exit(1);
+					throw e;
 				}
 			}else{
 				return this_var;
 			}
-
 			return null;
 		}
 
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+				Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			assert( isConstant(constants, objects) );
 
 			EXPR new_expr = getConstantValue(constants,objects);
 
 			if(new_expr instanceof  REAL_CONST_EXPR){
-
 				  return ((REAL_CONST_EXPR) new_expr)._nValue.doubleValue();
-			}
-
-			else if(new_expr instanceof INT_CONST_EXPR){
-
+			}else if(new_expr instanceof INT_CONST_EXPR){
 				  return ((INT_CONST_EXPR) new_expr)._nValue.doubleValue();
-			}
-
-			else if(new_expr instanceof BOOL_CONST_EXPR){
-
+			}else if(new_expr instanceof BOOL_CONST_EXPR){
 				return ((BOOL_CONST_EXPR) new_expr)._bValue ? 1 : 0 ;
 			}
-			else{
-				// This has to be changed  : Harish.
-				try{
-					throw new Exception("Uncaught case : " + this.toString() + " type " + _sType );
-				}catch( Exception exc ){
-					exc.printStackTrace();
-					System.exit(1);
-				}
-
+			
+			try{
+				throw new Exception("Uncaught case : " + this.toString() + " type " + _sType );
+			}catch( Exception exc ){
+				exc.printStackTrace();
+				throw exc;
 			}
-
-//			final double val = _sType.equals(REAL) ? ( (REAL_CONST_EXPR) getConstantValue(constants, objects) )._nValue.doubleValue()
-//					: _sType.equals(INT) ? ( (INT_CONST_EXPR) getConstantValue(constants, objects) )._nValue.doubleValue()
-//					: _sType.equals(BOOL) ? ( ( (BOOL_CONST_EXPR) getConstantValue(constants, objects) )._bValue ? 1 : 0 )
-//					: Double.NaN;
-		//	return val;
-
-
-			return 0;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash( _pName.hashCode(), _alTerms.hashCode() );
+			return Objects.hash( "PVAR_EXPR", _pName, _alTerms );
 		}
 
 		@Override
@@ -4940,8 +4910,7 @@ public class RDDL {
 
 			if( obj instanceof PVAR_EXPR ){
 				PVAR_EXPR p = (PVAR_EXPR)obj;
-				return _bDet == p._bDet && _sType.equals( p._sType ) &&
-						_pName.equals( p._pName ) && _alTerms.equals( p._alTerms );
+				return _pName.equals( p._pName ) && _alTerms.equals( p._alTerms );
 			}else if( obj instanceof AGG_EXPR ){
 				AGG_EXPR ae = (AGG_EXPR)obj;
 				if( ae._alVariables.isEmpty() ){
@@ -4968,25 +4937,16 @@ public class RDDL {
 
 		@Override
 		public boolean isPiecewiseLinear( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										  Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+			  Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return true;
 		}
 
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-								   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-
-
-			// Harish needs to comment and then do something.
-//			return constants.containsKey( _pName ); - no good, need to check fully instantiated terms
-
-			//This is changed by Harish.
-			// ( sum_{?loc : location} [ ( exists_{?r : rover, ?c : camera} [ rover-at(?r, ?loc) & use-tool(?r, ?c) ] ) * IMPORTANCE(?loc) ] )
-			// IMPORTANCE(?loc)
+			   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 
 			boolean b1 = (constants != null && constants.containsKey( _pName ));
 			//boolean b2 = (constants != null && constants.containsKey( _pName ) && constants.get( _pName ).containsKey( _alTerms ) && _alTerms.stream().allMatch( m -> (m instanceof LCONST) ));
-
 			return b1;
 			//return (constants != null && constants.containsKey( _pName )) || (constants != null && constants.containsKey( _pName ) && constants.get( _pName ).containsKey( _alTerms ) && _alTerms.stream().allMatch( m -> (m instanceof LCONST) );
 			//_alTerms.stream().allMatch( m -> (m instanceof LCONST) ) ; //&& constants.get( _pName ).containsKey( _alTerms ) &&
@@ -4996,30 +4956,24 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			ArrayList<LTERM> ret = new ArrayList<LTERM>(
 					_alTerms.stream()
 							.map( m -> m.substitute(subs, constants, objects) )
 							.collect( Collectors.toList() ) );
 			PVAR_EXPR p = new PVAR_EXPR( _pName._sPVarName, ret );
-			//This is changed by Harish.
-			// I dont want to check if its a constant, it opens the expression which is not good
 			//check for NF
-//			if( p.isConstant( constants, objects ) ){
-//				return p.getConstantValue( constants, objects );
-//			}else{
-			return p;
-//			}
+			try{
+				return p.getConstantValue( constants, objects );
+			}catch(Exception exc){
+				return p;
+			}
 		}
-
-
-
-
 
 		//FIXME : make map arguments unmodifiable
 		//type changes from PVAR_EXPR -> { NUMBER_CONST (BOOL/INT/REAL_CONST_EXPR) , LCONST }
 		private EXPR getConstantValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>>  constants ,
-									   Map<TYPE_NAME, OBJECTS_DEF> objects ){
+				   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			assert( isConstant(constants , objects) );
 			Object lookup = constants.get( _pName ).get( _alTerms );
 			if( lookup instanceof Boolean ){
@@ -5035,17 +4989,11 @@ public class RDDL {
 					throw new Exception("Uncaught case : " + this.toString() + " type " + _sType );
 				}catch( Exception exc ){
 					exc.printStackTrace();
-					System.exit(1);
+					throw exc;
 				}
 			}
 			return null;
 		}
-
-
-
-
-		//This is end of addition
-
 
 		public PVAR_EXPR(String s, ArrayList terms) {
 			this(s, terms, null);
@@ -5264,10 +5212,11 @@ public class RDDL {
 		public static final String SQRT = "sqrt".intern();
 		
 		public static TreeSet<String> KNOWN_FUNCTIONS = new TreeSet<String>(
-				Arrays.asList(new String[] {DIV, MOD, MIN, MAX, ABS, SGN, ROUND, FLOOR, CEIL, POW, LOG, COS, SIN, TAN, ACOS, ASIN, ATAN, COSH, SINH, TANH, EXP, LN, SQRT}));
+				Arrays.asList(new String[] {DIV, MOD, MIN, MAX, ABS, SGN, 
+						ROUND, FLOOR, CEIL, POW, LOG, COS, SIN, TAN, ACOS, 
+						ASIN, ATAN, COSH, SINH, TANH, EXP, LN, SQRT}));
 		
 		public FUN_EXPR(String s, ArrayList expressions) {
-			
 			_bDet = true;
 			_sName = s.intern();
 			_alArgs = new ArrayList<EXPR>();
