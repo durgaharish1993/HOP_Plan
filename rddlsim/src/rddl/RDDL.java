@@ -1761,7 +1761,9 @@ public class RDDL {
 			throw new UnsupportedOperationException(toString());
 		}
 
-		public abstract EXPR sampleDeterminization( final RandomDataGenerator rand ) throws Exception;
+		public abstract EXPR sampleDeterminization( final RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception;
 
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -1806,7 +1808,9 @@ public class RDDL {
 		 * To get k < 0.5(u+1) in the above example. This is NOT the mean of the distribution.
 		 * Thus, it is ok to apply getMean() recursively within EXPR implementations as needed.
 		 */
-		public abstract  EXPR getMean( Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception;
+		public abstract  EXPR getMean( 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception;
 
 		public abstract String toString();
 
@@ -4369,10 +4373,6 @@ public class RDDL {
 		public String _op = UNKNOWN;
 		public ArrayList<LTYPED_VAR> _alVariables = null;
 
-		//This is Start of Harish Addition
-
-
-
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 									  Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
@@ -4386,20 +4386,14 @@ public class RDDL {
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			if( _e.isConstant(constants, objects) && _op.equals( PROD ) ){
+			if( _e.isConstant(constants, objects) ){
 				return true;
 			}
-
-			if( _alVariables.isEmpty() ){
-				return _e.isConstant(constants, objects);
-			}
-
 //			this is too expensive
 //			if( objects != null ){
 //				EXPR result = expandArithmeticQuantifier(constants, objects );
 //				return result.isConstant(constants, objects);
 //			}
-
 			return false;
 		}
 
@@ -4413,25 +4407,35 @@ public class RDDL {
 
 			//too expensive
 //			EXPR result = expandArithmeticQuantifier(constants, objects );
-			return _e.isPiecewiseLinear(constants, objects) && ( _alVariables.isEmpty()  || !_op.equals(PROD) );
+			return _e.isPiecewiseLinear(constants, objects) 
+					&& ( _alVariables.isEmpty()  || !_op.equals(PROD) );
 			//product of pwl is not pwl
 		}
 
-
-
-
-
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
-			return new AGG_EXPR( _op, _alVariables, _e.sampleDeterminization(rand) );
+		public EXPR sampleDeterminization(RandomDataGenerator rand, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			try{
+				return new AGG_EXPR( _op, _alVariables, _e.sampleDeterminization(rand) );
+			}catch(Exception exc){
+				exc.printStackTrace();
+				EXPR expanded = expandArithmeticQuantifier( constants, objects );
+				return expanded.sampleDeterminization(rand, constants, objects);
+			}
 		}
 
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			return new AGG_EXPR( _op, _alVariables, _e.getMean( objects ) );
+		public EXPR getMean( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			try{
+				return new AGG_EXPR( _op, _alVariables, _e.getMean( objects ) );
+			}catch(Exception exc){
+				exc.printStackTrace();
+				EXPR expanded = expandArithmeticQuantifier( constants, objects );
+				return expanded.getMean(constants, objects);
+			}
 		}
-
-
 
 		@Override
 		protected char getGRB_Type( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -4439,37 +4443,31 @@ public class RDDL {
 			char inner_type = _e.getGRB_Type(constants, type_map );
 			if( inner_type == GRB.BINARY && _op.equals( PROD ) ){
 				return GRB.BINARY;
-			}else if( ( inner_type == GRB.BINARY && _op.equals(SUM) ) || inner_type == GRB.INTEGER ){
+			}else if( ( inner_type == GRB.BINARY && _op.equals(SUM) ) 
+					|| inner_type == GRB.INTEGER ){
 				return GRB.INTEGER;
 			}
 			return GRB.CONTINUOUS;
 		}
 
-
-
-
 		@Override
 		public int hashCode() {
 			try {
 				if( isConstant( null , null ) ){
-                    try {
-                        return Double.hashCode( getDoubleValue( null , null ) );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    return Double.hashCode( getDoubleValue( null , null ) );
                 }
+				else if( _alVariables.isEmpty() ){
+					return _e.hashCode();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				return Objects.hash( "AGG_EXPR", _op, _alVariables, _e );
 			}
-			if( _alVariables.isEmpty() ){
-				return _e.hashCode();
-			}
-
-			return Objects.hash( _op, _e, _alVariables );
 		}
 
-		public EXPR expandArithmeticQuantifier(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											   Map<TYPE_NAME, OBJECTS_DEF> objects ){
+		public EXPR expandArithmeticQuantifier(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants );
 			String type = null;
 			switch( _op ){
@@ -4478,45 +4476,32 @@ public class RDDL {
 				case "min" : type = OPER_EXPR.MIN; break;
 				case "max" : type = OPER_EXPR.MAX; break;
 			}
-			EXPR ret = null;
-			for( final EXPR t : terms ){
-				try {
+			try {
+				EXPR ret = null;
+				for( final EXPR t : terms ){
 					ret = ( ret == null ) ? t : new OPER_EXPR( ret, t, type );
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(1);
 				}
+				return ret;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
 			}
-			return ret;
 		}
-
-
-
-
-
-
-
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) {
-
-
-
+			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+			Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) {
 
 			try{
 				if( grb_cache.containsKey( this ) ){
 					return grb_cache.get( this );
 				}
 
-
-				//T
-
-//				if( isConstant(constants, objects) ){
-//					return new REAL_CONST_EXPR( getDoubleValue(constants, objects) )
-//							.getGRBConstr(sense, model, constants, objects, type_map);
-//				}
+				if( isConstant(constants, objects) ){
+					return new REAL_CONST_EXPR( getDoubleValue(constants, objects) )
+						.getGRBConstr(sense, model, constants, objects, type_map);
+				}
 
 				List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants);
 				switch( _op ){
@@ -4538,11 +4523,9 @@ public class RDDL {
 							return this_var;
 						} catch (GRBException e1) {
 							e1.printStackTrace();
-							System.exit(1);
+							throw e1;
 						}
 						break;
-
-
 
 					case "min" :
 
@@ -4564,7 +4547,7 @@ public class RDDL {
 							return min_var;
 						} catch (GRBException e1) {
 							e1.printStackTrace();
-							System.exit(1);
+							throw e1;
 						}
 						break;
 					case "max" :
@@ -4586,7 +4569,7 @@ public class RDDL {
 							return max_var;
 						} catch (GRBException e1) {
 							e1.printStackTrace();
-							System.exit(1);
+							throw e1;
 						}
 						break;
 					default :
@@ -4594,12 +4577,10 @@ public class RDDL {
 				}
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
 			return null;
 		}
-
-
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST > , Object > > constants,
@@ -4619,23 +4600,19 @@ public class RDDL {
 				if( isConstant( null, null ) ){
                     return new REAL_CONST_EXPR( getDoubleValue( null, null ) ).equals( obj );
                 }
+				if( _alVariables.isEmpty() ){
+					return _e.equals(obj);
+				}
+				if( obj instanceof AGG_EXPR ){
+					AGG_EXPR a = (AGG_EXPR)obj;
+					return _op.equals( a._op ) && _alVariables.equals( a._alVariables )
+							&& _e.equals( a._e );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			if( _alVariables.isEmpty() ){
-				return _e.equals(obj);
-			}
-
-			if( obj instanceof AGG_EXPR ){
-				AGG_EXPR a = (AGG_EXPR)obj;
-				return _bDet == a._bDet && _sType.equals( a._sType ) &&
-						_op.equals( a._op ) && _alVariables.equals( a._alVariables )
-						&& _e.equals( a._e );
-			}
 			return false;
 		}
-
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
@@ -4646,17 +4623,14 @@ public class RDDL {
 				if( isConstant(constants, objects ) ){
                     return new REAL_CONST_EXPR( getDoubleValue(constants, objects) );
                 }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
-			List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
-					.collect( Collectors.toList() );
-			final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
-					.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
-			//expanding under sum is expensive
-			//defer this till getGRBConstr()
-			try {
+				List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
+						.collect( Collectors.toList() );
+				final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
+						.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
+				//expanding under sum is expensive
+				//defer this till getGRBConstr()
+
 				if( al_new_terms.isEmpty() ){
 					return _e.substitute(subs, constants, objects);
 				}else{
@@ -4666,22 +4640,13 @@ public class RDDL {
 					//return expanded.substitute(subs,constants,objects);
 					return unexpanded; //.substitute(subs, constants, objects);
 				}
-
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
 			return null;
 
 		}
-
-
-
-		//This is end of Harish Addition
-
-
-
-
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
@@ -4703,7 +4668,8 @@ public class RDDL {
 			return sb.toString();
 		}
 		
-		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
+		public Object sample(HashMap<LVAR,LCONST> subs, State s, 
+				RandomDataGenerator r) throws EvalException {
 
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
 			Object result = null;
@@ -4818,7 +4784,6 @@ public class RDDL {
 				subs.remove(_alVariables.get(i)._sVarName);
 			}
 		}
-		
 	}
 	
 	// TODO: Need a cleaner way to ensure that only boolean pvars go under forall, exists
@@ -4828,10 +4793,6 @@ public class RDDL {
 	public static class PVAR_EXPR extends BOOL_EXPR {
 
 		public final static LCONST DEFAULT = new ENUM_VAL("default");
-
-
-		//This is Start of addition
-
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
