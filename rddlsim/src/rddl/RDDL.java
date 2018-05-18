@@ -11,6 +11,7 @@ package rddl;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1052,7 +1053,7 @@ public class RDDL {
 		@Override
 		public  double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ){
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 
 
 			throw new UnsupportedOperationException("This cannot be invoked here, no implementation");
@@ -1070,7 +1071,7 @@ public class RDDL {
 
 		public abstract LTERM substitute(Map<LVAR, LCONST> subs,
 										 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										 Map<TYPE_NAME, OBJECTS_DEF > objects );
+										 Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception;
 
 
 
@@ -1118,11 +1119,34 @@ public class RDDL {
 		}
 
 
-
-		@Override
+		//OLD IMPLEMENTATION.
+		/*@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			return this;
+		}*/
+
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			throw new NotImplementedException("This method is not implemented");
+
+
 		}
+
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+													Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+													Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return this;
+
+
+		}
+
+
+
 
 		@Override
 		protected char getGRB_Type(
@@ -1131,12 +1155,14 @@ public class RDDL {
 			return GRB.CONTINUOUS;
 		}
 
+/*		This is old Code!!!.......
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
 		}
 
+*/
 
 
 		@Override
@@ -1232,15 +1258,41 @@ public class RDDL {
 			throw new Exception("This method cannot be invoked by isConstant(), check the def. ");
 		}
 
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+
+
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
 			return this;
+
+
 		}
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
 			return this;
+
+
 		}
+
+
+
+
+		//This is old implementation of the code.
+//		@Override
+//		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+//			return this;
+//		}
+//
+//		@Override
+//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
+//			return this;
+//		}
 
 
 
@@ -1325,31 +1377,84 @@ public class RDDL {
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return _pvarExpr.isConstant(constants, objects);
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			try{
+				return _pvarExpr.isConstant(constants, objects);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				throw new UnsupportedOperationException();
+
+
+			}
+
+
 		}
 
 
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return _pvarExpr.isPiecewiseLinear(constants, objects);
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			try{
+				return _pvarExpr.isPiecewiseLinear(constants, objects);
+
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				throw new UnsupportedOperationException();
+
+
+
+			}
+
 		}
 
 
 
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			return this;
-		}
+
+
+
+		//old code.
+
+//		@Override
+//		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+//			return this;
+//		}
 
 		public PVAR_EXPR _pvarExpr;
 
-		@Override
+
+		//old code
+		/*@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
+		}*/
+
+
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return this;
+
+
 		}
+
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return this;
+
+
+		}
+
+
+
+
 
 		@Override
 		protected char getGRB_Type(
@@ -1361,9 +1466,14 @@ public class RDDL {
 		@Override
 		public EXPR addTerm(LVAR new_term,
 							Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			if( isConstant(constants, objects) ){
-				return this;
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			try {
+				if( isConstant(constants, objects) ){
+                    return this;
+                }
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
 			}
 			return _pvarExpr.addTerm(new_term, constants, objects );
 		}
@@ -1385,7 +1495,7 @@ public class RDDL {
 		@Override
 		public LTERM substitute(Map<LVAR, LCONST> subs,
 								Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								Map<TYPE_NAME, OBJECTS_DEF > objects  ) {
+								Map<TYPE_NAME, OBJECTS_DEF > objects  ) throws Exception {
 			EXPR inner = _pvarExpr.substitute(subs, constants, objects);
 			return new TVAR_EXPR( (PVAR_EXPR)inner );
 		}
@@ -1406,7 +1516,7 @@ public class RDDL {
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects) {
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			assert( isConstant(constants, objects) );
 			return _pvarExpr.getDoubleValue(constants, objects);
 		}
@@ -1480,6 +1590,28 @@ public class RDDL {
 
 
 		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return this;
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			return this;
+
+		}
+
+/*
+		This is old code.
+
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			return this;
 		}
@@ -1487,7 +1619,7 @@ public class RDDL {
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
-		}
+		}*/
 
 
 
@@ -1596,6 +1728,31 @@ public class RDDL {
 
 
 		@Override
+		public EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			System.out.println("This class is : "+ toString());
+			throw  new UnsupportedOperationException();
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			System.out.print("This class is : " + toString());
+			throw new UnsupportedOperationException();
+
+
+		}
+
+
+
+
+		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new Exception("This is not defined, ENUM_VAL");
 		}
@@ -1607,11 +1764,15 @@ public class RDDL {
 			return this;
 		}
 
+	/*
+
+
+		This is old code.....
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
 		}
-
+*/
 		//This is End of Harish Added
 
 
@@ -1637,15 +1798,35 @@ public class RDDL {
 		//This is start of Harish Addition
 
 
+
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return this;
+
+
+		}
+
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return this;
+
+
+		}
+
+
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new Exception("This is not defined, OBJECTVAL");
 		}
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}
+		//old code.
+//		@Override
+//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
+//			return this;
+//		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term,
@@ -1749,7 +1930,7 @@ public class RDDL {
 
 		public abstract EXPR substitute( final Map<LVAR,LCONST> subs,
 										 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										 final Map< TYPE_NAME, OBJECTS_DEF > objects ) ;
+										 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception;
 
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
@@ -1814,7 +1995,7 @@ public class RDDL {
 
 		public abstract String toString();
 
-		public abstract boolean equals(Object obj);
+		public abstract boolean equals(Object obj) ;
 
 		public static double getGRB_LB( final char grb_type ){
 			return grb_type == GRB.CONTINUOUS ? -(100 * M):
@@ -1836,13 +2017,13 @@ public class RDDL {
 		//need typemap from RDDL TODO
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
+				Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new UnsupportedOperationException(toString());
 		}
 		
 		public abstract EXPR addTerm( final LVAR new_term ,
 									  final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
-									  final Map<TYPE_NAME, OBJECTS_DEF> objects );
+									  final Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception;
 
 		/* Previously used typeSafe implementation - each expression need not match hashcode() and equals() for
 		 * other implementing subclasses of EXPR, such as (OPER_EXPR)0*E == 0(CONST_EXPR)
@@ -1905,7 +2086,7 @@ public class RDDL {
 				final EXPR e,
 				final ArrayList<LTYPED_VAR> lvars,
 				final Map<TYPE_NAME, OBJECTS_DEF> objects,
-				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ){
+				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ) throws Exception {
 
 			assert( objects != null );
 
@@ -2083,20 +2264,47 @@ public class RDDL {
 			throw new NotImplementedException("This method is not implemented,DiracDelta" + this.toString());
 		}
 
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			return _exprRealValue.sampleDeterminization(rand);
+
+
+
+
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return _exprRealValue.getMean(constants,objects);
+
+
 		}
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return _exprRealValue.getMean(objects);
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return _exprRealValue.sampleDeterminization(rand,constants,objects);
+
+
 		}
+
+
+		//This is old implementation.
+
+//		@Override
+//		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+//			return _exprRealValue.sampleDeterminization(rand);
+//		}
+//
+//		@Override
+//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+//			return _exprRealValue.getMean(objects);
+//		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term,
 							Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new DiracDelta( _exprRealValue.addTerm(new_term, constants, objects ) );
 		}
 
@@ -2119,7 +2327,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			return new DiracDelta( _exprRealValue.substitute(subs, constants, objects) );
 		}
 
@@ -2161,21 +2369,54 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented, KronDelta" + this.toString());
 		}
+
+
+
+
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			return _exprIntValue.sampleDeterminization(rand);
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return _exprIntValue.getMean(constants,objects);
+
+
 		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return _exprIntValue.sampleDeterminization(rand,constants,objects);
+
+
+		}
+
+
+
 
 		public EXPR _exprIntValue;
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return _exprIntValue.getMean(objects);
-		}
+
+
+		//old code.
+//		@Override
+//		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+//			return _exprIntValue.sampleDeterminization(rand);
+//		}
+//
+//
+//		@Override
+//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+//			return _exprIntValue.getMean(objects);
+//		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			return new KronDelta( _exprIntValue.addTerm(new_term, constants, objects) );
 		}
 
@@ -2198,7 +2439,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			return new KronDelta( _exprIntValue.substitute(subs, constants, objects ) );
 		}
 		
@@ -2246,6 +2487,49 @@ public class RDDL {
 		}
 
 		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return new OPER_EXPR( new REAL_CONST_EXPR(0.5),
+					new OPER_EXPR( _exprLowerReal.getMean(constants,objects),
+							_exprUpperReal.getMean(constants, objects) , OPER_EXPR.PLUS ), OPER_EXPR.TIMES );
+
+
+		}
+
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			EXPR lower_determ = _exprLowerReal.sampleDeterminization(rand,constants,objects);
+			EXPR upper_determ = _exprUpperReal.sampleDeterminization(rand,constants,objects);
+			//U( e1, e2 ) : e1, e2 are PWL
+			//X ~ U(0,1)
+			//g(X) : [0,1] -> [e1(s,a),e2(s,a)]
+			//g(X) = e1 + (e2-e1)*X
+			//g^-1(t) = (t-e1)/(e2-e1)
+			//g'(X) = (e2-e1)
+			//P_g(X) = P_X( . ) / | (e2-e1) | = 1 / (e2-e1) (correct)
+			final double sample = rand.nextUniform(0d, 1d);
+			//System.out.println("Sampled future for uniform : " + this + " " + sample );
+			EXPR ret = new OPER_EXPR( lower_determ,
+					new OPER_EXPR(	new OPER_EXPR( upper_determ, lower_determ, OPER_EXPR.MINUS ),
+							new REAL_CONST_EXPR( sample ), OPER_EXPR.TIMES ),OPER_EXPR.PLUS );
+			return ret;
+
+		}
+
+
+
+
+
+
+	//This is old implementation.
+/*
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			EXPR lower_determ = _exprLowerReal.sampleDeterminization(rand);
 			EXPR upper_determ = _exprUpperReal.sampleDeterminization(rand);
@@ -2263,21 +2547,24 @@ public class RDDL {
 									new REAL_CONST_EXPR( sample ), OPER_EXPR.TIMES ),OPER_EXPR.PLUS );
 			return ret;
 		}
+*/
 
 		public EXPR _exprLowerReal;
 		public EXPR _exprUpperReal;
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return new OPER_EXPR( new REAL_CONST_EXPR(0.5),
-					new OPER_EXPR( _exprLowerReal.getMean(objects),
-							_exprUpperReal.getMean(objects) , OPER_EXPR.PLUS ), OPER_EXPR.TIMES );
-		}
+		//This is old implementation.
+
+//		@Override
+//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+//			return new OPER_EXPR( new REAL_CONST_EXPR(0.5),
+//					new OPER_EXPR( _exprLowerReal.getMean(objects),
+//							_exprUpperReal.getMean(objects) , OPER_EXPR.PLUS ), OPER_EXPR.TIMES );
+//		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term,
 							Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			return new Uniform( _exprLowerReal.addTerm(new_term,constants,objects),
 					_exprUpperReal.addTerm(new_term,constants,objects) );
 		}
@@ -2299,7 +2586,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new Uniform( _exprLowerReal.substitute(subs, constants, objects),
 					_exprUpperReal.substitute(subs, constants, objects) );
 		}
@@ -2358,7 +2645,45 @@ public class RDDL {
 			throw new NotImplementedException("This method is not implemented, Normal"+this.toString());
 
 		}
-		
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return _normalMeanReal.getMean(constants, objects);
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			//N(e1,e2^2) = e1 + e2 N(0,1)
+			//substitute() should be called first to simplify variance term
+			//also works when sqrt(e2) is PWL, have not tested this.
+			assert( _normalVarReal.isConstant( null, null ) );
+			final double var = _normalVarReal.getDoubleValue( null, null );
+			final double sample = rand.nextGaussian(0, Math.sqrt(var) );
+			return new OPER_EXPR( _normalMeanReal, new REAL_CONST_EXPR( sample ) , OPER_EXPR.PLUS );
+
+		}
+
+
+		//This is the old code..
+
+/*		@Override
+		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			return _normalMeanReal.getMean(objects);
+		}
+
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			//N(e1,e2^2) = e1 + e2 N(0,1)
@@ -2368,19 +2693,16 @@ public class RDDL {
 			final double var = _normalVarReal.getDoubleValue( null, null );
 			final double sample = rand.nextGaussian(0, Math.sqrt(var) );
 			return new OPER_EXPR( _normalMeanReal, new REAL_CONST_EXPR( sample ) , OPER_EXPR.PLUS );
-		}
+		}*/
 
 		public EXPR _normalMeanReal;
 		public EXPR _normalVarReal;
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return _normalMeanReal.getMean(objects);
-		}
+
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new Normal( _normalMeanReal.addTerm(new_term, constants, objects),
 					_normalVarReal.addTerm(new_term, constants, objects ) );
 		}
@@ -2403,7 +2725,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects  ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects  ) throws Exception {
 			return new Normal( _normalMeanReal.substitute(subs, constants, objects),
 					_normalVarReal.substitute(subs, constants, objects) );
 		}
@@ -2462,19 +2784,49 @@ public class RDDL {
 		public TYPE_NAME _sTypeName = null;
 		public EXPR      _exprAlpha = null;
 
+
+
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return new REAL_CONST_EXPR( 1d/objects.get(_sTypeName)._alObjects.size() );
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			System.out.println("This is the class " + toString());
+			throw new NotImplementedException("This method is not implemented");
+
+		}
+
+
+
+
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented, Dirichlet"+ this.toString());
 		}
 
-		@Override
+		//This is old implementation .
+		/*@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return new REAL_CONST_EXPR( 1d/objects.get(_sTypeName)._alObjects.size() );
-		}
+		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new Dirichlet( _sTypeName._STypeName, _exprAlpha.addTerm(new_term, constants, objects) );
 		}
 
@@ -2495,7 +2847,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
 			return new Dirichlet( _sTypeName._STypeName, _exprAlpha.substitute(subs, constants, objects) );
 		}
 
@@ -2537,10 +2889,10 @@ public class RDDL {
 			return sb.toString();
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			throw new NotImplementedException("This method is not implemented");
-		}
+//		@Override
+//		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+//			throw new NotImplementedException("This method is not implemented");
+//		}
 	}
 	
 	public static class DirichletHelper {
@@ -2590,6 +2942,48 @@ public class RDDL {
 			throw new NotImplementedException("This method is not implemented,Multinomial" + this.toString());
 		}
 
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+
+			return new Discrete( _distDiscrete._sTypeName._STypeName ,
+					new ArrayList<>( _distDiscrete._exprProbs.stream().map( m ->
+					{
+						try {
+							return new OPER_EXPR( _exprCount.getMean(constants, objects), m.getMean(constants, objects), OPER_EXPR.TIMES );
+						} catch (Exception e) {
+							e.printStackTrace();
+							return null;
+						}
+					}).collect( Collectors.toList() ) ) );
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			try{
+				//ignoring count here since we cannot handle vectors
+				return _distDiscrete.sampleDeterminization(rand,constants,objects);
+			}catch(Exception exc){
+				exc.printStackTrace();
+				throw exc;
+			}
+
+
+		}
+
+
+/*  This is the old code.
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new Discrete( _distDiscrete._sTypeName._STypeName ,
@@ -2604,15 +2998,39 @@ public class RDDL {
 					}).collect( Collectors.toList() ) ) );
 		}
 
+
+
+				@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			try{
+				//ignoring count here since we cannot handle vectors
+				return _distDiscrete.sampleDeterminization(rand);
+			}catch(Exception exc){
+				exc.printStackTrace();
+			}
+			throw new NotImplementedException("Don't know how to determinize " + toString());
+		}
+
+
+
+*/
+
 		public Discrete _distDiscrete = null;
 		public EXPR     _exprCount = null;
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			return new Multinomial( _distDiscrete._sTypeName._STypeName,
 					_exprCount.addTerm(new_term, constants, objects),
-					new ArrayList<>( _distDiscrete._exprProbs.stream().map( m -> m.addTerm(new_term, constants, objects) )
+					new ArrayList<>( _distDiscrete._exprProbs.stream().map( m -> {
+						try {
+							return m.addTerm(new_term, constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
 							.collect( Collectors.toList() ) ) );
 		}
 
@@ -2634,10 +3052,17 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map< TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map< TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 
 			List<EXPR> x = _distDiscrete._exprProbs.stream().map(
-					m -> m.substitute(subs, constants, objects) ).collect( Collectors.toList() );
+					m -> {
+						try {
+							return m.substitute(subs, constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					}).collect( Collectors.toList() );
 
 			return new Multinomial( _distDiscrete._sType, _exprCount.substitute(subs, constants, objects),
 					new ArrayList<EXPR>( x ) );
@@ -2702,16 +3127,7 @@ public class RDDL {
 			return sb.toString();
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			try{
-				//ignoring count here since we cannot handle vectors
-				return _distDiscrete.sampleDeterminization(rand);
-			}catch(Exception exc){
-				exc.printStackTrace();
-			}
-			throw new NotImplementedException("Don't know how to determinize " + toString());
-		}
+
 	}
 
 	public static class Discrete extends EXPR {
@@ -2745,6 +3161,70 @@ public class RDDL {
 		}
 
 
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return new Discrete( _sTypeName._STypeName,
+					new ArrayList<EXPR>( _exprProbs.stream().map( m -> {
+						try {
+							return m.getMean(constants, objects );
+						} catch (Exception e) {
+							e.printStackTrace();
+							return null;
+						}
+					}).collect( Collectors.toList() ) ) );
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			//<i:E>, CDF <i:sum_-iE>
+			EXPR unif_rand = new REAL_CONST_EXPR(rand.nextUniform(0d, 1d));
+			EXPR ret = null;
+			EXPR cdf = null;
+			EXPR cdf_greater = null;
+			EXPR prev_cdf_lesser = null;
+			EXPR this_conjunction = null;
+			EXPR this_piece = null;
+			EXPR prev_cdf = new REAL_CONST_EXPR(0d);
+			for (int i = 0; i < _exprProbs.size(); i+=2) {
+				EXPR determinized_case = (EXPR)_exprProbs.get(i).sampleDeterminization(rand,constants,objects);
+				EXPR determinized_prob = (EXPR)_exprProbs.get(i+1).sampleDeterminization(rand,constants,objects);
+				if( cdf == null ){
+					cdf = determinized_prob;
+				}else{
+					cdf = new OPER_EXPR(cdf, determinized_prob, OPER_EXPR.PLUS);
+				}
+				//cdf >= rand
+				cdf_greater = new COMP_EXPR(cdf, unif_rand, COMP_EXPR.GREATEREQ);
+				//prev_cdf < rand
+				prev_cdf_lesser =  new COMP_EXPR(prev_cdf, unif_rand, COMP_EXPR.LESS);
+				//conjunction
+				this_conjunction = new CONN_EXPR(cdf_greater, prev_cdf_lesser, CONN_EXPR.AND);
+				//multiply @enum
+				this_piece = new OPER_EXPR(determinized_case, this_conjunction, OPER_EXPR.TIMES);
+				if(ret == null){
+					//summation
+					ret = this_piece;
+				}else{
+					ret = new OPER_EXPR(ret, this_piece, OPER_EXPR.PLUS);
+				}
+				prev_cdf = cdf;
+			}
+			return ret;
+
+		}
+
+
+
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, 
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
@@ -2752,6 +3232,50 @@ public class RDDL {
 				Map<PVAR_NAME, Character> type_map) throws Exception {
 			throw new NotImplementedException("This method is not implemented " + this.toString());
 		}
+
+
+
+/*		This ius old code.
+
+		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			//<i:E>, CDF <i:sum_-iE>
+			EXPR unif_rand = new REAL_CONST_EXPR(rand.nextUniform(0d, 1d));
+			EXPR ret = null;
+			EXPR cdf = null;
+			EXPR cdf_greater = null;
+			EXPR prev_cdf_lesser = null;
+			EXPR this_conjunction = null;
+			EXPR this_piece = null;
+			EXPR prev_cdf = new REAL_CONST_EXPR(0d);
+			for (int i = 0; i < _exprProbs.size(); i+=2) {
+				EXPR determinized_case = (EXPR)_exprProbs.get(i).sampleDeterminization(rand);
+				EXPR determinized_prob = (EXPR)_exprProbs.get(i+1).sampleDeterminization(rand);
+				if( cdf == null ){
+					cdf = determinized_prob;
+				}else{
+					cdf = new OPER_EXPR(cdf, determinized_prob, OPER_EXPR.PLUS);
+				}
+				//cdf >= rand
+				cdf_greater = new COMP_EXPR(cdf, unif_rand, COMP_EXPR.GREATEREQ);
+				//prev_cdf < rand
+				prev_cdf_lesser =  new COMP_EXPR(prev_cdf, unif_rand, COMP_EXPR.LESS);
+				//conjunction
+				this_conjunction = new CONN_EXPR(cdf_greater, prev_cdf_lesser, CONN_EXPR.AND);
+				//multiply @enum
+				this_piece = new OPER_EXPR(determinized_case, this_conjunction, OPER_EXPR.TIMES);
+				if(ret == null){
+					//summation
+					ret = this_piece;
+				}else{
+					ret = new OPER_EXPR(ret, this_piece, OPER_EXPR.PLUS);
+				}
+				prev_cdf = cdf;
+			}
+			return ret;
+		}
+
+
 
 
 		@Override
@@ -2766,7 +3290,7 @@ public class RDDL {
 							return null;
 						}
 					}).collect( Collectors.toList() ) ) );
-		}
+		}*/
 
 		public TYPE_NAME  _sTypeName = null;
 
@@ -2780,7 +3304,14 @@ public class RDDL {
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return new Discrete( _sTypeName._STypeName, new ArrayList<EXPR> (
-					_exprProbs.stream().map( m -> m.addTerm(new_term, constants, objects) )
+					_exprProbs.stream().map( m -> {
+						try {
+							return m.addTerm(new_term, constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
 							.collect( Collectors.toList() ) ) );
 		}
 
@@ -2803,7 +3334,14 @@ public class RDDL {
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
-			List<EXPR> x = _exprProbs.stream().map( m -> m.substitute(subs, constants, objects) ).collect( Collectors.toList() );
+			List<EXPR> x = _exprProbs.stream().map( m -> {
+				try {
+					return m.substitute(subs, constants, objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}).collect( Collectors.toList() );
 			return new Discrete( _sTypeName._STypeName, new ArrayList<EXPR>( x ) );
 		}
 		
@@ -2890,43 +3428,7 @@ public class RDDL {
 					((EXPR)o).collectGFluents(subs, s, gfluents);
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			//<i:E>, CDF <i:sum_-iE>
-			EXPR unif_rand = new REAL_CONST_EXPR(rand.nextUniform(0d, 1d));
-			EXPR ret = null;
-			EXPR cdf = null;
-			EXPR cdf_greater = null;
-			EXPR prev_cdf_lesser = null;
-			EXPR this_conjunction = null;
-			EXPR this_piece = null;
-			EXPR prev_cdf = new REAL_CONST_EXPR(0d);
-			for (int i = 0; i < _exprProbs.size(); i+=2) {
-				EXPR determinized_case = (EXPR)_exprProbs.get(i).sampleDeterminization(rand);
-				EXPR determinized_prob = (EXPR)_exprProbs.get(i+1).sampleDeterminization(rand);
-				if( cdf == null ){
-					cdf = determinized_prob;
-				}else{
-					cdf = new OPER_EXPR(cdf, determinized_prob, OPER_EXPR.PLUS);
-				}
-					//cdf >= rand
-					cdf_greater = new COMP_EXPR(cdf, unif_rand, COMP_EXPR.GREATEREQ);
-					//prev_cdf < rand
-					prev_cdf_lesser =  new COMP_EXPR(prev_cdf, unif_rand, COMP_EXPR.LESS);
-					//conjunction
-					this_conjunction = new CONN_EXPR(cdf_greater, prev_cdf_lesser, CONN_EXPR.AND);
-					//multiply @enum
-					this_piece = new OPER_EXPR(determinized_case, this_conjunction, OPER_EXPR.TIMES);
-				if(ret == null){
-					//summation
-					ret = this_piece;
-				}else{
-					ret = new OPER_EXPR(ret, this_piece, OPER_EXPR.PLUS);
-				}
-				prev_cdf = cdf; 
-			}
-			return ret;
-		}
+
 	}
 	
 	public static class Exponential extends EXPR {
@@ -2952,16 +3454,53 @@ public class RDDL {
 			return false;
 		}
 
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return new OPER_EXPR( new REAL_CONST_EXPR(1d), _exprMeanReal.getMean(constants, objects), OPER_EXPR.DIV);
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			EXPR rand_unif = new REAL_CONST_EXPR(-1d*Math.log(rand.nextUniform(0d, 1d)));
+			EXPR det_mean = _exprMeanReal.sampleDeterminization(rand,constants,objects);
+			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
+
+		}
+
+
+/*		THIS IS OLD CODE. .....
+
+
+
+		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			EXPR rand_unif = new REAL_CONST_EXPR(-1d*Math.log(rand.nextUniform(0d, 1d)));
+			EXPR det_mean = _exprMeanReal.sampleDeterminization(rand);
+			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
+		}
+
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception  {
 			return new OPER_EXPR( new REAL_CONST_EXPR(1d), _exprMeanReal.getMean(objects), OPER_EXPR.DIV);
 		}
+*/
 
 		public EXPR _exprMeanReal;
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new Exponential( _exprMeanReal.addTerm(new_term, constants, objects) );
 		}
 
@@ -2973,7 +3512,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception  {
 			return new Exponential( _exprMeanReal.substitute(subs, constants, objects) );
 		}
 
@@ -2999,12 +3538,7 @@ public class RDDL {
 			_exprMeanReal.collectGFluents(subs, s, gfluents);
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			EXPR rand_unif = new REAL_CONST_EXPR(-1d*Math.log(rand.nextUniform(0d, 1d)));
-			EXPR det_mean = _exprMeanReal.sampleDeterminization(rand);
-			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
-		}
+
 	}
 
 	public static class Weibull extends EXPR {
@@ -3014,6 +3548,7 @@ public class RDDL {
 			_exprScale = scale;
 			_bDet = false;
 		}
+
 		
 		public EXPR _exprShape;
 		public EXPR _exprScale;
@@ -3023,14 +3558,55 @@ public class RDDL {
 			throw new NotImplementedException("This method is not implemented,Weibull" + this.toString());
 		}
 
+
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+
 			throw new Exception("cannot represent mean of weibull distribution");
 		}
 
 		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			assert( _exprShape.isConstant(null, null) );
+			EXPR rand_unif = new REAL_CONST_EXPR(Math.pow(
+					-1d*Math.log(rand.nextUniform(0d, 1d)),
+					1.0/_exprShape.getDoubleValue(null, null)));
+			EXPR det_mean = _exprScale.sampleDeterminization(rand,constants,objects);
+			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
+
+		}
+
+
+
+
+/*		THIS IS OLD CODE.....
+		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			assert( _exprShape.isConstant(null, null) );
+			EXPR rand_unif = new REAL_CONST_EXPR(Math.pow(
+					-1d*Math.log(rand.nextUniform(0d, 1d)),
+					1.0/_exprShape.getDoubleValue(null, null)));
+			EXPR det_mean = _exprScale.sampleDeterminization(rand);
+			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
+		}
+
+
+
+		@Override
+		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+			throw new Exception("cannot represent mean of weibull distribution");
+		}*/
+
+		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object> > constants ,
-							Map< TYPE_NAME, OBJECTS_DEF> objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return new Weibull( _exprShape.addTerm(new_term, constants, objects),
 					_exprScale.addTerm(new_term, constants, objects) );
 		}
@@ -3052,7 +3628,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception  {
 			return new Weibull( _exprShape.substitute(subs, constants, objects),
 					_exprScale.substitute(subs, constants, objects) );
 		}
@@ -3082,15 +3658,7 @@ public class RDDL {
 			_exprScale.collectGFluents(subs, s, gfluents);
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			assert( _exprShape.isConstant(null, null) );
-			EXPR rand_unif = new REAL_CONST_EXPR(Math.pow(
-								-1d*Math.log(rand.nextUniform(0d, 1d)), 
-								1.0/_exprShape.getDoubleValue(null, null)));
-			EXPR det_mean = _exprScale.sampleDeterminization(rand);
-			return new OPER_EXPR(rand_unif, det_mean, OPER_EXPR.TIMES);
-		}
+
 	}
 
 	public static class Gamma extends EXPR {
@@ -3112,6 +3680,54 @@ public class RDDL {
 
 		}
 
+
+
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+
+			try {
+				return new OPER_EXPR( _exprShape.getMean(constants,objects), _exprScale.getMean(constants,objects), OPER_EXPR.TIMES );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			assert( _exprShape.isConstant(null, null) );
+			final double shape_val = _exprShape.getDoubleValue(null, null);
+			EXPR samp = new REAL_CONST_EXPR(rand.nextGamma(shape_val, 1.0d));
+			EXPR det_scale = _exprScale.sampleDeterminization(rand,constants,objects);
+			return new OPER_EXPR(samp, det_scale, OPER_EXPR.TIMES);
+
+
+		}
+
+/*  This is old code.
+
+		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			assert( _exprShape.isConstant(null, null) );
+			final double shape_val = _exprShape.getDoubleValue(null, null);
+			EXPR samp = new REAL_CONST_EXPR(rand.nextGamma(shape_val, 1.0d));
+			EXPR det_scale = _exprScale.sampleDeterminization(rand);
+			return new OPER_EXPR(samp, det_scale, OPER_EXPR.TIMES);
+		}
+
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			try {
@@ -3121,10 +3737,11 @@ public class RDDL {
 			}
 			return null;
 		}
+*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object> > constants,
-							Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
 			return new Gamma( _exprShape.addTerm(new_term, constants, objects),
 					_exprScale.addTerm(new_term, constants, objects ) );
 		}
@@ -3146,7 +3763,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception  {
 			return new Gamma( _exprShape.substitute(subs, constants, objects),
 					_exprScale.substitute(subs, constants, objects) );
 		}
@@ -3176,14 +3793,7 @@ public class RDDL {
 			_exprScale.collectGFluents(subs, s, gfluents);
 		}
 		
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			assert( _exprShape.isConstant(null, null) );
-			final double shape_val = _exprShape.getDoubleValue(null, null);
-			EXPR samp = new REAL_CONST_EXPR(rand.nextGamma(shape_val, 1.0d));
-			EXPR det_scale = _exprScale.sampleDeterminization(rand);
-			return new OPER_EXPR(samp, det_scale, OPER_EXPR.TIMES);
-		}
+
 	}
 	
 	public static class Poisson extends EXPR {
@@ -3203,60 +3813,54 @@ public class RDDL {
 
 		}
 
+
+
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return _exprMean.getMean(objects);
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+
+			return _exprMean.getMean(constants,objects);
 		}
 
 		@Override
-		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object> > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
-			return new Poisson( _exprMean.addTerm(new_term, constants, objects ) );
-		}
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
-		@Override
-		public int hashCode() {
-			return Objects.hash("Poisson", _exprMean.hashCode());
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if( obj instanceof Poisson ){
-				Poisson p = (Poisson) obj;
-				return _exprMean.equals( p._exprMean );
+			EXPR ret = null;
+			double p = 1;
+			double prev_p = 1;
+			EXPR det_lambda = _exprMean.sampleDeterminization(rand,constants,objects);
+			int i = 1;
+			while( p > 1e-1){
+				double this_unif = rand.nextUniform(0d,1d);
+				prev_p = p;
+				p *= this_unif;
+				//while p>L
+				//first p to be p <= L (=e^-\lambda)
+				//this_p leq L = ln p \leq -\lambda = lambda \geq -ln p
+				EXPR this_p_cond = new COMP_EXPR( det_lambda, new REAL_CONST_EXPR(-1*Math.log(p)), COMP_EXPR.GREATEREQ);
+				//prev_p > L = ln prev_p > -\lambda = \lambda \geq - ln prev_p
+				EXPR this_cond = new COMP_EXPR( det_lambda, new REAL_CONST_EXPR(-1*Math.log(prev_p)), COMP_EXPR.GREATEREQ);
+				EXPR this_conj = new CONN_EXPR( this_p_cond, this_cond, CONN_EXPR.AND);
+				EXPR this_term = new OPER_EXPR( new INT_CONST_EXPR(i-1), this_conj, OPER_EXPR.TIMES);
+				if (ret == null){
+					ret = this_term;
+				}else{
+					ret = new OPER_EXPR(ret, this_term, OPER_EXPR.PLUS);
+				}
 			}
-			return false;
+			return ret;
+
+
 		}
 
-		@Override
-		public EXPR substitute(Map<LVAR, LCONST> subs,
-							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
-			return new Poisson( _exprMean.substitute(subs, constants, objects) );
-		}
-		
-		public String toString() {
-			if (USE_PREFIX)
-				return "(Poisson " + _exprMean + ")";
-			else
-				return "Poisson(" + _exprMean + ")";
-		}
-		
-		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
-			double mean = ((Number)_exprMean.sample(subs, s, null)).doubleValue();
-			return ((Long)r.nextPoisson(mean)).intValue();
-		}
-		
-		public EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException {
-			double mean = ((Number)_exprMean.sample(subs, s, null)).doubleValue();
-			return new Poisson(new REAL_CONST_EXPR(mean));
-		}
+/*   This is Old Code.
 
-		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents) 
-			throws EvalException {
-			_exprMean.collectGFluents(subs, s, gfluents);
-		}
-		
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			EXPR ret = null;
@@ -3284,8 +3888,91 @@ public class RDDL {
 			}
 			return ret;
 		}
+
+		@Override
+		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+			return _exprMean.getMean(objects);
+		}
+*/
+
+		@Override
+		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map<ArrayList<LCONST>, Object> > constants,
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
+			return new Poisson( _exprMean.addTerm(new_term, constants, objects ) );
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash("Poisson", _exprMean.hashCode());
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if( obj instanceof Poisson ){
+				Poisson p = (Poisson) obj;
+				return _exprMean.equals( p._exprMean );
+			}
+			return false;
+		}
+
+		@Override
+		public EXPR substitute(Map<LVAR, LCONST> subs,
+							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
+			return new Poisson( _exprMean.substitute(subs, constants, objects) );
+		}
+		
+		public String toString() {
+			if (USE_PREFIX)
+				return "(Poisson " + _exprMean + ")";
+			else
+				return "Poisson(" + _exprMean + ")";
+		}
+		
+		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
+			double mean = ((Number)_exprMean.sample(subs, s, null)).doubleValue();
+			return ((Long)r.nextPoisson(mean)).intValue();
+		}
+		
+		public EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException {
+			double mean = ((Number)_exprMean.sample(subs, s, null)).doubleValue();
+			return new Poisson(new REAL_CONST_EXPR(mean));
+		}
+
+		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents) 
+			throws EvalException {
+			_exprMean.collectGFluents(subs, s, gfluents);
+		}
+
+/*		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+			EXPR ret = null;
+			double p = 1;
+			double prev_p = 1;
+			EXPR det_lambda = _exprMean.sampleDeterminization(rand);
+			int i = 1;
+			while( p > 1e-1){
+				double this_unif = rand.nextUniform(0d,1d);
+				prev_p = p;
+				p *= this_unif;
+				//while p>L
+				//first p to be p <= L (=e^-\lambda)
+				//this_p leq L = ln p \leq -\lambda = lambda \geq -ln p
+				EXPR this_p_cond = new COMP_EXPR( det_lambda, new REAL_CONST_EXPR(-1*Math.log(p)), COMP_EXPR.GREATEREQ);
+				//prev_p > L = ln prev_p > -\lambda = \lambda \geq - ln prev_p
+				EXPR this_cond = new COMP_EXPR( det_lambda, new REAL_CONST_EXPR(-1*Math.log(prev_p)), COMP_EXPR.GREATEREQ);
+				EXPR this_conj = new CONN_EXPR( this_p_cond, this_cond, CONN_EXPR.AND);
+				EXPR this_term = new OPER_EXPR( new INT_CONST_EXPR(i-1), this_conj, OPER_EXPR.TIMES);
+				if (ret == null){
+					ret = this_term;
+				}else{
+					ret = new OPER_EXPR(ret, this_term, OPER_EXPR.PLUS);
+				}
+			}
+			return ret;
+		}*/
 	}
-	
+
 	public static class Bernoulli extends BOOL_EXPR {
 		
 		public Bernoulli(EXPR prob) {
@@ -3294,6 +3981,14 @@ public class RDDL {
 		}
 		
 		public EXPR _exprProb;
+
+
+
+
+
+
+
+
 
 
 		@Override
@@ -3313,7 +4008,49 @@ public class RDDL {
 		}
 
 
-        @Override
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			try {
+				return new COMP_EXPR(_exprProb.getMean(constants,objects), new REAL_CONST_EXPR(0.5d), COMP_EXPR.GREATEREQ );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			//B ~ bern(p); X ~ U(0,1)
+			//B = ( X > 1 - p )
+			final double sample = rand.nextUniform(0, 1);
+
+			//System.out.println("Sampled future for bernoulli " + this + " " + sample );
+			try {
+				return new COMP_EXPR( new REAL_CONST_EXPR( sample ),
+						new OPER_EXPR( new REAL_CONST_EXPR(1d), _exprProb , OPER_EXPR.MINUS ), COMP_EXPR.GREATER );
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+
+		}
+
+
+
+
+
+
+/*		This is old Code.
+
+		@Override
         public EXPR sampleDeterminization(RandomDataGenerator rand) {
             //B ~ bern(p); X ~ U(0,1)
             //B = ( X > 1 - p )
@@ -3337,11 +4074,11 @@ public class RDDL {
 				e.printStackTrace();
 			}
 			return null;
-		}
+		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object>> constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new Bernoulli( _exprProb.addTerm(new_term, constants, objects) );
 		}
 
@@ -3363,7 +4100,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new Bernoulli( _exprProb.substitute(subs, constants, objects) );
 		}
 
@@ -3405,9 +4142,18 @@ public class RDDL {
 		public Double _dValue;
 
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return this;
 		}
+
+
+
+/*		@Override
+		public EXPR sampleDeterminization(RandomDataGenerator rand) {
+			return this;
+		}*/
 
 		public CONST_EXPR( Number v ) {
 			_nValue = v;
@@ -3425,10 +4171,23 @@ public class RDDL {
 			_dValue = _nValue.doubleValue() ;
 		}
 
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return this;
+
+		}
+
+/*		This is old code...
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
 		}
+*/
 
 		@Override
 		public boolean equals(Object obj) {
@@ -3548,6 +4307,40 @@ public class RDDL {
 			_bDet = true;
 		}
 
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			System.out.println("This class name is :" + toString());
+			throw new UnsupportedOperationException();
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+				System.out.println("This class name is : " + toString());
+
+				throw new UnsupportedOperationException();
+
+		}
+
+
+
+
+
+
+
+
+
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -3590,7 +4383,49 @@ public class RDDL {
 				Map<PVAR_NAME, Character> type_map) {
 			return GRB.CONTINUOUS;
 		}
-		
+
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			throw new UnsupportedOperationException();
+
+
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			throw new UnsupportedOperationException();
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //		public Double _dValue;
 //
 //		public String toString() {
@@ -3621,17 +4456,20 @@ public class RDDL {
 		
 		public LCONST _sLabel;
 		public EXPR   _expr;
+
+/*		Commenting to check the issue.
 		
 		public EXPR substitute( final Map<LVAR,LCONST> subs,
 				 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 				 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			try{
-				return new STRUCT_EXPR_MEMBER(_sLabel, _expr.substitute(constants, objects));
+				return new STRUCT_EXPR_MEMBER(_sLabel,_expr.substitute(subs,constants,objects));
+
 			}catch( Exception exc ){
 				exc.printStackTrace();
 				throw exc;
 			}
-		}
+		}*/
 
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 		   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
@@ -3694,8 +4532,32 @@ public class RDDL {
 		}
 
 		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
+		public EXPR sampleDeterminization(final RandomDataGenerator rand,
+										  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+										  Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			throw new UnsupportedOperationException(toString());
+		}
+
+		@Override
+		public EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
+
+
+			return new STRUCT_EXPR( new ArrayList<STRUCT_EXPR_MEMBER>(
+					_alSubExpr.stream().map(
+							m -> {
+								try {
+									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.getMean(constants,objects) );
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							return null;
+							})
+							.collect( Collectors.toList( ) ) ) );
+
+
+
 		}
 
 		@Override
@@ -3712,9 +4574,16 @@ public class RDDL {
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
 			return new STRUCT_EXPR( new ArrayList<>( _alSubExpr.stream()
-					.map( m -> new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.addTerm(new_term, constants, objects) ) )
+					.map( m -> {
+						try {
+							return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.addTerm(new_term, constants, objects) );
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
 					.collect( Collectors.toList() ) ) );
 		}
 
@@ -3731,6 +4600,10 @@ public class RDDL {
 			return false;
 		}
 
+/*
+
+		Old Implementation.  .. . .
+
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return new STRUCT_EXPR( new ArrayList<STRUCT_EXPR_MEMBER>(
@@ -3744,12 +4617,12 @@ public class RDDL {
 								}
 							})
 							.collect( Collectors.toList( ) ) ) );
-		}
+		}*/
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects  ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects  ) throws Exception{
 			return new STRUCT_EXPR( new ArrayList<STRUCT_EXPR_MEMBER>(
 					_alSubExpr.stream().map(
 							m -> {
@@ -3757,8 +4630,9 @@ public class RDDL {
 									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.substitute(subs, constants, objects) );
 								} catch (Exception e) {
 									e.printStackTrace();
-									throw e;
+
 								}
+								return null;
 							})
 							.collect( Collectors.toList( ) ) ) );
 		}
@@ -3816,7 +4690,7 @@ public class RDDL {
 		public static final String DIV   = "/".intern();
 		public static final String MIN   = "min".intern();
 		public static final String MAX   = "max".intern();
-		
+
 		public static final Double   D_ZERO = Double.valueOf(0d);
 		public static final Integer  I_ZERO = Integer.valueOf(0);
 		public static final Boolean  B_ZERO = Boolean.valueOf(false);
@@ -3833,6 +4707,38 @@ public class RDDL {
 			return reducible.isConstant(constants, objects);//CONST_EXPR
 		}
 
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return new OPER_EXPR( _e1.getMean(constants, objects), _e2.getMean(constants, objects), _op );
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			try {
+				return new OPER_EXPR( _e1.sampleDeterminization(rand,constants,objects), _e2.sampleDeterminization(rand,constants,objects), _op );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+
+		}
+
+
+
+
+
+/*			This is the old Code....
+*//*
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
 			try {
@@ -3841,16 +4747,16 @@ public class RDDL {
 				e.printStackTrace();
 				throw e;
 			}
-		}
+		}*//*
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			return new OPER_EXPR( _e1.getMean(objects), _e2.getMean(objects), _op );
-		}
+		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			try {
 				return new OPER_EXPR( _e1.addTerm(new_term, constants, objects),
 						_e2.addTerm(new_term, constants, objects ), _op );
@@ -3944,7 +4850,7 @@ public class RDDL {
 
 		@Override
 		protected char getGRB_Type(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								   Map<PVAR_NAME,  Character> type_map)  {
+								   Map<PVAR_NAME,  Character> type_map)  throws Exception {
 
 			char e1_type = _e1.getGRB_Type( constants , type_map );
 			char e2_type = _e2.getGRB_Type( constants , type_map );
@@ -3981,7 +4887,7 @@ public class RDDL {
 						throw exc;
 					}
 			}
-			return GRB.CONTINUOUS;
+			//return GRB.CONTINUOUS;
 		}
 
 		@Override
@@ -4090,13 +4996,13 @@ public class RDDL {
 					throw exc;
 				}
 			}
-			return false;
+			//return false;
 		}
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			try {
 				EXPR e1_sub = _e1.substitute(subs, constants, objects);
 				EXPR e2_sub = _e2.substitute(subs, constants, objects);
@@ -4180,13 +5086,13 @@ public class RDDL {
 				e.printStackTrace();
 				throw e;
 			}
-			return null;
+			//return null;
 		}
 
-		public OPER_EXPR(EXPR e1, EXPR e2, String op) throws Exception {
+		public OPER_EXPR(EXPR e1, EXPR e2, String op) {
 
 			if (!op.equals(PLUS) && !op.equals(MINUS) && !op.equals(TIMES) && !op.equals(DIV) && !op.equals(MIN) && !op.equals(MAX))
-				throw new Exception("Unrecognized arithmetic operator: " + op);
+				//throw new Exception("Unrecognized arithmetic operator: " + op);
 			assert( op.equals(PLUS) || op.equals(MINUS) || op.equals(TIMES) || op.equals(DIV)
 					|| op.equals( MIN ) || op.equals( MAX ) );
 			_op = op.intern();
@@ -4417,7 +5323,7 @@ public class RDDL {
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			try{
-				return new AGG_EXPR( _op, _alVariables, _e.sampleDeterminization(rand) );
+				return new AGG_EXPR( _op, _alVariables, _e.sampleDeterminization(rand,constants,objects) );
 			}catch(Exception exc){
 				exc.printStackTrace();
 				EXPR expanded = expandArithmeticQuantifier( constants, objects );
@@ -4429,7 +5335,7 @@ public class RDDL {
 		public EXPR getMean( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			try{
-				return new AGG_EXPR( _op, _alVariables, _e.getMean( objects ) );
+				return new AGG_EXPR( _op, _alVariables, _e.getMean(constants, objects ) );
 			}catch(Exception exc){
 				exc.printStackTrace();
 				EXPR expanded = expandArithmeticQuantifier( constants, objects );
@@ -4439,7 +5345,7 @@ public class RDDL {
 
 		@Override
 		protected char getGRB_Type( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<PVAR_NAME, Character> type_map )  {
+									Map<PVAR_NAME, Character> type_map )  throws  Exception{
 			char inner_type = _e.getGRB_Type(constants, type_map );
 			if( inner_type == GRB.BINARY && _op.equals( PROD ) ){
 				return GRB.BINARY;
@@ -4463,6 +5369,8 @@ public class RDDL {
 				e.printStackTrace();
 				return Objects.hash( "AGG_EXPR", _op, _alVariables, _e );
 			}
+			//This can never reach...
+			return -1;
 		}
 
 		public EXPR expandArithmeticQuantifier(
@@ -4491,7 +5399,7 @@ public class RDDL {
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
 			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-			Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) {
+			Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception{
 
 			try{
 				if( grb_cache.containsKey( this ) ){
@@ -4525,7 +5433,7 @@ public class RDDL {
 							e1.printStackTrace();
 							throw e1;
 						}
-						break;
+						//break;
 
 					case "min" :
 
@@ -4549,7 +5457,7 @@ public class RDDL {
 							e1.printStackTrace();
 							throw e1;
 						}
-						break;
+						//break;
 					case "max" :
 						EXPR max_expr = null;
 						for( final EXPR e : terms ){
@@ -4571,7 +5479,7 @@ public class RDDL {
 							e1.printStackTrace();
 							throw e1;
 						}
-						break;
+						//break;
 					default :
 						throw new Exception( "unknown op for AGG_EXPR.getGRBConstr() " + _op );
 				}
@@ -4579,7 +5487,7 @@ public class RDDL {
 				exc.printStackTrace();
 				throw exc;
 			}
-			return null;
+			//return null;
 		}
 
 		@Override
@@ -4617,7 +5525,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 
 			try {
 				if( isConstant(constants, objects ) ){
@@ -4644,7 +5552,7 @@ public class RDDL {
 				e.printStackTrace();
 				throw e;
 			}
-			return null;
+			//return null;
 
 		}
 
@@ -4870,7 +5778,7 @@ public class RDDL {
 			}else{
 				return this_var;
 			}
-			return null;
+			//return null;
 		}
 
 		@Override
@@ -4903,9 +5811,13 @@ public class RDDL {
 		}
 
 		@Override
-		public boolean equals(Object obj) {
-			if( isConstant( null, null ) ){
-				return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
+		public boolean equals(Object obj)   {
+			try {
+				if( isConstant( null, null ) ){
+                    return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
+                }
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
 			if( obj instanceof PVAR_EXPR ){
@@ -4959,7 +5871,14 @@ public class RDDL {
 							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			ArrayList<LTERM> ret = new ArrayList<LTERM>(
 					_alTerms.stream()
-							.map( m -> m.substitute(subs, constants, objects) )
+							.map( m -> {
+								try {
+									return m.substitute(subs, constants, objects);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								return null;
+							})
 							.collect( Collectors.toList() ) );
 			PVAR_EXPR p = new PVAR_EXPR( _pName._sPVarName, ret );
 			//check for NF
@@ -4992,7 +5911,7 @@ public class RDDL {
 					throw exc;
 				}
 			}
-			return null;
+			//return null;
 		}
 
 		public PVAR_EXPR(String s, ArrayList terms) {
@@ -5241,10 +6160,16 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			try {
 				return new FUN_EXPR( _sName, new ArrayList<EXPR>(
-						_alArgs.stream().map( m -> 
-							m.getMean(constants, objects))
+						_alArgs.stream().map( m -> {
+							try {
+								return m.getMean(constants, objects);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							return null;
+						})
 							.collect( Collectors.toList() ) ) );
-				return m.getMean(objects);
+				//return m.getMean(objects);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -5257,7 +6182,14 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			try{
 				return new FUN_EXPR( _sName, new ArrayList<EXPR>(
-					_alArgs.stream().map(m -> m.sampleDeterminization(rand))
+					_alArgs.stream().map(m -> {
+						try {
+							return m.sampleDeterminization(rand,constants,objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
 					.collect( Collectors.toList() ) ) );
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -5270,7 +6202,15 @@ public class RDDL {
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			try{
-				return _alArgs.stream().allMatch( m -> m.isConstant(constants, objects));
+				return _alArgs.stream().allMatch( m -> {
+					try {
+						return m.isConstant(constants, objects);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					return false;
+				});
 			}catch(Exception exc){
 				exc.printStackTrace();
 				throw exc;
@@ -5285,16 +6225,35 @@ public class RDDL {
 				return true;
 			}
 
+
+
 			if( _sName.equals( MIN ) || _sName.equals( MAX )  
 					|| _sName.equals( ABS ) || _sName.equals( SGN ) ){
 				 try{
 					 return _alArgs.stream().allMatch(
-						 m -> m.isPiecewiseLinear(constants, objects));
+						 m -> {
+							 try {
+								 return m.isPiecewiseLinear(constants, objects);
+							 } catch (Exception e) {
+								 e.printStackTrace();
+							 }
+							 return false;
+						 });
 				 }catch(Exception exc){
 					 exc.printStackTrace();
 					 throw exc;
 				 }
 			}
+
+			return false;
+
+
+
+
+
+
+
+
 		}
 
 		@Override
@@ -5304,7 +6263,14 @@ public class RDDL {
 			List<Double> evals = null;
 			try{
 				evals = _alArgs.stream()
-					.map( m -> m.getDoubleValue( constants, objects))
+					.map( m -> {
+						try {
+							return m.getDoubleValue( constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
 					.collect( Collectors.toList() );
 			}catch(Exception exc){
 				exc.printStackTrace();
@@ -5408,8 +6374,10 @@ public class RDDL {
 					ret = _alArgs.stream().reduce( 
 							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MIN )).get();
 				}else if( _sName.equals( MAX ) ){
+
 					ret = _alArgs.stream().reduce( 
-							(a,b) -> OPER_EXPR( a, b, OPER_EXPR.MAX )).get();
+							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MAX )).get();
+
 				}else if( _sName.equals( ABS ) ){
 					assert( _alArgs.size() == 1 );
 					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) , 
@@ -5445,7 +6413,7 @@ public class RDDL {
 				exc.printStackTrace();
 				throw exc;
 			}
-			return null;
+			//return null;
 		}
 
 		@Override
@@ -5458,7 +6426,14 @@ public class RDDL {
 //							COSH, SINH, TANH, EXP, LN, SQRT}));
 			if( _sName.equals( MIN ) || _sName.equals( MAX ) ){
 
-				return upper( _alArgs.stream().map( m -> m.getGRB_Type(constants, type_map) )
+				return upper( _alArgs.stream().map( m -> {
+					try {
+						return m.getGRB_Type(constants, type_map);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				})
 						.collect( Collectors.toList()) );
 			}else if( _sName.equals( SGN ) || _sName.equals( MOD ) || _sName.equals( ROUND )
 					|| _sName.equals( FLOOR ) || _sName.equals( CEIL ) ){
@@ -5470,7 +6445,14 @@ public class RDDL {
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object> > constants,
 							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
-			return new FUN_EXPR( _sName, new ArrayList<EXPR>( _alArgs.stream().map( m -> m.addTerm(new_term, constants, objects) )
+			return new FUN_EXPR( _sName, new ArrayList<EXPR>( _alArgs.stream().map( m -> {
+				try {
+					return m.addTerm(new_term, constants, objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			})
 					.collect( Collectors.toList() ) ) );
 		}
 
@@ -5519,7 +6501,14 @@ public class RDDL {
 		public FUN_EXPR substitute(Map<LVAR, LCONST> subs,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
-			List<EXPR> x = _alArgs.stream().map( m -> m.substitute(subs, constants, objects) ).collect( Collectors.toList() );
+			List<EXPR> x = _alArgs.stream().map( m -> {
+				try {
+					return m.substitute(subs, constants, objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}).collect( Collectors.toList() );
 			return new FUN_EXPR( _sName, new ArrayList<EXPR>( x ) );
 		}
 
@@ -5692,7 +6681,7 @@ public class RDDL {
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) Exception {
+				Map<PVAR_NAME, Character> type_map) throws Exception {
 			try {
 				if( isConstant( constants, null ) ){
                     final double d = getDoubleValue(constants, null );
@@ -5711,7 +6700,7 @@ public class RDDL {
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new IF_EXPR( _test.addTerm(new_term, constants, objects),
 					_trueBranch.addTerm(new_term, constants, objects),
 					_falseBranch.addTerm(new_term, constants, objects) );
@@ -5879,6 +6868,8 @@ public class RDDL {
 				exc.printStackTrace();
 				throw exc;
 			}
+			//This is added by harish.
+			return Double.NaN;
 		}
 
 		public String toString() {
@@ -5946,7 +6937,7 @@ public class RDDL {
 
 		public CASE substitute( final Map<LVAR,LCONST> subs,
 				 final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-				 final Map< TYPE_NAME, OBJECTS_DEF > objects ){
+				 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			return new CASE(_termVal.substitute(subs, constants, objects), 
 							_expr.substitute(subs, constants, objects));
 		}
@@ -5955,7 +6946,8 @@ public class RDDL {
 				   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
 			return false;
 		}
-		
+
+
 		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 						  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
 			return _expr.isPiecewiseLinear(constants, objects);
@@ -5966,7 +6958,7 @@ public class RDDL {
 			return new CASE( _termVal, _expr.getMean(constants, objects) );
 		}
 		
-		public EXPR sampleDeterminization( final RandomDataGenerator rand, 
+		public CASE sampleDeterminization( final RandomDataGenerator rand,
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return new CASE(_termVal, 
@@ -6009,14 +7001,17 @@ public class RDDL {
 		public LTERM _term; 
 		public ArrayList<CASE> _cases = null;
 
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand, 
+		//@Override
+		//This has to be written.
+		public EXPR sampleDeterminization(RandomDataGenerator rand,
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			//TODO - implement using map() on CASE
+			/*//TODO - implement using map() on CASE
 			... return new SWITCH(_term, _cases.stream()
 					.map(m->m.sampleDeterminization(rand, constants, objects))
-					.collect(Collectors.toList()))
+					.collect(Collectors.toList()))*/
+
+			return null;
 		}
 
 		@Override
@@ -6025,11 +7020,11 @@ public class RDDL {
 		}
 
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
+		public EXPR getMean(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new SWITCH_EXPR(_term, new ArrayList<CASE>(
 					_cases.stream().map( m -> {
 						try {
-							return m.getMean(objects);
+							return m.getMean(constants, objects);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -6081,16 +7076,30 @@ public class RDDL {
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
-			return upper( _cases.stream().map( m -> m._expr.getGRB_Type(constants, type_map) )
+				Map<PVAR_NAME, Character> type_map) throws Exception{
+			return upper( _cases.stream().map( m -> {
+				try {
+					return m._expr.getGRB_Type(constants, type_map);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			})
 					.collect( Collectors.toList() ) );
 		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants ,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
 			return new SWITCH_EXPR( _term, new ArrayList<CASE>(
-					_cases.stream().map( m -> new CASE( m._termVal, m._expr.addTerm(new_term, constants, objects) ) )
+					_cases.stream().map( m -> {
+						try {
+							return new CASE( m._termVal, m._expr.addTerm(new_term, constants, objects) );
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return  null;
+					})
 							.collect( Collectors.toList() ) ) );
 		}
 
@@ -6112,7 +7121,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects) {
+							   Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			LTERM new_term = (LTERM) _term.substitute(subs, constants, objects);
 			Stream<CASE> case_stream = _cases.stream();
 
@@ -6120,8 +7129,15 @@ public class RDDL {
 				if( new_term.isConstant( constants , objects ) ){
                     //eval each case condition
                     //but not the expr
-                    Stream<CASE> eval_case_stream = case_stream.map( m -> new CASE( (LTERM)(m._termVal.substitute(subs, constants, objects)),
-                            m._expr ) );
+                    Stream<CASE> eval_case_stream = case_stream.map( m -> {
+						try {
+							return new CASE( (LTERM)(m._termVal.substitute(subs, constants, objects)),
+                                    m._expr );
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					});
                     List<CASE> match_case_list = eval_case_stream.filter( m -> m._termVal.equals( new_term ) ).collect( Collectors.toList() );
 
                     if( match_case_list.size() == 1 ){
@@ -6143,8 +7159,15 @@ public class RDDL {
 
                 }else{
                     //eval all case conds and exprs
-                    List<CASE> new_cases = case_stream.map( m -> new CASE(  (LTERM) m._termVal.substitute(subs, constants, objects),
-                            m._expr.substitute(subs, constants, objects) ) ).collect( Collectors.toList() );
+                    List<CASE> new_cases = case_stream.map( m -> {
+						try {
+							return new CASE(  (LTERM) m._termVal.substitute(subs, constants, objects),
+                                    m._expr.substitute(subs, constants, objects) );
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					}).collect( Collectors.toList() );
                     return new SWITCH_EXPR(new_term, new ArrayList<CASE>( new_cases ) );
                 }
 			} catch (Exception e) {
@@ -6251,7 +7274,7 @@ public class RDDL {
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map< PVAR_NAME, Character > type_map ) {
+				Map< PVAR_NAME, Character > type_map ) throws Exception{
 			return GRB.BINARY;
 		}
 
@@ -6286,9 +7309,29 @@ public class RDDL {
 //		}
 //
 
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
 
 
+
+			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.getMean(constants, objects) );
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.sampleDeterminization(rand,constants,objects) );
+
+
+		}
+
+
+/*		This is Old Code.  .
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
 			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.sampleDeterminization(rand) );
@@ -6297,7 +7340,7 @@ public class RDDL {
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.getMean(objects) );
-		}
+		}*/
 
 		public QUANT_EXPR(String quant, ArrayList vars, BOOL_EXPR expr ) {
 			assert (quant.equals(EXISTS) || quant.equals(FORALL));
@@ -6369,7 +7412,7 @@ public class RDDL {
 		}
 
 		public EXPR expandBooleanQuantifier( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											 Map<TYPE_NAME, OBJECTS_DEF> objects ){
+											 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			List<BOOL_EXPR> terms = expandQuantifier( _expr, _alVariables, objects, constants )
 					.stream().map( new Function<EXPR, BOOL_EXPR>() {
 						@Override
@@ -6656,6 +7699,52 @@ public class RDDL {
 		public static final String AND   = "^".intern();
 		public static final String OR    = "|".intern();
 
+
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
+					_alSubNodes.stream().map(m -> {
+						try {
+							return ((BOOL_EXPR)m.getMean(constants, objects));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					}).collect(Collectors.toList() ) ), _sConn );
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
+					_alSubNodes.stream().map( m -> {
+						try {
+							return (BOOL_EXPR) m.sampleDeterminization(rand,constants,objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						return null;
+					})
+							.collect( Collectors.toList() ) ), _sConn );
+
+
+		}
+
+
+
+
+/*       This is Old Code... .. ... .
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
 			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
@@ -6671,9 +7760,8 @@ public class RDDL {
 
 		}
 
-		public CONN_EXPR(EXPR b1, EXPR b2, String conn) throws Exception {
-			this((BOOL_EXPR)b1, (BOOL_EXPR)b2, conn); // PARSER RESTRICTION
-		}
+
+
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
@@ -6687,13 +7775,26 @@ public class RDDL {
 						return null;
 					}).collect(Collectors.toList() ) ), _sConn );
 		}
+*/
+
+
+		public CONN_EXPR(EXPR b1, EXPR b2, String conn) throws Exception {
+			this((BOOL_EXPR)b1, (BOOL_EXPR)b2, conn); // PARSER RESTRICTION
+		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object> > constants,
 							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
 			try {
 				return new CONN_EXPR( new ArrayList< BOOL_EXPR > ( _alSubNodes.stream()
-						.map( m -> (BOOL_EXPR)m.addTerm(new_term, constants, objects) )
+						.map( m -> {
+							try {
+								return (BOOL_EXPR)m.addTerm(new_term, constants, objects);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							return null;
+						})
 						.collect( Collectors.toList() ) ), _sConn );
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -7113,7 +8214,14 @@ public class RDDL {
 		public BOOL_EXPR substitute(Map<LVAR, LCONST> subs,
 									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 									Map<TYPE_NAME, OBJECTS_DEF > objects ) {
-			List<BOOL_EXPR> new_expr = _alSubNodes.stream().map( m -> m.substitute(subs, constants, objects) )
+			List<BOOL_EXPR> new_expr = _alSubNodes.stream().map( m -> {
+				try {
+					return m.substitute(subs, constants, objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			})
 					.map(m -> {
 						try {
 							return m.isConstant(constants, objects) ?
@@ -7303,6 +8411,37 @@ public class RDDL {
 
 		//This is Start of Addition
 
+
+
+
+
+
+
+
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+
+			return new NEG_EXPR( _subnode.getMean(constants, objects) );
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+
+			return new NEG_EXPR( _subnode.sampleDeterminization(rand,constants,objects) );
+
+		}
+
+
+/*	  	This is old code...
+
+
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return new NEG_EXPR( _subnode.sampleDeterminization(rand) );
@@ -7311,11 +8450,11 @@ public class RDDL {
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new NEG_EXPR( _subnode.getMean(objects) );
-		}
+		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object> > constants,
-							Map< TYPE_NAME, OBJECTS_DEF> objects ) {
+							Map< TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			return new NEG_EXPR( _subnode.addTerm(new_term, constants, objects ) );
 		}
 
@@ -7386,7 +8525,7 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			try {
 				if( isConstant(constants, objects) ){
                     return new REAL_CONST_EXPR( getDoubleValue(constants, objects) );
@@ -7486,7 +8625,29 @@ public class RDDL {
 
 		//This is start of addition
 
+		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
+			return this;
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return this;
+
+		}
+
+
+
+
+
+
+	/*
+		This is old code.
 
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) {
@@ -7497,7 +8658,7 @@ public class RDDL {
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
 			return this;
 		}
-
+*/
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object>> constants,
 							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
@@ -7639,6 +8800,27 @@ public class RDDL {
 
 
 		@Override
+		public   EXPR getMean(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return new COMP_EXPR( _e1.getMean(constants,objects), _e2.getMean(constants, objects), _comp );
+
+		}
+
+		@Override
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return new COMP_EXPR( _e1.sampleDeterminization(rand,constants,objects),
+					_e2.sampleDeterminization(rand,constants,objects), _comp );
+
+
+		}
+
+
+
+/*      This is old code....
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return new COMP_EXPR( _e1.sampleDeterminization(rand),
 					_e2.sampleDeterminization(rand), _comp );
@@ -7647,7 +8829,7 @@ public class RDDL {
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
 			return new COMP_EXPR( _e1.getMean(objects), _e2.getMean(objects), _comp );
-		}
+		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object>> constants,
