@@ -1038,56 +1038,24 @@ public class RDDL {
 			return sample(subs, s, r);
 		}
 
-
-		//This is added by Harish.
-
-		@Override
-		public  boolean isPiecewiseLinear(final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
-										  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
-
-			throw new Exception("This cannot be invoked here, no implementation");
-
-		}
-
-
-		@Override
-		public  double getDoubleValue(
+		public EXPR sampleDeterminization( final RandomDataGenerator rand, 
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
-
-
-			throw new UnsupportedOperationException("This cannot be invoked here, no implementation");
-
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return this;
 		}
-
-
-
-
-
-		public abstract boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception;
-
-
-
-		public abstract LTERM substitute(Map<LVAR, LCONST> subs,
-										 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										 Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception;
-
-
-
-
-
-
-		//This is Changed by Harish after discussion with Aswin.
-		@Override
-		protected char getGRB_Type(
+		
+		public EXPR getMean( 
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) throws  UnsupportedOperationException {
-			throw new UnsupportedOperationException("This class should not convert this to GRB Type");
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			return this;
 		}
-
-
-
+		
+		@Override
+		public EXPR addTerm( final LVAR new_term ,
+							 Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+							 Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+			return this;
+		}
 	}
 			
 	public static class LVAR extends LTERM {
@@ -1101,70 +1069,6 @@ public class RDDL {
 		public String _sVarName;
 		public int    _nHashCode;
 
-
-
-
-		//This is Start of Harish Added
-
-
-
-		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
-			throw new Exception("This is not defined, LVAR");
-		}
-
-		@Override
-		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			throw new Exception("Should not be invoked, LVAR (?u), should not be invoked as isConstant()");
-		}
-
-
-		//OLD IMPLEMENTATION.
-		/*@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			return this;
-		}*/
-
-		public   EXPR getMean(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			throw new NotImplementedException("This method is not implemented");
-
-
-		}
-
-		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-													Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-													Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
-			return this;
-
-
-		}
-
-
-
-
-		@Override
-		protected char getGRB_Type(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map) {
-			return GRB.CONTINUOUS;
-		}
-
-/*		This is old Code!!!.......
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}
-
-*/
-
-
 		@Override
 		public LTERM substitute(Map<LVAR, LCONST> subs,
 								Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -1175,24 +1079,6 @@ public class RDDL {
 			return this;
 		}
 
-
-
-
-		@Override
-		public EXPR addTerm( final LVAR new_term ,
-							 Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							 Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			return this;
-		}
-
-
-		//This is End of Harish Added
-
-
-
-
-
-				
 		// Precomputed
 		public int hashCode() {
 			return _nHashCode;
@@ -1200,7 +1086,6 @@ public class RDDL {
 		
 		// Name was interned so can check reference equality
 		public boolean equals(Object o) {
-
 			if( o instanceof LVAR ){
 				return _sVarName == ((LVAR)o)._sVarName;
 			}
@@ -1227,7 +1112,6 @@ public class RDDL {
 		public EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException {
 			throw new EvalException("LVAR.getDist: Not a distribution.");
 		}
-
 	}
 	
 	// Used in exists, forall, sum_over, prod_over
@@ -1242,69 +1126,14 @@ public class RDDL {
 		public LVAR _sVarName;
 		public TYPE_NAME _sType;
 
-
-		//This is Start of Harish Added
-
-
-
-		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
-			throw new Exception("This is not defined, LTYPED_VAR");
-		}
-
-
 		@Override
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			throw new Exception("This method cannot be invoked by isConstant(), check the def. ");
-		}
-
-
-
-		public   EXPR getMean(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			return this;
-
-
-		}
-
-		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
-			return this;
-
-
-		}
-
-
-
-
-		//This is old implementation of the code.
-//		@Override
-//		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-//			return this;
-//		}
-//
-//		@Override
-//		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-//			return this;
-//		}
-
-
-
-		@Override
-		public EXPR addTerm( final LVAR new_term,
-							 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects ) {
-			return this;
+			return false;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash( _sVarName, _sType );
+			return Objects.hash( "LTYPED_VAR", _sVarName, _sType );
 		}
 
 		@Override
@@ -1315,8 +1144,6 @@ public class RDDL {
 			}
 			return false;
 		}
-
-
 
 		@Override
 		public LTERM substitute(Map<LVAR, LCONST> subs,
@@ -1329,13 +1156,6 @@ public class RDDL {
 			}
 		}
 
-
-
-
-		//This is End of Harish Added
-
-
-		
 		public String toString() {
 			if (USE_PREFIX)
 				return "(" + _sVarName + " : " + _sType + ")";
@@ -1371,9 +1191,6 @@ public class RDDL {
 			_bDet = p._bDet;
 		}
 
-
-		//This is Start of Harish Added
-
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -1383,14 +1200,9 @@ public class RDDL {
 			}
 			catch(Exception e) {
 				e.printStackTrace();
-				throw new UnsupportedOperationException();
-
-
+				throw e;
 			}
-
-
 		}
-
 
 		@Override
 		public boolean isPiecewiseLinear(
@@ -1398,69 +1210,21 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			try{
 				return _pvarExpr.isPiecewiseLinear(constants, objects);
-
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				throw new UnsupportedOperationException();
-
-
-
+				throw e;
 			}
-
 		}
-
-
-
-
-
-
-		//old code.
-
-//		@Override
-//		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-//			return this;
-//		}
 
 		public PVAR_EXPR _pvarExpr;
-
-
-		//old code
-		/*@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}*/
-
-
-		public   EXPR getMean(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			return this;
-
-
-		}
-
-		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
-			return this;
-
-
-		}
-
-
-
 
 
 		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<PVAR_NAME, Character> type_map) {
-			return GRB.CONTINUOUS;
+			return _pvarExpr.getGRB_Type(constants, type_map);
 		}
 
 		@Override
@@ -1500,16 +1264,11 @@ public class RDDL {
 			return new TVAR_EXPR( (PVAR_EXPR)inner );
 		}
 
-
-
-
-
-
 		@Override
 		public GRBVar addGRBObjectiveTerm(GRBModel model,
-										  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										  Map<TYPE_NAME, OBJECTS_DEF> objects,
-										  Map<PVAR_NAME, Character> type_map) throws Exception{
+				  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				  Map<TYPE_NAME, OBJECTS_DEF> objects,
+				  Map<PVAR_NAME, Character> type_map) throws Exception{
 			return _pvarExpr.addGRBObjectiveTerm(model, constants, objects, type_map);
 		}
 
@@ -1529,13 +1288,6 @@ public class RDDL {
 			return _pvarExpr.getGRBConstr(sense, model, constants, objects, type_map);
 		}
 
-
-
-
-
-
-		//This is End of Harish Added
-		
 		public String toString() {
 			return _pvarExpr.toString();
 		}
@@ -1560,6 +1312,8 @@ public class RDDL {
 		public EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException {
 			return _pvarExpr.getDist(subs, s);
 		}
+		
+		
 
 	}
 	
@@ -1576,67 +1330,23 @@ public class RDDL {
 		public String _sConstValue;
 		public int    _nHashCode;
 
-
-		//This is Start of Harish Added
-
-
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			throw new Exception("This cannot be invoked here, no implementation");
-
+			return true;
 		}
 
-
-		@Override
-		public   EXPR getMean(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			return this;
-
+		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
+						  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
+			return true;
 		}
-
-		@Override
-		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-			return this;
-
-		}
-
-/*
-		This is old code.
-
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			return this;
-		}
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}*/
-
-
-
-
-
+		
 		@Override
 		public LCONST substitute(Map<LVAR, LCONST> subs,
 								 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								 Map<TYPE_NAME, OBJECTS_DEF> objects ) {
 			return this;
 		}
-
-
-
-		//This is End of Harish Added
-
-
 
 		public String toString() {
 			return _sConstValue;
@@ -8618,29 +8328,21 @@ public class RDDL {
 		public EXPR _e2 = null;
 		public String _comp = UNKNOWN;
 
-
-		//This is start of addition
-
-
 		@Override
-		public   EXPR getMean(
+		public EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-			return new COMP_EXPR( _e1.getMean(constants,objects), _e2.getMean(constants, objects), _comp );
-
+			return new COMP_EXPR( _e1.getMean(constants,objects), 
+					_e2.getMean(constants, objects), _comp );
 		}
 
 		@Override
 		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return new COMP_EXPR( _e1.sampleDeterminization(rand,constants,objects),
 					_e2.sampleDeterminization(rand,constants,objects), _comp );
-
-
 		}
-
-
 
 /*      This is old code....
 		@Override
@@ -8661,9 +8363,8 @@ public class RDDL {
 				return new COMP_EXPR( _e1.addTerm(new_term, constants, objects), _e2.addTerm(new_term, constants, objects), _comp );
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
@@ -8675,7 +8376,7 @@ public class RDDL {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return Objects.hash( _e1, _comp, _e2 );
+			return Objects.hash( "Comp_Expr", _e1, _comp, _e2 );
 		}
 
 		@Override
@@ -8718,11 +8419,7 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( isConstant(null, null) ){
-                    try {
-                        return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    return new REAL_CONST_EXPR( getDoubleValue(null, null) ).equals(obj);
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -8730,8 +8427,7 @@ public class RDDL {
 
 			if( obj instanceof COMP_EXPR ){
 				COMP_EXPR c = (COMP_EXPR)obj;
-				return _bDet == c._bDet && _sType.equals( c._sType ) &&
-						_comp.equals( c._comp ) && _e1.equals( c._e1 ) && _e2.equals( c._e2 );
+				return _comp.equals( c._comp ) && _e1.equals( c._e1 ) && _e2.equals( c._e2 );
 			}
 			return false;
 		}
@@ -8751,24 +8447,19 @@ public class RDDL {
 				return new COMP_EXPR(_e1.substitute(subs, constants, objects), _e2.substitute(subs, constants, objects), _comp );
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
-
-
-
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF > objects , Map<PVAR_NAME, Character> type_map ) throws Exception{
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF > objects , Map<PVAR_NAME, Character> type_map ) throws Exception{
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map );
-
 			GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map);
 			GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map);
 
@@ -8840,18 +8531,9 @@ public class RDDL {
 				return this_var;
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-			return null;
 		}
-
-
-
-
-
-		//This is end of additon
-
-
 
 		public String toString() {
 			if (USE_PREFIX) 
