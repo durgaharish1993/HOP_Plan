@@ -5292,14 +5292,15 @@ public class RDDL {
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			if( _e.isConstant(constants, objects) ){
-				return true;
+			try{
+				if( _e.isConstant(constants, objects) ){
+					return true;
+				}
+			}catch(Exception exc){
+				//expensive
+				EXPR result = expandArithmeticQuantifier(constants, objects );
+				return result.isConstant(constants, objects);
 			}
-//			this is too expensive
-//			if( objects != null ){
-//				EXPR result = expandArithmeticQuantifier(constants, objects );
-//				return result.isConstant(constants, objects);
-//			}
 			return false;
 		}
 
@@ -5307,15 +5308,17 @@ public class RDDL {
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			if( isConstant(constants, objects) ){
-				return true;
+			try{
+				if( isConstant(constants, objects) ){
+					return true;
+				}
+				return _e.isPiecewiseLinear(constants, objects) 
+						&& ( _alVariables.isEmpty()  || !_op.equals(PROD) );
+			}catch(Exception exc){
+				//expensive
+				EXPR result = expandArithmeticQuantifier(constants, objects );	
+				return result.isPiecewiseLinear(constants, objects);
 			}
-
-			//too expensive
-//			EXPR result = expandArithmeticQuantifier(constants, objects );
-			return _e.isPiecewiseLinear(constants, objects) 
-					&& ( _alVariables.isEmpty()  || !_op.equals(PROD) );
-			//product of pwl is not pwl
 		}
 
 		@Override
@@ -8452,14 +8455,6 @@ public class RDDL {
 		}
 	}
 
-
-
-
-
-
-
-
-
 	public static class BOOL_CONST_EXPR extends BOOL_EXPR {
 		
 		public BOOL_CONST_EXPR(boolean b) {
@@ -8467,10 +8462,6 @@ public class RDDL {
 			_bValue = b;
 			_sType = BOOL;
 		}
-
-
-
-		//This is start of addition
 
 		@Override
 		public   EXPR getMean(
@@ -8485,13 +8476,7 @@ public class RDDL {
 											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return this;
-
 		}
-
-
-
-
-
 
 	/*
 		This is old code.
@@ -8537,9 +8522,8 @@ public class RDDL {
 				exc.printStackTrace();
 				System.out.println( "Error code " + exc.getErrorCode() );
 				System.out.println( exc.getMessage() );
-				System.exit(1);
+				throw exc;
 			}
-			return null;
 		}
 
 		@Override
@@ -8590,13 +8574,6 @@ public class RDDL {
 			return this;
 		}
 
-
-		//This is end of addition
-
-
-
-
-		
 		public boolean _bValue;
 		
 		public String toString() {
@@ -8615,7 +8592,6 @@ public class RDDL {
 			throws EvalException {
 			// Nothing to collect
 		}
-	
 	}
 
 	public static class COMP_EXPR extends BOOL_EXPR {
