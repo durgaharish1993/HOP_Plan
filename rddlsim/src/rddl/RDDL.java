@@ -7677,23 +7677,21 @@ public class RDDL {
 		public   EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
-					_alSubNodes.stream().map(m -> {
-						try {
-							return ((BOOL_EXPR)m.getMean(constants, objects));
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect(Collectors.toList() ) ), _sConn );
+			try {
+				return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
+						_alSubNodes.stream()
+							.map(m -> ((BOOL_EXPR)m.getMean(constants, objects)))
+							.collect(Collectors.toList() ) ), _sConn );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
 		}
 
 		@Override
 		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
 			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
 					_alSubNodes.stream().map( m -> {
@@ -7701,16 +7699,10 @@ public class RDDL {
 							return (BOOL_EXPR) m.sampleDeterminization(rand,constants,objects);
 						} catch (Exception e) {
 							e.printStackTrace();
+							throw new RuntimeException(e);
 						}
-						return null;
-					})
-							.collect( Collectors.toList() ) ), _sConn );
-
-
+					}).collect( Collectors.toList() ) ), _sConn );
 		}
-
-
-
 
 /*       This is Old Code... .. ... .
 
@@ -7726,11 +7718,7 @@ public class RDDL {
 						return null;
 					})
 							.collect( Collectors.toList() ) ), _sConn );
-
 		}
-
-
-
 
 		@Override
 		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
@@ -7746,30 +7734,24 @@ public class RDDL {
 		}
 */
 
-
 		public CONN_EXPR(EXPR b1, EXPR b2, String conn) throws Exception {
 			this((BOOL_EXPR)b1, (BOOL_EXPR)b2, conn); // PARSER RESTRICTION
 		}
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object> > constants,
-							Map< TYPE_NAME, OBJECTS_DEF > objects ) {
-			try {
-				return new CONN_EXPR( new ArrayList< BOOL_EXPR > ( _alSubNodes.stream()
-						.map( m -> {
-							try {
-								return (BOOL_EXPR)m.addTerm(new_term, constants, objects);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							return null;
-						})
-						.collect( Collectors.toList() ) ), _sConn );
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			return null;
+							Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
+			return new CONN_EXPR( new ArrayList< BOOL_EXPR > ( 
+				_alSubNodes.stream()
+					.map( m -> {
+						try {
+							return (BOOL_EXPR)m.addTerm(new_term, constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+							throw new RuntimeException(e);
+						}
+					})
+					.collect( Collectors.toList() ) ), _sConn );
 		}
 
 		@Override
@@ -7785,69 +7767,30 @@ public class RDDL {
 				return _alSubNodes.get(0).getGRBConstr(sense, model, constants, objects, type_map);
 			}
 
-
-
-
-
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map );
 			GRBLinExpr sum = new GRBLinExpr();
 
-
-
-
-
 			if(!_sConn.equals(IMPLY)){
-
-
-
 				for( final BOOL_EXPR  b : _alSubNodes ){
 					GRBVar v = b.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map);
 					sum.addTerm(1.0d, v);
 				}
-
-
-
-
-
+			}else if(n==2 && _sConn.equals(IMPLY)){
+				//This is the case for "=>" operator
+				NEG_EXPR temp_neg = new NEG_EXPR(_alSubNodes.get(0));
+				GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
+				sum.addTerm(1.0d,v);
+				BOOL_EXPR b = _alSubNodes.get(1);
+				GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
+				sum.addTerm(1.0d,v1);
 			}
-
-			else{
-
-
-				//This is Added by Harish.
-				if(n==2 && _sConn.equals(IMPLY)){
-					//This is the case for "=>" operator
-					NEG_EXPR temp_neg = new NEG_EXPR(_alSubNodes.get(0));
-
-					GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
-					sum.addTerm(1.0d,v);
-
-					BOOL_EXPR b = _alSubNodes.get(1);
-					GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
-					sum.addTerm(1.0d,v1);
-
-
-
-				}
-
-
-
-
-
-			}
-
-
-
-
 			try{
-
 				GRBLinExpr nz = new GRBLinExpr( );
 				nz.addTerm( n, this_var );
 
 				GRBLinExpr n_minus_1_plus_z = new GRBLinExpr();
 				n_minus_1_plus_z.addTerm(1.0d, this_var );
 				n_minus_1_plus_z.addConstant(n-1);
-
 				switch( _sConn ){
 //					[z = x1 ^ x2 ^... ^ xn] is captured by nz <= (x1+x2+...+xn) <= (n - 1) + z
 					case "^" :
@@ -7861,16 +7804,9 @@ public class RDDL {
 						break;
 //					x=>y case : not x v y
 					case "=>":
-
 						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_IMPLY_1" );
 						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_IMPLY_2" );
 						break;
-
-					// Need to write.
-
-
-
-
 					default :
 						throw new Exception("Unknown case in getGRBConstr() " + _sConn );
 				}
@@ -7878,91 +7814,80 @@ public class RDDL {
 				return this_var;
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-
-			try{
-				throw new Exception("unimplemented GRB method for " + toString() );
-			}catch( Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
-			}
-			return null;
 		}
 
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME,OBJECTS_DEF> objects ) {
-			//FIXME : correctness ?
+				Map<TYPE_NAME,OBJECTS_DEF> objects ) throws Exception {
 			return _alSubNodes.stream().allMatch(m -> {
 				try {
 					return m.isPiecewiseLinear(constants, objects);
 				} catch (Exception e) {
 					e.printStackTrace();
+					throw RuntimeException(e);
 				}
-				return false;
 			});
 		}
 
 		public void filter( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+							Map<TYPE_NAME, OBJECTS_DEF> objects )  throws Exception {
 			try {
 				if( isConstant(constants , objects) ){
                     final double d = getDoubleValue(constants, objects);
                     assert( d == 1d || d == 0d );
-
                     _alSubNodes.clear();
                     _alSubNodes.add( new BOOL_CONST_EXPR( d == 1d ? true : false ) );
                     return;
                 }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			//not constant
-			Stream<BOOL_EXPR> stream = _alSubNodes.stream();
-
-			switch( _sConn ){
-				case "^" : //remove true
-					_alSubNodes = new ArrayList<>( stream.filter( m -> {
+			
+				//not constant
+				Stream<BOOL_EXPR> stream = _alSubNodes.stream();
+				switch( _sConn ){
+					case "^" : //remove true
+						_alSubNodes = new ArrayList<>( stream.filter( m -> {
+							try {
+								return !( m.isConstant(constants, objects) &&
+	                                    m.getDoubleValue(constants, objects) == 1d );
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							//this is changed by Harish.
+							return false;
+						}).collect( Collectors.toList() ) );
+						//remove duplicates
+						_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
+						break;
+					case  "|" : //remove false
+						_alSubNodes = new ArrayList<>( stream
+								.filter( m -> {
+									try {
+										return !( m.isConstant(constants, objects)  && m.getDoubleValue(constants, objects)==0d );
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+									return false;
+								})
+								.collect( Collectors.toList() ) );
+						_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
+						break;
+					case "=>" :
 						try {
-							return !( m.isConstant(constants, objects) &&
-                                    m.getDoubleValue(constants, objects) == 1d );
+							if( _alSubNodes.get(0).isConstant(constants, objects) && _alSubNodes.get(0).getDoubleValue(constants, objects) == 1d ){
+	                            _alSubNodes = new ArrayList<>( _alSubNodes.subList(1, _alSubNodes.size() ) );
+	                            filter( constants, objects );//T => T => x = x
+	                        }
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						//this is changed by Harish.
-						return false;
-					}).collect( Collectors.toList() ) );
-					//remove duplicates
-					_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
-					break;
-				case  "|" : //remove false
-					_alSubNodes = new ArrayList<>( stream
-							.filter( m -> {
-								try {
-									return !( m.isConstant(constants, objects)  && m.getDoubleValue(constants, objects)==0d );
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-								return false;
-							})
-							.collect( Collectors.toList() ) );
-					_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
-					break;
-				case "=>" :
-					try {
-						if( _alSubNodes.get(0).isConstant(constants, objects) && _alSubNodes.get(0).getDoubleValue(constants, objects) == 1d ){
-                            _alSubNodes = new ArrayList<>( _alSubNodes.subList(1, _alSubNodes.size() ) );
-                            filter( constants, objects );//T => T => x = x
-                        }
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				}
+				assert( !_alSubNodes.isEmpty() );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
 			}
-
-			assert( !_alSubNodes.isEmpty() );
-
 		}
 
 		@Override
@@ -7973,9 +7898,8 @@ public class RDDL {
 					return m.isConstant(constants, objects );
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-				return false;
-			}) ){
+					throw new RuntimeException(e);
+				}}) ){
 				return true;
 			}
 
@@ -7984,12 +7908,12 @@ public class RDDL {
 					return _alSubNodes.stream()
 							.anyMatch( m -> {
 								try {
-									return m.isConstant(constants, objects) && m.getDoubleValue(constants, objects) == 0d;
+									return m.isConstant(constants, objects) 
+										&& m.getDoubleValue(constants, objects) == 0d;
 								} catch (Exception e) {
 									e.printStackTrace();
+									throw new RuntimeException(e);
 								}
-								//This is written by Harish.
-								return false;
 							});
 				case "|" :
 					return _alSubNodes.stream()
@@ -7998,8 +7922,8 @@ public class RDDL {
 									return m.isConstant(constants, objects) && m.getDoubleValue(constants, objects) == 1d;
 								} catch (Exception e) {
 									e.printStackTrace();
+									throw RuntimeException(e);
 								}
-								return false;
 							});
 				case "=>" :
 					//convention : left associative implication
@@ -8014,28 +7938,19 @@ public class RDDL {
 					Stream<BOOL_EXPR> stream = _alSubNodes.stream();
 					return stream.allMatch( m -> {
 						try {
-							return m.isConstant(constants, objects) && m.getDoubleValue(constants, objects) == 1d;
+							return m.isConstant(constants, objects);
 						} catch (Exception e) {
 							e.printStackTrace();
+							throw RuntimeException(e);
 						}
-						return false;
-					})
-							||stream.allMatch( m -> {
-						try {
-							return m.isConstant(constants, objects) && m.getDoubleValue(constants, objects) == 0d;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return false;
 					});
 			}
 			try{
 				throw new Exception("unhandled case CONN_EXPR " + toString() );
 			}catch( Exception exc ){
 				exc.printStackTrace();
-				System.exit(1);
+				throw exc;
 			}
-			return false;
 		}
 
 
@@ -8088,13 +8003,11 @@ public class RDDL {
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
+				if( _alSubNodes.size() == 1 ){
+					return _alSubNodes.get(0).hashCode();
+				}
+				return Objects.hash( "Conn_Expr", _sConn, Objects.hash(_alSubNodes) );
 			}
-
-			if( _alSubNodes.size() == 1 ){
-				return _alSubNodes.get(0).hashCode();
-			}
-
-			return Objects.hash( _sConn, Objects.hash(_alSubNodes) );
 		}
 
 		@Override
@@ -8107,8 +8020,8 @@ public class RDDL {
 					return m.isConstant(constants, objects);
 				} catch (Exception e) {
 					e.printStackTrace();
+					throw RuntimeException(e);
 				}
-				return false;
 			}) ){
 
 				if( _sConn.equals("|") || _sConn.equals("^") ){
@@ -8117,9 +8030,8 @@ public class RDDL {
 							return m.getDoubleValue(constants, objects);
 						} catch (Exception e) {
 							e.printStackTrace();
+							throw RuntimeException(e);
 						}
-						//this is added by Harish.
-						return Double.NaN;
 					}).sum();
 
 					return ( _sConn .equals("^") ? ( sum == _alSubNodes.size() ?  1 : 0 ) :
@@ -8131,7 +8043,7 @@ public class RDDL {
 								.getDoubleValue(constants, objects);
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.exit(1);
+						throw e;
 					}
 				}
 			}
@@ -8154,61 +8066,55 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( isConstant( null , null ) ){
-                    if( obj instanceof BOOL_EXPR ){
-                        return _alSubNodes.get(0).equals(obj);
-                    }else if( obj instanceof CONST_EXPR ){
-                        return obj.equals( new REAL_CONST_EXPR( getDoubleValue( null , null ) ) );
+                    if( obj instanceof EXPR ){
+                        return obj.equals( 
+                        	new REAL_CONST_EXPR( getDoubleValue( null , null ) ) );
                     }
                 }
+
+				if( _alSubNodes.size() == 1 ){
+					return _alSubNodes.get(0).equals(obj);
+				}
+
+				if( obj instanceof CONN_EXPR ){
+					CONN_EXPR c = (CONN_EXPR)obj;
+					return _sConn.equals( c._sConn ) && _alSubNodes.equals( c._alSubNodes );
+				}else if( _alSubNodes.size() == 1 ){
+					return _alSubNodes.get(0).equals(obj);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-
-
-			if( _alSubNodes.size() == 1 ){
-				return _alSubNodes.get(0).equals(obj);
-			}
-
-			if( obj instanceof CONN_EXPR ){
-				CONN_EXPR c = (CONN_EXPR)obj;
-				return _bDet == c._bDet && _sType.equals( c._sType ) &&
-						_sConn.equals( c._sConn ) && _alSubNodes.equals( c._alSubNodes );
-			}else if( _alSubNodes.size() == 1 ){
-				return _alSubNodes.get(0).equals(obj);
-			}
+			}			
 			return false;
 		}
 
 		@Override
 		public BOOL_EXPR substitute(Map<LVAR, LCONST> subs,
 									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF > objects ) {
+									Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
 			List<BOOL_EXPR> new_expr = _alSubNodes.stream().map( m -> {
-				try {
-					return m.substitute(subs, constants, objects);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return null;
-			})
-					.map(m -> {
-						try {
-							return m.isConstant(constants, objects) ?
-                                    new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects) == 1d ? true : false ) : (BOOL_EXPR)m;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return  null;
-					})
-					.collect(Collectors.toList());
+					try {
+						return m.substitute(subs, constants, objects);
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new RuntimeException(e);
+					}
+				}).map(m -> {
+					try {
+						return m.isConstant(constants, objects) ?
+                                new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects) == 1d ? true : false ) : (BOOL_EXPR)m;
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new RuntimeException(e);
+					}
+				}).collect(Collectors.toList());
 			try {
 				return new CONN_EXPR( new ArrayList<>( new_expr ), _sConn );
 				//calls filter() in constructor
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 		
 		public String toString() {
@@ -8377,40 +8283,21 @@ public class RDDL {
 			this((BOOL_EXPR)b); // PARSER RESTRICTION
 		}
 
-
-		//This is Start of Addition
-
-
-
-
-
-
-
-
 		@Override
 		public   EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
 			return new NEG_EXPR( _subnode.getMean(constants, objects) );
 		}
 
 		@Override
 		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			return new NEG_EXPR( _subnode.sampleDeterminization(rand,constants,objects) );
-
 		}
 
-
 /*	  	This is old code...
-
-
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
 			return new NEG_EXPR( _subnode.sampleDeterminization(rand) );
@@ -8468,19 +8355,18 @@ public class RDDL {
 				if( isConstant( null , null) ){
                     return new REAL_CONST_EXPR( getDoubleValue( null, null ) ).equals(obj);
                 }
+
+				if( obj instanceof NEG_EXPR ){
+					NEG_EXPR n = (NEG_EXPR)obj;
+					return _bDet == n._bDet && _sType.equals( n._sType ) &&
+							_subnode.equals( n._subnode );
+				} //!x=!y
+				else if( obj instanceof EXPR && _subnode instanceof NEG_EXPR ){
+					return ((NEG_EXPR)_subnode)._subnode.equals(obj);
+				}//!!x=y
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			if( obj instanceof NEG_EXPR ){
-				NEG_EXPR n = (NEG_EXPR)obj;
-
-				return _bDet == n._bDet && _sType.equals( n._sType ) &&
-						_subnode.equals( n._subnode );
-			} //!x=!y
-			else if( obj instanceof EXPR && _subnode instanceof NEG_EXPR ){
-				return ((NEG_EXPR)_subnode)._subnode.equals(obj);
-			}//!!x=y
 			return false;
 		}
 
@@ -8499,23 +8385,19 @@ public class RDDL {
 				if( isConstant(constants, objects) ){
                     return new REAL_CONST_EXPR( getDoubleValue(constants, objects) );
                 }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			EXPR sub = _subnode.substitute(subs, constants, objects);
-			try {
+			
+				EXPR sub = _subnode.substitute(subs, constants, objects);
 				if( sub.isConstant(constants, objects) ){
                     final double d = sub.getDoubleValue(constants, objects);
                     assert( d == 0d || d == 1d );
                     return new BOOL_CONST_EXPR( d == 1 ? false : true );
                 }
+				return new NEG_EXPR( sub );
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw e;
 			}
-			return new NEG_EXPR( sub );
 		}
-
-
 
 		@Override
 		public int hashCode() {
@@ -8531,15 +8413,15 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF > objects, Map<PVAR_NAME, Character> type_map ) throws Exception {
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF > objects, 
+				Map<PVAR_NAME, Character> type_map ) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			assert( isPiecewiseLinear(constants, objects) );
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map);
-
 			GRBVar inner_var = _subnode.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map);
 			//[z = !x1] is z = 1-x
 			GRBLinExpr one_minus_x = new GRBLinExpr();
@@ -8551,14 +8433,10 @@ public class RDDL {
 				return this_var;
 			} catch (GRBException e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
-
-		//This is End of Addition
-		
 		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
 			Boolean b = (Boolean)_subnode.sample(subs, s, r);
 			return !b;
