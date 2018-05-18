@@ -6944,9 +6944,8 @@ public class RDDL {
 
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
-			return false;
+			return _expr.isConstant(constants, objects);
 		}
-
 
 		public boolean isPiecewiseLinear( final Map< PVAR_NAME, Map< ArrayList<LCONST>, Object > > constants,
 						  final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception{
@@ -7001,22 +7000,35 @@ public class RDDL {
 		public LTERM _term; 
 		public ArrayList<CASE> _cases = null;
 
-		//@Override
-		//This has to be written.
+		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand,
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			/*//TODO - implement using map() on CASE
-			... return new SWITCH(_term, _cases.stream()
+			return new SWITCH(_term, _cases.stream()
 					.map(m->m.sampleDeterminization(rand, constants, objects))
-					.collect(Collectors.toList()))*/
-
-			return null;
+					.collect(Collectors.toList()));
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
-			throw new Exception("This is not defined, SWITCH_EXPR");
+		public GRBVar getGRBConstr(char sense, GRBModel model, 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+				Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+			ret = new OPER_EXPR(
+					new COMP_EXPR(_term, _cases.get(0)._termVal, COMP_EXPR.EQUALS),
+					_cases.get(0)._expr,
+					OPER_EXPR.TIMES);
+			
+			for( int i = 1; i < _cases.size(); ++i ){
+				ret = new OPER_EXPR(
+						ret,
+						new OPER_EXPR(
+								new COMP_EXPR(_term, _cases.get(i)._termVal, COMP_EXPR.EQUALS),
+								_cases.get(i)._expr,
+								OPER_EXPR.TIMES);
+						OPER_EXPR.PLUS);
+						
+			}
+			return ret.getGRBConstr(sense, model, constants, objects, type_map);
 		}
 
 		@Override
@@ -7036,42 +7048,44 @@ public class RDDL {
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			if( _term.isPiecewiseLinear(constants, objects) ){
-				if( _term.isConstant(constants, objects) ){
-
-					List<CASE> matches = _cases.stream().filter( m -> m._termVal.equals( _term ) ).collect( Collectors.toList() );
-					if( matches.size() == 0 ){
-						List<CASE> defaults = _cases.stream().filter( m -> m._bDefaultCase ).collect( Collectors.toList() );
-						assert( defaults.size() == 1 );
-						return defaults.get(0)._termVal.isPiecewiseLinear(constants, objects) &&
-								defaults.get(0)._expr.isPiecewiseLinear(constants, objects);
-					}else if( matches.size() == 1 ){
-						return matches.get(0)._termVal.isPiecewiseLinear(constants, objects)
-								&& matches.get(0)._expr.isPiecewiseLinear(constants, objects);
-					}else{
-						try{
-							throw new Exception("mutiple matching cases?" );
-						}catch( Exception exc ){
-							exc.printStackTrace();
-							System.exit(1);
-						}
-					}
-
-				}else{
-					return _cases.stream().allMatch( m -> {
-						try {
-							return m._termVal.isPiecewiseLinear(constants, objects) && m._expr.isPiecewiseLinear(constants, objects);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return false;
-					});
-				}
-			}
-			return false;
+			return _cases.stream()
+					.allmatch(m -> m.isPiecewiseLinear(constants, objects));
+//			if( _term.isPiecewiseLinear(constants, objects) ){
+//				if( _term.isConstant(constants, objects) ){
+//
+//					List<CASE> matches = _cases.stream()
+//						.filter(m -> m._termVal.equals( _term ))
+//						.collect( Collectors.toList() );
+//					if( matches.size() == 0 ){
+//						List<CASE> defaults = _cases.stream().filter( m -> m._bDefaultCase ).collect( Collectors.toList() );
+//						assert( defaults.size() == 1 );
+//						return defaults.get(0)._termVal.isPiecewiseLinear(constants, objects) &&
+//								defaults.get(0)._expr.isPiecewiseLinear(constants, objects);
+//					}else if( matches.size() == 1 ){
+//						return matches.get(0)._termVal.isPiecewiseLinear(constants, objects)
+//								&& matches.get(0)._expr.isPiecewiseLinear(constants, objects);
+//					}else{
+//						try{
+//							throw new Exception("mutiple matching cases?" );
+//						}catch( Exception exc ){
+//							exc.printStackTrace();
+//							System.exit(1);
+//						}
+//					}
+//
+//				}else{
+//					return _cases.stream().allMatch( m -> {
+//						try {
+//							return m._termVal.isPiecewiseLinear(constants, objects) && m._expr.isPiecewiseLinear(constants, objects);
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//						return false;
+//					});
+//				}
+//			}
+//			return false;
 		}
-
-
 
 		@Override
 		protected char getGRB_Type(
@@ -7105,15 +7119,14 @@ public class RDDL {
 
 		@Override
 		public int hashCode() {
-			return Objects.hash( _term, _cases );
+			return Objects.hash( "Switch", _term, _cases );
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if( obj instanceof SWITCH_EXPR ){
 				SWITCH_EXPR s = (SWITCH_EXPR)obj;
-				return s._bDet == _bDet && _sType.equals(s._sType) &&
-						_term.equals(s._term) && _cases.equals( s._cases );
+				return _term.equals(s._term) && _cases.equals( s._cases );
 			}
 			return false;
 		}
@@ -7122,59 +7135,64 @@ public class RDDL {
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			LTERM new_term = (LTERM) _term.substitute(subs, constants, objects);
-			Stream<CASE> case_stream = _cases.stream();
-
-			try {
-				if( new_term.isConstant( constants , objects ) ){
-                    //eval each case condition
-                    //but not the expr
-                    Stream<CASE> eval_case_stream = case_stream.map( m -> {
-						try {
-							return new CASE( (LTERM)(m._termVal.substitute(subs, constants, objects)),
-                                    m._expr );
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					});
-                    List<CASE> match_case_list = eval_case_stream.filter( m -> m._termVal.equals( new_term ) ).collect( Collectors.toList() );
-
-                    if( match_case_list.size() == 1 ){
-                        //found exactly one
-                        return match_case_list.get(0)._expr.substitute(subs, constants, objects);
-                    }else if( match_case_list.size() == 0 ){
-                        //default case
-                        List<CASE> ret = case_stream.filter( m -> m._bDefaultCase ).collect( Collectors.toList() );
-                        assert( ret.size() == 1 );
-                        return ret.get(0)._expr.substitute(subs, constants, objects);
-                    }else{
-                        try{
-                            throw new Exception("Case garbage");
-                        }catch( Exception exc ){
-                            exc.printStackTrace();
-                            System.exit(1);
-                        }
-                    }
-
-                }else{
-                    //eval all case conds and exprs
-                    List<CASE> new_cases = case_stream.map( m -> {
-						try {
-							return new CASE(  (LTERM) m._termVal.substitute(subs, constants, objects),
-                                    m._expr.substitute(subs, constants, objects) );
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect( Collectors.toList() );
-                    return new SWITCH_EXPR(new_term, new ArrayList<CASE>( new_cases ) );
-                }
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-
+			return new SWITCH_EXPR(
+				_term.substitue(subs, constants, objects),
+				_cases.stream()
+					.map(m->m.substitute(subs, constants, objects))
+					.collect(Collectors.toList()));
+			
+//			LTERM new_term = (LTERM) _term.substitute(subs, constants, objects);
+//			Stream<CASE> case_stream = _cases.stream();
+//
+//			try {
+//				if( new_term.isConstant( constants , objects ) ){
+//                    //eval each case condition
+//                    //but not the expr
+//                    Stream<CASE> eval_case_stream = case_stream.map( m -> {
+//						try {
+//							return new CASE( (LTERM)(m._termVal.substitute(subs, constants, objects)),
+//                                    m._expr );
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//						return null;
+//					});
+//                    List<CASE> match_case_list = eval_case_stream.filter( m -> m._termVal.equals( new_term ) ).collect( Collectors.toList() );
+//
+//                    if( match_case_list.size() == 1 ){
+//                        //found exactly one
+//                        return match_case_list.get(0)._expr.substitute(subs, constants, objects);
+//                    }else if( match_case_list.size() == 0 ){
+//                        //default case
+//                        List<CASE> ret = case_stream.filter( m -> m._bDefaultCase ).collect( Collectors.toList() );
+//                        assert( ret.size() == 1 );
+//                        return ret.get(0)._expr.substitute(subs, constants, objects);
+//                    }else{
+//                        try{
+//                            throw new Exception("Case garbage");
+//                        }catch( Exception exc ){
+//                            exc.printStackTrace();
+//                            System.exit(1);
+//                        }
+//                    }
+//
+//                }else{
+//                    //eval all case conds and exprs
+//                    List<CASE> new_cases = case_stream.map( m -> {
+//						try {
+//							return new CASE(  (LTERM) m._termVal.substitute(subs, constants, objects),
+//                                    m._expr.substitute(subs, constants, objects) );
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//						return null;
+//					}).collect( Collectors.toList() );
+//                    return new SWITCH_EXPR(new_term, new ArrayList<CASE>( new_cases ) );
+//                }
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return null;
 		}
 
 		@Override
@@ -7183,9 +7201,13 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			if( _term.isConstant(constants, objects) ){
 				//match case
-				List<CASE> matches = _cases.stream().filter( m -> m._termVal.equals( _term ) ).collect( Collectors.toList() );
+				List<CASE> matches = _cases.stream()
+						.filter( m -> m._termVal.equals( _term ) )
+						.collect( Collectors.toList() );
 				if( matches.size() == 0 ){
-					List<CASE> defaults = _cases.stream().filter( m -> m._bDefaultCase ).collect( Collectors.toList() );
+					List<CASE> defaults = _cases.stream()
+						.filter( m -> m._bDefaultCase )
+						.collect( Collectors.toList() );
 					assert( defaults.size() == 1 );
 					return defaults.get(0)._expr.isConstant(constants, objects);
 				}else if( matches.size() == 1 ){
@@ -7195,18 +7217,13 @@ public class RDDL {
 						throw new Exception("mutiple matching cases?" );
 					}catch( Exception exc ){
 						exc.printStackTrace();
-						System.exit(1);
+						throw exc;
 					}
 				}
-
 			}
 			return false;
 		}
 
-
-		//This is end Addition
-
-		
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			if (USE_PREFIX) {
@@ -7227,21 +7244,17 @@ public class RDDL {
 		}
 		
 		public Object sample(HashMap<LVAR,LCONST> subs, State s, RandomDataGenerator r) throws EvalException {
-
 			try {
 				LCONST seval = (LCONST)_term.sample(subs, s, r);
 				
 				for (CASE c : _cases)
 					if (c._bDefaultCase || seval.equals(c._termVal.sample(subs, s, r)))
 						return c._expr.sample(subs, s, r);
-				
 				throw new EvalException("No case for '" + seval + "' in " + _cases);
-				
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
 				throw new EvalException("RDDL.SWITCH_EXPR: Error:\n" + e + "while evaluating:\n" + this);
 			}
-
 		}
 
 		public EXPR getDist(HashMap<LVAR,LCONST> subs, State s) throws EvalException {
@@ -7277,8 +7290,6 @@ public class RDDL {
 				Map< PVAR_NAME, Character > type_map ) throws Exception{
 			return GRB.BINARY;
 		}
-
-
 	}
 
 	// TODO: should never put a RandomDataGenerator variable directly under a quantifier,
@@ -7293,43 +7304,26 @@ public class RDDL {
 			this(quant, vars, (BOOL_EXPR)expr); // PARSER RESTRICTION
 		}
 
-
-
-		//This is start Addition
-
-
-//
-//		public QUANT_EXPR(String quant, ArrayList vars, BOOL_EXPR expr) throws Exception {
-//			if (!quant.equals(EXISTS) && !quant.equals(FORALL))
-//				throw new Exception("Unrecognized quantifier type: " + quant);
-//			_sQuantType = quant.intern();
-//			_alVariables = (ArrayList<LTYPED_VAR>)vars;
-//			_expr = expr;
-//			_bDet = expr._bDet;
-//		}
-//
-
 		@Override
-		public   EXPR getMean(
+		public EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
-
-			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.getMean(constants, objects) );
+			return new QUANT_EXPR( _sQuantType, _alVariables, 
+					_expr.getMean(constants, objects) );
 		}
 
 		@Override
 		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.sampleDeterminization(rand,constants,objects) );
-
-
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+			try{
+				return new QUANT_EXPR( _sQuantType, _alVariables, 
+					_expr.sampleDeterminization(rand,constants,objects) );
+			}catch(Exception exc){
+				expanded = expandBooleanQuantifier(constants, objects);
+				return expanded.sampleDeterminization(rand, constants, objects);
+			}
 		}
-
 
 /*		This is Old Code.  .
 		@Override
@@ -7372,33 +7366,26 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( isConstant( null , null ) ){
-                    try {
-                        return Double.hashCode( getDoubleValue( null , null) );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    return Double.hashCode( getDoubleValue( null , null) );
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
+				if( _alVariables.size() == 0 ){
+					return _expr.hashCode();
+				}
+				return Objects.hash( "Quant_Expr", _sQuantType, _alVariables, _expr );
 			}
-			if( _alVariables.size() == 0 ){
-				return _expr.hashCode();
-			}
-			return Objects.hash( _sQuantType, _alVariables, _expr );
 		}
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			assert( isConstant(constants, objects ) );
-			if( _expr.isConstant(constants, objects) ){
-				final double val = _expr.getDoubleValue(constants, objects);
-				return val;
-			}
+			return _expr.getDoubleValue(constants, objects);
 
-			EXPR result = expandBooleanQuantifier(constants, objects);
-			assert( result.isConstant(constants, objects ) );
-			return result.getDoubleValue(constants, objects );
+//			EXPR result = expandBooleanQuantifier(constants, objects);
+//			assert( result.isConstant(constants, objects ) );
+//			return result.getDoubleValue(constants, objects );
 		}
 
 		@Override
@@ -7407,12 +7394,14 @@ public class RDDL {
 			if( isConstant( constants, objects ) ){
 				return true;
 			}
-			EXPR result = expandBooleanQuantifier(constants, objects );
-			return result.isPiecewiseLinear(constants, objects );
+//			EXPR result = expandBooleanQuantifier(constants, objects );
+//			return result.isPiecewiseLinear(constants, objects );
+			return _expr.isPiecewiseLinear(constants, objects);
 		}
 
-		public EXPR expandBooleanQuantifier( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+		public EXPR expandBooleanQuantifier( 
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 			List<BOOL_EXPR> terms = expandQuantifier( _expr, _alVariables, objects, constants )
 					.stream().map( new Function<EXPR, BOOL_EXPR>() {
 						@Override
@@ -7432,7 +7421,6 @@ public class RDDL {
 						}
 					}).collect( Collectors.toList() );
 
-
 			final String type = _sQuantType.equals( EXISTS ) ? CONN_EXPR.OR :
 					( _sQuantType.equals( FORALL ) ? CONN_EXPR.AND : null );
 			CONN_EXPR result;
@@ -7441,23 +7429,22 @@ public class RDDL {
 				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
-			final boolean inner_const = _expr.isConstant(constants, objects);
-			if( inner_const ){
-				return true;
-			}
+			return _expr.isConstant(constants, objects);
+//			if( inner_const ){
+//				return true;
+//			}
 //			this is too expensive
 //			if( objects != null ){
 //				return expandBooleanQuantifier( constants, objects ).isConstant(constants, objects);
 //			}
-			return false;
+//			return false;
 		}
 
 		@Override
@@ -7469,7 +7456,8 @@ public class RDDL {
 			}
 
 			if( _alVariables.size() == 0 ){
-				return _expr.getGRBConstr(sense, model, constants, objects, type_map);
+				return _expr.getGRBConstr(sense, model, constants, 
+						objects, type_map);
 			}
 			EXPR expr  = expandBooleanQuantifier(constants, objects );
 			GRBVar expr_var = expr.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map );
@@ -7480,9 +7468,8 @@ public class RDDL {
 				return this_var;
 			} catch (GRBException e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
 		@Override
@@ -7493,59 +7480,46 @@ public class RDDL {
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+				if( _alVariables.size() == 0 ){
+					return _expr.equals(obj);
+				}
 
-			if( _alVariables.size() == 0 ){
-				return _expr.equals(obj);
+				if( obj instanceof QUANT_EXPR ){
+					QUANT_EXPR q = (QUANT_EXPR)obj;
+					return _sQuantType.equals( q._sQuantType ) 
+							&& _expr.equals( q._expr )
+							&& _alVariables.equals( q._alVariables );
+				}
+				return false;
 			}
-
-			if( obj instanceof QUANT_EXPR ){
-				QUANT_EXPR q = (QUANT_EXPR)obj;
-				return _bDet == q._bDet && _sType.equals( q._sType ) &&
-						_sQuantType.equals( q._sQuantType ) && _expr.equals( q._expr )
-						&& _alVariables.equals( q._alVariables );
-			}
-			return false;
 		}
 
 		@Override
 		public EXPR substitute( Map<LVAR, LCONST> subs,
-								Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 			try {
 				if( isConstant( constants, objects ) ){
                     return new REAL_CONST_EXPR( getDoubleValue(constants, objects ) );
                 }
-
 				assert( isPiecewiseLinear( constants, objects ) );
 
-
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-
-			List<EXPR> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects ) )
-					.collect( Collectors.toList() );
-			final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
-					.map( m -> (LTYPED_VAR)m )
-					.collect( Collectors.toList() );
-			try {
+				List<EXPR> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects ) )
+						.collect( Collectors.toList() );
+				final List<LTYPED_VAR> al_new_terms = new_terms.stream()
+						.filter( m -> m instanceof LTYPED_VAR )
+						.map( m -> (LTYPED_VAR)m )
+						.collect( Collectors.toList() );
 				EXPR inner_sub = _expr.substitute(subs, constants, objects);
 				QUANT_EXPR unexpanded = new QUANT_EXPR( _sQuantType, new ArrayList<>( al_new_terms ), inner_sub );
 				//EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
 				return unexpanded ; //expanded.substitute(subs, constants, objects);
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.exit(1);
+				throw e;
 			}
-			return null;
 		}
 
-
-		//This is End of Addition
-		
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			if (USE_PREFIX) {
@@ -7699,15 +7673,10 @@ public class RDDL {
 		public static final String AND   = "^".intern();
 		public static final String OR    = "|".intern();
 
-
-
-
-
 		@Override
 		public   EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
 
 			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
 					_alSubNodes.stream().map(m -> {
