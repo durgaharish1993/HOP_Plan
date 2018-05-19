@@ -5217,36 +5217,37 @@ public class RDDL {
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
-							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
+				   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
 
 			try {
                 if (isConstant(constants, objects)) {
                     return new REAL_CONST_EXPR(getDoubleValue(constants, objects)); 
                 }
 			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			try{
+				List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
+					.collect( Collectors.toList() );
+				final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
+					.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
+				//expanding under sum is expensive
+				//defer this till getGRBConstr()
 
-				try{
-					List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
-						.collect( Collectors.toList() );
-					final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
-						.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
-					//expanding under sum is expensive
-					//defer this till getGRBConstr()
-
-					if( al_new_terms.isEmpty() ){
-						return _e.substitute(subs, constants, objects);
-					}else{
-						EXPR inner_subs = _e.substitute(subs, constants, objects) ;
-						AGG_EXPR unexpanded = new AGG_EXPR( _op, new ArrayList<>( al_new_terms ), inner_subs );
-						//EXPR expanded = unexpanded.expandArithmeticQuantifier(constants, objects);
-						//return expanded.substitute(subs,constants,objects);
-						return unexpanded; //.substitute(subs, constants, objects);
-					}
-				}catch( Exception exc ){
-					EXPR expanded = expandArithmeticQuantifier(constants, objects);
-					return expanded.substitute(subs, constants, objects);
+				if( al_new_terms.isEmpty() ){
+					return _e.substitute(subs, constants, objects);
+				}else{
+					EXPR inner_subs = _e.substitute(subs, constants, objects) ;
+					AGG_EXPR unexpanded = new AGG_EXPR( _op, new ArrayList<>( al_new_terms ), inner_subs );
+					//EXPR expanded = unexpanded.expandArithmeticQuantifier(constants, objects);
+					//return expanded.substitute(subs,constants,objects);
+					return unexpanded; //.substitute(subs, constants, objects);
 				}
+			}catch( Exception exc ){
+				EXPR expanded = expandArithmeticQuantifier(constants, objects);
+				return expanded.substitute(subs, constants, objects);
 			}
             throw new Exception("Not able to expand"+ toString());
 		}
