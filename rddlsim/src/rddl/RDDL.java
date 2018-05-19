@@ -4433,47 +4433,20 @@ public class RDDL {
 		public   EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
-
 			return new OPER_EXPR( _e1.getMean(constants, objects), _e2.getMean(constants, objects), _op );
-
 		}
 
 		@Override
 		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
 											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
 			try {
 				return new OPER_EXPR( _e1.sampleDeterminization(rand,constants,objects), _e2.sampleDeterminization(rand,constants,objects), _op );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
 			}
-
 		}
-
-
-
-
-
-/*			This is the old Code....
-*//*
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			try {
-				return new OPER_EXPR( _e1.sampleDeterminization(rand), _e2.sampleDeterminization(rand), _op );
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw e;
-			}
-		}*//*
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			return new OPER_EXPR( _e1.getMean(objects), _e2.getMean(objects), _op );
-		}*/
 
 		@Override
 		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList< LCONST >, Object > > constants,
@@ -4617,19 +4590,16 @@ public class RDDL {
 				if( isConstant( null, null ) ){
                     return Double.hashCode( getDoubleValue( null , null ) );
                 }
+
+				EXPR reducible = reduce( _e1, _e2, _op, null, null );
+				if( reducible instanceof OPER_EXPR ){
+					return Objects.hash( _op, _e1.hashCode() + _e2.hashCode(), isCommutable(_op) ? 0 : _e2.hashCode() );
+				}
+				return reducible.hashCode();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			EXPR reducible = null;
-			try {
-				reducible = reduce( _e1, _e2, _op, null, null );
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if( reducible instanceof OPER_EXPR ){
-				return Objects.hash( _op, _e1.hashCode() + _e2.hashCode(), isCommutable(_op) ? 0 : _e2.hashCode() );
-			}
-			return reducible.hashCode();
+			return Objects.hash("OPER_EXPR", _e1, _e2, _op);
 		}
 
 		public boolean isCommutable( final String op ){
@@ -4662,16 +4632,15 @@ public class RDDL {
 					}
 					return equals;
 				}
-				EXPR this_cannon = null;
 				try {
-					this_cannon = reduce(_e1, _e2, _op, null, null);
+					EXPR this_cannon = reduce(_e1, _e2, _op, null, null);
+					if( this_cannon instanceof OPER_EXPR ){
+						return false;
+					}
+					return this_cannon.equals( obj );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if( this_cannon instanceof OPER_EXPR ){
-					return false;
-				}
-				return this_cannon.equals( obj );
 			}
 			return false;
 		}
@@ -4737,58 +4706,55 @@ public class RDDL {
 		private EXPR reduce( final EXPR e1_sub, final EXPR e2_sub, final String op,
 							 final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception  {
-			final boolean e1_const = e1_sub.isConstant( constants , objects);
-			final boolean e2_const = e2_sub.isConstant( constants , objects );
-			if( e1_const && e2_const ){
-				try {
+			try{
+				final boolean e1_const = e1_sub.isConstant( constants , objects);
+				final boolean e2_const = e2_sub.isConstant( constants , objects );
+				if( e1_const && e2_const ){
 					return new REAL_CONST_EXPR( (double) ComputeArithmeticResult( e1_sub.getDoubleValue( constants, objects ),
 							e2_sub.getDoubleValue( constants, objects ), op ) );
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw e;
 				}
-			}
 
-			switch( op ){
-				case "+" :
-					if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
-						return e1_sub;
-					}else if( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ){
-						return e2_sub;
-					}
-					break;
-				case "-" :
-					if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
-						return e1_sub;
-					}
-					break;
-				case "*" :
-
-
-					if( ( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ) ){
-						return e1_sub;
-					}else if( e1_const && e1_sub.getDoubleValue(constants, objects) == 1d ){
-						return e2_sub;
-					}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
-						return e2_sub;
-					}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 1d ){
-						return e1_sub;
-					}
-					break;
-				case "/" :
-					if( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ){
-						return e1_sub;
-					}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
-						try{
-							throw new ArithmeticException("divide by zero : " + toString() );
-						}catch( Exception exc ){
-							exc.printStackTrace();
-							throw exc;
+				switch( op ){
+					case "+" :
+						if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
+							return e1_sub;
+						}else if( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ){
+							return e2_sub;
 						}
-					}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 1d ){
-						return e1_sub;
-					}
-					break;
+						break;
+					case "-" :
+						if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
+							return e1_sub;
+						}
+						break;
+					case "*" :
+						if( ( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ) ){
+							return e1_sub;
+						}else if( e1_const && e1_sub.getDoubleValue(constants, objects) == 1d ){
+							return e2_sub;
+						}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
+							return e2_sub;
+						}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 1d ){
+							return e1_sub;
+						}
+						break;
+					case "/" :
+						if( e1_const && e1_sub.getDoubleValue(constants, objects) == 0d ){
+							return e1_sub;
+						}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 0d ){
+							try{
+								throw new ArithmeticException("divide by zero : " + toString() );
+							}catch( Exception exc ){
+								exc.printStackTrace();
+								throw exc;
+							}
+						}else if( e2_const && e2_sub.getDoubleValue(constants, objects) == 1d ){
+							return e1_sub;
+						}
+						break;
+				}
+			}catch(Exception exc){
+				exc.printStackTrace();
 			}
 
 			if( e1_sub.equals(e2_sub) ){
@@ -4809,7 +4775,6 @@ public class RDDL {
 				e.printStackTrace();
 				throw e;
 			}
-
 		}
 
 		public OPER_EXPR(EXPR e1, EXPR e2, String op) {
@@ -5001,6 +4966,7 @@ public class RDDL {
 		public EXPR   _e = null;
 		public String _op = UNKNOWN;
 		public ArrayList<LTYPED_VAR> _alVariables = null;
+		private Map<String, ,EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -5008,14 +4974,13 @@ public class RDDL {
 
 			try{
 				assert( isConstant(constants, objects ) );
-				return _e.getDoubleValue(constants,objects);
-
-			}catch (Exception e){
 				EXPR result = expandArithmeticQuantifier(constants, objects );
 				assert( result.isConstant(constants , objects) );
 				return result.getDoubleValue(constants, objects );
+			}catch (Exception e){
+				e.printStackTrace();
+				throw e;
 			}
-
 		}
 
 		@Override
@@ -5023,15 +4988,12 @@ public class RDDL {
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
 			try{
-				if( _e.isConstant(constants, objects) ){
-					return true;
-				}
+				return _e.isConstant(constants, objects);
 			}catch(Exception exc){
 				//expensive
 				EXPR result = expandArithmeticQuantifier(constants, objects );
 				return result.isConstant(constants, objects);
 			}
-			return false;
 		}
 
 		@Override
@@ -5100,15 +5062,17 @@ public class RDDL {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return Objects.hash( "AGG_EXPR", _op, _alVariables, _e );
 			}
-			//This can never reach...
-			return -1;
+			return Objects.hash( "AGG_EXPR", _op, _alVariables, _e );
 		}
 
 		public EXPR expandArithmeticQuantifier(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
+			if( _expandCache.containsKey(this.toString()) ){
+				return _expandCache.get(this.toString());
+			}
+			
 			List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants );
 			String type = null;
 			switch( _op ){
@@ -5122,6 +5086,7 @@ public class RDDL {
 				for( final EXPR t : terms ){
 					ret = ( ret == null ) ? t : new OPER_EXPR( ret, t, type );
 				}
+				_expandCache.put(this.toString(), ret);
 				return ret;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -5262,30 +5227,31 @@ public class RDDL {
 
 			try {
                 if (isConstant(constants, objects)) {
-                    return new REAL_CONST_EXPR(getDoubleValue(constants, objects)); }
-
+                    return new REAL_CONST_EXPR(getDoubleValue(constants, objects)); 
+                }
 			}catch(Exception e){
 
-				List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
+				try{
+					List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects) )
 						.collect( Collectors.toList() );
-				final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
+					final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
 						.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
-				//expanding under sum is expensive
-				//defer this till getGRBConstr()
+					//expanding under sum is expensive
+					//defer this till getGRBConstr()
 
-				if( al_new_terms.isEmpty() ){
-					return _e.substitute(subs, constants, objects);
-				}else{
-					EXPR inner_subs = _e.substitute(subs, constants, objects) ;
-					AGG_EXPR unexpanded = new AGG_EXPR( _op, new ArrayList<>( al_new_terms ), inner_subs );
-					//EXPR expanded = unexpanded.expandArithmeticQuantifier(constants, objects);
-					//return expanded.substitute(subs,constants,objects);
-					return unexpanded; //.substitute(subs, constants, objects);
+					if( al_new_terms.isEmpty() ){
+						return _e.substitute(subs, constants, objects);
+					}else{
+						EXPR inner_subs = _e.substitute(subs, constants, objects) ;
+						AGG_EXPR unexpanded = new AGG_EXPR( _op, new ArrayList<>( al_new_terms ), inner_subs );
+						//EXPR expanded = unexpanded.expandArithmeticQuantifier(constants, objects);
+						//return expanded.substitute(subs,constants,objects);
+						return unexpanded; //.substitute(subs, constants, objects);
+					}
+				}catch( Exception exc ){
+					EXPR expanded = expandArithmeticQuantifier(constants, objects);
+					return expanded.substitute(subs, constants, objects);
 				}
-
-
-
-
 			}
             throw new Exception("Not able to expand"+ toString());
 		}
