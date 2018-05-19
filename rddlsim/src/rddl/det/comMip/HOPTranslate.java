@@ -65,9 +65,9 @@ public class HOPTranslate extends Translate {
 	public static enum FUTURE_SAMPLING{
 		SAMPLE {
 			@Override
-			public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<TYPE_NAME, OBJECTS_DEF> objects )   {
+			public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects )   {
 				try {
-					return e.sampleDeterminization(rand);
+					return e.sampleDeterminization(rand,constants,objects);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}return null;
@@ -75,9 +75,9 @@ public class HOPTranslate extends Translate {
 			}
 		}, MEAN {
 			@Override
-			public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<TYPE_NAME, OBJECTS_DEF> objects ) {
+			public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects ) {
 				try {
-					return e.getMean(objects);
+					return e.getMean(constants, objects);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -85,8 +85,8 @@ public class HOPTranslate extends Translate {
 			}
 		};
 		
-		public abstract EXPR getFuture( final EXPR e , final RandomDataGenerator rand, 
-				Map<TYPE_NAME, OBJECTS_DEF> objects );
+		public abstract EXPR getFuture( final EXPR e , final RandomDataGenerator rand,
+                                        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects );
 	}
 	protected int num_futures = 0;
 	protected FUTURE_SAMPLING future_gen;
@@ -179,7 +179,7 @@ public class HOPTranslate extends Translate {
 	}
 
 	@Override
-	protected void addAllVariables( ) {
+	protected void addAllVariables( ) throws Exception{
 		System.out.println("-----This is addAllVaribles (Overrided)----");
 		HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> src = new HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>();
 		src.putAll( rddl_state_vars ); src.putAll( rddl_action_vars ); src.putAll( rddl_interm_vars ); src.putAll( rddl_observ_vars );
@@ -191,15 +191,19 @@ public class HOPTranslate extends Translate {
 					@Override
 					public void accept(ArrayList<LCONST> terms) {
 						//System.out.print(pvar.toString());
-						EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms )
-							.addTerm(TIME_PREDICATE, constants, objects)
-							.addTerm( future_PREDICATE, constants, objects );
-						//System.out.println("HERE IS THE ERROR");
+                        //EXPR pvar_expr = null;
+						try{
+                        EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms ).addTerm(TIME_PREDICATE, constants, objects)
+                                                .addTerm( future_PREDICATE, constants, objects );
+
+
+
+                        //System.out.println("HERE IS THE ERROR");
 							
 						TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST time_term ) {
-								
+								try{
 								EXPR this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), 
 										constants, objects);
 								
@@ -207,34 +211,45 @@ public class HOPTranslate extends Translate {
 									@Override
 									public void accept(LCONST future_term) {
 										//System.out.println(this_t.toString());
-										EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
-										
-										
-										synchronized( static_grb_model ){
-											//System.out.println(this_tf.toString());
+										try{
 
-											try {
-												GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
-											} catch (Exception e) {
-												e.printStackTrace();
-											}
+											EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
 
 
-											//just remember this is commented by HARISH
-											
+											synchronized( static_grb_model ){
+												//System.out.println(this_tf.toString());
+
+												try {
+													GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
+												} catch (Exception e) {
+													e.printStackTrace();
+												}
+
+
+												//just remember this is commented by HARISH
+
 //											try {
 //												System.out.println("Adding var " + gvar.get(StringAttr.VarName) + " " + this_tf );
 //											} catch (GRBException e) {
 //												e.printStackTrace();
 //												//System.exit(1);
 //											}
-											saved_expr.add( this_tf );
+												saved_expr.add( this_tf );
+											}
+
 										}
+										catch (Exception e){
+											e.printStackTrace();
+
+										}
+
 									}
 								});
+							} catch (Exception e) {e.printStackTrace(); }
 								
 							}
 						});
+						} catch (Exception e) {e.printStackTrace(); }
 					}
 				});
 			}
@@ -277,101 +292,107 @@ public class HOPTranslate extends Translate {
 						entry.getValue().stream().forEach( new Consumer< ArrayList<LCONST> >() {
 							@Override
 							public void accept(ArrayList<LCONST> terms) {
-								
-								PVAR_NAME p = entry.getKey();
-								
-								CPF_DEF cpf = null;
-								if( rddl_state_vars.containsKey(p) ){
-									cpf = rddl_state._hmCPFs.get( new PVAR_NAME( p._sPVarName + "'" ) );
-								}else {
-									cpf = rddl_state._hmCPFs.get( new PVAR_NAME( p._sPVarName ) );
-								}
-								
-								Map<LVAR, LCONST> subs = getSubs( cpf._exprVarName._alTerms, terms );
-								EXPR new_lhs_stationary = cpf._exprVarName.substitute( subs, constants, objects );
-								
-								EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
-								
-//								System.out.println(new_lhs_stationary );//.+ " " + new_rhs_stationary );
-								//This Piece of code is changed by HARISH
-								//System.out.println(new_lhs_stationary + " " + new_rhs_stationary );
-								
-								EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-										.addTerm(future_PREDICATE, constants, objects);
-								EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-										.addTerm(future_PREDICATE, constants, objects);
-//								System.out.println(lhs_with_tf + " " + rhs_with_tf );
-								
-								time_terms_indices.stream().forEach( new Consumer< Integer >() {
+								try{
+                                    PVAR_NAME p = entry.getKey();
+
+                                    CPF_DEF cpf = null;
+                                    if( rddl_state_vars.containsKey(p) ){
+                                        cpf = rddl_state._hmCPFs.get( new PVAR_NAME( p._sPVarName + "'" ) );
+                                    }else {
+                                        cpf = rddl_state._hmCPFs.get( new PVAR_NAME( p._sPVarName ) );
+                                    }
+
+                                    Map<LVAR, LCONST> subs = getSubs( cpf._exprVarName._alTerms, terms );
+                                    EXPR new_lhs_stationary = cpf._exprVarName.substitute( subs, constants, objects );
+
+                                    EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+
+    //								System.out.println(new_lhs_stationary );//.+ " " + new_rhs_stationary );
+                                    //This Piece of code is changed by HARISH
+                                    //System.out.println(new_lhs_stationary + " " + new_rhs_stationary );
+
+                                    EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
+                                            .addTerm(future_PREDICATE, constants, objects);
+                                    EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
+                                            .addTerm(future_PREDICATE, constants, objects);
+    //								System.out.println(lhs_with_tf + " " + rhs_with_tf );
+
+								    time_terms_indices.stream().forEach( new Consumer< Integer >() {
 									@Override
 									public void accept(Integer time_term_index ) {
 										EXPR lhs_with_f_temp = null;
-										if( rddl_state_vars.containsKey(p) ){
-											if( time_term_index == lookahead-1 ){
-												return;
-											}
-											
-											lhs_with_f_temp = lhs_with_tf.substitute(
-													Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get( time_term_index + 1 ) ), constants, objects);
-										}else{
-											lhs_with_f_temp = lhs_with_tf.substitute(
-													Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get( time_term_index ) ), constants, objects);
-										}
-										final EXPR lhs_with_f = lhs_with_f_temp;
-										
-										final EXPR rhs_with_f = rhs_with_tf.substitute( 
-												Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get( time_term_index ) ), constants, objects);
-										
-										future_terms_indices.stream().forEach( 
-												new Consumer<Integer>() {
-													public void accept(Integer future_term_index) {
-														EXPR lhs = lhs_with_f.substitute(
-																Collections.singletonMap( future_PREDICATE, future_TERMS.get( future_term_index ) ), constants, objects);
-														EXPR rhs = rhs_with_f.substitute(
-																Collections.singletonMap( future_PREDICATE, future_TERMS.get( future_term_index) ), constants, objects);
-														
-														EXPR lhs_future = future_gen.getFuture( lhs, rand, objects );
-														EXPR rhs_future = future_gen.getFuture( rhs, rand, objects );
-														
+										try {
+                                            if (rddl_state_vars.containsKey(p)) {
+                                                if (time_term_index == lookahead - 1) {
+                                                    return;
+                                                }
+
+
+                                                lhs_with_f_temp = lhs_with_tf.substitute(
+                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects);
+                                            } else {
+                                                lhs_with_f_temp = lhs_with_tf.substitute(
+                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+                                            }
+                                            final EXPR lhs_with_f = lhs_with_f_temp;
+
+                                            final EXPR rhs_with_f = rhs_with_tf.substitute(
+                                                    Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+
+                                            future_terms_indices.stream().forEach(
+                                                    new Consumer<Integer>() {
+                                                        public void accept(Integer future_term_index) {
+                                                            try {
+
+                                                                EXPR lhs = lhs_with_f.substitute(
+                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
+                                                                EXPR rhs = rhs_with_f.substitute(
+                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
+
+                                                                EXPR lhs_future = future_gen.getFuture(lhs, rand, constants, objects);
+                                                                EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects);
+
+
 //														synchronized ( lhs_future ) {
 //															synchronized ( rhs_future ) {
-																synchronized ( grb_model ) {
-																	
-																	try {
-																		GRBVar lhs_var = lhs_future.getGRBConstr( 
-																			GRB.EQUAL, grb_model, constants, objects, type_map);
+                                                                synchronized (grb_model) {
 
-																		GRBVar rhs_var = rhs_future.getGRBConstr( 
-																				GRB.EQUAL, grb_model, constants, objects, type_map);
-																		
+
+                                                                    GRBVar lhs_var = lhs_future.getGRBConstr(
+                                                                            GRB.EQUAL, grb_model, constants, objects, type_map);
+
+                                                                    GRBVar rhs_var = rhs_future.getGRBConstr(
+                                                                            GRB.EQUAL, grb_model, constants, objects, type_map);
+
 //																		System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
-																		final String nam = RDDL.EXPR.getGRBName(lhs_future)+"="+RDDL.EXPR.getGRBName(rhs_future);
+                                                                    final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
 //																		System.out.println(nam);;
-																		
-																		GRBConstr this_constr 
-																			= grb_model.addConstr( lhs_var, GRB.EQUAL, rhs_var, nam );
-																		to_remove_constr.add( this_constr );
-																		to_remove_expr.add( lhs_future );
-																		to_remove_expr.add( rhs_future );
-																		
-																	} catch (GRBException e) {
-																		e.printStackTrace();
-																		//System.exit(1);
-																	} catch (Exception e) {
-																		e.printStackTrace();
-																	}
+
+                                                                    GRBConstr this_constr
+                                                                            = grb_model.addConstr(lhs_var, GRB.EQUAL, rhs_var, nam);
+                                                                    to_remove_constr.add(this_constr);
+                                                                    to_remove_expr.add(lhs_future);
+                                                                    to_remove_expr.add(rhs_future);
+
+                                                                }
 
 
+                                                            } catch (GRBException e) {
+                                                                e.printStackTrace();
+                                                                //System.exit(1);
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
+                                                            }
 //																	saved_vars.add( lhs_var );
 //																	saved_vars.add( rhs_var );
-																}
+                                                        }
 //															}
-//														}
-														
-													}
-												} );
-										} 
+//
+                                                    });
+                                        }catch (Exception e){e.printStackTrace();}
+                                    }
 									} );
+								}catch (Exception e){e.printStackTrace();}
 								}
 							} );
 					}
@@ -479,27 +500,33 @@ public class HOPTranslate extends Translate {
 				TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
 					@Override
 					public void accept(LCONST time_term) {
-						final EXPR subs_tf = non_stationary.substitute( Collections.singletonMap( TIME_PREDICATE, time_term ), 
-								constants, objects)
-								.substitute( Collections.singletonMap( future_PREDICATE, future_term ),constants, objects);
-						//System.out.println( subs_tf );//"Reward_" + time_term + "_" + future_term );
-						
-						synchronized( grb_model ){
+						try {
+							final EXPR subs_tf = non_stationary.substitute(Collections.singletonMap(TIME_PREDICATE, time_term),
+									constants, objects)
+									.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+							//System.out.println( subs_tf );//"Reward_" + time_term + "_" + future_term );
 
-							GRBVar this_future_var = null;
-							try {
-								this_future_var = subs_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-							saved_expr.add( subs_tf );
-							//System.out.println(saved_expr);
+							synchronized (grb_model) {
+
+								GRBVar this_future_var = null;
+
+								this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+
+								saved_expr.add(subs_tf);
+								//System.out.println(saved_expr);
 //							saved_vars.add( this_future_var );
-							//IDEA : weightby probability of trajecotry of futures
-							//what is the probability of a determinization 
-							all_sum.addTerm( 1.0d/num_futures, this_future_var );
-							//System.out.println(all_sum);
+								//IDEA : weightby probability of trajecotry of futures
+								//what is the probability of a determinization
+								all_sum.addTerm(1.0d / num_futures, this_future_var);
+								//System.out.println(all_sum);
+							}
+
 						}
+						catch (Exception e){
+							e.printStackTrace();
+
+						}
+
 					}
 				});
 			}
@@ -541,6 +568,8 @@ public class HOPTranslate extends Translate {
 		
 		for( final PVAR_NAME p : rddl_state_vars.keySet() ){
 			for( final ArrayList<LCONST> terms : rddl_state_vars.get( p ) ){
+				try{
+
 				Object rhs = null;
 				if( subs.containsKey( p ) && subs.get( p ).containsKey( terms ) ){
 					rhs = subs.get(p).get( terms );
@@ -557,11 +586,8 @@ public class HOPTranslate extends Translate {
 					rhs_expr = new INT_CONST_EXPR( (int)rhs );
 				}
 				GRBVar rhs_var = null;
-				try {
-					rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map );
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+
+				rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map );
 
 				PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
 				EXPR non_stationary_pvar_expr = stationary_pvar_expr
@@ -571,34 +597,42 @@ public class HOPTranslate extends Translate {
 				//System.out.println( p+" "+terms );
 				//System.out.println("Thinking about future");
 				for( int future_id = 0 ; future_id < num_futures; ++future_id ){
-					EXPR this_future_init_state = non_stationary_pvar_expr
-					.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects)
-					.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(future_id) ), constants, objects);
 
-					GRBVar lhs_var = null;
 					try {
-						lhs_var = this_future_init_state.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+						EXPR this_future_init_state = non_stationary_pvar_expr
+								.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+								.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_id)), constants, objects);
 
-					final String nam = RDDL.EXPR.getGRBName(this_future_init_state)+
-							"="+RDDL.EXPR.getGRBName(rhs_expr);
-					
-					GRBConstr this_constr = grb_model.addConstr( lhs_var, GRB.EQUAL, rhs_var, nam );
-					//This Piece of Code is changed by HARISH.
-					//System.out.println( this_future_init_state+" "+rhs_expr );
+						GRBVar lhs_var = null;
+
+						lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+
+
+						final String nam = RDDL.EXPR.getGRBName(this_future_init_state) +
+								"=" + RDDL.EXPR.getGRBName(rhs_expr);
+
+						GRBConstr this_constr = grb_model.addConstr(lhs_var, GRB.EQUAL, rhs_var, nam);
+						//This Piece of Code is changed by HARISH.
+						//System.out.println( this_future_init_state+" "+rhs_expr );
 //					System.out.println( nam );
-					
+
 //					System.out.println( this_constr.get(StringAttr.ConstrName) ); 
 //					saved_vars.add( lhs_var ); saved_expr.add( this_future_init_state );
 //					saved_vars.add( rhs_var ); saved_expr.add( rhs_expr );
-					
-					to_remove_expr.add( this_future_init_state );
-					to_remove_constr.add( this_constr );
+
+						to_remove_expr.add(this_future_init_state);
+						to_remove_constr.add(this_constr);
+					}
+					catch (Exception e){
+						e.printStackTrace();
+					}
+
 					
 				}
-			}
+
+			} catch (Exception e) { e.printStackTrace(); }
+
+		}
 		}
 		
 		grb_model.setObjective(old_obj);
@@ -622,43 +656,51 @@ public class HOPTranslate extends Translate {
 			public void accept(BOOL_EXPR e) {
 				// COMMENT SHOULD BE UNCOMMENTED NOTE CHANGED BY HARISH.
 				//System.out.println( "Translating Constraint " + e );
+				try{
 				System.out.println(e.toString());
-				final EXPR non_stationary_e = e.substitute( Collections.EMPTY_MAP, constants, objects)
-						.addTerm(TIME_PREDICATE, constants, objects )
+				final EXPR non_stationary_e = e.substitute(Collections.EMPTY_MAP, constants, objects)
+						.addTerm(TIME_PREDICATE, constants, objects)
 						.addTerm(future_PREDICATE, constants, objects);
-				
-				TIME_TERMS.stream().forEach( new Consumer< LCONST >() {
-					@Override
-					public void accept(LCONST time_term ) {
-						future_TERMS.parallelStream().forEach( new Consumer<LCONST>() { 
-							@Override
-							public void accept(LCONST future_term ) {
-								final EXPR this_tf = non_stationary_e
-										.substitute( Collections.singletonMap( TIME_PREDICATE, time_term ), constants, objects )
-									 	.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
-								synchronized( grb_model ){
-									try {
 
-										if(SHOW_GUROBI_ADD)
+				TIME_TERMS.stream().forEach(new Consumer<LCONST>() {
+					@Override
+					public void accept(LCONST time_term) {
+						future_TERMS.parallelStream().forEach(new Consumer<LCONST>() {
+							@Override
+							public void accept(LCONST future_term) {
+
+								try {
+									final EXPR this_tf = non_stationary_e
+											.substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
+											.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+									synchronized (grb_model) {
+
+										if (SHOW_GUROBI_ADD)
 											System.out.println(this_tf);
-										GRBVar constrained_var = this_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-										
+										GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+
 										String nam = RDDL.EXPR.getGRBName(this_tf);
-										GRBConstr this_constr = grb_model.addConstr( constrained_var, GRB.EQUAL, 1, nam );
-										saved_expr.add( this_tf ); 
+										GRBConstr this_constr = grb_model.addConstr(constrained_var, GRB.EQUAL, 1, nam);
+										saved_expr.add(this_tf);
 										saved_constr.add(this_constr);
 										//saved_vars.add( constrained_var );
-									} catch (GRBException e) {
-										e.printStackTrace();
-										System.exit(1);
-									} catch (Exception e1) {
-										e1.printStackTrace();
+
 									}
+								} catch (GRBException e) {
+									e.printStackTrace();
+									//System.exit(1);
+								} catch (Exception e1) {
+									e1.printStackTrace();
 								}
+
+
 							}
 						});
 					}
 				});
+			}catch (Exception e1){e1.printStackTrace();}
+
+
 			}
 		});
 		
@@ -850,24 +892,26 @@ public class HOPTranslate extends Translate {
 					u.forEach( new Consumer< ArrayList<LCONST>>() {
 						@Override
 						public void accept(ArrayList<LCONST> terms) {
-							PVAR_EXPR pvar_expr = new PVAR_EXPR( pvar._sPVarName, terms );
-							EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-									.addTerm(future_PREDICATE, constants, objects);
-							
-							for( final LCONST time : TIME_TERMS ){
-								EXPR this_t = with_tf.substitute( Collections.singletonMap(TIME_PREDICATE, time ), constants, objects);
-								EXPR ref_expr = this_t.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(0) ), constants, objects);
-								
-								for( final LCONST future : future_TERMS ){
-									EXPR addedd = this_t.substitute( Collections.singletonMap( future_PREDICATE, future), constants, objects);
-									try {
-										ret.add( new COMP_EXPR( ref_expr, addedd, COMP_EXPR.EQUAL ) );
-									} catch (Exception e) {
-										e.printStackTrace();
+							try {
+								PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
+								EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
+										.addTerm(future_PREDICATE, constants, objects);
+
+								for (final LCONST time : TIME_TERMS) {
+									EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE, time), constants, objects);
+									EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects);
+
+									for (final LCONST future : future_TERMS) {
+										EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+										try {
+											ret.add(new COMP_EXPR(ref_expr, addedd, COMP_EXPR.EQUAL));
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
 									}
+
 								}
-								
-							}
+							} catch (Exception e){e.printStackTrace();}
 						}
 					});
 				};
@@ -883,27 +927,29 @@ public class HOPTranslate extends Translate {
 					u.forEach( new Consumer< ArrayList<LCONST>>() {
 						@Override
 						public void accept(ArrayList<LCONST> terms) {
-							PVAR_EXPR pvar_expr = new PVAR_EXPR( pvar._sPVarName, terms );
-							EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-									.addTerm(future_PREDICATE, constants, objects);
-							
-							EXPR this_t = with_tf.substitute( Collections.singletonMap(TIME_PREDICATE, 
-									TIME_TERMS.get(0) ), constants, objects);
-							EXPR ref_expr = this_t.substitute( Collections.singletonMap( future_PREDICATE, 
-									future_TERMS.get(0) ), constants, objects);
+							try {
+								PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
+								EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
+										.addTerm(future_PREDICATE, constants, objects);
 
-							for( final LCONST future : future_TERMS ){
+								EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE,
+										TIME_TERMS.get(0)), constants, objects);
+								EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE,
+										future_TERMS.get(0)), constants, objects);
 
-								EXPR addedd = this_t.substitute( Collections.singletonMap( future_PREDICATE, future), constants, objects);
-								if(SHOW_GUROBI_ADD)
-									System.out.println(addedd.toString());
-								try {
-									ret.add( new COMP_EXPR( ref_expr, addedd, COMP_EXPR.EQUAL ) );
-								} catch (Exception e) {
-									e.printStackTrace();
+								for (final LCONST future : future_TERMS) {
+
+									EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+									if (SHOW_GUROBI_ADD)
+										System.out.println(addedd.toString());
+									try {
+										ret.add(new COMP_EXPR(ref_expr, addedd, COMP_EXPR.EQUAL));
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 								}
-							}
 
+							}catch (Exception e){e.printStackTrace();}
 						}
 					});
 				};
@@ -919,25 +965,28 @@ public class HOPTranslate extends Translate {
 					u.forEach( new Consumer< ArrayList<LCONST>>() {
 						@Override
 						public void accept(ArrayList<LCONST> terms) {
-							PVAR_EXPR pvar_expr = new PVAR_EXPR( pvar._sPVarName, terms );
-							EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-									.addTerm(future_PREDICATE, constants, objects);
+							try {
+								PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
+								EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
+										.addTerm(future_PREDICATE, constants, objects);
 
-							EXPR this_t = with_tf.substitute( Collections.singletonMap(TIME_PREDICATE,
-									TIME_TERMS.get(0) ), constants, objects);
-							EXPR ref_expr = this_t.substitute( Collections.singletonMap( future_PREDICATE,
-									future_TERMS.get(0) ), constants, objects);
+								EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE,
+										TIME_TERMS.get(0)), constants, objects);
+								EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE,
+										future_TERMS.get(0)), constants, objects);
 
-							for( final LCONST future : future_TERMS ){
+								for (final LCONST future : future_TERMS) {
 
-								EXPR addedd = this_t.substitute( Collections.singletonMap( future_PREDICATE, future), constants, objects);
-								System.out.println(addedd.toString());
-								try {
-									ret.add( new COMP_EXPR( ref_expr, addedd, COMP_EXPR.EQUAL ) );
-								} catch (Exception e) {
-									e.printStackTrace();
+									EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+									System.out.println(addedd.toString());
+									try {
+										ret.add(new COMP_EXPR(ref_expr, addedd, COMP_EXPR.EQUAL));
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
 								}
 							}
+							catch (Exception e){e.printStackTrace();}
 
 						}
 					});
@@ -993,20 +1042,21 @@ public class HOPTranslate extends Translate {
 						future_TERMS.forEach( new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST future_term) {
+								try {
 								EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms )
 								.addTerm(TIME_PREDICATE, constants, objects)
 								.addTerm(future_PREDICATE, constants, objects)
 								.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
 								.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
 								
-								  try {
-									   GRBVar grb_var = EXPR.grb_cache.get( action_var );
-									   assert( grb_var != null );
-									   double actual = grb_var.get( DoubleAttr.X );
+
+								GRBVar grb_var = EXPR.grb_cache.get( action_var );
+								assert( grb_var != null );
+								double actual = grb_var.get( DoubleAttr.X );
 									   
-									   //NOTE : uncomment this part if having issues with constrained actions
-									   //such as if you get -1E-11 instead of 0,
-									   //and you are expecting a positive action >= 0 
+								//NOTE : uncomment this part if having issues with constrained actions
+									// such as if you get -1E-11 instead of 0,
+									   //and you are expecting a positive action >= 0
 									   String interm_val = State._df.format( actual );
 //									   System.out.println( actual + " rounded to " + interm_val );
 									   
@@ -1014,6 +1064,9 @@ public class HOPTranslate extends Translate {
 								   } catch (GRBException e) {
 										e.printStackTrace();
 										////System.exit(1);
+								   }
+								   catch (Exception e){
+									e.printStackTrace();
 								   }
 
 							}
@@ -1066,31 +1119,34 @@ public class HOPTranslate extends Translate {
 								future_TERMS.forEach( new Consumer<LCONST>() {
 									@Override
 									public void accept(LCONST future_term) {
-										EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms )
+										try{
+										EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms)
 												.addTerm(TIME_PREDICATE, constants, objects)
 												.addTerm(future_PREDICATE, constants, objects)
-												.substitute( Collections.singletonMap( TIME_PREDICATE, time_term ), constants, objects)
-												.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
+												.substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
+												.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
 
 										try {
-											GRBVar grb_var = EXPR.grb_cache.get( action_var );
+											GRBVar grb_var = EXPR.grb_cache.get(action_var);
 											System.out.println(action_var);
 											//System.out.println(grb_var);
-											assert( grb_var != null );
-											double actual = grb_var.get( DoubleAttr.X );
+											assert (grb_var != null);
+											double actual = grb_var.get(DoubleAttr.X);
 
 
 											//NOTE : uncomment this part if having issues with constrained actions
 											//such as if you get -1E-11 instead of 0,
 											//and you are expecting a positive action >= 0
-											String interm_val = State._df.format( actual );
-											System.out.println( action_var + "Actual Value: "+ actual + " rounded to " + interm_val );
+											String interm_val = State._df.format(actual);
+											System.out.println(action_var + "Actual Value: " + actual + " rounded to " + interm_val);
 
-											ret.put( action_var, Double.valueOf(  interm_val ) );
+											ret.put(action_var, Double.valueOf(interm_val));
 										} catch (GRBException e) {
 											e.printStackTrace();
 											////System.exit(1);
 										}
+
+									}catch (Exception e){e.printStackTrace();}
 
 									}
 								});
@@ -1142,23 +1198,16 @@ public class HOPTranslate extends Translate {
 				val = (Integer) act._oValue; }
 
 			for(int j=0; j<future_TERMS.size();j++){
-
-				EXPR action_var =new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
-						.addTerm(TIME_PREDICATE,constants,objects)
-						.addTerm(future_PREDICATE,constants,objects)
-						.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-						.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(j) ), constants, objects);
-
-
-
-				action_value.put(action_var,val);
-
-
+				try {
+					EXPR action_var = new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
+							.addTerm(TIME_PREDICATE, constants, objects)
+							.addTerm(future_PREDICATE, constants, objects)
+							.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+							.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(j)), constants, objects);
+					action_value.put(action_var, val);
+				}
+				catch (Exception e){e.printStackTrace();}
 			}
-
-
-
-
 
 		}
 
@@ -1180,43 +1229,37 @@ public class HOPTranslate extends Translate {
 					@Override
 					public void accept(ArrayList<LCONST> terms) {
 						//System.out.print(pvar.toString());
-						EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms )
+						try{
+/*
+						EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms)
 								.addTerm(TIME_PREDICATE, constants, objects)
-								.addTerm( future_PREDICATE, constants, objects );
+								.addTerm(future_PREDICATE, constants, objects);
+*/
 						//System.out.println("HERE IS THE ERROR");
 
-						future_TERMS.forEach( new Consumer<LCONST>() {
+						future_TERMS.forEach(new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST future_term) {
-								EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms )
-										.addTerm(TIME_PREDICATE, constants, objects)
-										.addTerm(future_PREDICATE, constants, objects)
-										.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-										.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
-
-
-
 								try {
-
+									EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms)
+											.addTerm(TIME_PREDICATE, constants, objects)
+											.addTerm(future_PREDICATE, constants, objects)
+											.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+											.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
 									GRBVar this_var = EXPR.grb_cache.get(action_var);
-									this_var.set(DoubleAttr.Start,(Double) action_value.get(action_var));
+
+										this_var.set(DoubleAttr.Start, (Double) action_value.get(action_var));
+
 
 								} catch (GRBException e) {
-
+									e.printStackTrace();
+								} catch (Exception e) {
 									e.printStackTrace();
 								}
 
-
-
-
-
-
-
-
-
-
 							}
 						});
+					} catch (Exception e){e.printStackTrace();}
 					}
 				});
 			}
@@ -1270,19 +1313,24 @@ public class HOPTranslate extends Translate {
 						entry.getValue().stream().forEach( new Consumer< ArrayList<LCONST> >() {
 							@Override
 							public void accept(ArrayList<LCONST> terms ) {
-								final PVAR_EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms );
-								
-								EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
-										.addTerm(future_PREDICATE, constants, objects)
-										.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-										.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
-								assert( ret_expr.containsKey( this_action_var ) );
-								
-								Object value = sanitize( action_var._pName, ret_expr.get( this_action_var ) );
-								
-								if( ! value.equals( def_val ) ){
-									this_future_actions.put( action_var, value );	
+								try {
+									final PVAR_EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms);
+
+									EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
+											.addTerm(future_PREDICATE, constants, objects)
+											.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+											.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+									assert (ret_expr.containsKey(this_action_var));
+
+									Object value = sanitize(action_var._pName, ret_expr.get(this_action_var));
+
+									if (!value.equals(def_val)) {
+										this_future_actions.put(action_var, value);
+									}
 								}
+								catch (Exception e){e.printStackTrace();}
+
+
 							}
 
 						});
@@ -1348,21 +1396,25 @@ public class HOPTranslate extends Translate {
 						
 						switch( hindsight_method ){
 						case ALL_ACTIONS :
-						case ROOT : 
-							lookup = action_var  
-							.addTerm(TIME_PREDICATE, constants, objects)
-							.addTerm(future_PREDICATE, constants, objects)
-							.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-							.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(0) ) , constants, objects);
-							assert( ret_expr.containsKey( lookup ) );
-							ret_value = sanitize( action_var._pName, ret_expr.get( lookup ) );
-							break;
+						case ROOT :
+							try {
+								lookup = action_var
+										.addTerm(TIME_PREDICATE, constants, objects)
+										.addTerm(future_PREDICATE, constants, objects)
+										.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+										.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects);
+								assert (ret_expr.containsKey(lookup));
+								ret_value = sanitize(action_var._pName, ret_expr.get(lookup));
+								break;
+							}catch (Exception e){e.printStackTrace();}
+
 						case CONSENSUS : 
 							ret_value = winning_vote.containsKey( action_var ) ? 
 									winning_vote.get( action_var ) : def_val;
 							break;
 
 							case ROOT_CONSENSUS:
+								try{
 								if(decision_value ==0){
 									lookup = action_var
 										.addTerm(TIME_PREDICATE, constants, objects)
@@ -1380,12 +1432,7 @@ public class HOPTranslate extends Translate {
 								break;
 
 
-							}
-
-
-
-
-
+							}}catch (Exception e){e.printStackTrace();}
 						default : try{
 								throw new Exception("unknown hindisght strategy");
 							}catch( Exception exc ){
@@ -1406,22 +1453,26 @@ public class HOPTranslate extends Translate {
 						future_TERMS.stream().forEach( new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST future_term) {
-								EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
-								.addTerm(future_PREDICATE, constants, objects)
-								.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-								.substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
-								
-								assert( ret_expr.containsKey( this_action_var ) );
-								
-								double value = ret_expr.get( this_action_var );
-								final double this_vio = Math.abs( ref_value - value );
-								
-								final Double added = new Double( this_vio );
-								assert( added != null );
-								
-								synchronized( violations ){
-									violations.add( added );
-								}
+								try {
+									EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
+											.addTerm(future_PREDICATE, constants, objects)
+											.substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
+											.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+
+									assert (ret_expr.containsKey(this_action_var));
+
+									double value = ret_expr.get(this_action_var);
+									final double this_vio = Math.abs(ref_value - value);
+
+									final Double added = new Double(this_vio);
+									assert (added != null);
+
+									synchronized (violations) {
+										violations.add(added);
+									}
+								}catch (Exception e){e.printStackTrace();}
+
+
 							}
 						});
 					}
@@ -1530,8 +1581,8 @@ public class HOPTranslate extends Translate {
 		try{
 			System.out.println("----------------------------------------------THIS IS WERE STARTING OPTIMIZATION(HOPTranslate.java)!!!");
 
-			if(gurobi_initialization!=null)
-				setActionVariables(gurobi_initialization,static_grb_model);
+//			if(gurobi_initialization!=null)
+//				setActionVariables(gurobi_initialization,static_grb_model);
 			exit_code = goOptimize( static_grb_model);
 			
 		}

@@ -337,12 +337,12 @@ public class Client {
 				HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
 
 				long start_time = System.currentTimeMillis();
-				Integer current_lookAhead = 1;
+				Integer current_lookAhead = 5;
 
-				for(int k = 1 ; k<5 ; k++){
-					Integer u=5;
+				for(int k = 1 ; k<3 ; k++){
+					Integer u=2;
 
-					while(u < 20) {
+					while(u < 10) {
 						//Integer current_lookAhead = k;
 
 
@@ -407,11 +407,11 @@ public class Client {
 							for (int n = 0; n < exp_steps; n++) {
 
 
+								policy.runRandompolicyForState(state);
+								policy.convertNPWLtoPWL(state);
 								ArrayList<PVAR_INST_DEF> actions = policy.getActions(state);
 								System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
 
-								if (!actions.toString().equals("[]"))
-									System.out.println("dkjfkdjfkdfdf");
 
 								state.computeNextState(actions, rand);
 
@@ -501,7 +501,6 @@ public class Client {
 				System.out.println("dkjfkdjfjdkfdfkjdkfjdkjf");
 
 			}
-
 
 //			HashMap<Integer, Pair<Integer,Double>> exploration_rewards = new HashMap<>();
 //			ArrayList<Double> round_reward = new ArrayList<>();
@@ -680,7 +679,8 @@ public class Client {
 				next_look_ahead = 2;
 			}
 			else {
-				next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ; }
+				//next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ;
+				next_look_ahead = current_lookahead + 2 ;}
 		}
 		else{
 			next_look_ahead = current_lookahead;

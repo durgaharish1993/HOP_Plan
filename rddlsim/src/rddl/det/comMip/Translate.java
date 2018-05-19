@@ -362,7 +362,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 
-	protected void addAllVariables() {
+	protected void addAllVariables() throws Exception{
 		
 		BOOL_CONST_EXPR true_expr = new BOOL_CONST_EXPR(true);
 		BOOL_CONST_EXPR false_expr = new BOOL_CONST_EXPR(false);
@@ -394,7 +394,12 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 						TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST time_term ) {
-								EXPR this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), constants, objects);
+								EXPR this_t = null;
+								try {
+									this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), constants, objects);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 								synchronized( static_grb_model ){
 									try {
 										GRBVar new_var = this_t.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
@@ -856,13 +861,16 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					   public void accept( ArrayList<LCONST> term ) {
 						   EXPR expr = new PVAR_EXPR( pvar._sPVarName, term ).addTerm(TIME_PREDICATE, constants, objects);
 						
-						   EXPR subs_t = expr.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(time) ), constants, objects);
 						   try {
-								System.out.println( subs_t + "=" + EXPR.grb_cache.get( subs_t ).get( DoubleAttr.X ) );
+							   EXPR subs_t = expr.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(time) ), constants, objects);
+
+							   System.out.println( subs_t + "=" + EXPR.grb_cache.get( subs_t ).get( DoubleAttr.X ) );
 						   } catch (GRBException e) {
 								e.printStackTrace();
+						   } catch (Exception e) {
+							   e.printStackTrace();
 						   }
-						}
+					   }
 				});
 				}
 			});
@@ -880,18 +888,21 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					   public void accept( ArrayList<LCONST> term ) {
 						   EXPR expr = new PVAR_EXPR( pvar._sPVarName, term ).addTerm(TIME_PREDICATE, constants, objects);
 						
-						   EXPR subs_t = expr.substitute( 
-								   Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(time) ), constants, objects);
-						   
+
 						   try {
+							   EXPR subs_t = expr.substitute(
+									   Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(time) ), constants, objects);
+
 							   GRBVar grb_var = EXPR.grb_cache.get( subs_t );
 							   assert( grb_var != null );
 							   ret.put( subs_t, grb_var.get( DoubleAttr.X ) );
 						   } catch (GRBException e) {
 								e.printStackTrace();
 								////System.exit(1);
+						   } catch (Exception e) {
+							   e.printStackTrace();
 						   }
-						}
+					   }
 				});
 				}
 			});
@@ -993,9 +1004,16 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 				}
 
 				PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
-				EXPR non_stationary_pvar_expr = stationary_pvar_expr
-						.addTerm( TIME_PREDICATE, constants, objects )
-						.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects);
+				EXPR non_stationary_pvar_expr = null;
+				try {
+					non_stationary_pvar_expr = stationary_pvar_expr
+                            .addTerm( TIME_PREDICATE, constants, objects )
+                            .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ) , constants, objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+
 				GRBVar lhs_var = null;
 				try {
 					lhs_var = non_stationary_pvar_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
@@ -1043,7 +1061,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 	}
 
 	protected void translateCPTs(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> initState,
-			final GRBModel grb_model) throws GRBException { 
+			final GRBModel grb_model) throws GRBException {
 		System.out.println("------This is translateCPTs (Original)");
 		GRBExpr old_obj = grb_model.getObjective();
 		
@@ -1066,8 +1084,15 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					}
 					
 					Map<LVAR, LCONST> subs = getSubs( cpf._exprVarName._alTerms, terms );
-					EXPR new_lhs_stationary = cpf._exprVarName.substitute( subs, constants, objects );
-					EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+					EXPR new_lhs_stationary = null;
+					EXPR new_rhs_stationary = null;
+					try {
+						new_lhs_stationary = cpf._exprVarName.substitute( subs, constants, objects );
+						new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					for( int t = 0 ; t < lookahead; ++t ){
 						
 						EXPR new_lhs_non_stationary = null;
@@ -1078,17 +1103,19 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 								continue;
 							}
 							//FIXME : stationarity assumption
-							new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
-									.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t+1) ), constants, objects);
+
 							try {
+								new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
+										.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t+1) ), constants, objects);
 								lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}else {
-							new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
-									.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects);
+
 							try {
+								new_lhs_non_stationary = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
+										.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects);
 								lhs_var = new_lhs_non_stationary.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -1096,10 +1123,12 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 						}
 						
 						//FIXME : stationarity assumption
-						EXPR new_rhs_non_stationary = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
-								.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects );
+
 						GRBVar rhs_var = null;
+						EXPR new_rhs_non_stationary  = null ;
 						try {
+							new_rhs_non_stationary = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects )
+									.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects );
 							rhs_var = new_rhs_non_stationary.getGRBConstr(GRB.EQUAL,  grb_model, constants, objects, type_map);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -1848,9 +1877,14 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 				entry.getValue().parallelStream().forEach( new Consumer< ArrayList<LCONST> >() {
 					@Override
 					public void accept(ArrayList<LCONST> terms ) {
-						final EXPR lookup = new PVAR_EXPR( pvar._sPVarName, terms )
-							.addTerm(TIME_PREDICATE, constants, objects)
-							.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects);
+						EXPR lookup=null ;
+						try {
+							lookup = new PVAR_EXPR( pvar._sPVarName, terms )
+                                .addTerm(TIME_PREDICATE, constants, objects)
+                                .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						assert( ret_expr.containsKey( lookup ) );
 						
 						Object value = sanitize( pvar, ret_expr.get( lookup ) );
@@ -2404,29 +2438,30 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 	protected void checkNonLinearExpressions(final State rddl_state) throws Exception {
 		//Clear the things
+		//This stores the non-PWL-EXPR's as a global variable.
 		not_pwl_expr.clear();
 
 
 
-		//This is for Constraints
-		ArrayList<BOOL_EXPR> constraints = new ArrayList<>();
-
-		constraints.addAll(rddl_state._alActionPreconditions); constraints.addAll(rddl_state._alStateInvariants);
-
-
-		//Need to Handle for Action Constraints and State Invariants.
-//		for(BOOL_EXPR e : constraints){
+//		//This is for Constraints
+//		ArrayList<BOOL_EXPR> constraints = new ArrayList<>();
 //
-//			System.out.println("dkfjdkjfkd");
+//		constraints.addAll(rddl_state._alActionPreconditions); constraints.addAll(rddl_state._alStateInvariants);
 //
 //
+//		//Need to Handle for Action Constraints and State Invariants.
+////		for(BOOL_EXPR e : constraints){
+////
+////			System.out.println("dkfjdkjfkd");
+////
+////
+////
+////		}
+////
 //
-//		}
 //
-
-
-
-		//This is for State_vars, Interm_vars, Observ_vars.
+//
+//		//This is for State_vars, Interm_vars, Observ_vars.
 		ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> pvar_variables = new ArrayList<>();
 
 		pvar_variables.add(rddl_state_vars); pvar_variables.add(rddl_interm_vars); pvar_variables.add(rddl_observ_vars);
@@ -2462,9 +2497,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					//new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
 					if(SHOW_PWL_NON_PWL)
 						System.out.println(cpf._exprEquals.toString());
-
-
-
 					Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects).isPiecewiseLinear(constants,objects);
 					if(SHOW_PWL_NON_PWL)
 						System.out.println(check_PWL);
@@ -2474,52 +2506,23 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 							not_pwl_expr.add(cpf._exprEquals);
 
 						}
-
-
-
 						EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects), raw_terms);
-
-
-
 						//This is Getting Condition.
-
 						BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
 
 						for(int i=0;i<terms.size();i++){
-
 							BOOL_EXPR cur_cond_statement = conditional_state;
-
 							RDDL.COMP_EXPR temp_expr = new RDDL.COMP_EXPR(raw_terms.get(i), terms.get(i), "==");
-
 							conditional_state = new RDDL.CONN_EXPR(cur_cond_statement,temp_expr,"^");
-
-
-
-
-						}
-
-
+							}
 						final_pwl_true.add(final_expr);
 						final_pwl_cond.add(conditional_state);
-
-
 					}
-
-
-
 				}
-
 				EXPR ifelse_expr = new BOOL_CONST_EXPR(true);
 				if(!final_pwl_cond.isEmpty()){
-
 					ifelse_expr = recursiveAdditionIfElse(final_pwl_cond,final_pwl_true,1);
-
 					replace_cpf_pwl.put(p,ifelse_expr); }
-
-
-
-
-
 			}
 		}
 
@@ -3037,7 +3040,6 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 
-
 	// This is added by Harish.
 	public void dispose_Gurobi() throws GRBException {
 
@@ -3059,6 +3061,63 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 
 
 	}
+
+//
+//
+////	public boolean pvar_stochastic(EXPR e){
+////
+////		if( e instanceof RDDL.Bernoulli){
+////
+////		}
+////		else if(e instanceof RDDL.Poisson){
+////
+////		}
+////		else if(e instanceof RDDL.DiracDelta){
+////
+////		}
+////		else if(e instanceof RDDL.Normal){
+////
+////		}
+////		else if(e instanceof RDDL.Dirichlet){
+////
+////
+////
+////		}
+//
+//	}
+
+
+
+//
+//	public void get_stochastic_pvars(State s){
+//
+//
+//		for(PVAR_NAME pvar : s._hmCPFs.keySet()){
+//
+//
+//			EXPR e =s._hmCPFs.get(pvar)._exprEquals;
+//			if(pvar_stochastic(e)){
+//
+//
+//			}
+//
+//
+//
+//
+//
+//		}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//	}
 
 
 
