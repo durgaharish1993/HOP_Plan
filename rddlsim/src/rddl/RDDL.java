@@ -5249,7 +5249,6 @@ public class RDDL {
 				EXPR expanded = expandArithmeticQuantifier(constants, objects);
 				return expanded.substitute(subs, constants, objects);
 			}
-            throw new Exception("Not able to expand"+ toString());
 		}
 
 		public String toString() {
