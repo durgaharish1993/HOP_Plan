@@ -5246,6 +5246,7 @@ public class RDDL {
 					return unexpanded; //.substitute(subs, constants, objects);
 				}
 			}catch( Exception exc ){
+				exc.printStackTrace();
 				EXPR expanded = expandArithmeticQuantifier(constants, objects);
 				return expanded.substitute(subs, constants, objects);
 			}
