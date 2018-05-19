@@ -4705,7 +4705,7 @@ public class RDDL {
 
 		private EXPR reduce( final EXPR e1_sub, final EXPR e2_sub, final String op,
 							 final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							 final Map< TYPE_NAME, OBJECTS_DEF > objects ) throws Exception  {
+							 final Map< TYPE_NAME, OBJECTS_DEF > objects ) {
 			try{
 				final boolean e1_const = e1_sub.isConstant( constants , objects);
 				final boolean e2_const = e2_sub.isConstant( constants , objects );
@@ -4769,12 +4769,7 @@ public class RDDL {
 					case "/" : return new REAL_CONST_EXPR(1d);
 				}
 			}
-			try {
-				return new OPER_EXPR( e1_sub, e2_sub, _op );
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw e;
-			}
+			return new OPER_EXPR( e1_sub, e2_sub, _op );
 		}
 
 		public OPER_EXPR(EXPR e1, EXPR e2, String op) {
