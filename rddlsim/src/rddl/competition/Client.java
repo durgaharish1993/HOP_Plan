@@ -133,6 +133,16 @@ public class Client {
 		clientName = args[2];
 		port = Integer.valueOf(args[4]);
 		final String instanceName = args[6];
+		String planner_class   = args[3];
+		String Instance_name   = args[6];
+		String n_lookahead     = args[7];
+		String n_futures       = args[8];
+		String gurobi_timeout  = args[9];
+		String future_sampling = args[10];
+		String hindsight_stra  = args[11];
+
+
+
 		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(args).subList(7,args.length-2));
 
 		double timeLeft = 0;
@@ -183,7 +193,7 @@ public class Client {
 
 			///################################################################################################################
 			// Cannot assume always in rddl.policy
-			Class c = Class.forName(args[3]);
+			Class c = Class.forName(planner_class);
 			if ( args.length > 4 ) {
 				port = Integer.valueOf(args[4]);
 			}
@@ -216,11 +226,19 @@ public class Client {
 			////////////////////////////////////////////////////////////////
 			//This is for exploration.
 			Policy policy = null;
+
+//			Integer n_futures, Integer n_lookahead, String inst_name, String gurobi_timeout,
+//					String future_gen_type,String hindsight_strat, RDDL rddl_object, State s
+//
 			policy = (Policy)c.getConstructor(
-					new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
+					new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
+					Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
 			policy.setRDDL(rddl);
 			policy.setRandSeed(randomSeed);
-			Pair<Integer,Integer> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME, instanceName, parameters);
+
+			Pair<Integer,Integer> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME,instanceName,Integer.valueOf(n_futures),
+					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
+
 			////////////////////////////////////////////////////////////////
 			parameters.set(2, best_parameters._o1.toString()); // this is for setting lookahead
 			parameters.set(5, best_parameters._o2.toString());
