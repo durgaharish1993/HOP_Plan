@@ -19,19 +19,19 @@ domain crossing_traffic_demo_mdp {
 
     pvariables {
         // non-fluents
-        NORTH(ypos, ypos)            : {non-fluent, bool, default = false};
-        SOUTH(ypos, ypos)            : {non-fluent, bool, default = false};
-        EAST(xpos, xpos)             : {non-fluent, bool, default = false};
-        WEST(xpos, xpos)             : {non-fluent, bool, default = false};
-        GOAL(xpos,ypos)              : {non-fluent, bool, default = false};
-        INPUT-RATE(ypos)             : {non-fluent, real, default = 0};
+        NORTH(ypos, ypos)       : {non-fluent, bool, default = false};
+        SOUTH(ypos, ypos)       : {non-fluent, bool, default = false};
+        EAST(xpos, xpos)        : {non-fluent, bool, default = false};
+        WEST(xpos, xpos)        : {non-fluent, bool, default = false};
+        GOAL(xpos,ypos)         : {non-fluent, bool, default = false};
+        INPUT-RATE(ypos)        : {non-fluent, real, default = 0.2};
 
         // state-fluents
-        agent-at(xpos, ypos)         : {state-fluent, bool, default = false};
-        obstacle-at(xpos, ypos)      : {state-fluent, bool, default = false};
+        agent-at(xpos, ypos)    : {state-fluent, bool, default = false};
+        obstacle-at(xpos, ypos) : {state-fluent, bool, default = false};
 
         // action-fluents
-        move(xpos, ypos)             : {action-fluent, bool, default = false};
+        move(xpos, ypos)        : {action-fluent, bool, default = false};
     };
 
     cpfs {
@@ -59,16 +59,15 @@ domain crossing_traffic_demo_mdp {
     action-preconditions {
         // only allow movement to adjacent cells
         forall_{?x  : xpos, ?y : ypos}
-            [ (move(?x, ?y)) => (exists_{?x2 : xpos, ?y2 : ypos}
+            [ move(?x, ?y) => exists_{?x2 : xpos, ?y2 : ypos}
                 [ agent-at(?x2, ?y2) &
                   (( NORTH(?y, ?y2) & ?x == ?x2 ) |
                    ( SOUTH(?y, ?y2) & ?x == ?x2 ) |
                    ( EAST(?x, ?x2) & ?y == ?y2 ) |
-                   ( WEST(?x, ?x2) & ?y == ?y2 ))]) ];
-
+                   ( WEST(?x, ?x2) & ?y == ?y2 ))]];
 
         // do not allow to move once the goal is reached
-        forall_{?x : xpos, ?y : ypos} [ (move(?x, ?y)) => (~exists_{?x2 : xpos, ?y2 : ypos} [ agent-at(?x2,?y2) & GOAL(?x2,?y2) ]) ];
+        forall_{?x : xpos, ?y : ypos} [ move(?x, ?y) => (~exists_{?x2 : xpos, ?y2 : ypos} [ agent-at(?x2,?y2) & GOAL(?x2,?y2) ]) ];
 
         // no concurrency (this replaces the max-nondef-actions entry in the instance specification)
         (sum_{?x : xpos, ?y : ypos} [ move(?x,?y) ]) <= 1;

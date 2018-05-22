@@ -28,7 +28,7 @@ instance crossing_traffic_demo_inst_mdp__1 {
         GOAL(x3,y3);
 
         INPUT-RATE(y1) = 0;
-        INPUT-RATE(y2) = 0;
+        INPUT-RATE(y2) = 0.3;
         INPUT-RATE(y3) = 0;
     };
 

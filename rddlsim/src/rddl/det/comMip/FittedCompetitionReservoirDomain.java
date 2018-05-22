@@ -821,6 +821,7 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
 
 
                     rddl_state.computeNextState(rddl_action, rand);
+                    rddl_state.advanceNextState();
 
 
 
@@ -1033,6 +1034,214 @@ public class FittedCompetitionReservoirDomain extends HOPTranslate {
 
 
     }
+
+
+
+
+    public Pair<Integer,Integer> CompetitionExploarationPhase(String rddl_filepath, String instanceName, ArrayList<String> parameters) throws Exception{
+
+
+        ////////////////////////////////////////////////////////////////////////////
+        long start_time = System.currentTimeMillis();
+        RDDL rddl = null;
+        RDDL.DOMAIN domain = null;
+        RDDL.INSTANCE instance = null;
+        State state = null;
+        RDDL.NONFLUENTS nonFluents = null;
+        ////////////////////////////////////////////////////////////////////////////
+
+        Integer exp_steps = 8;
+        Integer exp_rounds =10;
+        HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
+        Integer current_lookAhead = 5;
+        Integer START_FUTURE_VALUE = 5;
+        Integer FUTURE_VALUE = 5;
+        ////////////////////////////////////////////////////////////////////////////
+
+        boolean EXPLORATION = true;
+        int best_lookahead = Integer.MAX_VALUE;
+        int best_future    = Integer.MAX_VALUE;
+        //This one is for lookahead value.
+        for(int lookahead_Iteration = 1 ; lookahead_Iteration<3 ; lookahead_Iteration++){
+            //This is the starting value of future.
+            FUTURE_VALUE = START_FUTURE_VALUE;
+            while(FUTURE_VALUE < 6) {
+                ////////////////////////////////////////////////////////////////////////////
+                rddl = new RDDL(rddl_filepath);
+                state = new State();
+                instance = rddl._tmInstanceNodes.get(instanceName);
+                if (instance._sNonFluents != null) {
+                    nonFluents = rddl._tmNonFluentNodes.get(instance._sNonFluents);
+                }
+                domain = rddl._tmDomainNodes.get(instance._sDomain);
+
+                state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
+                        domain._hmTypes, domain._hmPVariables, domain._hmCPF,
+                        instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
+                        domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
+                        domain._exprReward, instance._nNonDefActions);
+
+                // If necessary, correct the partially observed flag since this flag determines what content will be seen by the Client
+                if ((domain._bPartiallyObserved && state._alObservNames.size() == 0)
+                        || (!domain._bPartiallyObserved && state._alObservNames.size() > 0)) {
+                    boolean observations_present = (state._alObservNames.size() > 0);
+                    System.err.println("WARNING: Domain '" + domain._sDomainName
+                            + "' partially observed (PO) flag and presence of observations mismatched.\nSetting PO flag = " + observations_present + ".");
+                    domain._bPartiallyObserved = observations_present;
+                }
+
+                ///################################################################################################################
+
+                //This is to set lookahead value and future value.
+                parameters.set(2, current_lookAhead.toString()); // this is for setting lookahead
+                parameters.set(5, FUTURE_VALUE.toString());     // this is for setting futures.
+
+                FittedCompetitionReservoirDomain explo_planner  = new FittedCompetitionReservoirDomain(parameters,rddl,state);
+
+                setRDDL(rddl);
+                Double average_round_reward = 0.0;
+                ////////////////////////////////////////////////////////////////////////////
+
+                for (int j = 0; j < exp_rounds; j++) {
+                    state.init(domain._hmObjects, nonFluents != null ? nonFluents._hmObjects : null, instance._hmObjects,
+                            domain._hmTypes, domain._hmPVariables, domain._hmCPF,
+                            instance._alInitState, nonFluents == null ? new ArrayList<PVAR_INST_DEF>() : nonFluents._alNonFluents, instance._alNonFluents,
+                            domain._alStateConstraints, domain._alActionPreconditions, domain._alStateInvariants,
+                            domain._exprReward, instance._nNonDefActions);
+
+                    Double round_reward = 0.0;
+                    ArrayList<PVAR_INST_DEF> round_best_action = new ArrayList<>();
+                    Double max_step_reward = -Double.MAX_VALUE;
+
+                    //This is for sequential Steps..
+                    for (int n = 0; n < exp_steps; n++) {
+
+                        //This is to check if there are any NPWL expression.  If there are no,then DO_NWPL_PWL will be false.
+                        explo_planner.DO_NPWL_PWL = false;
+                        if(explo_planner.DO_NPWL_PWL){
+                            //This code is for random action
+                            explo_planner.runRandompolicyForState(state);
+                            //Convert NPWL to PWL
+                            explo_planner.convertNPWLtoPWL(state);
+
+                        }
+                        ArrayList<PVAR_INST_DEF> actions = explo_planner.getActions(state);
+                        System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
+
+                        state.checkActionConstraints(actions);
+                        state.computeNextState(actions, rand);
+                        final double immediate_reward = ((Number) domain._exprReward.sample(
+                                new HashMap<RDDL.LVAR, LCONST>(), state, rand)).doubleValue();
+                        state.advanceNextState();
+                        round_reward += immediate_reward;
+                        if (immediate_reward > max_step_reward) {
+                            round_best_action = actions;
+                            max_step_reward = immediate_reward;
+                            gurobi_initialization = round_best_action;
+                        }
+                    }
+                    average_round_reward += round_reward;
+                }
+                exploration_rewards.put(new Pair<>(current_lookAhead, FUTURE_VALUE), average_round_reward / exp_rounds);
+                explo_planner.dispose_Gurobi();
+                long endtime = System.currentTimeMillis();
+                FUTURE_VALUE = getFutureValue(FUTURE_VALUE,true); //Double.valueOf(Math.pow(FUTURE_VALUE,2)).intValue();
+            }
+            current_lookAhead=getLookAheadValue(current_lookAhead,true);
+        }
+        Double max_reward = -Double.MAX_VALUE;
+
+        //This piece of code is to get the best lookahead and future pair.
+        HashMap<Pair<Integer,Integer>,Double> equal_rewards = new HashMap<>();
+        for(Pair<Integer,Integer> key : exploration_rewards.keySet()){
+            if(exploration_rewards.get(key)>=max_reward){
+                if(exploration_rewards.get(key).equals(max_reward)){ equal_rewards.put(key,max_reward); }
+                else{ max_reward = exploration_rewards.get(key);if(equal_rewards!=null){equal_rewards.clear();}
+                    equal_rewards.put(key,max_reward); }
+            }
+        }
+        for(Pair<Integer,Integer> key : equal_rewards.keySet()){
+            if(key._o1 < best_lookahead){
+                best_lookahead = key._o1;
+                best_future    = key._o2;
+            }
+        }
+
+
+
+        return new Pair<Integer, Integer>(best_lookahead,best_future);
+
+
+
+
+    }
+
+
+
+    static Integer getLookAheadValue(Integer current_lookahead, Boolean change){
+
+
+        Integer next_look_ahead = current_lookahead;
+        if(change){
+            if(current_lookahead==1){
+                next_look_ahead = 2;
+            }
+            else {
+                //next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ;
+                next_look_ahead = current_lookahead + 2 ;}
+        }
+        else{
+            next_look_ahead = current_lookahead;
+        }
+
+        return next_look_ahead;
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+    static Integer getFutureValue(Integer current_future, Boolean change){
+
+
+        Integer next_future_value = current_future;
+        if(change){
+            if(current_future==1){
+                next_future_value = 2;
+            }
+            else {
+                //next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ;
+                next_future_value = current_future + 2 ;}
+        }
+        else{
+            next_future_value = current_future;
+        }
+
+        return next_future_value;
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
 
 //    public static void main(String[] args) throws Exception {
 //        System.out.println( Arrays.toString( args ) );

@@ -2494,30 +2494,39 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 					Map<LVAR,LCONST> subs1 = getSubs( cpf._exprVarName._alTerms, terms );
 
 
-					//new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
-					if(SHOW_PWL_NON_PWL)
-						System.out.println(cpf._exprEquals.toString());
-					Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects).isPiecewiseLinear(constants,objects);
-					if(SHOW_PWL_NON_PWL)
-						System.out.println(check_PWL);
-					if(!check_PWL){
+					try{
 
-						if(!not_pwl_expr.contains(cpf._exprEquals)){
-							not_pwl_expr.add(cpf._exprEquals);
+						//new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
+						if(SHOW_PWL_NON_PWL)
+							System.out.println(cpf._exprEquals.toString());
+						Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects).sampleDeterminization(rand,constants,objects).isPiecewiseLinear(constants,objects);
+						if(SHOW_PWL_NON_PWL)
+							System.out.println(check_PWL);
+						if(!check_PWL){
 
-						}
-						EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects), raw_terms);
-						//This is Getting Condition.
-						BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
+							if(!not_pwl_expr.contains(cpf._exprEquals)){
+								not_pwl_expr.add(cpf._exprEquals);
 
-						for(int i=0;i<terms.size();i++){
-							BOOL_EXPR cur_cond_statement = conditional_state;
-							RDDL.COMP_EXPR temp_expr = new RDDL.COMP_EXPR(raw_terms.get(i), terms.get(i), "==");
-							conditional_state = new RDDL.CONN_EXPR(cur_cond_statement,temp_expr,"^");
 							}
-						final_pwl_true.add(final_expr);
-						final_pwl_cond.add(conditional_state);
+							EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects), raw_terms);
+							//This is Getting Condition.
+							BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
+
+							for(int i=0;i<terms.size();i++){
+								BOOL_EXPR cur_cond_statement = conditional_state;
+								RDDL.COMP_EXPR temp_expr = new RDDL.COMP_EXPR(raw_terms.get(i), terms.get(i), "==");
+								conditional_state = new RDDL.CONN_EXPR(cur_cond_statement,temp_expr,"^");
+							}
+							final_pwl_true.add(final_expr);
+							final_pwl_cond.add(conditional_state);
+						}
+
+
+					}catch (Exception e){
+						e.printStackTrace();
 					}
+
+
 				}
 				EXPR ifelse_expr = new BOOL_CONST_EXPR(true);
 				if(!final_pwl_cond.isEmpty()){

@@ -543,7 +543,7 @@ public class State {
 						return false;
 
 
-					//throw new EvalException("Violated state invariant or action precondition constraint: " + constraint + "\n**in state**\n" + this);
+					throw new EvalException("Violated state invariant or action precondition constraint: " + constraint + "\n**in state**\n" + this);
 			} catch (NullPointerException e) {
 				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;

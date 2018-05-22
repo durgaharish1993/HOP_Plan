@@ -15,6 +15,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 
 import rddl.*;
 import rddl.RDDL.*;
+import util.Pair;
 
 public abstract class Policy {
 	
@@ -26,6 +27,7 @@ public abstract class Policy {
 	public int lookahead;
 	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
 	public double TIME_LIMIT_MINS = 10;
+	public Boolean DO_NPWL_PWL = true;
 
 	public Policy() {
 		
@@ -100,6 +102,10 @@ public abstract class Policy {
 	public void dispose_Gurobi() throws GRBException {}
 
 
+
+	public Pair<Integer,Integer> CompetitionExploarationPhase(String rddl_filepath, String instanceName, ArrayList<String> parameters) throws Exception{
+		return new Pair<>(4,5);
+	}
 
 
 	
