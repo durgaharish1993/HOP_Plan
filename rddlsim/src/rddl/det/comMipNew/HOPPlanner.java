@@ -825,10 +825,6 @@ public class HOPPlanner extends Policy {
                             System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<This is stochastic Pvar ---------->>>>>>>>>> : " + p._sPVarName);
                             return;
                         }
-
-
-
-
                         //these are deterministic/known world model
                         entry.getValue().stream().forEach( new Consumer< ArrayList<LCONST> >() {
                             @Override
@@ -844,21 +840,39 @@ public class HOPPlanner extends Policy {
                                     } else {
                                         cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName));
                                     }
-
-
                                     Map<LVAR, LCONST> subs = getSubs(cpf._exprVarName._alTerms, terms);
-                                    EXPR new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects);
-                                    EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
-                                    //This piece of code is for replacing Non-pwl to PWL.
-//								if(replace_cpf_pwl.containsKey(p)){
-//
-//									new_rhs_stationary = replace_cpf_pwl.get(p).substitute(subs,constants,objects);
-//
-//								}
+                                    EXPR new_lhs_stationary = null;
+                                    EXPR new_rhs_stationary = null;
 
+                                    //old implementation.
+                                    //EXPR new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects);
+                                    //EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+                                    if(TIME_FUTURE_CACHE_USE){
 
-                                    //This is Changed by HARISH.
-                                    //System.out.println(new_lhs_stationary + " " + new_rhs_stationary);
+                                        EXPR e_lhs = cpf._exprVarName;
+                                        EXPR e_rhs = cpf._exprEquals;
+                                        Pair<String,String> key_lhs = new Pair(e_lhs.toString(),subs.toString());
+                                        //Substitute_expression_cache --> stores substituted_expressions --> Key is a Pair<Expression,subs> --> value is substitutued Expression.
+                                        if(substitute_expression_cache.containsKey(key_lhs)){
+                                            new_lhs_stationary = substitute_expression_cache.get(key_lhs);
+                                        }else{
+                                            new_lhs_stationary = e_lhs.substitute(subs, constants, objects);
+                                            substitute_expression_cache.put(key_lhs,new_lhs_stationary);
+                                        }
+
+                                        Pair<String,String> key_rhs = new Pair(e_rhs.toString(),subs.toString());
+                                        if(substitute_expression_cache.containsKey(key_rhs)){
+                                            new_rhs_stationary = substitute_expression_cache.get(key_rhs);
+                                        }else{
+                                            new_rhs_stationary = e_rhs.substitute(subs, constants, objects);
+                                            substitute_expression_cache.put(key_rhs,new_lhs_stationary);
+                                        }
+                                    }else{
+                                         new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects);
+                                         new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+
+                                    }
+
 
                                     EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
                                             .addTerm(future_PREDICATE, constants, objects);
@@ -892,7 +906,6 @@ public class HOPPlanner extends Policy {
                                                                     Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
                                                             EXPR rhs = rhs_with_f.substitute(
                                                                     Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
-
                                                             EXPR lhs_future = future_gen.getFuture(lhs, rand, constants, objects);
                                                             EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects);
 
@@ -912,7 +925,6 @@ public class HOPPlanner extends Policy {
                                                                 //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                 final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
 //														System.out.println(nam);;
-
                                                                 GRBConstr this_constr
                                                                         = static_grb_model.addConstr(lhs_var, GRB.EQUAL, rhs_var, nam);
                                                                 saved_constr.add(this_constr);
