@@ -7241,6 +7241,7 @@ public class RDDL {
 						&& _expr.equals( q._expr )
 						&& _alVariables.equals( q._alVariables );
 			}
+			return false;
 		}
 
 		@Override
