@@ -980,7 +980,6 @@ public class HOPPlanner extends Policy {
                             temp_expr = e.substitute(Collections.EMPTY_MAP, constants, objects);
                             substitute_expression_cache.put(key,temp_expr);
                         }
-
                         assert temp_expr!=null;
                         final_expr = temp_expr.addTerm(TIME_PREDICATE, constants, objects)
                                 .addTerm(future_PREDICATE, constants, objects);
@@ -2423,7 +2422,7 @@ public class HOPPlanner extends Policy {
                         ArrayList<PVAR_INST_DEF> actions = explo_planner.getActions(state);
                         System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
 
-                        state.checkActionConstraints(actions);
+                        //state.checkActionConstraints(actions);
                         state.computeNextState(actions, rand);
                         final double immediate_reward = ((Number) domain._exprReward.sample(
                                 new HashMap<RDDL.LVAR, LCONST>(), state, rand)).doubleValue();
