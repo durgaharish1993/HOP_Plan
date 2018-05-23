@@ -7647,9 +7647,8 @@ public class RDDL {
 									return m.isConstant(constants, objects)
 										&& m.getDoubleValue(constants, objects) == 0d;
 								} catch (Exception e) {
-									return false;
-//									e.printStackTrace();
-//									throw new RuntimeException(e);
+									e.printStackTrace();
+									throw new RuntimeException(e);
 								}
 							});
 				case "|" :
