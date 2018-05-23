@@ -5605,22 +5605,20 @@ public class RDDL {
             }
             //This one filters out ?time,?future, $time1, $future20
 			ArrayList<LTERM> terms = new ArrayList<>();
-            for(int i=0;i<_alTerms.size();i++){
+            for(int i=0; i<_alTerms.size(); ++i){
 		    	LTERM x = _alTerms.get(i);
 		    	if(x instanceof LVAR){
-		    		if( !((LVAR)x)._sVarName.equals(TIME_PREDICATE._sVarName) & !((LVAR)x)._sVarName.equals(FUTURE_PREDICATE._sVarName))
+		    		if( !((LVAR)x)._sVarName.equals(TIME_PREDICATE._sVarName) 
+		    				&& !((LVAR)x)._sVarName.equals(FUTURE_PREDICATE._sVarName))
 		    			terms.add(x);
 				}else if(x instanceof LCONST){
-		    		if( !((LCONST) x)._sConstValue.matches(".*(time|future).*"))
+		    		if( !((LCONST) x)._sConstValue.startsWith("$future") 
+		    				&& !((LCONST) x)._sConstValue.startsWith("$time"))
 		    			terms.add(x);
 				}
 			}
-//			ArrayList<LTERM> terms = new ArrayList<LTERM>(_alTerms.stream().filter(x->x instanceof LVAR)
-//					.filter(x-> (!((LVAR)x)._sVarName.equals(TIME_PREDICATE._sVarName) & !((LVAR)x)._sVarName.equals(FUTURE_PREDICATE._sVarName)))
-//					.collect(Collectors.toList()));
 
-
-            Object lookup = constants.get( _pName ).get( _alTerms );
+            Object lookup = constants.get( _pName ).get( terms );
 		    if( lookup instanceof Boolean ){
 				return new BOOL_CONST_EXPR( (boolean)lookup );
 			}else if( lookup instanceof Integer ){
@@ -5638,8 +5636,6 @@ public class RDDL {
 					throw exc;
 				}
 			}
-
-
 		}
 
 		public PVAR_EXPR(String s, ArrayList terms) {
@@ -7083,17 +7079,6 @@ public class RDDL {
 			}
 		}
 
-/*		This is Old Code.  .
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
-			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.sampleDeterminization(rand) );
-		}
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-			return new QUANT_EXPR( _sQuantType, _alVariables, _expr.getMean(objects) );
-		}*/
-
 		public QUANT_EXPR(String quant, ArrayList vars, BOOL_EXPR expr ) {
 			assert (quant.equals(EXISTS) || quant.equals(FORALL));
 			_sQuantType = quant.intern();
@@ -7133,18 +7118,13 @@ public class RDDL {
 				if( _alVariables.size() == 0 ){
 					return _expr.hashCode();
 				}
-				return Objects.hash( "Quant_Expr", _sQuantType, _alVariables, _expr );
 			}
-
 			return Objects.hash( "Quant_Expr", _sQuantType, _alVariables, _expr );
-
 		}
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-
 			try{
 				assert (isConstant(constants, objects));
 				return _expr.getDoubleValue(constants, objects);
@@ -7153,10 +7133,6 @@ public class RDDL {
 				assert( result.isConstant(constants, objects ) );
 				return result.getDoubleValue(constants, objects );
 			}
-
-
-
-
 		}
 
 		@Override
@@ -7174,10 +7150,9 @@ public class RDDL {
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
-			if( _expandCache.containsKey(this.toString()) ){
-				return _expandCache.get(this.toString());
+			if( _expandCache.containsKey(new Pair<>(this.toString(), _alVariables)) ){
+				return _expandCache.get(new Pair<>(this.toString(), _alVariables));
 			}
-
 
 			List<BOOL_EXPR> terms = expandQuantifier( _expr, _alVariables, objects, constants )
 					.stream().map( new Function<EXPR, BOOL_EXPR>() {
@@ -7203,7 +7178,7 @@ public class RDDL {
 			CONN_EXPR result;
 			try {
 				result = new CONN_EXPR( new ArrayList<>( terms ), type );
-				_expandCache.put(this.toString(), result);
+				_expandCache.put(new Pair<>(this.toString(), _alTerms), result);
 				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -7214,15 +7189,13 @@ public class RDDL {
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
-			return _expr.isConstant(constants, objects);
-//			if( inner_const ){
-//				return true;
-//			}
-//			this is too expensive
-//			if( objects != null ){
-//				return expandBooleanQuantifier( constants, objects ).isConstant(constants, objects);
-//			}
-//			return false;
+			try{
+				return _expr.isConstant(constants, objects);
+			}catch(Exception exc){
+				exc.printStackTrace();
+				expanded = expandBooleanQuantifier(constants, objects);
+				return expanded.isConstant(constants, objects);
+			}
 		}
 
 		@Override
@@ -7261,18 +7234,14 @@ public class RDDL {
 				if( _alVariables.size() == 0 ){
 					return _expr.equals(obj);
 				}
-
 				if( obj instanceof QUANT_EXPR ){
 					QUANT_EXPR q = (QUANT_EXPR)obj;
 					return _sQuantType.equals( q._sQuantType )
 							&& _expr.equals( q._expr )
 							&& _alVariables.equals( q._alVariables );
 				}
-				return false;
 			}
-
 			return false;
-
 		}
 
 		@Override
@@ -7284,14 +7253,10 @@ public class RDDL {
 					return new REAL_CONST_EXPR(getDoubleValue(constants, objects));
 				}
 			}catch (Exception e){
-					e.printStackTrace();
-
-				}
-
+				e.printStackTrace();
+			}
 
 			try{
-				//assert( isPiecewiseLinear( constants, objects ) );
-
 				List<EXPR> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects ) )
 						.collect( Collectors.toList() );
 				final List<LTYPED_VAR> al_new_terms = new_terms.stream()
@@ -7301,14 +7266,13 @@ public class RDDL {
 				EXPR inner_sub = _expr.substitute(subs, constants, objects);
 				if(al_new_terms.isEmpty()){
 					return inner_sub;
-				}else {
-					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType, new ArrayList<>(al_new_terms), inner_sub);
+				} else {
+					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType, 
+							new ArrayList<>(al_new_terms), inner_sub);
 					//EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
 					return unexpanded; //expanded.substitute(subs, constants, objects);
 				}
-
 			} catch (Exception e) {
-
 				e.printStackTrace();
 				throw e;
 			}
@@ -7454,7 +7418,6 @@ public class RDDL {
 				subs.remove(_alVariables.get(i)._sVarName);
 			}
 		}
-
 	}
 
 	// TODO: should never put a RandomDataGenerator variable directly under a connective,
@@ -7506,36 +7469,6 @@ public class RDDL {
 						}
 					}).collect( Collectors.toList() ) ), _sConn );
 		}
-
-/*       This is Old Code... .. ... .
-
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception{
-			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
-					_alSubNodes.stream().map( m -> {
-						try {
-							return (BOOL_EXPR) m.sampleDeterminization(rand);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					})
-							.collect( Collectors.toList() ) ), _sConn );
-		}
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
-					_alSubNodes.stream().map(m -> {
-						try {
-							return ((BOOL_EXPR)m.getMean(objects));
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					}).collect(Collectors.toList() ) ), _sConn );
-		}
-*/
 
 		public CONN_EXPR(EXPR b1, EXPR b2, String conn) throws Exception {
 			this((BOOL_EXPR)b1, (BOOL_EXPR)b2, conn); // PARSER RESTRICTION
@@ -7656,9 +7589,8 @@ public class RDDL {
 	                                    m.getDoubleValue(constants, objects) == 1d );
 							} catch (Exception e) {
 								e.printStackTrace();
+								return false;
 							}
-							//this is changed by Harish.
-							return false;
 						}).collect( Collectors.toList() ) );
 						//remove duplicates
 						_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
@@ -7702,8 +7634,9 @@ public class RDDL {
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new RuntimeException(e);
-				}}) ){
-				return true;
+				}
+			   }) ){
+					return true;
 			}
 
 			switch( _sConn ){
@@ -7811,9 +7744,7 @@ public class RDDL {
 				if( _alSubNodes.size() == 1 ){
 					return _alSubNodes.get(0).hashCode();
 				}
-				return Objects.hash( "Conn_Expr", _sConn, Objects.hash(_alSubNodes) );
 			}
-
 			return Objects.hash( "Conn_Expr", _sConn, Objects.hash(_alSubNodes) );
 		}
 
@@ -7909,10 +7840,10 @@ public class RDDL {
 				}).map(m -> {
 					try {
 						return m.isConstant(constants, objects) ?
-                                new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects) == 1d ? true : false ) : (BOOL_EXPR)m;
+                            new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects) == 1d ? true : false ) : (BOOL_EXPR)m;
 					} catch (Exception e) {
 						e.printStackTrace();
-						throw new RuntimeException(e);
+						return m;
 					}
 				}).collect(Collectors.toList());
 			try {
