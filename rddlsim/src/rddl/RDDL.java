@@ -7231,17 +7231,16 @@ public class RDDL {
                 }
 			} catch (Exception e) {
 				e.printStackTrace();
-				if( _alVariables.size() == 0 ){
-					return _expr.equals(obj);
-				}
-				if( obj instanceof QUANT_EXPR ){
-					QUANT_EXPR q = (QUANT_EXPR)obj;
-					return _sQuantType.equals( q._sQuantType )
-							&& _expr.equals( q._expr )
-							&& _alVariables.equals( q._alVariables );
-				}
 			}
-			return false;
+			if( _alVariables.size() == 0 ){
+				return _expr.equals(obj);
+			}
+			if( obj instanceof QUANT_EXPR ){
+				QUANT_EXPR q = (QUANT_EXPR)obj;
+				return _sQuantType.equals( q._sQuantType )
+						&& _expr.equals( q._expr )
+						&& _alVariables.equals( q._alVariables );
+			}
 		}
 
 		@Override
@@ -7647,17 +7646,18 @@ public class RDDL {
 									return m.isConstant(constants, objects)
 										&& m.getDoubleValue(constants, objects) == 0d;
 								} catch (Exception e) {
-									e.printStackTrace();
-									throw new RuntimeException(e);
+									return false;
+//									e.printStackTrace();
+//									throw new RuntimeException(e);
 								}
 							});
 				case "|" :
 					return _alSubNodes.stream()
 							.anyMatch( m -> {
 								try {
-									return m.isConstant(constants, objects) && m.getDoubleValue(constants, objects) == 1d;
+									return m.isConstant(constants, objects) 
+										&& m.getDoubleValue(constants, objects) == 1d;
 								} catch (Exception e) {
-									//Not sure How to handle this exceptions. For example this exceptions thorws
 									e.printStackTrace();
 									throw new RuntimeException(e);
 								}
