@@ -40,6 +40,9 @@ public class RDDL {
 	public static boolean ASSUME_ACTION_OBSERVED = false;
 	public static boolean USE_PREFIX = false;
 	public static boolean SUPPRESS_OBJECT_CAST = false;
+	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
+	protected static final LVAR FUTURE_PREDICATE  = new LVAR("?future");
+	protected static final String REG_EXPR_      = ".*(time|future).*";
 
 	public RDDL() { }
 
@@ -1080,13 +1083,6 @@ public class RDDL {
 			return this;
 		}
 
-
-		@Override
-		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception{
-
-			return false;
-		}
-
 		// Precomputed
 		public int hashCode() {
 			return _nHashCode;
@@ -1362,7 +1358,7 @@ public class RDDL {
 		@Override
 		public LCONST substitute(Map<LVAR, LCONST> subs,
 								 Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								 Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+								 Map<TYPE_NAME, OBJECTS_DEF> objects ) {
 			return this;
 		}
 
@@ -4044,8 +4040,9 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
 
-			System.out.println("This class name is :" + toString());
-			throw new UnsupportedOperationException();
+//			System.out.println("This class name is :" + toString());
+//			throw new UnsupportedOperationException();
+			return this;
 
 
 		}
@@ -4055,9 +4052,7 @@ public class RDDL {
 											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
-				System.out.println("This class name is : " + toString());
-
-				throw new UnsupportedOperationException();
+				return this;
 
 		}
 
@@ -4975,9 +4970,10 @@ public class RDDL {
 									  Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
 
 			try{
+				//Quant_EXPR expansion.
 				assert( isConstant(constants, objects ) );
 				EXPR result = expandArithmeticQuantifier(constants, objects );
-				assert( result.isConstant(constants , objects) );
+				//assert( result.isConstant(constants , objects) );
 				return result.getDoubleValue(constants, objects );
 			}catch (Exception e){
 				e.printStackTrace();
@@ -5590,7 +5586,6 @@ public class RDDL {
 			try{
 				return p.getConstantValue( constants, objects );
 			}catch(Exception exc){
-				exc.printStackTrace();
 				return p;
 			}
 		}
@@ -5608,8 +5603,25 @@ public class RDDL {
 		        //e.printStackTrace();
 		        throw new Exception();
             }
-			Object lookup = constants.get( _pName ).get( _alTerms );
-			if( lookup instanceof Boolean ){
+            //This one filters out ?time,?future, $time1, $future20
+			ArrayList<LTERM> terms = new ArrayList<>();
+            for(int i=0;i<_alTerms.size();i++){
+		    	LTERM x = _alTerms.get(i);
+		    	if(x instanceof LVAR){
+		    		if( !((LVAR)x)._sVarName.equals(TIME_PREDICATE._sVarName) & !((LVAR)x)._sVarName.equals(FUTURE_PREDICATE._sVarName))
+		    			terms.add(x);
+				}else if(x instanceof LCONST){
+		    		if( !((LCONST) x)._sConstValue.matches(".*(time|future).*"))
+		    			terms.add(x);
+				}
+			}
+//			ArrayList<LTERM> terms = new ArrayList<LTERM>(_alTerms.stream().filter(x->x instanceof LVAR)
+//					.filter(x-> (!((LVAR)x)._sVarName.equals(TIME_PREDICATE._sVarName) & !((LVAR)x)._sVarName.equals(FUTURE_PREDICATE._sVarName)))
+//					.collect(Collectors.toList()));
+
+
+            Object lookup = constants.get( _pName ).get( _alTerms );
+		    if( lookup instanceof Boolean ){
 				return new BOOL_CONST_EXPR( (boolean)lookup );
 			}else if( lookup instanceof Integer ){
 				return new INT_CONST_EXPR( (int)lookup );
@@ -5626,6 +5638,7 @@ public class RDDL {
 					throw exc;
 				}
 			}
+
 
 		}
 
@@ -7106,6 +7119,7 @@ public class RDDL {
 		public String _sQuantType = null;
 		public ArrayList<LTYPED_VAR> _alVariables = new ArrayList<LTYPED_VAR>();
 		public BOOL_EXPR _expr;
+		private Map<String,EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public int hashCode() {
@@ -7159,6 +7173,12 @@ public class RDDL {
 		public EXPR expandBooleanQuantifier(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+
+			if( _expandCache.containsKey(this.toString()) ){
+				return _expandCache.get(this.toString());
+			}
+
+
 			List<BOOL_EXPR> terms = expandQuantifier( _expr, _alVariables, objects, constants )
 					.stream().map( new Function<EXPR, BOOL_EXPR>() {
 						@Override
@@ -7183,6 +7203,7 @@ public class RDDL {
 			CONN_EXPR result;
 			try {
 				result = new CONN_EXPR( new ArrayList<>( terms ), type );
+				_expandCache.put(this.toString(), result);
 				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -7263,11 +7284,13 @@ public class RDDL {
 					return new REAL_CONST_EXPR(getDoubleValue(constants, objects));
 				}
 			}catch (Exception e){
-				e.printStackTrace();
-			}
+					e.printStackTrace();
+
+				}
+
 
 			try{
-				assert( isPiecewiseLinear( constants, objects ) );
+				//assert( isPiecewiseLinear( constants, objects ) );
 
 				List<EXPR> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects ) )
 						.collect( Collectors.toList() );
@@ -7276,16 +7299,19 @@ public class RDDL {
 						.map( m -> (LTYPED_VAR)m )
 						.collect( Collectors.toList() );
 				EXPR inner_sub = _expr.substitute(subs, constants, objects);
-				QUANT_EXPR unexpanded = new QUANT_EXPR( _sQuantType, new ArrayList<>( al_new_terms ), inner_sub );
-				//EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
-				return unexpanded ; //expanded.substitute(subs, constants, objects);
+				if(al_new_terms.isEmpty()){
+					return inner_sub;
+				}else {
+					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType, new ArrayList<>(al_new_terms), inner_sub);
+					//EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
+					return unexpanded; //expanded.substitute(subs, constants, objects);
+				}
 
-			}catch( Exception exc ){
-				exc.printStackTrace();
-				EXPR expanded = expandBooleanQuantifier(constants, objects);
-				return expanded.substitute(subs, constants, objects);
+			} catch (Exception e) {
+
+				e.printStackTrace();
+				throw e;
 			}
-
 		}
 
 		public String toString() {
@@ -7810,7 +7836,7 @@ public class RDDL {
 						try {
 							return m.getDoubleValue(constants, objects);
 						} catch (Exception e) {
-							//e.printStackTrace();
+							e.printStackTrace();
 							throw new RuntimeException(e);
 						}
 					}).sum();
@@ -7873,7 +7899,6 @@ public class RDDL {
 		public BOOL_EXPR substitute(Map<LVAR, LCONST> subs,
 									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 									Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
-
 			List<BOOL_EXPR> new_expr = _alSubNodes.stream().map( m -> {
 					try {
 						return m.substitute(subs, constants, objects);
@@ -8785,23 +8810,6 @@ public class RDDL {
 		}
 	}
 
-	/////////////////////////////////////////////////////////
 
-	//public static void main(String[] args) {
-	//
-	//}
-
-
-//	public static class myException extends NotImplementedException {
-//		String exceptionMsg = null;
-//		public myException (String message){
-//			exceptionMsg = message;
-//			//System.out.println(message);
-//		}
-//
-//		public String getExceptionMsg(){
-//			return exceptionMsg;
-//		}
-//	}
 
 }
