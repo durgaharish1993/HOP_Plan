@@ -4963,7 +4963,7 @@ public class RDDL {
 		public EXPR   _e = null;
 		public String _op = UNKNOWN;
 		public ArrayList<LTYPED_VAR> _alVariables = null;
-		private Map<String,EXPR> _expandCache = new HashMap<>();
+		private Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -5067,8 +5067,8 @@ public class RDDL {
 		public EXPR expandArithmeticQuantifier(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 			    Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception {
-			if( _expandCache.containsKey(this.toString()) ){
-				return _expandCache.get(this.toString());
+			if( _expandCache.containsKey(new Pair<>(this.toString(), _alVariables) ) ){
+				return _expandCache.get(new Pair<>(this.toString(), _alVariables));
 			}
 			
 			List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants );
@@ -5084,7 +5084,7 @@ public class RDDL {
 				for( final EXPR t : terms ){
 					ret = ( ret == null ) ? t : new OPER_EXPR( ret, t, type );
 				}
-				_expandCache.put(this.toString(), ret);
+				_expandCache.put(new Pair<>(this.toString(), _alVariables), ret);
 				return ret;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -7104,7 +7104,7 @@ public class RDDL {
 		public String _sQuantType = null;
 		public ArrayList<LTYPED_VAR> _alVariables = new ArrayList<LTYPED_VAR>();
 		public BOOL_EXPR _expr;
-		private Map<String,EXPR> _expandCache = new HashMap<>();
+		private Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public int hashCode() {
