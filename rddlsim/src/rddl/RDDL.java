@@ -4963,7 +4963,7 @@ public class RDDL {
 		public EXPR   _e = null;
 		public String _op = UNKNOWN;
 		public ArrayList<LTYPED_VAR> _alVariables = null;
-		private Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
+		private static Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public double getDoubleValue( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -7104,7 +7104,7 @@ public class RDDL {
 		public String _sQuantType = null;
 		public ArrayList<LTYPED_VAR> _alVariables = new ArrayList<LTYPED_VAR>();
 		public BOOL_EXPR _expr;
-		private Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
+		private static Map<Pair<String, ArrayList<LTYPED_VAR>>, EXPR> _expandCache = new HashMap<>();
 
 		@Override
 		public int hashCode() {
