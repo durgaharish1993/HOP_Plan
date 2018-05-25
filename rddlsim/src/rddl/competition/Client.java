@@ -240,13 +240,16 @@ public class Client {
 					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
 
 			////////////////////////////////////////////////////////////////
-			parameters.set(2, best_parameters._o1.toString()); // this is for setting lookahead
-			parameters.set(5, best_parameters._o2.toString());
+			//parameters.set(2, best_parameters._o1.toString()); // this is for setting lookahead
+			//parameters.set(5, best_parameters._o2.toString());
+            n_lookahead=best_parameters._o1.toString();
+            n_futures = best_parameters._o2.toString();
+            policy = (Policy)c.getConstructor(
+                    new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
+                    Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
 
-			policy = (Policy)c.getConstructor(
-					new Class[]{ArrayList.class,RDDL.class,State.class}).newInstance(parameters,rddl,state);
 
-			policy.setRDDL(rddl);
+            policy.setRDDL(rddl);
 			policy.setRandSeed(randomSeed);
 
 

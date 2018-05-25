@@ -989,6 +989,7 @@ public class HOPPlanner extends Policy {
                         if(substitute_expression_cache.containsKey(key)){
                             temp_expr = substitute_expression_cache.get(key);
                         }else{
+                            //((RDDL.CONN_EXPR) ((RDDL.QUANT_EXPR) e)._expr)._alSubNodes.get(1).substitute(Collections.EMPTY_MAP,constants,objects);
                             temp_expr = e.substitute(Collections.EMPTY_MAP, constants, objects);
                             substitute_expression_cache.put(key,temp_expr);
                         }

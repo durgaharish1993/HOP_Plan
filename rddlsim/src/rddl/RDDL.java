@@ -7178,7 +7178,7 @@ public class RDDL {
 			CONN_EXPR result;
 			try {
 				result = new CONN_EXPR( new ArrayList<>( terms ), type );
-				_expandCache.put(new Pair<>(this.toString(), _alTerms), result);
+				_expandCache.put(new Pair<>(this.toString(), _alVariables), result);
 				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -7193,7 +7193,7 @@ public class RDDL {
 				return _expr.isConstant(constants, objects);
 			}catch(Exception exc){
 				exc.printStackTrace();
-				expanded = expandBooleanQuantifier(constants, objects);
+				EXPR expanded = expandBooleanQuantifier(constants, objects);
 				return expanded.isConstant(constants, objects);
 			}
 		}
@@ -7269,12 +7269,22 @@ public class RDDL {
 				} else {
 					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType, 
 							new ArrayList<>(al_new_terms), inner_sub);
-					//EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
-					return unexpanded; //expanded.substitute(subs, constants, objects);
+					EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects);
+					return expanded.substitute(subs, constants, objects);
 				}
 			} catch (Exception e) {
+
+
 				e.printStackTrace();
-				throw e;
+				EXPR expanded = expandBooleanQuantifier(constants, objects);
+				return expanded.substitute(subs, constants, objects);
+//				Pair key_pair = new Pair(this.toString(),_alVariables);
+//				if(_expandCache.containsKey(key_pair)){
+//					return _expandCache.get(key_pair).substitute(subs,constants,objects);
+//				}else{
+//					EXPR expanded = expandBooleanQuantifier(constants, objects);
+//					return expanded.substitute(subs,constants,objects);
+//				}
 			}
 		}
 
@@ -7571,13 +7581,19 @@ public class RDDL {
 		public void filter( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							Map<TYPE_NAME, OBJECTS_DEF> objects )  throws Exception {
 			try {
-				if( isConstant(constants , objects) ){
-                    final double d = getDoubleValue(constants, objects);
-                    assert( d == 1d || d == 0d );
-                    _alSubNodes.clear();
-                    _alSubNodes.add( new BOOL_CONST_EXPR( d == 1d ? true : false ) );
-                    return;
-                }
+				if (isConstant(constants, objects)) {
+					final double d = getDoubleValue(constants, objects);
+					assert (d == 1d || d == 0d);
+					_alSubNodes.clear();
+					_alSubNodes.add(new BOOL_CONST_EXPR(d == 1d ? true : false));
+					return;
+				}
+
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+
+			try{
 
 				//not constant
 				Stream<BOOL_EXPR> stream = _alSubNodes.stream();
@@ -7830,7 +7846,7 @@ public class RDDL {
 		public BOOL_EXPR substitute(Map<LVAR, LCONST> subs,
 									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 									Map<TYPE_NAME, OBJECTS_DEF > objects ) throws Exception {
-			List<BOOL_EXPR> new_expr = _alSubNodes.stream().map( m -> {
+			List<EXPR> new_expr = _alSubNodes.stream().map( m -> {
 					try {
 						return m.substitute(subs, constants, objects);
 					} catch (Exception e) {
@@ -7847,7 +7863,7 @@ public class RDDL {
 					}
 				}).collect(Collectors.toList());
 			try {
-				return new CONN_EXPR( new ArrayList<>( new_expr ), _sConn );
+				return new CONN_EXPR( new ArrayList( new_expr ), _sConn );
 				//calls filter() in constructor
 			} catch (Exception e) {
 				e.printStackTrace();

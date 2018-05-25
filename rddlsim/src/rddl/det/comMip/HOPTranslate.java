@@ -60,6 +60,9 @@ import java.util.Random;
 
 
 
+
+
+
 public class HOPTranslate extends Translate {
 
 	public static enum FUTURE_SAMPLING{
@@ -639,169 +642,6 @@ public class HOPTranslate extends Translate {
 		grb_model.update();
 	}
 	
-	@Override
-	protected void translateConstraints(final GRBModel grb_model) throws Exception {
-
-		GRBExpr old_obj = grb_model.getObjective();
-//		translateMaxNonDef( );
-		
-		System.out.println("--------------Translating Constraints(Overrided) -------------");
-		
-		ArrayList<BOOL_EXPR> constraints = new ArrayList<BOOL_EXPR>();
-		//domain constraints 
-		constraints.addAll( rddl_state._alActionPreconditions ); constraints.addAll( rddl_state._alStateInvariants );
-		
-		constraints.stream().forEach( new Consumer< BOOL_EXPR >() {
-			@Override
-			public void accept(BOOL_EXPR e) {
-				// COMMENT SHOULD BE UNCOMMENTED NOTE CHANGED BY HARISH.
-				//System.out.println( "Translating Constraint " + e );
-				try{
-				System.out.println(e.toString());
-				final EXPR non_stationary_e = e.substitute(Collections.EMPTY_MAP, constants, objects)
-						.addTerm(TIME_PREDICATE, constants, objects)
-						.addTerm(future_PREDICATE, constants, objects);
-
-				TIME_TERMS.stream().forEach(new Consumer<LCONST>() {
-					@Override
-					public void accept(LCONST time_term) {
-						future_TERMS.parallelStream().forEach(new Consumer<LCONST>() {
-							@Override
-							public void accept(LCONST future_term) {
-
-								try {
-									final EXPR this_tf = non_stationary_e
-											.substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
-											.substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
-									synchronized (grb_model) {
-
-										if (SHOW_GUROBI_ADD)
-											System.out.println(this_tf);
-										GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
-
-										String nam = RDDL.EXPR.getGRBName(this_tf);
-										GRBConstr this_constr = grb_model.addConstr(constrained_var, GRB.EQUAL, 1, nam);
-										saved_expr.add(this_tf);
-										saved_constr.add(this_constr);
-										//saved_vars.add( constrained_var );
-
-									}
-								} catch (GRBException e) {
-									e.printStackTrace();
-									//System.exit(1);
-								} catch (Exception e1) {
-									e1.printStackTrace();
-								}
-
-
-							}
-						});
-					}
-				});
-			}catch (Exception e1){e1.printStackTrace();}
-
-
-			}
-		});
-		
-		
-//		for( final EXPR e : constraints ){
-//			System.out.println( "Translating Constraint " + e );
-//			
-////			substitution expands quantifiers
-////			better to substitute for time first
-//			EXPR non_stationary_e = e.substitute( Collections.EMPTY_MAP, constants, objects)
-//					.addTerm(TIME_PREDICATE, constants, objects )
-//					.addTerm(future_PREDICATE, constants, objects);
-////			this works. but is expensive
-////			QUANT_EXPR all_time = new QUANT_EXPR( QUANT_EXPR.FORALL, 
-////					new ArrayList<>( Collections.singletonList( new LTYPED_VAR( TIME_PREDICATE._sVarName,  TIME_TYPE._STypeName ) ) )
-////							, non_stationary_e );
-//			
-//			
-//			//domain constraints are true for all times and futures 
-//			for( int t = 0 ; t < TIME_TERMS.size(); ++t ){
-//				for( int future_id = 0 ; future_id < num_futures; ++future_id ){
-//					EXPR this_tf = non_stationary_e
-//							.substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(t) ), constants, objects )
-//						 	.substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(future_id) ), constants, objects );
-//				
-//					GRBVar constrained_var = this_tf.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-//					grb_model.addConstr( constrained_var, GRB.EQUAL, 1, "constraint=1_"+e.toString()+"_t"+t+"_f" + future_id );
-//
-//					saved_expr.add( this_tf ); saved_vars.add( constrained_var );
-//
-//					if( future_gen.equals( FUTURE_SAMPLING.MEAN ) ){
-//						break;
-//					}
-//				}
-//			}
-//		}
-		System.out.println("Checking hindsight_method");
-		//hindishgt constraint
-		getHindSightConstraintExpr(hindsight_method).parallelStream().forEach( new Consumer< BOOL_EXPR >() {
-			
-			@Override
-			public void accept( BOOL_EXPR t) {
-				synchronized( grb_model ){
-					GRBVar gvar = null;
-					try {
-						gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					try {
-						GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
-						saved_expr.add( t ); // saved_vars.add( gvar );
-						root_policy_expr.add(t);
-						saved_constr.add(this_constr);
-						root_policy_constr.add(this_constr);
-					} catch (GRBException e) {
-						e.printStackTrace();
-						//System.exit(1);
-					}					
-				}
-			}
-		});
-		
-		//startring actionv ars at 0.0
-//		rddl_action_vars.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>>>() {
-//			@Override
-//			public void accept(PVAR_NAME pvar, ArrayList<ArrayList<LCONST>> u) {
-//				u.forEach( new Consumer<ArrayList<LCONST>>() {
-//					@Override
-//					public void accept(ArrayList<LCONST> terms) {
-//						TIME_TERMS.forEach( new Consumer<LCONST>() {
-//							public void accept(LCONST time_term) {
-//								future_TERMS.forEach( new Consumer<LCONST>(){ 
-//									@Override
-//									public void accept(LCONST future_term) {
-//										EXPR this_expr = new PVAR_EXPR( pvar._sPVarName, terms )
-//											.addTerm( TIME_PREDICATE, constants, objects )
-//											.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), constants, objects)
-//											.addTerm( future_PREDICATE, constants, objects )
-//											.substitute( Collections.singletonMap( future_PREDICATE, future_term), constants, objects);
-//										final GRBVar this_var = EXPR.getGRBVar(this_expr, grb_model, constants, objects, type_map); 
-//										try {
-//											this_var.set( DoubleAttr.Start, 0.0 );
-//										} catch (GRBException e) {
-//											e.printStackTrace();
-//											//System.exit(1);
-//										}
-//									}
-//								});
-//							};
-//						});
-//					}
-//				});
-//			}
-//		});
-		
-		grb_model.setObjective(old_obj);
-		grb_model.update();
-		
-	}
-
 
 
 
@@ -1552,9 +1392,7 @@ public class HOPTranslate extends Translate {
 	@Override
 	public Pair<ArrayList<Map< EXPR, Double >>,Integer> doPlan(HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs ,
 															   final boolean recover ) throws Exception {
-
 		ArrayList<Map< EXPR, Double >> ret_obj = new ArrayList<Map< EXPR, Double >>();
-
 		System.out.println("------------------------------------------------this is doPlan (HOPTranslate.java Overrided)-------");
 		translate_time.ResumeTimer();
 		System.out.println("--------------Translating CPTs with random Generated Futures-------------");
@@ -1566,30 +1404,19 @@ public class HOPTranslate extends Translate {
 		translate_time.PauseTimer();
 		//This adds the ROOT POLICY CONSTRAINTS
 		if(hindsight_method.toString()=="ROOT_CONSENSUS"){
-
 			addRootPolicyConstraints(static_grb_model);
-
-
-
 		}
 
-
-
-
-		
 		exit_code = -1;
 		try{
 			System.out.println("----------------------------------------------THIS IS WERE STARTING OPTIMIZATION(HOPTranslate.java)!!!");
-
 //			if(gurobi_initialization!=null)
-//				setActionVariables(gurobi_initialization,static_grb_model);
+//				setActionVariables(gurobi_initialization,static_grb_model)
 			exit_code = goOptimize( static_grb_model);
 			
 		}
 		
 		catch( GRBException exc ){
-			
-			
 			int error_code = exc.getErrorCode();
 			System.out.println("Error code : " + error_code );
 			if( recover ){//error_code == GRB.ERROR_OUT_OF_MEMORY && recover ){
@@ -1600,10 +1427,6 @@ public class HOPTranslate extends Translate {
 				System.out.println("The Solution is Infeasible");
 				throw exc;							
 				}
-			
-			
-			
-			
 		}
 		finally{
 			System.out.println("Exit code " + exit_code );
@@ -1611,10 +1434,7 @@ public class HOPTranslate extends Translate {
 		
 		Map< EXPR, Double > ret  = outputResults( static_grb_model);
 		//Map< EXPR, Double > ret1 = outputAllResults(static_grb_model);
-
 		ret_obj.add(ret);
-
-
 		if( OUTPUT_LP_FILE ) {
 			outputLPFile( static_grb_model );
 		}
@@ -1639,22 +1459,10 @@ public class HOPTranslate extends Translate {
 			ret_obj.add(outConsensus);
 
 		}
-
-
-
-
-
 		cleanUp( static_grb_model );
 		long endtime1 = System.currentTimeMillis();
-		
 		System.out.println("Gurobi Cleanup time = " +  (endtime1 - starttime1) );
-		//This ensure that actions given are not more. 
-		
-		
-		
-		
-		
-		
+		//This ensure that actions given are not more.
 		return new Pair<>(ret_obj,exit_code);
 	}
 

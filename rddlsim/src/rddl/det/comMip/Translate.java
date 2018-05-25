@@ -76,6 +76,7 @@ public class Translate extends Policy { //  extends rddl.policy.Policy {
 	protected boolean SHOW_GUROBI_ADD = true;
 	protected boolean SHOW_PWL_NON_PWL = false;
 
+	protected Map<Pair<String,String>,EXPR> substitute_expression_cache = new HashMap<>();
 
 
 
