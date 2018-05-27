@@ -7605,10 +7605,10 @@ public class RDDL {
 						_alSubNodes = new ArrayList<>( stream.filter( m -> {
 							try {
 								return !( m.isConstant(constants, objects) &&
-	                                    m.getDoubleValue(constants, objects) == 1d );
+	                                    (m.getDoubleValue(constants, objects) == 1d) );
 							} catch (Exception e) {
 								e.printStackTrace();
-								return false;
+								return true;
 							}
 						}).collect( Collectors.toList() ) );
 						//remove duplicates
@@ -7621,8 +7621,8 @@ public class RDDL {
 										return !( m.isConstant(constants, objects)  && m.getDoubleValue(constants, objects)==0d );
 									} catch (Exception e) {
 										e.printStackTrace();
+										return true;
 									}
-									return false;
 								})
 								.collect( Collectors.toList() ) );
 						_alSubNodes = new ArrayList<> ( _alSubNodes.stream().distinct().collect( Collectors.toList() ) );
@@ -7643,6 +7643,7 @@ public class RDDL {
 				throw e;
 			}
 		}
+		
 
 		@Override
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
