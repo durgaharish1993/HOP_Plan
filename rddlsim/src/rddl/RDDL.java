@@ -5201,9 +5201,13 @@ public class RDDL {
 		@Override
 		public boolean equals(Object obj) {
 			try {
-				if( isConstant( null, null ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue( null, null ) ).equals( obj );
-                }
+				if (isConstant(null, null)) {
+					return new REAL_CONST_EXPR(getDoubleValue(null, null)).equals(obj);
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			try{
 				if( _alVariables.isEmpty() ){
 					return _e.equals(obj);
 				}
@@ -7132,7 +7136,9 @@ public class RDDL {
 				EXPR result = expandBooleanQuantifier(constants, objects);
 				assert( result.isConstant(constants, objects ) );
 				return result.getDoubleValue(constants, objects );
+
 			}
+
 		}
 
 		@Override
@@ -7588,14 +7594,11 @@ public class RDDL {
 					_alSubNodes.add(new BOOL_CONST_EXPR(d == 1d ? true : false));
 					return;
 				}
-
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 
 			try{
-
-				//not constant
 				Stream<BOOL_EXPR> stream = _alSubNodes.stream();
 				switch( _sConn ){
 					case "^" : //remove true
@@ -7733,9 +7736,9 @@ public class RDDL {
 			return _bDet;
 		}
 
-		public CONN_EXPR( final ArrayList<BOOL_EXPR> sub_nodes, final String conn ) throws Exception{
-			assert ( conn.equals(IMPLY) || conn.equals(EQUIV) ||
-					conn.equals(AND) || conn.equals(OR) );
+		public CONN_EXPR( final ArrayList<BOOL_EXPR> sub_nodes, final String conn ) throws Exception {
+			assert (conn.equals(IMPLY) || conn.equals(EQUIV) ||
+					conn.equals(AND) || conn.equals(OR));
 
 			this._sConn = conn.intern();
 			this._alSubNodes = sub_nodes;
@@ -7744,7 +7747,6 @@ public class RDDL {
 
 			filter( null , null);
 		}
-
 		public String _sConn;
 		public ArrayList<BOOL_EXPR> _alSubNodes = new ArrayList<BOOL_EXPR>();
 
@@ -7819,12 +7821,16 @@ public class RDDL {
 		@Override
 		public boolean equals(Object obj) {
 			try {
-				if( isConstant( null , null ) ){
-                    if( obj instanceof EXPR ){
-                        return obj.equals(
-                        	new REAL_CONST_EXPR( getDoubleValue( null , null ) ) );
-                    }
-                }
+				if (isConstant(null, null)) {
+					if (obj instanceof EXPR) {
+						return obj.equals(
+								new REAL_CONST_EXPR(getDoubleValue(null, null)));
+					}
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+			try{
 
 				if( _alSubNodes.size() == 1 ){
 					return _alSubNodes.get(0).equals(obj);

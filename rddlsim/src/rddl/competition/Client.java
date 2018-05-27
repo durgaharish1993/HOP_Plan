@@ -316,7 +316,7 @@ public class Client {
 					//Double timeforOptimizer = getTimeOutForGurobi(timeleft_round, rounds_left, steps_left ,instance._nHorizon );
 					//policy.TIME_LIMIT_MINS
 					//policy.TIME_LIMIT_MINS = timeforOptimizer;
-					policy.DO_NPWL_PWL = false;
+					//policy.DO_NPWL_PWL = false;
 					if(policy.DO_NPWL_PWL){
 						//This code is for random action
 						policy.runRandompolicyForState(state);

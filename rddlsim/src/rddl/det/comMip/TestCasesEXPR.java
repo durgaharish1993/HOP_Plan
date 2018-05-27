@@ -340,8 +340,8 @@ public class TestCasesEXPR {
         Map<LVAR,LCONST>  subs_up = new HashMap<>();
 
         subs_q.put((LVAR)lvar_3,lconst_t1);
-        subs_t.put((LVAR)lvar_1,lconst_t1);
-        subs_up.put((LVAR)lvar_2,lconst_t1);
+        subs_t.put((LVAR)lvar_2,lconst_t1);
+        subs_up.put((LVAR)lvar_1,lconst_t1);
         /////////////////////////////////////////////////////
 
 
@@ -350,12 +350,17 @@ public class TestCasesEXPR {
         //Final_expr : [forall_{?up : real} [exists_{?t : real} ((f(?up, ?t, ?q) <= 2.0) ^ (NF(?up, ?t, ?q) <= 5.0) ^ (?up == ?q))]]
         BOOL_EXPR e1   = new COMP_EXPR(p1,new REAL_CONST_EXPR(2.0),"<=");
         BOOL_EXPR e2   = new COMP_EXPR(p2,new REAL_CONST_EXPR(5.0),"<=");
-        COMP_EXPR e3   = new COMP_EXPR(lvar_1,lvar_3,"==");
+        COMP_EXPR e3   = new COMP_EXPR(lvar_3,lvar_2,"==");
         CONN_EXPR e4   = new CONN_EXPR(e1,e2,"^");
         CONN_EXPR e5   = new CONN_EXPR(e4,e3,"^");
         QUANT_EXPR e6  = new QUANT_EXPR("exists",  array_ltyped_1_t,e5);
         QUANT_EXPR final_expr = new QUANT_EXPR("forall",array_ltyped_1_up,e6);
-        e6.substitute(subs_up,constants,objects);
+        //e6.getDoubleValue(constants,objects);
+        //e6.equals(e6);
+        //e6.substitute(subs_up,constants,objects);
+        AGG_EXPR final_expr_sum = new AGG_EXPR("sum",array_ltyped_1_up,e6);
+        final_expr.getDoubleValue(constants,objects);
+
         final_expr.substitute(subs_q,constants,objects);
 
 
@@ -588,9 +593,217 @@ public class TestCasesEXPR {
 
 
 
+
+    public static void testCase4() throws Exception {
+
+
+
+        //LTERMS, LVARS, LCONSTS
+        LTERM lvar_x  = new LVAR("?x");
+        LTERM lvar_x2 = new LVAR("?x2");
+        LTERM lvar_y  = new LVAR("?y");
+        LTERM lvar_y2 = new LVAR("?y2");
+
+        ArrayList<LTERM> lterms_1_x_y   = new ArrayList<>(); lterms_1_x_y.add(lvar_x); lterms_1_x_y.add(lvar_y);
+        ArrayList<LTERM> lterms_1_x2_y2 = new ArrayList<>(); lterms_1_x2_y2.add(lvar_x2); lterms_1_x2_y2.add(lvar_y2);
+
+        // [exists_{?x2 : xpos, ?y2 : ypos} (agent-at(?x2, ?y2) ^ ((NORTH(?y, ?y2) ^ (?x == ?x2)) |
+        // (SOUTH(?y, ?y2) ^ (?x == ?x2)) |
+        // (EAST(?x, ?x2) ^ (?y == ?y2)) |
+        // (WEST(?x, ?x2) ^ (?y == ?y2))))]//
+
+        ArrayList<LTERM> lterms_NORTH_y_y2 = new ArrayList<>(); lterms_NORTH_y_y2.add(lvar_y); lterms_NORTH_y_y2.add(lvar_y2);
+        ArrayList<LTERM> lterms_SOUTH_y_y2 = new ArrayList<>(); lterms_SOUTH_y_y2.add(lvar_y); lterms_SOUTH_y_y2.add(lvar_y2);
+
+
+        ArrayList<LTERM> lterms_EAST_x_x2 = new ArrayList<>(); lterms_EAST_x_x2.add(lvar_x); lterms_EAST_x_x2.add(lvar_x2);
+        ArrayList<LTERM> lterms_WEST_x_x2 = new ArrayList<>(); lterms_WEST_x_x2.add(lvar_x); lterms_WEST_x_x2.add(lvar_x2);
+
+
+        LCONST lconst_x1 = new OBJECT_VAL("$x1");
+        LCONST lconst_x2 = new OBJECT_VAL("$x2");
+        LCONST lconst_x3 = new OBJECT_VAL("$x3");
+
+        LCONST lconst_y1 = new OBJECT_VAL("$y1");
+        LCONST lconst_y2 = new OBJECT_VAL("$y2");
+        LCONST lconst_y3 = new OBJECT_VAL("$y3");
+
+        //Adding PVAR_EXPRS
+
+        //This is PVAR_EXPR f, NF.
+        PVAR_EXPR agent_at =new PVAR_EXPR("agent-at",lterms_1_x2_y2);
+        PVAR_EXPR SOUTH_p  = new PVAR_EXPR("SOUTH",lterms_SOUTH_y_y2);
+        PVAR_EXPR NORTH_p  = new PVAR_EXPR("NORTH",lterms_NORTH_y_y2);
+        PVAR_EXPR EAST_p   = new PVAR_EXPR("EAST",lterms_EAST_x_x2);
+        PVAR_EXPR WEST_p   = new PVAR_EXPR("WEST",lterms_WEST_x_x2);
+
+
+        //LTYPED_VAR
+        LTYPED_VAR ltyped_x  = new LTYPED_VAR("?x","xpos") ;
+        LTYPED_VAR ltyped_x2 = new LTYPED_VAR("?x2", "xpos");
+        LTYPED_VAR ltyped_y  = new LTYPED_VAR("?y","ypos");
+        LTYPED_VAR ltyped_y2 = new LTYPED_VAR("?y2","ypos");
+
+
+
+        ArrayList<LTYPED_VAR> array_ltyped_x2_y2      = new ArrayList<>(); array_ltyped_x2_y2.add(ltyped_x2); array_ltyped_x2_y2.add(ltyped_y2);
+
+        //Adding values to Contants
+        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants = new HashMap<>();
+//
+//        NORTH(y1,y2);
+//        SOUTH(y2,y1);
+//        NORTH(y2,y3);
+//        SOUTH(y3,y2);
+
+//        EAST(x1,x2);
+//        WEST(x2,x1);
+//        EAST(x2,x3);
+//        WEST(x3,x2);
+        Map<ArrayList<LCONST>,Object> cons2 = new HashMap<>();
+        for(int i=1; i<4;i++){
+            for(int j=1;j<4;j++){
+                ArrayList<LCONST> lconst_array = new ArrayList<>();
+                String v1 ="$y" + Integer.valueOf(i).toString();
+                String v2 = "$y" + Integer.valueOf(j).toString();
+                lconst_array.add(new OBJECT_VAL(v1));
+                lconst_array.add(new OBJECT_VAL(v2));
+                if(v1.equals("$y1") && v2.equals("$y2")){
+                    cons2.put(lconst_array,true);
+                } else if(v1.equals("$y2") && v2.equals("$y3")){
+
+                    cons2.put(lconst_array,true);
+                }else{
+                    cons2.put(lconst_array,false);
+                }
+            }
+
+        }
+        constants.put(NORTH_p._pName,cons2);
+
+        //////////////////////////////////////
+        cons2 = new HashMap<>();
+        for(int i=1; i<4;i++){
+            for(int j=1;j<4;j++){
+                ArrayList<LCONST> lconst_array = new ArrayList<>();
+                String v1 ="$y" + Integer.valueOf(i).toString();
+                String v2 = "$y" + Integer.valueOf(j).toString();
+                lconst_array.add(new OBJECT_VAL(v1));
+                lconst_array.add(new OBJECT_VAL(v2));
+                if(v1.equals("$y2") && v2.equals("$y1")){
+                    cons2.put(lconst_array,true);
+                } else if(v1.equals("$y3") && v2.equals("$y2")){
+
+                    cons2.put(lconst_array,true);
+                }else{
+                    cons2.put(lconst_array,false);
+                }
+            }
+
+        }
+        constants.put(SOUTH_p._pName,cons2);
+
+        //////////////////////////////////////
+        cons2 = new HashMap<>();
+        for(int i=1; i<4;i++){
+            for(int j=1;j<4;j++){
+                ArrayList<LCONST> lconst_array = new ArrayList<>();
+                String v1 ="$x" + Integer.valueOf(i).toString();
+                String v2 = "$x" + Integer.valueOf(j).toString();
+                lconst_array.add(new OBJECT_VAL(v1));
+                lconst_array.add(new OBJECT_VAL(v2));
+                if(v1.equals("$x2") && v2.equals("$x3")){
+                    cons2.put(lconst_array,true);
+                } else if(v1.equals("$x1") && v2.equals("$x2")){
+
+                    cons2.put(lconst_array,true);
+                }else{
+                    cons2.put(lconst_array,false);
+                }
+            }
+
+        }
+        constants.put(EAST_p._pName,cons2);
+
+
+        //////////////////////////////////////
+        cons2 = new HashMap<>();
+        for(int i=1; i<4;i++){
+            for(int j=1;j<4;j++){
+                ArrayList<LCONST> lconst_array = new ArrayList<>();
+                String v1 ="$x" + Integer.valueOf(i).toString();
+                String v2 = "$x" + Integer.valueOf(j).toString();
+                lconst_array.add(new OBJECT_VAL(v1));
+                lconst_array.add(new OBJECT_VAL(v2));
+                if(v1.equals("$x2") && v2.equals("$x1")){
+                    cons2.put(lconst_array,true);
+                } else if(v1.equals("$x3") && v2.equals("$x2")){
+
+                    cons2.put(lconst_array,true);
+                }else{
+                    cons2.put(lconst_array,false);
+                }
+            }
+
+        }
+        constants.put(WEST_p._pName,cons2);
+        /////////////////////////////////////
+
+
+        //Defining Objects
+        Map<TYPE_NAME, OBJECTS_DEF> objects = new HashMap<>();
+        TYPE_NAME xpos_type = new TYPE_NAME("xpos");
+        TYPE_NAME ypos_type  = new TYPE_NAME("ypos");
+
+
+
+        ArrayList<Object> temp_objects = new ArrayList<>();
+        temp_objects.add(lconst_x1); temp_objects.add(lconst_x2); temp_objects.add(lconst_x3);
+        OBJECTS_DEF ob = new OBJECTS_DEF("xpos",temp_objects);
+        objects.put(xpos_type,ob);
+        objects.put(ypos_type,ob);
+
+
+        //Adding Subs
+        Map<LVAR, LCONST> subs_q  = new HashMap<>();
+        Map<LVAR, LCONST> subs_t  = new HashMap<>();
+        Map<LVAR,LCONST>  subs_up = new HashMap<>();
+
+        // [exists_{?x2 : xpos, ?y2 : ypos} (agent-at(?x2, ?y2) ^ ((NORTH(?y, ?y2) ^ (?x == ?x2)) |
+        // (SOUTH(?y, ?y2) ^ (?x == ?x2)) |
+        // (EAST(?x, ?x2) ^ (?y == ?y2)) |
+        // (WEST(?x, ?x2) ^ (?y == ?y2))))]//
+
+
+        //subs_q.put((LVAR)lvar_3,lconst_t1);
+        COMP_EXPR term_1 = new COMP_EXPR(new LVAR("?x"),new LVAR("?x2"),"==");
+        COMP_EXPR term_2 = new COMP_EXPR(new LVAR("?y"),new LVAR("?y2"),"==");
+        CONN_EXPR e1_north   = new CONN_EXPR(NORTH_p,term_1,"^");
+        CONN_EXPR e2_south   = new CONN_EXPR(SOUTH_p,term_1,"^");
+        CONN_EXPR e3_east    = new CONN_EXPR(EAST_p,term_2,"^");
+        CONN_EXPR e4_west    = new CONN_EXPR(WEST_p,term_2,"^");
+        ArrayList<BOOL_EXPR> subnodes = new ArrayList<>(); subnodes.add(e1_north);subnodes.add(e2_south);
+        subnodes.add(e3_east); subnodes.add(e4_west);
+
+
+        CONN_EXPR e5  = new CONN_EXPR(subnodes,"|");
+        CONN_EXPR e6  = new CONN_EXPR(agent_at,e5,"^");
+
+        QUANT_EXPR e7  = new QUANT_EXPR("exists",  array_ltyped_x2_y2,e6);
+
+
+        System.out.println("dflkdlfkld");
+
+
+
+
+
+    }
+
+
     public static void main(String[] args)throws Exception{
 
-       testCase1();
+       testCase4();
 
 
 

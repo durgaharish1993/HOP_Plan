@@ -198,11 +198,6 @@ public class HOPTranslate extends Translate {
 						try{
                         EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms ).addTerm(TIME_PREDICATE, constants, objects)
                                                 .addTerm( future_PREDICATE, constants, objects );
-
-
-
-                        //System.out.println("HERE IS THE ERROR");
-							
 						TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
 							@Override
 							public void accept(LCONST time_term ) {
@@ -221,35 +216,24 @@ public class HOPTranslate extends Translate {
 
 											synchronized( static_grb_model ){
 												//System.out.println(this_tf.toString());
-
 												try {
 													GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
-												} catch (Exception e) {
+													System.out.println("Adding var " + gvar.get(StringAttr.VarName) + " " + this_tf );
+												}catch (GRBException e) {
+													e.printStackTrace();
+													//System.exit(1);
+											}catch(Exception e) {
 													e.printStackTrace();
 												}
-
-
-												//just remember this is commented by HARISH
-
-//											try {
-//												System.out.println("Adding var " + gvar.get(StringAttr.VarName) + " " + this_tf );
-//											} catch (GRBException e) {
-//												e.printStackTrace();
-//												//System.exit(1);
-//											}
 												saved_expr.add( this_tf );
 											}
-
 										}
 										catch (Exception e){
 											e.printStackTrace();
-
 										}
-
 									}
 								});
 							} catch (Exception e) {e.printStackTrace(); }
-								
 							}
 						});
 						} catch (Exception e) {e.printStackTrace(); }

@@ -115,9 +115,6 @@ public class State {
 					 ArrayList<BOOL_EXPR> state_invariants,
 					 EXPR reward, 
 					 int max_nondef_actions) {
-
-
-
 //		HashMap<TYPE_NAME,OBJECTS_DEF> domain_objects,
 //		HashMap<TYPE_NAME,OBJECTS_DEF> nonfluent_objects,
 //		HashMap<TYPE_NAME,OBJECTS_DEF> instance_objects,
@@ -131,13 +128,6 @@ public class State {
 //		ArrayList<BOOL_EXPR> state_invariants,
 //		EXPR reward,
 //		int max_nondef_actions
-
-
-
-
-
-
-		
 		_hmPVariables = pvariables;
 		_hmTypes = typedefs;
 		_hmCPFs = cpfs;
@@ -232,27 +222,6 @@ public class State {
 		for (HashMap.Entry<TYPE_NAME,ArrayList<LCONST>> entry : inheritedObjects.entrySet()) {
 			addConstants(entry.getKey(), entry.getValue());
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //		System.out.println("This is Second usage of KeySet Operation!!!!");
 //		// Now add in constants to superclasses as well
 //		for (TYPE_NAME tname : _hmObject2Consts.keySet()) {
@@ -296,20 +265,6 @@ public class State {
 //				addConstants(cur_tname, child_constants);
 //			}
 //		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		for (Map.Entry<TYPE_NAME,TYPE_DEF> e : typedefs.entrySet()) {
 			if (e.getValue() instanceof STRUCT_TYPE_DEF && ((STRUCT_TYPE_DEF)e.getValue())._typeGeneric != null) {
 				STRUCT_TYPE_DEF ldef = (STRUCT_TYPE_DEF)e.getValue();
@@ -535,15 +490,14 @@ public class State {
 		ArrayList<BOOL_EXPR> all_constraints = new ArrayList<BOOL_EXPR>(_alActionPreconditions);
 		all_constraints.addAll(_alStateInvariants);
 		HashMap<LVAR,LCONST> subs = new HashMap<LVAR,LCONST>();
-		for (BOOL_EXPR constraint : _alActionPreconditions) {
+		for (BOOL_EXPR constraint : all_constraints) {
 			// satisfied must be true if get here
 			try {
-				if (! (Boolean)constraint.sample(subs, this, null) )
+				if (! (Boolean)constraint.sample(subs, this, null) ){
+					return false;
 
-						return false;
+				}
 
-
-					throw new EvalException("Violated state invariant or action precondition constraint: " + constraint + "\n**in state**\n" + this);
 			} catch (NullPointerException e) {
 				System.out.println("\n***SIMULATOR ERROR EVALUATING: " + constraint);
 				throw e;
