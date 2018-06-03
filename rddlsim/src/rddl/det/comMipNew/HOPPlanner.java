@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 //import org.apache.commons.math3.random.RandomDataGenerator;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import gurobi.*;
 import gurobi.GRB.StringAttr;
 import org.apache.commons.math3.random.RandomDataGenerator;
@@ -48,6 +49,10 @@ public class HOPPlanner extends Policy {
     protected boolean SHOW_LEVEL_2 = false;
     protected boolean SHOW_GUROBI_ADD = false;
     protected boolean SHOW_PWL_NON_PWL = false;
+    protected boolean SHOW_TIME_ZERO_GUROBI_ACTION = false;
+    protected boolean DO_GUROBI_INITIALIZATION = true;
+
+    ///////////////////////////////////////////////////////////
     protected Map<Pair<String,String>,EXPR> substitute_expression_cache = new HashMap<>();
     private static final int GRB_INFUNBDINFO = 1;
     private static final int GRB_DUALREDUCTIONS = 0;
@@ -547,10 +552,15 @@ public class HOPPlanner extends Policy {
         exit_code = -1;
         try{
             System.out.println("----------------------------------------------THIS IS WERE STARTING OPTIMIZATION(HOPTranslate.java)!!!");
-			if(gurobi_initialization!=null)
-				setActionVariables(gurobi_initialization,static_grb_model);
-            exit_code = goOptimize( static_grb_model);
 
+            if(DO_GUROBI_INITIALIZATION){
+                if(gurobi_initialization!=null) {
+                    setActionVariables(gurobi_initialization,static_grb_model);
+                }
+
+            }
+            grb_env.set( GRB.DoubleParam.TimeLimit, TIME_LIMIT_MINS*60 );
+            exit_code = goOptimize( static_grb_model);
         }
 
         catch( GRBException exc ){
@@ -749,11 +759,8 @@ public class HOPPlanner extends Policy {
         for( int i = 0 ; i < future_TERMS.size(); ++i ){
             future_terms_indices.add( i );
         }
-
-
         //[{'PVAR_NAME':[[],[],[],[]]},{'PVAR_NAME':[[],[],[],[]]}]
         src.stream().forEach( new Consumer< HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST> > > >() {
-
             @Override
             public void accept(
                     HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> t) {
@@ -976,38 +983,38 @@ public class HOPPlanner extends Policy {
 
                                         EXPR this_tf = null;
 
-                                        if(TIME_FUTURE_CACHE_USE){
-                                            EXPR time_sub_expr   = null;
-                                            EXPR future_sub_expr = null;
-                                            Map<LVAR,LCONST> time_sub   = Collections.singletonMap(TIME_PREDICATE,time_term);
-                                            Map<LVAR,LCONST> future_sub = Collections.singletonMap(future_PREDICATE,future_term);
-                                            Pair<String,String> time_key = new Pair(non_stationary_e.toString(),time_sub.toString());
-                                            if(substitute_expression_cache.containsKey(time_key)){
-                                                time_sub_expr = substitute_expression_cache.get(time_key);
-                                            }else{
-                                                time_sub_expr = non_stationary_e.substitute(time_sub, constants, objects);
-                                                substitute_expression_cache.put(time_key,time_sub_expr);
-                                            }
+//                                        if(TIME_FUTURE_CACHE_USE){
+//                                            EXPR time_sub_expr   = null;
+//                                            EXPR future_sub_expr = null;
+//                                            Map<LVAR,LCONST> time_sub   = Collections.singletonMap(TIME_PREDICATE,time_term);
+//                                            Map<LVAR,LCONST> future_sub = Collections.singletonMap(future_PREDICATE,future_term);
+//                                            Pair<String,String> time_key = new Pair(non_stationary_e.toString(),time_sub.toString());
+//                                            if(substitute_expression_cache.containsKey(time_key)){
+//                                                time_sub_expr = substitute_expression_cache.get(time_key);
+//                                            }else{
+//                                                time_sub_expr = non_stationary_e.substitute(time_sub, constants, objects);
+//                                                substitute_expression_cache.put(time_key,time_sub_expr);
+//                                            }
+//
+//                                            assert time_sub_expr!=null;
+//                                            Pair<String,String> future_key = new Pair(time_sub_expr.toString(),future_sub.toString());
+//                                            if(substitute_expression_cache.containsKey(future_key)){
+//                                                future_sub_expr = substitute_expression_cache.get(future_key);
+//
+//                                            }else{
+//                                                future_sub_expr = time_sub_expr.substitute(future_sub,constants,objects);
+//                                                substitute_expression_cache.put(future_key,future_sub_expr);
+//                                            }
+//                                            assert future_sub_expr!=null;
+//                                            this_tf = future_sub_expr;
+//
+//                                        }else{
+                                        this_tf = non_stationary_e
+                                                .substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
+                                                .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
 
-                                            assert time_sub_expr!=null;
-                                            Pair<String,String> future_key = new Pair(time_sub_expr.toString(),future_sub.toString());
-                                            if(substitute_expression_cache.containsKey(future_key)){
-                                                future_sub_expr = substitute_expression_cache.get(future_key);
 
-                                            }else{
-                                                future_sub_expr = time_sub_expr.substitute(future_sub,constants,objects);
-                                                substitute_expression_cache.put(future_key,future_sub_expr);
-                                            }
-                                            assert future_sub_expr!=null;
-                                            this_tf = future_sub_expr;
-
-                                        }else{
-                                            this_tf = non_stationary_e
-                                                    .substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
-                                                    .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
-
-
-                                        }
+                                        //}
                                         if(this_tf.toString().equals("(0.71 >= gas-y($time0, $future0))")){
                                             System.out.println("dkjfkdjfkdkfjdkf");
                                         }
@@ -1944,7 +1951,8 @@ public class HOPPlanner extends Policy {
             if( act._oValue instanceof Double){
                 val = (Double) act._oValue; }
             else if(act._oValue instanceof Boolean){
-                val = (Boolean) act._oValue; }
+                val = (Boolean) act._oValue;
+                val = val.equals(true) ? 1.0 : 0.0; }
             else{
                 val = (Integer) act._oValue; }
 
@@ -1972,17 +1980,11 @@ public class HOPPlanner extends Policy {
                     public void accept(ArrayList<LCONST> terms) {
                         //System.out.print(pvar.toString());
                         try{
-/*
-						EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms)
-								.addTerm(TIME_PREDICATE, constants, objects)
-								.addTerm(future_PREDICATE, constants, objects);
-*/
-                            //System.out.println("HERE IS THE ERROR");
-
                             future_TERMS.forEach(new Consumer<LCONST>() {
                                 @Override
                                 public void accept(LCONST future_term) {
                                     try {
+                                        //System.out.println("These are the terms" + terms.toString());
                                         EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms)
                                                 .addTerm(TIME_PREDICATE, constants, objects)
                                                 .addTerm(future_PREDICATE, constants, objects)
@@ -1990,9 +1992,11 @@ public class HOPPlanner extends Policy {
                                                 .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
                                         GRBVar this_var = EXPR.grb_cache.get(action_var);
 
-                                        this_var.set(GRB.DoubleAttr.Start, (Double) action_value.get(action_var));
-
-
+                                        if(action_value.containsKey(action_var)){
+                                            if(SHOW_TIME_ZERO_GUROBI_ACTION){
+                                                System.out.println("Setting value Action : " + action_var.toString() +"  value :" +action_value.get(action_var).toString() );
+                                            }
+                                            this_var.set(GRB.DoubleAttr.Start, (Double) action_value.get(action_var)); }
                                     } catch (GRBException e) {
                                         e.printStackTrace();
                                     } catch (Exception e) {
@@ -2006,6 +2010,9 @@ public class HOPPlanner extends Policy {
                 });
             }
         });
+
+
+
 
     }
 
@@ -2323,12 +2330,12 @@ public class HOPPlanner extends Policy {
 
 
     @Override
-    public Pair<Integer,Integer> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
-                                                              String future_gen_type,String hindsight_strat, RDDL rddl_object, State s) throws Exception{
+    public Pair<Boolean,Pair<Integer,Integer>> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
+                                                              String future_gen_type,String hindsight_strat, RDDL rddl_object, State s,Double total_explo_time, Double optimization_time_out) throws Exception{
 
 
         ////////////////////////////////////////////////////////////////////////////
-        long start_time = System.currentTimeMillis();
+        Double start_time = Double.valueOf(System.currentTimeMillis());
         RDDL rddl = null;
         RDDL.DOMAIN domain = null;
         RDDL.INSTANCE instance = null;
@@ -2347,11 +2354,12 @@ public class HOPPlanner extends Policy {
         boolean EXPLORATION = true;
         int best_lookahead = Integer.MAX_VALUE;
         int best_future    = Integer.MAX_VALUE;
+        Boolean NPWL_OR_NOT = true;
         //This one is for lookahead value.
-        while(current_lookAhead<3){
+        while(current_lookAhead<6){
             //This is the starting value of future.
             Integer FUTURE_VALUE = START_FUTURE_VALUE;
-            while(FUTURE_VALUE < 6) {
+            while(FUTURE_VALUE < 10) {
                 ////////////////////////////////////////////////////////////////////////////
                 //This is place for setting up RDDL Object.
                 rddl = new RDDL(rddl_filepath);
@@ -2410,6 +2418,7 @@ public class HOPPlanner extends Policy {
                             //This is to check if there are any NPWL expression.  If there are no,then DO_NWPL_PWL will be false.
                             //explo_planner.DO_NPWL_PWL = true;
                             //This value changes when we don't find any expression which is NPWL.
+                            NPWL_OR_NOT =  explo_planner.DO_NPWL_PWL;
                             if (explo_planner.DO_NPWL_PWL) {
                                 //This code is for random action
                                 explo_planner.runRandompolicyForState(state);
@@ -2417,10 +2426,9 @@ public class HOPPlanner extends Policy {
                                 explo_planner.convertNPWLtoPWL(state);
 
                             }
-
+                            explo_planner.TIME_LIMIT_MINS =optimization_time_out;
                             ArrayList<PVAR_INST_DEF> actions = explo_planner.getActions(state);
                             System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
-
                             state.checkActionConstraints(actions);
                             state.computeNextState(actions, rand);
                             final double immediate_reward = ((Number) domain._exprReward.sample(
@@ -2430,28 +2438,32 @@ public class HOPPlanner extends Policy {
                             if (immediate_reward > max_step_reward) {
                                 round_best_action = actions;
                                 max_step_reward = immediate_reward;
-                                gurobi_initialization = round_best_action;
+                                explo_planner.gurobi_initialization = round_best_action;
                             }
                         }catch (Exception e){
                             e.printStackTrace();
                         }
-
-
-
-
                     }
-
-
-
                     average_round_reward += round_reward;
                 }
+
+                Double cur_end_time = Double.valueOf(System.currentTimeMillis());
+
                 exploration_rewards.put(new Pair<>(current_lookAhead, FUTURE_VALUE), average_round_reward / exp_rounds);
                 explo_planner.dispose_Gurobi();
                 FUTURE_VALUE = getFutureValue(FUTURE_VALUE,true); //Double.valueOf(Math.pow(FUTURE_VALUE,2)).intValue();
+                if(cur_end_time-start_time>total_explo_time){
+                    break;
+                }
             }
             current_lookAhead=getLookAheadValue(current_lookAhead,true);
+
+            Double cur_end_time = Double.valueOf(System.currentTimeMillis());
+            if(cur_end_time-start_time>total_explo_time){
+                break;
+            }
         }
-        Double max_reward = -Double.MAX_VALUE;
+       Double max_reward = -Double.MAX_VALUE;
 
         //This piece of code is to get the best lookahead and future pair.
         HashMap<Pair<Integer,Integer>,Double> equal_rewards = new HashMap<>();
@@ -2468,14 +2480,10 @@ public class HOPPlanner extends Policy {
                 best_future    = key._o2;
             }
         }
+        Pair<Integer,Integer> best_parameters =new Pair<Integer, Integer>(best_lookahead,best_future);
+        Pair<Boolean,Pair<Integer,Integer>> return_value = new Pair(NPWL_OR_NOT,best_parameters);
 
-
-
-        return new Pair<Integer, Integer>(best_lookahead,best_future);
-
-
-
-
+        return return_value;
     }
 
 
@@ -2825,11 +2833,17 @@ public class HOPPlanner extends Policy {
                 ArrayList<PVAR_INST_DEF> traj_action = null;
                 int cur_while_check = 0;
                 while (!check_action_feasible && (cur_while_check < number_of_iterations)) {
-                    //System.out.println("ITERATION.");
-                    cur_while_check = cur_while_check + 1;
-                    traj_action = getRandomAction(rddl_state, rand1);
-                    //System.out.print(traj_action.toString());
-                    check_action_feasible = rddl_state.checkActionConstraints(traj_action);
+                    try{
+                        //System.out.println("ITERATION.");
+                        cur_while_check = cur_while_check + 1;
+                        traj_action = getRandomAction(rddl_state, rand1);
+                        //System.out.print(traj_action.toString());
+                        check_action_feasible = rddl_state.checkActionConstraints(traj_action);
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }
                 //When the actions are infeasible.
                 if (!check_action_feasible) {
@@ -2966,37 +2980,12 @@ public class HOPPlanner extends Policy {
         EXPR cond_expr=condition_part.get(0);
         EXPR true_expr=true_part.get(0);
         if(condition_part.size()==1){
-
-            return new RDDL.IF_EXPR(cond_expr,true_expr,new REAL_CONST_EXPR(0.0));
-
-        }
-
-
-
+            return new RDDL.IF_EXPR(cond_expr,true_expr,new REAL_CONST_EXPR(0.0)); }
         List<EXPR> true_sub_list = new ArrayList<>();
         List<EXPR> cond_sub_list = new ArrayList<>();
         true_sub_list = true_part.subList(1,true_part.size());
         cond_sub_list = condition_part.subList(1,condition_part.size());
-
-
         return new RDDL.IF_EXPR(cond_expr,true_expr,recursiveAdditionIfElse(cond_sub_list,true_sub_list,2));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
@@ -3005,63 +2994,31 @@ public class HOPPlanner extends Policy {
 
     //This will generate Data.
     public EXPR generateDataForPWL(EXPR e, ArrayList<RDDL.LTERM> raw_terms) throws Exception {
-
-
-
         //Getting desired format  as  a String
-        ArrayList<PVAR_NAME> input_variables = new ArrayList<>();
+        ArrayList<PVAR_NAME> input_variables           = new ArrayList<>();
         HashMap<Integer,ArrayList<Object>> input_array = new HashMap();
-
-        HashMap<Integer,String> input_R_array = new HashMap<Integer, String>();
-        String output_R_array = new String();
-        output_R_array = "c(";
-
-
-
-
-
-
-
-        ArrayList<Object> output_array       = new ArrayList<>();
+        HashMap<Integer,String> input_R_array          = new HashMap<Integer, String>();
+        String output_R_array                          = new String();
+        output_R_array                                 = "c(";
+        ArrayList<Object> output_array                 = new ArrayList<>();
         for(int i=0;i<buffer_state.size();i++){
             ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>> state_trajectory  = buffer_state.get(i);
             ArrayList<ArrayList<PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
-
-
             for(int j=0;j<buffer_state.get(i).size();j++){
-
                 HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value = state_trajectory.get(j);
                 ArrayList<PVAR_INST_DEF> action_value = action_trajectory.get(j);
-
-
                 //This is a global temp variable which stores the values.m
                 variables_names.clear();
-
-
                 EXPR temp  = recursionSubstitution(e,state_value,action_value);
                 Double val = temp.getDoubleValue(constants,objects);
-
-
                 if(i==0 && j==0 && !variables_names.isEmpty()){
-
                     input_variables.addAll(variables_names.keySet());
-
-
                 }
-
-
-
-
                 for(int k=0;k<input_variables.size();k++){
-
                     if(input_array.containsKey(k)){
                         input_array.get(k).add(variables_names.get(input_variables.get(k)));
                         String temp_str =input_R_array.get(k);
                         input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
-
-
-
-
                     }
                     else{
                         ArrayList<Object> temp_array = new ArrayList<>();
@@ -3069,74 +3026,31 @@ public class HOPPlanner extends Policy {
                         input_array.put(k,temp_array);
                         String temp_str ="c(";
                         input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
-
                     }
-
-
-
-
-
                 }
                 output_array.add(val);
                 String temp_str = output_R_array;
                 output_R_array = temp_str + val.toString() + ", ";
-
-
-
-
-
-
-
             }
-
-
-
-
-
         }
-
-
-
-
         //Making Sure to close the brackets.
         HashMap<PVAR_NAME,String> final_input_R_data = new HashMap<>();
 
         for( Map.Entry<Integer,String> entry1 : input_R_array.entrySet()){
-
             input_variables.get(entry1.getKey());
-
             String temp_str = entry1.getValue();
-
             temp_str = temp_str.trim();
             temp_str = temp_str.substring(0,temp_str.length()-1) + ")";
-
-
             final_input_R_data.put(input_variables.get(entry1.getKey()),temp_str);
 
-
-
-
         }
-
-
-
-
         String final_output_R_data = output_R_array.trim().substring(0,output_R_array.trim().length()-1) + ")";
-
-
-
-
-
-
-
-
         //////////??????#############################################################################
         //Getting R functions.
 
 
         //Not thinking about optimizing the code, Just make it work.
         //This is for number of examples
-
         long start_timer = System.currentTimeMillis();
         Rengine engine = Rengine.getMainEngine();
         if(engine == null)
@@ -3150,135 +3064,74 @@ public class HOPPlanner extends Policy {
             engine.eval(entry1.getKey()._sPVarName + "<-"+ entry1.getValue());
             if(check==0){
                 feature_format = entry1.getKey()._sPVarName;
-                check =1;
-
-            }
+                check =1; }
             else{
-                feature_format.concat(" + "+ entry1.getKey()._sPVarName);
-            }
-
-
-
+                feature_format.concat(" + "+ entry1.getKey()._sPVarName); }
         }
 
         engine.eval("target <-" + final_output_R_data );
-
         engine.eval("model<-earth( target ~ " + feature_format + ",nprune=2)");
         String rss_val =engine.eval("format(model$rss)").asString();
         String gcv_val =engine.eval("format(model$gcv)").asString();
-
         engine.eval("print(summary(model))");
         if(SHOW_PWL_NON_PWL) {
             System.out.println("THE GCV VALUE :" + gcv_val);
             System.out.println("The RSS VALUE :" + rss_val);
         }
         engine.eval("a=predict(model,1)");
-
-
         String earth_output = engine.eval("format(model,style='bf')").asString();
-
         long end_timer = System.currentTimeMillis();
-
-
-
-
         running_R_api = (double) end_timer - start_timer;
-
-
-
-
         //This will parse and give a EXPR Output.
         EXPR final_expr =parseEarthROutput(earth_output,input_variables,raw_terms);
-
         return(final_expr);
-
-
-
-
-
-
     }
 
 
     public EXPR parseEarthROutput(String earthOutput, ArrayList<PVAR_NAME> input_variables, ArrayList<RDDL.LTERM> raw_terms) throws Exception {
-
-
-
         String[] list_output = earthOutput.split("\n");
-
-
         ArrayList<String> string_pvar = new ArrayList<>();
         for(int i=0;i<input_variables.size();i++){
             string_pvar.add(input_variables.get(i)._sPVarName);
-
         }
-
-
         HashMap<String,Double> coefficient_mapping = new HashMap<>();
         HashMap<String,EXPR> hinge_function  = new HashMap<>();
-
         Double bias = 0.0;
         //Parsing things with equations.
         for(int i=0;i<list_output.length;i++){
             String temp_str = list_output[i].trim();
-
-
             if(temp_str.equals("")){continue;}
-
             //This is for Bias,
             if(!(temp_str.contains("-") || temp_str.contains("+"))){
                 bias =Double.parseDouble(temp_str);
-
             }
-
-
             if(temp_str.contains("*")){
                 temp_str = temp_str.replaceAll("\\s","");
                 temp_str = temp_str.replaceAll("\\+","");
                 String [] term_val = temp_str.split("\\*");
                 NumberFormat format = NumberFormat.getInstance();
-
                 Double coeffic = format.parse(term_val[0]).doubleValue();
-
                 coefficient_mapping.put(term_val[1],coeffic);
-
-
             }
-
-
             //This is for : bf1  h(53.2847-rlevel)
 
             if(temp_str.contains("bf") && temp_str.contains("h(")){
                 String[] term_val =temp_str.split("\\s");
-
                 String key_val = term_val[0];
                 String hinge_str = term_val[2];
-
                 hinge_str = hinge_str.replace("h(","");
                 hinge_str = hinge_str.replace(")","");
-
                 String [] hinge_values = hinge_str.split("-");
-
                 Double real_val = 0.0;
-
-
-
                 if(string_pvar.contains(hinge_values[0])){
-
                     real_val = Double.parseDouble(hinge_values[1]);
-
                     PVAR_EXPR temp_pvar_expr        = new PVAR_EXPR(hinge_values[0],raw_terms);
                     REAL_CONST_EXPR temp_const_expr = new REAL_CONST_EXPR(real_val);
-
                     RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_pvar_expr,temp_const_expr,"-");
                     RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
-
                     hinge_function.put(key_val,max_oper_expr);
                     if(SHOW_PWL_NON_PWL)
                         System.out.println("PWL_NON_PWL ::: " + max_oper_expr.toString());
-
-
-
                 }
                 if(string_pvar.contains(hinge_values[1])){
                     real_val = Double.parseDouble(hinge_values[0]);
@@ -3291,165 +3144,73 @@ public class HOPPlanner extends Policy {
                     hinge_function.put(key_val,max_oper_expr);
                     if(SHOW_PWL_NON_PWL)
                         System.out.println("PWL_NON_PWL ::: "+ max_oper_expr.toString());
-
-
-
-
                 }
-
-
             }
 
-
-
-
-
-
-
-
-
         }
-
-
         REAL_CONST_EXPR bias_expr = new REAL_CONST_EXPR(bias);
         RDDL.OPER_EXPR final_expr =new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0),bias_expr,"+");
-
-
         Integer temp_count = 0;
-
         for(String key: coefficient_mapping.keySet()){
-
             Double real_value = coefficient_mapping.get(key);
             REAL_CONST_EXPR temp_real_expr= new REAL_CONST_EXPR(real_value);
             RDDL.OPER_EXPR temp_oper_expr  = new RDDL.OPER_EXPR(temp_real_expr,hinge_function.get(key),"*");
-
             RDDL.OPER_EXPR temp_final_expr = final_expr;
             final_expr = new RDDL.OPER_EXPR(temp_final_expr,temp_oper_expr,"+");
         }
-
-
-
         return(final_expr);
-
-
-
     }
 
 
 
 
     public EXPR recursionSubstitution(EXPR e, HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value, ArrayList<PVAR_INST_DEF> action_value) throws Exception {
-
-
-
-        if(e.isConstant(constants,objects)){
-
-            double val        = e.getDoubleValue(constants,objects);
-            EXPR real_expr    = new REAL_CONST_EXPR(val);
-
-            return real_expr;
-
+        try{
+            if(e.isConstant(constants,objects)){
+                double val        = e.getDoubleValue(constants,objects);
+                EXPR real_expr    = new REAL_CONST_EXPR(val);
+                return real_expr;
+            }
+        }catch (Exception exe){
+            exe.printStackTrace();
         }
 
-
-
         if(e instanceof PVAR_EXPR){
-
-
-
             PVAR_NAME key = ((PVAR_EXPR) e)._pName;
-
-
-
             if(state_value.containsKey(key)){
                 HashMap<ArrayList<LCONST>,Object> t = state_value.get(((PVAR_EXPR) e)._pName);
-
                 //Value is Available
                 if(t.containsKey(((PVAR_EXPR) e)._alTerms)){
                     Object val = t.get(((PVAR_EXPR) e)._alTerms);
-
                     if(val instanceof Double){
-
                         variables_names.put(key,val);
                         return new REAL_CONST_EXPR((Double) val);
-
-
-
-                    }
-                    else{
-                        throw new EvalException("THis case not Handled");
-                    }
-
-
-
-
+                    } else{
+                        throw new EvalException("THis case not Handled"); }
                 }
                 else{
-
                     //Get the Default Value.
-
                     Object val = rddl_state_default.get(key);
-
                     if(val instanceof Double){
                         variables_names.put(key,val);
-
                         return new REAL_CONST_EXPR((Double) val);
-
-
-
-                    }
-                    else{
+                    } else{
                         throw new EvalException("THis case not Handled");
                     }
-
-
-
-
-
                 }
-
-
-
             }
-
-
-
-
-
-
-
-
 
         }
 
-
-
-
-
         if(e instanceof RDDL.OPER_EXPR){
-
             EXPR e1   = ((RDDL.OPER_EXPR) e)._e1;
             EXPR e2   = ((RDDL.OPER_EXPR) e)._e2;
             String op = ((RDDL.OPER_EXPR) e)._op;
-
-
-
             EXPR real_expr_1  = recursionSubstitution(e1,state_value,action_value);
             EXPR real_expr_2  = recursionSubstitution(e2,state_value,action_value);
-
-
             EXPR new_oper = new RDDL.OPER_EXPR( real_expr_1, real_expr_2,op);
-
             return new_oper;
-
-
-
-
-
-
-
         }
-
 
 
 

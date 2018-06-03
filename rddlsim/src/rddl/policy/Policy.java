@@ -28,7 +28,8 @@ public abstract class Policy {
 	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
 	public double TIME_LIMIT_MINS = 10;
 	public Boolean DO_NPWL_PWL = true;
-	public Boolean TIME_FUTURE_CACHE_USE = false;
+	public Boolean TIME_FUTURE_CACHE_USE = true;
+
 
 
 	public Policy() {
@@ -105,9 +106,10 @@ public abstract class Policy {
 
 
 
-	public Pair<Integer,Integer> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
-                                                              String future_gen_type,String hindsight_strat, RDDL rddl_object, State s) throws Exception{
-		return new Pair<>(4,5);
+	public Pair<Boolean,Pair<Integer,Integer>> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
+                                                              String future_gen_type,String hindsight_strat, RDDL rddl_object, State s, Double total_explo_time, Double optimization_time_out) throws Exception{
+        Pair<Integer,Integer> safe_parameters = new Pair(4,5);
+	    return new Pair(true,safe_parameters);
 	}
 
 

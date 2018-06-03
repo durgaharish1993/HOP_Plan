@@ -140,6 +140,7 @@ public class Client {
 		String gurobi_timeout  = args[9];
 		String future_sampling = args[10];
 		String hindsight_stra  = args[11];
+		Double per_explo_time  = Double.valueOf(args[12]);
 
 
 
@@ -182,6 +183,7 @@ public class Client {
 
 			InputSource isrc = Server.readOneMessage(isr);
 			Client client = processXMLSessionInit(p, isrc);
+			Double timeAllowed = Double.valueOf(client.timeAllowed);
 			System.out.println(client.id + ":" + client.numRounds);
 			///################################################################################################################
 			//Instead of getting the file, we need to ge the instance and domain from a file.
@@ -230,20 +232,25 @@ public class Client {
 //			Integer n_futures, Integer n_lookahead, String inst_name, String gurobi_timeout,
 //					String future_gen_type,String hindsight_strat, RDDL rddl_object, State s
 //
+            //This piece of code allocates exploration time...
 			policy = (Policy)c.getConstructor(
 					new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
 					Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
 			policy.setRDDL(rddl);
 			policy.setRandSeed(randomSeed);
 
-			Pair<Integer,Integer> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME,instanceName,Integer.valueOf(n_futures),
-					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
+			Double total_explo_time = timeAllowed *(per_explo_time/100);
+
+
+			Pair<Boolean,Pair<Integer,Integer>> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME,instanceName,Integer.valueOf(n_futures),
+					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state,total_explo_time,Double.valueOf(gurobi_timeout));
 
 			////////////////////////////////////////////////////////////////
 			//parameters.set(2, best_parameters._o1.toString()); // this is for setting lookahead
 			//parameters.set(5, best_parameters._o2.toString());
-            n_lookahead=best_parameters._o1.toString();
-            n_futures = best_parameters._o2.toString();
+            Boolean NPWL_TO_PWL = best_parameters._o1;
+            n_lookahead=best_parameters._o2._o1.toString();
+            n_futures = best_parameters._o2._o2.toString();
             policy = (Policy)c.getConstructor(
                     new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
                     Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
@@ -280,6 +287,7 @@ public class Client {
 				}
 				int h =0;
 				boolean round_ended_early = false;
+				long step_start_time = System.currentTimeMillis();
 				for(; h < instance._nHorizon; h++ ) {
 
 					long startTime = System.currentTimeMillis();
@@ -288,9 +296,11 @@ public class Client {
 					Element e = parseMessage(p, isrc);
 					round_ended_early = e.getNodeName().equals(Server.ROUND_END);
 					//This is added by Harish, This is to get timeleft at the current step and number of round remaining.
-//					Double timeleft_round = Double.parseDouble(Server.TIME_LEFT);
-//					Integer rounds_left   = Integer.parseInt(Server.NUM_ROUNDS) - Integer.parseInt(Server.ROUND_NUM);
-//					Integer steps_left    = instance._nHorizon - h +1 ;
+					long step_end_time        = System.currentTimeMillis();
+					Double timeleft_round       =timeLeft - Double.valueOf(step_end_time - step_start_time);
+					Integer rounds_left         = client.numRounds - r;
+					Integer steps_round_left    = instance._nHorizon - h +1 ;
+					Double avg_timeout_gurobi_step=getTimeOutForGurobi(timeleft_round,rounds_left,steps_round_left,instance._nHorizon);
 
 					if (round_ended_early)
 						break;
@@ -317,13 +327,15 @@ public class Client {
 					//policy.TIME_LIMIT_MINS
 					//policy.TIME_LIMIT_MINS = timeforOptimizer;
 					//policy.DO_NPWL_PWL = false;
+                    policy.DO_NPWL_PWL = NPWL_TO_PWL;
 					if(policy.DO_NPWL_PWL){
 						//This code is for random action
 						policy.runRandompolicyForState(state);
 						//Convert NPWL to PWL
 						policy.convertNPWLtoPWL(state);
-
 					}
+					//This will set TIME_LIMIT_MINS to avg of time left per time-step
+					policy.TIME_LIMIT_MINS = avg_timeout_gurobi_step;
 					ArrayList<PVAR_INST_DEF> actions =
 							policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
@@ -365,18 +377,10 @@ public class Client {
 
 
 	static Double getTimeOutForGurobi(Double total_time_left, Integer rounds_remaining, Integer steps_remaining, Integer horizon){
-
-
-
 		Integer total_steps = (rounds_remaining * horizon) + steps_remaining;
-
 		Double time_per_step = total_time_left/total_steps;
 		time_per_step = time_per_step/(1000*60);
-
-
 		return time_per_step;
-
-
 	}
 
 

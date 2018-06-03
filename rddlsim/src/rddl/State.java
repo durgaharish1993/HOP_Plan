@@ -480,10 +480,10 @@ public class State {
 			_actions.get(p).clear();
 		int non_def = setPVariables(_actions, actions);
 
-		// Check max-nondef actions
-		if (non_def > _nMaxNondefActions)
-			throw new EvalException("Number of non-default actions (" + non_def +
-					") exceeds limit (" + _nMaxNondefActions + ")");
+//		// Check max-nondef actions
+//		if (non_def > _nMaxNondefActions)
+//			throw new EvalException("Number of non-default actions (" + non_def +
+//					") exceeds limit (" + _nMaxNondefActions + ")");
 
 		// Check state-action constraints
 		//This is Added by Harish.
