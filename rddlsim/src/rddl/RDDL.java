@@ -11,10 +11,10 @@ package rddl;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import gurobi.*;
 import org.apache.commons.collections4.map.AbstractReferenceMap;
 import org.apache.commons.collections4.map.ReferenceMap;
@@ -1046,6 +1046,15 @@ public class RDDL {
 			return this;
 		}
 
+        public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
+            throw new Exception("This is not defined, LTERM");
+
+        }
+
+
+
 		@Override
 		public EXPR addTerm( final LVAR new_term ,
 							 Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -1089,7 +1098,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException(toString());
 		}
 
@@ -1147,7 +1156,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException(toString());
 		}
 
@@ -1274,8 +1283,8 @@ public class RDDL {
 		public GRBVar addGRBObjectiveTerm(GRBModel model,
 				  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				  Map<TYPE_NAME, OBJECTS_DEF> objects,
-				  Map<PVAR_NAME, Character> type_map) throws Exception{
-			return _pvarExpr.addGRBObjectiveTerm(model, constants, objects, type_map);
+				  Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
+			return _pvarExpr.addGRBObjectiveTerm(model, constants, objects, type_map,hmtypes);
 		}
 
 		@Override
@@ -1290,8 +1299,8 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects,
-								   Map<PVAR_NAME, Character> type_map) throws Exception {
-			return _pvarExpr.getGRBConstr(sense, model, constants, objects, type_map);
+								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
+			return _pvarExpr.getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
 		}
 
 		public String toString() {
@@ -1419,87 +1428,89 @@ public class RDDL {
 		}
 	}
 
-	// Immutable... making public to avoid unnecessary
-	// method calls, relying on user to respect immutability
-	public static class ENUM_VAL extends LCONST {
-		public Integer _intVal = null;
-		public ENUM_VAL(String enum_name) {
-			super(enum_name);
 
-			if (enum_name.charAt(0) != '@' && !enum_name.equals("default")) { // I don't recall why PVAR_EXPR.DEFAULT is an ENUM_VAL, but accept this as special case
-				System.out.println("FATAL ERROR (LANGUAGE REQUIREMENT): Enum '" + enum_name + "' currently must defined with a leading @");
-				System.exit(1);
-			}
 
-			// Allow enums to be interpreted as ints if the part after the @ is an int
-			try {
-				_intVal = Integer.parseInt(enum_name.substring(1));
-			} catch(NumberFormatException nfe) {
-				_intVal = null;
-			}
-		}
+//	// Immutable... making public to avoid unnecessary
+//	// method calls, relying on user to respect immutability
 
-		//This is Start of Harish Added
+    public static class ENUM_VAL extends LCONST {
+        public Integer _intVal = null;
 
 
 
-		@Override
-		public EXPR getMean(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+        public ENUM_VAL(String enum_name) {
+            super(enum_name);
 
-			System.out.println("This class is : "+ toString());
-			throw  new UnsupportedOperationException();
+            if (enum_name.charAt(0) != '@' && !enum_name.equals("default")) { // I don't recall why PVAR_EXPR.DEFAULT is an ENUM_VAL, but accept this as special case
+                System.out.println("FATAL ERROR (LANGUAGE REQUIREMENT): Enum '" + enum_name + "' currently must defined with a leading @");
+                System.exit(1);
+            }
+
+            // Allow enums to be interpreted as ints if the part after the @ is an int
+            try {
+                _intVal = Integer.parseInt(enum_name.substring(1));
+            } catch(NumberFormatException nfe) {
+                _intVal = null;
+            }
+        }
+
+        @Override
+        protected char getGRB_Type(
+                Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+                Map<PVAR_NAME, Character> type_map) throws Exception {
+            if (_intVal != null){
+                return GRB.INTEGER;
+            }
+            return super.getGRB_Type(constants, type_map);
+        }
+
+        @Override
+        public EXPR getMean(
+                Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+                Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+            if (_intVal != null){
+                return new INT_CONST_EXPR(_intVal);
+            }
+            return super.getMean(constants, objects);
+        }
+
+        @Override
+        public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+                                            Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+                                            Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
+            if (_intVal != null){
+                return new INT_CONST_EXPR(_intVal);
+            }
+            return super.sampleDeterminization(rand, constants, objects);
+        }
+
+        @Override
+        public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
+            if (_intVal != null){
+                return new INT_CONST_EXPR(_intVal).getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
+            }
+            return super.getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
+        }
+
+        @Override
+        public EXPR addTerm(LVAR new_term,
+                            Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+                            Map<TYPE_NAME, OBJECTS_DEF> objects) {
+            return this;
+        }
+
+        @Override
+        public String toSuppString() {
+            return toString();
+        }
+
+    }
 
 
-		}
-
-		@Override
-		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
-											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-											Map<TYPE_NAME, OBJECTS_DEF> objects ) throws Exception{
-
-			System.out.print("This class is : " + toString());
-			throw new UnsupportedOperationException();
 
 
-		}
-
-
-
-
-		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
-			throw new Exception("This is not defined, ENUM_VAL");
-		}
-
-		@Override
-		public EXPR addTerm(LVAR new_term,
-							Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}
-
-	/*
-
-
-		This is old code.....
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}
-*/
-		//This is End of Harish Added
-
-
-
-
-		@Override
-		public String toSuppString() {
-			return toString();
-		}
-
-	}
 
 	// Immutable... making public to avoid unnecessary
 	// method calls, relying on user to respect immutability
@@ -1534,7 +1545,7 @@ public class RDDL {
 
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new Exception("This is not defined, OBJECTVAL");
 		}
 
@@ -1933,12 +1944,12 @@ public class RDDL {
 		public GRBVar addGRBObjectiveTerm( final GRBModel model ,
 										   final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										   final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-										   Map<PVAR_NAME, Character> type_map ) throws Exception {
+										   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes ) throws Exception {
 //			assert( isPiecewiseLinear(constants, objects) ); cant check here without expansion of quantifiers
 
 			try {
 				GRBExpr old_obj = model.getObjective();
-				final GRBVar this_var = getGRBConstr( GRB.EQUAL, model, constants, objects,  type_map );
+				final GRBVar this_var = getGRBConstr( GRB.EQUAL, model, constants, objects,  type_map, hmtypes);
 				GRBLinExpr new_obj = new GRBLinExpr( (GRBLinExpr)old_obj );
 				new_obj.addTerm(1.0d, this_var );
 				model.setObjective( new_obj );
@@ -1951,10 +1962,10 @@ public class RDDL {
 			return null;
 		}
 
-		public abstract GRBVar getGRBConstr( final char sense, final GRBModel model ,
-									final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-									final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-									Map<PVAR_NAME, Character> type_map ) throws Exception;
+		public abstract GRBVar getGRBConstr(final char sense, final GRBModel model,
+											final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											final Map<TYPE_NAME, OBJECTS_DEF> objects,
+											Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception;
 
 		public abstract int hashCode();
 
@@ -1976,7 +1987,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented,DiracDelta" + this.toString());
 		}
 
@@ -2082,7 +2093,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented, KronDelta" + this.toString());
 		}
 
@@ -2198,7 +2209,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Uniform" + this.toString());
 		}
 
@@ -2357,7 +2368,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented, Normal"+this.toString());
 
 		}
@@ -2530,7 +2541,7 @@ public class RDDL {
 
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented, Dirichlet"+ this.toString());
 		}
 
@@ -2654,7 +2665,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Multinomial" + this.toString());
 		}
 
@@ -2943,9 +2954,9 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model,
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects,
-				Map<PVAR_NAME, Character> type_map) throws Exception {
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects,
+								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented " + this.toString());
 		}
 
@@ -3155,7 +3166,7 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Exponential" + this.toString());
 		}
 
@@ -3270,7 +3281,7 @@ public class RDDL {
 		public EXPR _exprScale;
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			throw new NotImplementedException("This method is not implemented,Weibull" + this.toString());
 		}
 
@@ -3389,7 +3400,7 @@ public class RDDL {
 		public EXPR _exprScale;
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 
 			throw new NotImplementedException("This method is not implemented,Gamma" + this.toString());
 
@@ -3522,7 +3533,7 @@ public class RDDL {
 		public EXPR _exprMean;
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 
 			throw new NotImplementedException("This method is not implemented,Poisson" + this.toString());
 
@@ -3716,7 +3727,7 @@ public class RDDL {
 
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 
 			throw new NotImplementedException("This method is not implemented,Bernoulli" + this.toString());
 
@@ -3941,8 +3952,8 @@ public class RDDL {
 		}
 
 		public GRBVar getGRBConstr(char sense, GRBModel model,
-								   Map<PVAR_NAME, Map< ArrayList<LCONST>,Object > > constants, Map<TYPE_NAME,OBJECTS_DEF> objects,
-								   Map<PVAR_NAME, Character> type_map ) throws Exception {
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects,
+								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 //			if( grb_cache.containsKey( this ) ){
 //				return grb_cache.get( this );
 //			}
@@ -4239,10 +4250,10 @@ public class RDDL {
 
 		public ArrayList<STRUCT_EXPR_MEMBER> _alSubExpr;
 
-		public  GRBVar getGRBConstr( final char sense, final GRBModel model ,
-				final Map< PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-				final Map< TYPE_NAME, OBJECTS_DEF > objects ,
-				Map<PVAR_NAME, Character> type_map ) throws Exception{
+		public  GRBVar getGRBConstr(final char sense, final GRBModel model,
+									final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+									final Map<TYPE_NAME, OBJECTS_DEF> objects,
+									Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 			throw new UnsupportedOperationException(toString());
 		}
 
@@ -4455,9 +4466,9 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants ,
-									Map< TYPE_NAME, OBJECTS_DEF > objects,  Map<PVAR_NAME, Character> type_map ) throws Exception{
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
@@ -4470,12 +4481,12 @@ public class RDDL {
 				//If Reducible turns out to be a REAL_CONST_EXPR
 				EXPR reducible = reduce( _e1, _e2, _op, constants, objects );
 				if( !( reducible instanceof OPER_EXPR ) ){
-					GRBVar that_var = reducible.getGRBConstr(sense, model, constants, objects, type_map );
+					GRBVar that_var = reducible.getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
 					model.addConstr(this_var, GRB.EQUAL, that_var, name_map.get(toString())+"="+name_map.get(reducible.toString()));
 					return this_var;
 				}
-				GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map );
-				GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map );
+				GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes);
+				GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes);
 
 				final String suffix = name_map.get(_e1.toString()) + _op + name_map.get(_e2.toString());
 				final String nam = name_map.get(toString())+"="+suffix;
@@ -4510,7 +4521,7 @@ public class RDDL {
 						//make if expr using v1 and v2
 						try {
 							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, _e2, COMP_EXPR.LESSEQ ) ,_e1, _e2 );
-							GRBVar if_min_var = ife.getGRBConstr( sense, model, constants, objects , type_map);
+							GRBVar if_min_var = ife.getGRBConstr( sense, model, constants, objects , type_map, hmtypes);
 							model.addConstr( this_var, GRB.EQUAL, if_min_var,  nam );
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -4520,7 +4531,7 @@ public class RDDL {
 					case "max" :
 						try {
 							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, _e2, COMP_EXPR.GREATEREQ ) ,_e1, _e2 );
-							GRBVar ife_max_var = ife.getGRBConstr( sense, model, constants, objects, type_map );
+							GRBVar ife_max_var = ife.getGRBConstr( sense, model, constants, objects, type_map, hmtypes);
 							model.addConstr(this_var, GRB.EQUAL, ife_max_var, nam );
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -5085,9 +5096,9 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-			Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception{
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 
 			try{
 				if( grb_cache.containsKey( this ) ){
@@ -5096,7 +5107,7 @@ public class RDDL {
 
 				if( isConstant(constants, objects) ){
 					return new REAL_CONST_EXPR( getDoubleValue(constants, objects) )
-						.getGRBConstr(sense, model, constants, objects, type_map);
+						.getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
 				}
 
 				List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants);
@@ -5106,7 +5117,7 @@ public class RDDL {
 						GRBVar this_var = getGRBVar(this, model, constants, objects , type_map );
 						GRBLinExpr total = new GRBLinExpr();
 						for( final EXPR e : terms ){
-							GRBVar v = e.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map );
+							GRBVar v = e.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 							total.addTerm( 1.0d, v );
 							sum_str=sum_str+"+"+name_map.get(e.toString());
 						}
@@ -5137,7 +5148,7 @@ public class RDDL {
 
 						try {
 							GRBVar min_var = getGRBVar(this, model, constants, objects , type_map );
-							GRBVar that_var = min_expr.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
+							GRBVar that_var = min_expr.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 							model.addConstr( min_var , GRB.EQUAL, that_var, name_map.get(toString())+"="+name_map.get(min_expr.toString()) );
 							//					model.update();
 							return min_var;
@@ -5159,7 +5170,7 @@ public class RDDL {
 
 						try {
 							GRBVar max_var = getGRBVar(this, model, constants, objects , type_map );
-							GRBVar that_var = max_expr.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
+							GRBVar that_var = max_expr.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 							model.addConstr( max_var , GRB.EQUAL, that_var, name_map.get(toString())+"="+name_map.get(max_expr.toString()) );
 							//					model.update();
 							return max_var;
@@ -5397,6 +5408,17 @@ public class RDDL {
 
 		public final static LCONST DEFAULT = new ENUM_VAL("default");
 
+//		public int enum_to_int(){
+//
+//
+//
+//
+//			this._
+//
+//
+//
+//
+//        }
 		@Override
 		public EXPR sampleDeterminization(final RandomDataGenerator rand,
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -5447,9 +5469,9 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-			Map<TYPE_NAME, OBJECTS_DEF > objects,  Map<PVAR_NAME, Character> type_map ) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				final GRBVar lookup = grb_cache.get( this );
 				assert ( lookup != null );
@@ -5457,6 +5479,9 @@ public class RDDL {
 			}
 			assert( isPiecewiseLinear(constants, objects) );
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map);
+
+
+			//_tmDomainNodes
 
 			if( isConstant(constants, objects) ){
 				GRBLinExpr expression = new GRBLinExpr();
@@ -6075,12 +6100,12 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model,
-					   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-					   Map<TYPE_NAME, OBJECTS_DEF> objects,
-					   Map<PVAR_NAME, Character> type_map) throws Exception {
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects,
+								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			if( isConstant(constants, objects) ){
 				return new REAL_CONST_EXPR( getDoubleValue(constants, objects) )
-					.getGRBConstr(sense, model, constants, objects, type_map);
+					.getGRBConstr(sense, model, constants, objects, type_map,hmtypes );
 			}
 
 			if( grb_cache.containsKey(this) ){
@@ -6126,7 +6151,7 @@ public class RDDL {
 				}
 
 				final GRBVar this_var = getGRBVar(this, model, constants, objects, type_map);
-				GRBVar ret_var = ret.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
+				GRBVar ret_var = ret.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map,hmtypes );
 				model.addConstr( this_var, sense, ret_var, name_map.get(toString())+"="+name_map.get(ret.toString()) );
 				return this_var;
 			}catch( Exception exc ){
@@ -6487,9 +6512,9 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-			Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-			Map<TYPE_NAME, OBJECTS_DEF > objects, Map< PVAR_NAME, Character> type_map ) throws Exception{
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
@@ -6513,7 +6538,7 @@ public class RDDL {
 			 *		F-Mz <= y <= F+Mz
 			 */
 			try{
-				GRBVar z = _test.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
+				GRBVar z = _test.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 
 				final GRBLinExpr m_z = new GRBLinExpr();
 				m_z.addTerm( M, z);
@@ -6529,8 +6554,8 @@ public class RDDL {
 				minus_m_one_minus_z.addConstant(-1d*M);
 				minus_m_one_minus_z.addTerm( M, z);
 
-				final GRBVar E = _trueBranch.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
-				final GRBVar F = _falseBranch.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map);
+				final GRBVar E = _trueBranch.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map, hmtypes);
+				final GRBVar F = _falseBranch.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 
 				//E-M(1-z) <= y <= E+M(1-z)
 				GRBLinExpr foo1 = new GRBLinExpr();
@@ -6740,8 +6765,8 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model,
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map) throws Exception {
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 
 			EXPR ret = null;
 			ret = new OPER_EXPR(
@@ -6756,7 +6781,7 @@ public class RDDL {
 								OPER_EXPR.TIMES), OPER_EXPR.PLUS);
 
 			}
-			return ret.getGRBConstr(sense, model, constants, objects, type_map);
+			return ret.getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
 		}
 
 		@Override
@@ -7197,19 +7222,19 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map ) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			if( _alVariables.size() == 0 ){
 				return _expr.getGRBConstr(sense, model, constants,
-						objects, type_map);
+						objects, type_map, hmtypes);
 			}
 			EXPR expr  = expandBooleanQuantifier(constants, objects );
-			GRBVar expr_var = expr.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map );
+			GRBVar expr_var = expr.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 			try {
 				GRBVar this_var = getGRBVar(this, model, constants, objects , type_map );
 				model.addConstr( this_var, GRB.EQUAL, expr_var, name_map.get(toString())+"="+name_map.get(expr_var.toString()) );
@@ -7499,16 +7524,16 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-									Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map ) throws Exception{
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			final int n = _alSubNodes.size();
 			if( n == 1 ){
-				return _alSubNodes.get(0).getGRBConstr(sense, model, constants, objects, type_map);
+				return _alSubNodes.get(0).getGRBConstr(sense, model, constants, objects, type_map, hmtypes);
 			}
 
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map );
@@ -7516,16 +7541,16 @@ public class RDDL {
 
 			if(!_sConn.equals(IMPLY)){
 				for( final BOOL_EXPR  b : _alSubNodes ){
-					GRBVar v = b.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map);
+					GRBVar v = b.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 					sum.addTerm(1.0d, v);
 				}
 			}else if(n==2 && _sConn.equals(IMPLY)){
 				//This is the case for "=>" operator
 				NEG_EXPR temp_neg = new NEG_EXPR(_alSubNodes.get(0));
-				GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
+				GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes);
 				sum.addTerm(1.0d,v);
 				BOOL_EXPR b = _alSubNodes.get(1);
-				GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map);
+				GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes);
 				sum.addTerm(1.0d,v1);
 			}
 			try{
@@ -8165,17 +8190,17 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects,
-				Map<PVAR_NAME, Character> type_map ) throws Exception {
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects,
+								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			assert( isPiecewiseLinear(constants, objects) );
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map);
-			GRBVar inner_var = _subnode.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map);
+			GRBVar inner_var = _subnode.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes);
 			//[z = !x1] is z = 1-x
 			GRBLinExpr one_minus_x = new GRBLinExpr();
 			one_minus_x.addConstant(1);
@@ -8257,7 +8282,7 @@ public class RDDL {
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map< PVAR_NAME, Character > type_map) throws Exception {
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception {
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
@@ -8492,16 +8517,16 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr( char sense, GRBModel model,
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects , Map<PVAR_NAME, Character> type_map ) throws Exception{
+		public GRBVar getGRBConstr(char sense, GRBModel model,
+								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes) throws Exception{
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map );
-			GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map);
-			GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map);
+			GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes);
+			GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes);
 
 			final GRBLinExpr minus_M_z = new GRBLinExpr();
 			minus_M_z.addTerm( -1.0d*M, this_var);

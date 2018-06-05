@@ -1,12 +1,9 @@
 package rddl.det.comMipNew;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.NumberFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -16,7 +13,6 @@ import java.util.stream.Collectors;
 
 //import org.apache.commons.math3.random.RandomDataGenerator;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import gurobi.*;
 import gurobi.GRB.StringAttr;
 import org.apache.commons.math3.random.RandomDataGenerator;
@@ -34,11 +30,9 @@ import rddl.RDDL.PVAR_INST_DEF;
 import rddl.RDDL.PVAR_NAME;
 import rddl.RDDL.REAL_CONST_EXPR;
 import rddl.State;
-import rddl.det.comMip.HOPTranslate;
+//import rddl.det.comMip.HOPTranslate;
 import rddl.policy.Policy;
-import rddl.viz.StateViz;
 import util.Pair;
-import util.Timer;
 
 public class HOPPlanner extends Policy {
 
@@ -88,6 +82,7 @@ public class HOPPlanner extends Policy {
     private String OUTPUT_FILE = "model.lp";
     protected HashMap<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects;
     protected Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants = new HashMap<>();
+    protected HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes ;
     protected ArrayList< LCONST > TIME_TERMS = new ArrayList<>();
     protected HashMap<PVAR_NAME,  Character> type_map = new HashMap<>();
     //these are saved between invocations of getActions()
@@ -305,7 +300,7 @@ public class HOPPlanner extends Policy {
 
         constants.putAll( getConsts( all_consts ) );
         //This is overriding the default values ...
-
+        hmtypes = rddl_state._hmTypes;
         if(rddl_state._nonfluents!=null){
             for(PVAR_NAME pname : rddl_state._nonfluents.keySet()){
                 HashMap< ArrayList<LCONST>, Object>  val = rddl_state._nonfluents.get(pname);
@@ -624,7 +619,7 @@ public class HOPPlanner extends Policy {
         }
         objects.put( TIME_TYPE,  new RDDL.OBJECTS_DEF(  TIME_TYPE._STypeName, TIME_TERMS ) );
 
-        if( future_gen.equals( HOPTranslate.FUTURE_SAMPLING.MEAN ) ){
+        if( future_gen.equals( FUTURE_SAMPLING.MEAN ) ){
             num_futures = 1;
         }
         for( int f = 0 ; f < this.num_futures; ++f ){
@@ -708,7 +703,7 @@ public class HOPPlanner extends Policy {
                                                     EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
                                                     synchronized( static_grb_model ){
                                                         try {
-                                                            GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map);
+                                                            GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
                                                         } catch (Exception e) {
                                                             e.printStackTrace();
                                                         }
@@ -882,14 +877,14 @@ public class HOPPlanner extends Policy {
 
                                                                 //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                 GRBVar lhs_var = lhs_future.getGRBConstr(
-                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map);
+                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
 
 
                                                                 if (SHOW_GUROBI_ADD)
                                                                     System.out.println(rhs_future.toString());
 
                                                                 GRBVar rhs_var = rhs_future.getGRBConstr(
-                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map);
+                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
 
                                                                 //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                 final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
@@ -1014,17 +1009,14 @@ public class HOPPlanner extends Policy {
                                                 .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
 
 
-                                        //}
-                                        if(this_tf.toString().equals("(0.71 >= gas-y($time0, $future0))")){
-                                            System.out.println("dkjfkdjfkdkfjdkf");
-                                        }
+
 
                                         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+this_tf.toString());
                                         synchronized (grb_model) {
 
                                             if (SHOW_GUROBI_ADD)
                                                 System.out.println(this_tf);
-                                            GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+                                            GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
 
                                             String nam = RDDL.EXPR.getGRBName(this_tf);
                                             GRBConstr this_constr = grb_model.addConstr(constrained_var, GRB.EQUAL, 1, nam);
@@ -1058,7 +1050,7 @@ public class HOPPlanner extends Policy {
                 synchronized( grb_model ){
                     GRBVar gvar = null;
                     try {
-                        gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+                        gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1276,7 +1268,7 @@ public class HOPPlanner extends Policy {
 
                                 GRBVar this_future_var = null;
 
-                                this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+                                this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
 
                                 saved_expr.add(subs_tf);
                                 //System.out.println(saved_expr);
@@ -1430,10 +1422,10 @@ public class HOPPlanner extends Policy {
 
                                                                     try {
                                                                         GRBVar lhs_var = lhs_future.getGRBConstr(
-                                                                                GRB.EQUAL, grb_model, constants, objects, type_map);
+                                                                                GRB.EQUAL, grb_model, constants, objects, type_map,hmtypes );
 
                                                                         GRBVar rhs_var = rhs_future.getGRBConstr(
-                                                                                GRB.EQUAL, grb_model, constants, objects, type_map);
+                                                                                GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes );
 
                                                                         //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                         final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
@@ -1516,7 +1508,7 @@ public class HOPPlanner extends Policy {
                     }
                     GRBVar rhs_var = null;
 
-                    rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map );
+                    rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
 
                     PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
                     EXPR non_stationary_pvar_expr = stationary_pvar_expr
@@ -1534,7 +1526,7 @@ public class HOPPlanner extends Policy {
 
                             GRBVar lhs_var = null;
 
-                            lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map);
+                            lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
 
 
                             final String nam = RDDL.EXPR.getGRBName(this_future_init_state) +
@@ -2161,7 +2153,7 @@ public class HOPPlanner extends Policy {
             public void accept( RDDL.BOOL_EXPR t) {
                 synchronized( grb_model ){
                     try {
-                        GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map);
+                        GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
 
                         GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
                         saved_expr.add( t ); // saved_vars.add( gvar );
