@@ -29,6 +29,7 @@ import rddl.RDDL.PVAR_EXPR;
 import rddl.RDDL.PVAR_INST_DEF;
 import rddl.RDDL.PVAR_NAME;
 import rddl.RDDL.REAL_CONST_EXPR;
+import rddl.RDDL.ENUM_VAL;
 import rddl.State;
 //import rddl.det.comMip.HOPTranslate;
 import rddl.policy.Policy;
@@ -83,6 +84,7 @@ public class HOPPlanner extends Policy {
     protected HashMap<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects;
     protected Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants = new HashMap<>();
     protected HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes ;
+    protected HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables;
     protected ArrayList< LCONST > TIME_TERMS = new ArrayList<>();
     protected HashMap<PVAR_NAME,  Character> type_map = new HashMap<>();
     //these are saved between invocations of getActions()
@@ -123,9 +125,9 @@ public class HOPPlanner extends Policy {
     public static enum FUTURE_SAMPLING{
         SAMPLE {
             @Override
-            public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects )   {
+            public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables )   {
                 try {
-                    return e.sampleDeterminization(rand,constants,objects);
+                    return e.sampleDeterminization(rand,constants,objects, hmtypes, hm_variables);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }return null;
@@ -133,9 +135,9 @@ public class HOPPlanner extends Policy {
             }
         }, MEAN {
             @Override
-            public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects ) {
+            public EXPR getFuture(EXPR e, RandomDataGenerator rand, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  ) {
                 try {
-                    return e.getMean(constants, objects);
+                    return e.getMean(constants, objects, hmtypes, hm_variables );
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
@@ -144,7 +146,7 @@ public class HOPPlanner extends Policy {
         };
 
         public abstract EXPR getFuture( final EXPR e , final RandomDataGenerator rand,
-                                        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects );
+                                        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  );
     }
 
     protected int num_futures = 0;
@@ -301,6 +303,7 @@ public class HOPPlanner extends Policy {
         constants.putAll( getConsts( all_consts ) );
         //This is overriding the default values ...
         hmtypes = rddl_state._hmTypes;
+        hm_variables = rddl_state._hmPVariables;
         if(rddl_state._nonfluents!=null){
             for(PVAR_NAME pname : rddl_state._nonfluents.keySet()){
                 HashMap< ArrayList<LCONST>, Object>  val = rddl_state._nonfluents.get(pname);
@@ -687,23 +690,23 @@ public class HOPPlanner extends Policy {
                     @Override
                     public void accept(ArrayList<LCONST> terms) {
                         try{
-                            EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms ).addTerm(TIME_PREDICATE, constants, objects)
-                                    .addTerm( future_PREDICATE, constants, objects );
+                            EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms ).addTerm(TIME_PREDICATE, constants, objects, hmtypes,hm_variables )
+                                    .addTerm( future_PREDICATE, constants, objects,  hmtypes,hm_variables  );
                             TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
                                 @Override
                                 public void accept(LCONST time_term ) {
                                     try{
                                         EXPR this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term),
-                                                constants, objects);
+                                                constants, objects,  hmtypes,hm_variables  );
                                         future_TERMS.parallelStream().forEach( new Consumer< LCONST >() {
                                             @Override
                                             public void accept(LCONST future_term) {
                                                 //System.out.println(this_t.toString());
                                                 try{
-                                                    EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects );
+                                                    EXPR this_tf =this_t.substitute( Collections.singletonMap( future_PREDICATE, future_term ), constants, objects,  hmtypes,hm_variables  );
                                                     synchronized( static_grb_model ){
                                                         try {
-                                                            GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
+                                                            GRBVar gvar = this_tf.getGRBConstr( GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes, hm_variables);
                                                         } catch (Exception e) {
                                                             e.printStackTrace();
                                                         }
@@ -820,7 +823,7 @@ public class HOPPlanner extends Policy {
                                         if(substitute_expression_cache.containsKey(key_lhs)){
                                             new_lhs_stationary = substitute_expression_cache.get(key_lhs);
                                         }else{
-                                            new_lhs_stationary = e_lhs.substitute(subs, constants, objects);
+                                            new_lhs_stationary = e_lhs.substitute(subs, constants, objects,  hmtypes,hm_variables  );
                                             substitute_expression_cache.put(key_lhs,new_lhs_stationary);
                                         }
 
@@ -828,20 +831,20 @@ public class HOPPlanner extends Policy {
                                         if(substitute_expression_cache.containsKey(key_rhs)){
                                             new_rhs_stationary = substitute_expression_cache.get(key_rhs);
                                         }else{
-                                            new_rhs_stationary = e_rhs.substitute(subs, constants, objects);
+                                            new_rhs_stationary = e_rhs.substitute(subs, constants, objects,  hmtypes,hm_variables  );
                                             substitute_expression_cache.put(key_rhs,new_lhs_stationary);
                                         }
                                     }else{
-                                         new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects);
-                                         new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+                                         new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects,  hmtypes,hm_variables  );
+                                         new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects,  hmtypes,hm_variables  );
 
                                     }
 
 
-                                    EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects);
-                                    EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects);
+                                    EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects,  hmtypes,hm_variables  )
+                                            .addTerm(future_PREDICATE, constants, objects,  hmtypes,hm_variables  );
+                                    EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects,  hmtypes,hm_variables  )
+                                            .addTerm(future_PREDICATE, constants, objects,  hmtypes,hm_variables  );
 
                                     time_terms_indices.stream().forEach(new Consumer<Integer>() {
                                         @Override
@@ -853,38 +856,38 @@ public class HOPPlanner extends Policy {
                                                         return;
                                                     }
                                                     lhs_with_f_temp = lhs_with_tf.substitute(
-                                                            Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects);
+                                                            Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects,  hmtypes,hm_variables  );
                                                 } else {
                                                     lhs_with_f_temp = lhs_with_tf.substitute(
-                                                            Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+                                                            Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects,  hmtypes,hm_variables  );
                                                 }
                                                 final EXPR lhs_with_f = lhs_with_f_temp;
                                                 final EXPR rhs_with_f = rhs_with_tf.substitute(
-                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects,  hmtypes,hm_variables  );
 
                                                 future_terms_indices.stream().forEach(new Consumer<Integer>() {
 
                                                     public void accept(Integer future_term_index) {
                                                         try {
                                                             EXPR lhs = lhs_with_f.substitute(
-                                                                    Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
+                                                                    Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects,  hmtypes,hm_variables  );
                                                             EXPR rhs = rhs_with_f.substitute(
-                                                                    Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
-                                                            EXPR lhs_future = future_gen.getFuture(lhs, rand, constants, objects);
-                                                            EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects);
+                                                                    Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects,  hmtypes,hm_variables  );
+                                                            EXPR lhs_future = future_gen.getFuture(lhs, rand, constants, objects, hmtypes, hm_variables );
+                                                            EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects, hmtypes, hm_variables );
 
                                                             synchronized (static_grb_model) {
 
                                                                 //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                 GRBVar lhs_var = lhs_future.getGRBConstr(
-                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
+                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
 
                                                                 if (SHOW_GUROBI_ADD)
                                                                     System.out.println(rhs_future.toString());
 
                                                                 GRBVar rhs_var = rhs_future.getGRBConstr(
-                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes);
+                                                                        GRB.EQUAL, static_grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                                                                 //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                 final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
@@ -948,18 +951,18 @@ public class HOPPlanner extends Policy {
                             temp_expr = substitute_expression_cache.get(key);
                         }else{
                             //((RDDL.CONN_EXPR) ((RDDL.QUANT_EXPR) e)._expr)._alSubNodes.get(1).substitute(Collections.EMPTY_MAP,constants,objects);
-                            temp_expr = e.substitute(Collections.EMPTY_MAP, constants, objects);
+                            temp_expr = e.substitute(Collections.EMPTY_MAP, constants, objects, hmtypes, hm_variables );
                             substitute_expression_cache.put(key,temp_expr);
                         }
                         assert temp_expr!=null;
-                        final_expr = temp_expr.addTerm(TIME_PREDICATE, constants, objects)
-                                .addTerm(future_PREDICATE, constants, objects);
+                        final_expr = temp_expr.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
                     }else{
 
-                        final_expr = e.substitute(Collections.EMPTY_MAP,constants,objects)
-                                .addTerm(TIME_PREDICATE,constants,objects)
-                                .addTerm(future_PREDICATE,constants,objects);
+                        final_expr = e.substitute(Collections.EMPTY_MAP,constants,objects, hmtypes, hm_variables )
+                                .addTerm(TIME_PREDICATE,constants,objects, hmtypes, hm_variables )
+                                .addTerm(future_PREDICATE,constants,objects, hmtypes, hm_variables );
 
                     }
                     final EXPR non_stationary_e = final_expr;
@@ -1005,8 +1008,8 @@ public class HOPPlanner extends Policy {
 //
 //                                        }else{
                                         this_tf = non_stationary_e
-                                                .substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects)
-                                                .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+                                                .substitute(Collections.singletonMap(TIME_PREDICATE, time_term), constants, objects, hmtypes, hm_variables )
+                                                .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects, hmtypes, hm_variables );
 
 
 
@@ -1016,7 +1019,7 @@ public class HOPPlanner extends Policy {
 
                                             if (SHOW_GUROBI_ADD)
                                                 System.out.println(this_tf);
-                                            GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
+                                            GRBVar constrained_var = this_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                                             String nam = RDDL.EXPR.getGRBName(this_tf);
                                             GRBConstr this_constr = grb_model.addConstr(constrained_var, GRB.EQUAL, 1, nam);
@@ -1050,7 +1053,7 @@ public class HOPPlanner extends Policy {
                 synchronized( grb_model ){
                     GRBVar gvar = null;
                     try {
-                        gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
+                        gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1123,15 +1126,15 @@ public class HOPPlanner extends Policy {
                             public void accept(ArrayList<LCONST> terms) {
                                 try {
                                     PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
-                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects);
+                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
                                     for (final LCONST time : TIME_TERMS) {
-                                        EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE, time), constants, objects);
-                                        EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects);
+                                        EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE, time), constants, objects, hmtypes, hm_variables );
+                                        EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
 
                                         for (final LCONST future : future_TERMS) {
-                                            EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+                                            EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects, hmtypes, hm_variables );
                                             try {
                                                 ret.add(new RDDL.COMP_EXPR(ref_expr, addedd, RDDL.COMP_EXPR.EQUAL));
                                             } catch (Exception e) {
@@ -1158,17 +1161,17 @@ public class HOPPlanner extends Policy {
                             public void accept(ArrayList<LCONST> terms) {
                                 try {
                                     PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
-                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects);
+                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
                                     EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE,
-                                            TIME_TERMS.get(0)), constants, objects);
+                                            TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
                                     EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE,
-                                            future_TERMS.get(0)), constants, objects);
+                                            future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
 
                                     for (final LCONST future : future_TERMS) {
 
-                                        EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+                                        EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects, hmtypes, hm_variables );
                                         if (SHOW_GUROBI_ADD)
                                             System.out.println(addedd.toString());
                                         try {
@@ -1196,17 +1199,17 @@ public class HOPPlanner extends Policy {
                             public void accept(ArrayList<LCONST> terms) {
                                 try {
                                     PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
-                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects);
+                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
                                     EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE,
-                                            TIME_TERMS.get(0)), constants, objects);
+                                            TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
                                     EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE,
-                                            future_TERMS.get(0)), constants, objects);
+                                            future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
 
                                     for (final LCONST future : future_TERMS) {
 
-                                        EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects);
+                                        EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects, hmtypes, hm_variables );
                                         System.out.println(addedd.toString());
                                         try {
                                             ret.add(new RDDL.COMP_EXPR(ref_expr, addedd, RDDL.COMP_EXPR.EQUAL));
@@ -1244,9 +1247,9 @@ public class HOPPlanner extends Policy {
         grb_model.update();
 
         final EXPR stationary = rddl_state._reward;
-        final EXPR stationary_clear = stationary.substitute( Collections.EMPTY_MAP, constants, objects);
-        final EXPR non_stationary = stationary_clear.addTerm( TIME_PREDICATE , constants, objects )
-                .addTerm( future_PREDICATE, constants, objects);
+        final EXPR stationary_clear = stationary.substitute( Collections.EMPTY_MAP, constants, objects, hmtypes, hm_variables );
+        final EXPR non_stationary = stationary_clear.addTerm( TIME_PREDICATE , constants, objects, hmtypes, hm_variables )
+                .addTerm( future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
         GRBLinExpr all_sum = new GRBLinExpr();
         //This piece of code is changed by HARISH
@@ -1260,15 +1263,15 @@ public class HOPPlanner extends Policy {
                     public void accept(LCONST time_term) {
                         try {
                             final EXPR subs_tf = non_stationary.substitute(Collections.singletonMap(TIME_PREDICATE, time_term),
-                                    constants, objects)
-                                    .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+                                    constants, objects, hmtypes, hm_variables )
+                                    .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects, hmtypes, hm_variables );
                             //System.out.println( subs_tf );//"Reward_" + time_term + "_" + future_term );
 
                             synchronized (grb_model) {
 
                                 GRBVar this_future_var = null;
 
-                                this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
+                                this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                                 saved_expr.add(subs_tf);
                                 //System.out.println(saved_expr);
@@ -1362,14 +1365,14 @@ public class HOPPlanner extends Policy {
                                 }
 
                                 Map<LVAR, LCONST> subs = getSubs(cpf._exprVarName._alTerms, terms);
-                                EXPR new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects);
+                                EXPR new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects, hmtypes, hm_variables );
 
 
-                                EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects);
+                                EXPR new_rhs_stationary = cpf._exprEquals.substitute(subs, constants, objects, hmtypes, hm_variables );
 
                                 if (replace_cpf_pwl.containsKey(p)) {
 
-                                    new_rhs_stationary = replace_cpf_pwl.get(p).substitute(subs, constants, objects);
+                                    new_rhs_stationary = replace_cpf_pwl.get(p).substitute(subs, constants, objects, hmtypes, hm_variables );
 
                                 }
 
@@ -1377,10 +1380,10 @@ public class HOPPlanner extends Policy {
                                 //This is commented by HARISH.
                                 //System.out.println(new_lhs_stationary + " " + new_rhs_stationary );
 
-                                EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-                                        .addTerm(future_PREDICATE, constants, objects);
-                                EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects)
-                                        .addTerm(future_PREDICATE, constants, objects);
+                                EXPR lhs_with_tf = new_lhs_stationary.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                        .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
+                                EXPR rhs_with_tf = new_rhs_stationary.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                        .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
                                 System.out.println(lhs_with_tf + " " + rhs_with_tf);
 
                                 time_terms_indices.stream().forEach(new Consumer<Integer>() {
@@ -1394,27 +1397,27 @@ public class HOPPlanner extends Policy {
                                                 }
 
                                                 lhs_with_f_temp = lhs_with_tf.substitute(
-                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects);
+                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects, hmtypes, hm_variables );
                                             } else {
                                                 lhs_with_f_temp = lhs_with_tf.substitute(
-                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects, hmtypes, hm_variables );
                                             }
                                             final EXPR lhs_with_f = lhs_with_f_temp;
 
                                             final EXPR rhs_with_f = rhs_with_tf.substitute(
-                                                    Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects);
+                                                    Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects, hmtypes, hm_variables );
 
                                             future_terms_indices.stream().forEach(
                                                     new Consumer<Integer>() {
                                                         public void accept(Integer future_term_index) {
                                                             try {
                                                                 EXPR lhs = lhs_with_f.substitute(
-                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
+                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects, hmtypes, hm_variables );
                                                                 EXPR rhs = rhs_with_f.substitute(
-                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects);
+                                                                        Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_term_index)), constants, objects, hmtypes, hm_variables );
                                                                 //System.out.println("Something related to future is happening");
-                                                                EXPR lhs_future = future_gen.getFuture(lhs, rand, constants,objects);
-                                                                EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects);
+                                                                EXPR lhs_future = future_gen.getFuture(lhs, rand, constants,objects, hmtypes, hm_variables);
+                                                                EXPR rhs_future = future_gen.getFuture(rhs, rand, constants, objects, hmtypes, hm_variables);
                                                                 //System.out.println("lhs_future:"+ lhs_future+ "  rhs_future:"+ rhs_future );
 //														synchronized ( lhs_future ) {
 //															synchronized ( rhs_future ) {
@@ -1422,10 +1425,10 @@ public class HOPPlanner extends Policy {
 
                                                                     try {
                                                                         GRBVar lhs_var = lhs_future.getGRBConstr(
-                                                                                GRB.EQUAL, grb_model, constants, objects, type_map,hmtypes );
+                                                                                GRB.EQUAL, grb_model, constants, objects, type_map,hmtypes, hm_variables);
 
                                                                         GRBVar rhs_var = rhs_future.getGRBConstr(
-                                                                                GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes );
+                                                                                GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                                                                         //System.out.println( lhs_future.toString()+"="+rhs_future.toString() );
                                                                         final String nam = RDDL.EXPR.getGRBName(lhs_future) + "=" + RDDL.EXPR.getGRBName(rhs_future);
@@ -1505,30 +1508,27 @@ public class HOPPlanner extends Policy {
                         rhs_expr = new REAL_CONST_EXPR( (double)rhs );
                     }else if( rhs instanceof Integer ){
                         rhs_expr = new INT_CONST_EXPR( (int)rhs );
+                    }else if(rhs instanceof ENUM_VAL){
+                        rhs_expr = (ENUM_VAL)rhs;
                     }
+
                     GRBVar rhs_var = null;
 
-                    rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
+                    rhs_var = rhs_expr.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                     PVAR_EXPR stationary_pvar_expr = new PVAR_EXPR( p._sPVarName, terms );
                     EXPR non_stationary_pvar_expr = stationary_pvar_expr
-                            .addTerm( TIME_PREDICATE, constants, objects )
-                            .addTerm( future_PREDICATE, constants, objects);
-                    //This Piece of code is changed by HARISH
-                    //System.out.println( p+" "+terms );
-                    //System.out.println("Thinking about future");
-                    for( int future_id = 0 ; future_id < num_futures; ++future_id ){
+                            .addTerm( TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                            .addTerm( future_PREDICATE, constants, objects, hmtypes, hm_variables );
 
+                    for( int future_id = 0 ; future_id < num_futures; ++future_id ){
                         try {
                             EXPR this_future_init_state = non_stationary_pvar_expr
-                                    .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                                    .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_id)), constants, objects);
+                                    .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                                    .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(future_id)), constants, objects, hmtypes, hm_variables );
 
                             GRBVar lhs_var = null;
-
-                            lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
-
-
+                            lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
                             final String nam = RDDL.EXPR.getGRBName(this_future_init_state) +
                                     "=" + RDDL.EXPR.getGRBName(rhs_expr);
 
@@ -1540,7 +1540,6 @@ public class HOPPlanner extends Policy {
 //					System.out.println( this_constr.get(StringAttr.ConstrName) );
 //					saved_vars.add( lhs_var ); saved_expr.add( this_future_init_state );
 //					saved_vars.add( rhs_var ); saved_expr.add( rhs_expr );
-
                             to_remove_expr.add(this_future_init_state);
                             to_remove_constr.add(this_constr);
                         }
@@ -1606,10 +1605,10 @@ public class HOPPlanner extends Policy {
                                 try {
                                     final PVAR_EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms);
 
-                                    EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects)
-                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                                            .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+                                    EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects, hmtypes, hm_variables );
                                     assert (ret_expr.containsKey(this_action_var));
 
                                     Object value = sanitize(action_var._pName, ret_expr.get(this_action_var));
@@ -1680,10 +1679,10 @@ public class HOPPlanner extends Policy {
                             case ROOT :
                                 try {
                                     lookup = action_var
-                                            .addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects)
-                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                                            .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects);
+                                            .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
                                     assert (ret_expr.containsKey(lookup));
                                     ret_value = sanitize(action_var._pName, ret_expr.get(lookup));
                                     break;
@@ -1698,10 +1697,10 @@ public class HOPPlanner extends Policy {
                                 try{
                                     if(decision_value ==0){
                                         lookup = action_var
-                                                .addTerm(TIME_PREDICATE, constants, objects)
-                                                .addTerm(future_PREDICATE, constants, objects)
-                                                .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-                                                .substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(0) ) , constants, objects);
+                                                .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                                .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                                .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects, hmtypes, hm_variables )
+                                                .substitute( Collections.singletonMap( future_PREDICATE, future_TERMS.get(0) ) , constants, objects, hmtypes, hm_variables );
                                         assert( ret_expr.containsKey( lookup ) );
                                         ret_value = sanitize( action_var._pName, ret_expr.get( lookup ) );
                                         break;
@@ -1735,10 +1734,10 @@ public class HOPPlanner extends Policy {
                             @Override
                             public void accept(LCONST future_term) {
                                 try {
-                                    EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects)
-                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                                            .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+                                    EXPR this_action_var = action_var.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                                            .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects, hmtypes, hm_variables );
 
                                     assert (ret_expr.containsKey(this_action_var));
 
@@ -1860,10 +1859,10 @@ public class HOPPlanner extends Policy {
                             public void accept(LCONST future_term) {
                                 try {
                                     EXPR action_var = new PVAR_EXPR( pvar._sPVarName, terms )
-                                            .addTerm(TIME_PREDICATE, constants, objects)
-                                            .addTerm(future_PREDICATE, constants, objects)
-                                            .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects)
-                                            .substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects);
+                                            .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                            .substitute( Collections.singletonMap( TIME_PREDICATE, TIME_TERMS.get(0) ), constants, objects, hmtypes, hm_variables )
+                                            .substitute( Collections.singletonMap( future_PREDICATE, future_term ) , constants, objects, hmtypes, hm_variables );
 
 
                                     GRBVar grb_var = EXPR.grb_cache.get( action_var );
@@ -1951,10 +1950,10 @@ public class HOPPlanner extends Policy {
             for(int j=0; j<future_TERMS.size();j++){
                 try {
                     EXPR action_var = new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
-                            .addTerm(TIME_PREDICATE, constants, objects)
-                            .addTerm(future_PREDICATE, constants, objects)
-                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                            .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(j)), constants, objects);
+                            .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                            .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(j)), constants, objects, hmtypes, hm_variables );
                     action_value.put(action_var, val);
                 }
                 catch (Exception e){e.printStackTrace();}
@@ -1978,10 +1977,10 @@ public class HOPPlanner extends Policy {
                                     try {
                                         //System.out.println("These are the terms" + terms.toString());
                                         EXPR action_var = new PVAR_EXPR(pvar._sPVarName, terms)
-                                                .addTerm(TIME_PREDICATE, constants, objects)
-                                                .addTerm(future_PREDICATE, constants, objects)
-                                                .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects)
-                                                .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects);
+                                                .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                                .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                                                .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                                                .substitute(Collections.singletonMap(future_PREDICATE, future_term), constants, objects, hmtypes, hm_variables );
                                         GRBVar this_var = EXPR.grb_cache.get(action_var);
 
                                         if(action_value.containsKey(action_var)){
@@ -2153,7 +2152,7 @@ public class HOPPlanner extends Policy {
             public void accept( RDDL.BOOL_EXPR t) {
                 synchronized( grb_model ){
                     try {
-                        GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes);
+                        GRBVar gvar = t.getGRBConstr( GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
 
                         GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
                         saved_expr.add( t ); // saved_vars.add( gvar );
@@ -2931,7 +2930,7 @@ public class HOPPlanner extends Policy {
                         //new COMP_EXPR(raw_terms.get(0),terms.get(0),"==").toString()
                         if(SHOW_PWL_NON_PWL)
                             System.out.println(cpf._exprEquals.toString());
-                        Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects).sampleDeterminization(rand,constants,objects).isPiecewiseLinear(constants,objects);
+                        Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects, hmtypes, hm_variables ).sampleDeterminization(rand,constants,objects, hmtypes, hm_variables ).isPiecewiseLinear(constants,objects, hmtypes, hm_variables );
                         if(SHOW_PWL_NON_PWL)
                             System.out.println(check_PWL);
                         if(!check_PWL){
@@ -2939,7 +2938,7 @@ public class HOPPlanner extends Policy {
                             if(!not_pwl_expr.contains(cpf._exprEquals)){
                                 not_pwl_expr.add(cpf._exprEquals);
                             }
-                            EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects), raw_terms);
+                            EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects, hmtypes, hm_variables ), raw_terms);
                             //This is Getting Condition.
                             RDDL.BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
                             for(int i=0;i<terms.size();i++){
@@ -3002,7 +3001,7 @@ public class HOPPlanner extends Policy {
                 //This is a global temp variable which stores the values.m
                 variables_names.clear();
                 EXPR temp  = recursionSubstitution(e,state_value,action_value);
-                Double val = temp.getDoubleValue(constants,objects);
+                Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables );
                 if(i==0 && j==0 && !variables_names.isEmpty()){
                     input_variables.addAll(variables_names.keySet());
                 }
@@ -3158,8 +3157,8 @@ public class HOPPlanner extends Policy {
 
     public EXPR recursionSubstitution(EXPR e, HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value, ArrayList<PVAR_INST_DEF> action_value) throws Exception {
         try{
-            if(e.isConstant(constants,objects)){
-                double val        = e.getDoubleValue(constants,objects);
+            if(e.isConstant(constants,objects, hmtypes, hm_variables )){
+                double val        = e.getDoubleValue(constants,objects, hmtypes, hm_variables );
                 EXPR real_expr    = new REAL_CONST_EXPR(val);
                 return real_expr;
             }
