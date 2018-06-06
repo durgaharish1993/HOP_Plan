@@ -1436,8 +1436,6 @@ public class RDDL {
 	public static class ENUM_VAL extends LCONST {
 		public Integer _intVal = null;
 
-
-
 		public ENUM_VAL(String enum_name) {
 			super(enum_name);
 
@@ -1454,7 +1452,9 @@ public class RDDL {
 			}
 		}
 
-		public int enum_to_int(PVAR_NAME p_name, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
+		public int enum_to_int(PVAR_NAME p_name, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
 			if( _intVal != null ){
 				return _intVal;
 			}else{
@@ -1466,27 +1466,14 @@ public class RDDL {
 			}
 		}
 
-
 		@Override
 		public boolean equals(Object obj) {
-			//Checking if it is a ENUM_VAL or not.
-			if(!(obj instanceof ENUM_VAL))
-				return false;
-
-			//Checking if intval's are same or not | otherwise checking _sConstValue for @King, @Queen, etc..
-			ENUM_VAL c = (ENUM_VAL) obj;
-			if( c._intVal!=null) {
-				if((_intVal!=null))
-				{return c._intVal ==_intVal;}else{
-					return false;
-				}
-			}else if(_intVal==null){
-				return _sConstValue == c._sConstValue;
-			}else{
-				return false;
+			//NOTE: @2 != 2
+			if( obj instanceof ENUM_VAL ){
+				return (_sConstValue == ((ENUM_VAL)obj)._sConstValue);
 			}
+			return false;
 		}
-
 
 		@Override
 		protected char getGRB_Type(
@@ -1513,7 +1500,8 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			return new INT_CONST_EXPR(enum_to_int(null,hmtypes,hm_variables)).getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
+			int intVal = enum_to_int(null, hmtypes, hm_variables) 
+			return new INT_CONST_EXPR(intVal).getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
 		}
 
 		@Override
@@ -1527,12 +1515,7 @@ public class RDDL {
 		public String toSuppString() {
 			return toString();
 		}
-
 	}
-
-
-
-
 
 	// Immutable... making public to avoid unnecessary
 	// method calls, relying on user to respect immutability
@@ -5405,27 +5388,33 @@ public class RDDL {
 
 		public final static LCONST DEFAULT = new ENUM_VAL("default");
 
-
 		@Override
 		public EXPR sampleDeterminization(final RandomDataGenerator rand,
 										  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
+										  Map<TYPE_NAME, OBJECTS_DEF> objects, 
+										  HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+										  HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
 			return this;
 		}
 
 		@Override
 		public EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
+				Map<TYPE_NAME, OBJECTS_DEF> objects, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
 			return this;
 		}
 
 		@Override
 		protected char getGRB_Type(
 				final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
+				Map<PVAR_NAME, Character> type_map, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			//System.out.println("type : " + this + " " + type_map );
 			try{
+				FIXME BUG HERE 
 				assert( type_map.containsKey( this._pName ) );
 				return type_map.get(this._pName);
 			}catch( AssertionError exc ){
@@ -5470,9 +5459,6 @@ public class RDDL {
 
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map, hmtypes, hm_variables);
 
-
-			//_tmDomainNodes
-
 			if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
 				GRBLinExpr expression = new GRBLinExpr();
 				final double val = getDoubleValue(constants, objects, hmtypes,hm_variables );
@@ -5509,7 +5495,9 @@ public class RDDL {
 		@Override
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
+				Map<TYPE_NAME, OBJECTS_DEF> objects, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			assert( isConstant(constants, objects, hmtypes,hm_variables  ) );
 
 			EXPR new_expr = getConstantValue(constants,objects, hmtypes,hm_variables );
@@ -8441,7 +8429,6 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			assert( isConstant(constants, objects, hmtypes, hm_variables) );
 
 			if( (_e1 instanceof LCONST && _e2 instanceof LCONST)
 					|| (_e1 instanceof ENUM_VAL && _e2 instanceof ENUM_VAL) ){
@@ -8450,6 +8437,7 @@ public class RDDL {
 						_comp.equals(NEQ) ? ( _e1.equals(_e2) ? 0d : 1d ) : Double.NaN;
 			}
 
+			assert( isConstant(constants, objects, hmtypes, hm_variables) );
 			//handling for when comparison is between objects (z1 == z2)
 			final double d1 = _e1.getDoubleValue(constants, objects, hmtypes, hm_variables);
 			final double d2 = _e2.getDoubleValue(constants, objects, hmtypes, hm_variables);
@@ -8468,10 +8456,9 @@ public class RDDL {
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
-			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) && _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
+			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables )
+					&& _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
 		}
-
-
 
 		@Override
 		public boolean equals(Object obj) {
@@ -8494,7 +8481,8 @@ public class RDDL {
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
-			return _e1.isConstant(constants, objects, hmtypes, hm_variables ) && _e2.isConstant(constants, objects, hmtypes, hm_variables );
+			return _e1.isConstant(constants, objects, hmtypes, hm_variables ) 
+					&& _e2.isConstant(constants, objects, hmtypes, hm_variables );
 		}
 
 		@Override
@@ -8502,7 +8490,10 @@ public class RDDL {
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception {
 			try {
-				return new COMP_EXPR(_e1.substitute(subs, constants, objects, hmtypes, hm_variables), _e2.substitute(subs, constants, objects, hmtypes, hm_variables), _comp );
+				return new COMP_EXPR(
+						_e1.substitute(subs, constants, objects, hmtypes, hm_variables), 
+						_e2.substitute(subs, constants, objects, hmtypes, hm_variables), 
+						_comp );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
