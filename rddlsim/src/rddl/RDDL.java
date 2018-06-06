@@ -1468,6 +1468,27 @@ public class RDDL {
 
 
 		@Override
+		public boolean equals(Object obj) {
+			//Checking if it is a ENUM_VAL or not.
+			if(!(obj instanceof ENUM_VAL))
+				return false;
+
+			//Checking if intval's are same or not | otherwise checking _sConstValue for @King, @Queen, etc..
+			ENUM_VAL c = (ENUM_VAL) obj;
+			if( c._intVal!=null) {
+				if((_intVal!=null))
+				{return c._intVal ==_intVal;}else{
+					return false;
+				}
+			}else if(_intVal==null){
+				return _sConstValue == c._sConstValue;
+			}else{
+				return false;
+			}
+		}
+
+
+		@Override
 		protected char getGRB_Type(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
@@ -5630,8 +5651,8 @@ public class RDDL {
 				return new INT_CONST_EXPR( (int)lookup );
 			}else if( lookup instanceof Double ){
 				return new REAL_CONST_EXPR( (double)lookup );
-			}else if( _sType.equals( EXPR.ENUM ) ){
-				return  new INT_CONST_EXPR( ((ENUM_VAL)lookup).enum_to_int(_pName, hmtypes,hm_variables) );
+			}else if( lookup instanceof ENUM_VAL ){
+				return (ENUM_VAL)lookup;
 			}else{
 				try{
 					//System.out.print("This expression is not substituted"+this.toString()+ "type "+_sType);
@@ -8364,9 +8385,9 @@ public class RDDL {
 
 		public COMP_EXPR(EXPR e1, EXPR e2, String comp) throws Exception {
 			if (!comp.equals(NEQ) && !comp.equals(LESSEQ)
-				&& !comp.equals(LESS) && !comp.equals(GREATEREQ)
-				&& !comp.equals(GREATER) && !comp.equals(EQUAL))
-					throw new Exception("Unrecognized inequality: " + comp);
+					&& !comp.equals(LESS) && !comp.equals(GREATEREQ)
+					&& !comp.equals(GREATER) && !comp.equals(EQUAL))
+				throw new Exception("Unrecognized inequality: " + comp);
 			_comp = comp.intern();
 			_e1 = e1;
 			_e2 = e2;
@@ -8380,36 +8401,24 @@ public class RDDL {
 		@Override
 		public EXPR getMean(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return new COMP_EXPR( _e1.getMean(constants,objects, hmtypes, hm_variables ),
-					_e2.getMean(constants, objects, hmtypes, hm_variables ), _comp );
+				Map<TYPE_NAME, OBJECTS_DEF> objects , HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
+			return new COMP_EXPR( _e1.getMean(constants,objects, hmtypes, hm_variables),
+					_e2.getMean(constants, objects, hmtypes, hm_variables), _comp );
 		}
 
 		@Override
-		public  EXPR sampleDeterminization(final RandomDataGenerator rand,
-										   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return new COMP_EXPR( _e1.sampleDeterminization(rand,constants,objects, hmtypes,hm_variables  ),
-					_e2.sampleDeterminization(rand,constants,objects, hmtypes,hm_variables  ), _comp );
-		}
-
-/*      This is old code....
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			return new COMP_EXPR( _e1.sampleDeterminization(rand),
-					_e2.sampleDeterminization(rand), _comp );
+		public  EXPR sampleDeterminization( final RandomDataGenerator rand,
+											Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+											Map<TYPE_NAME, OBJECTS_DEF> objects , HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+			return new COMP_EXPR( _e1.sampleDeterminization(rand,constants,objects, hmtypes, hm_variables),
+					_e2.sampleDeterminization(rand,constants,objects, hmtypes, hm_variables), _comp );
 		}
 
 		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception {
-			return new COMP_EXPR( _e1.getMean(objects), _e2.getMean(objects), _comp );
-		}*/
-
-		@Override
-		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+		public EXPR addTerm(LVAR new_term, Map< PVAR_NAME, Map< ArrayList<LCONST>, Object>> constants,
+							Map< TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
 			try {
-				return new COMP_EXPR( _e1.addTerm(new_term, constants, objects, hmtypes,hm_variables  ), _e2.addTerm(new_term, constants, objects, hmtypes,hm_variables  ), _comp );
+				return new COMP_EXPR( _e1.addTerm(new_term, constants, objects, hmtypes, hm_variables), _e2.addTerm(new_term, constants, objects, hmtypes, hm_variables), _comp );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -8419,9 +8428,9 @@ public class RDDL {
 		@Override
 		public int hashCode() {
 			try {
-				if( isConstant(null, null, null, null ) ){
-                    return (int)getDoubleValue(null, null, null, null );
-                }
+				if( isConstant(null, null, null, null) ){
+					return (int)getDoubleValue(null, null, null, null);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -8432,17 +8441,18 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			assert( isConstant(constants, objects, hmtypes,hm_variables  ) );
+			assert( isConstant(constants, objects, hmtypes, hm_variables) );
 
-			if( _e1 instanceof LCONST && _e2 instanceof LCONST ){
+			if( (_e1 instanceof LCONST && _e2 instanceof LCONST)
+					|| (_e1 instanceof ENUM_VAL && _e2 instanceof ENUM_VAL) ){
 				assert( _comp.equals(EQUAL) || _comp.equals(NEQ) );
 				return  _comp.equals(EQUAL) ? ( _e1.equals( _e2 ) ? 1d : 0d ) :
 						_comp.equals(NEQ) ? ( _e1.equals(_e2) ? 0d : 1d ) : Double.NaN;
 			}
 
 			//handling for when comparison is between objects (z1 == z2)
-			final double d1 = _e1.getDoubleValue(constants, objects, hmtypes,hm_variables  );
-			final double d2 = _e2.getDoubleValue(constants, objects, hmtypes,hm_variables  );
+			final double d1 = _e1.getDoubleValue(constants, objects, hmtypes, hm_variables);
+			final double d2 = _e2.getDoubleValue(constants, objects, hmtypes, hm_variables);
 			switch( _comp ){
 				case "~=" : return ( d1 != d2 ) ? 1 : 0;
 				case "<=" : return ( d1 <= d2 ) ? 1 : 0;
@@ -8451,15 +8461,14 @@ public class RDDL {
 				case ">" : return ( d1 > d2 ) ? 1 : 0;
 				case "==" : return ( d1 == d2 ) ? 1 : 0;
 			}
-
 			return Double.NaN;
 		}
 
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return _e1.isPiecewiseLinear(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects, hmtypes,hm_variables  );
+				Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
+			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) && _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
 		}
 
 
@@ -8467,9 +8476,9 @@ public class RDDL {
 		@Override
 		public boolean equals(Object obj) {
 			try {
-				if( isConstant(null, null, null,null ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null ) ).equals(obj);
-                }
+				if( isConstant(null, null, null, null) ){
+					return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null) ).equals(obj);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -8484,16 +8493,16 @@ public class RDDL {
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isConstant(constants, objects, hmtypes,hm_variables  );
+				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
+			return _e1.isConstant(constants, objects, hmtypes, hm_variables ) && _e2.isConstant(constants, objects, hmtypes, hm_variables );
 		}
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception {
 			try {
-				return new COMP_EXPR(_e1.substitute(subs, constants, objects, hmtypes,hm_variables  ), _e2.substitute(subs, constants, objects, hmtypes,hm_variables  ), _comp );
+				return new COMP_EXPR(_e1.substitute(subs, constants, objects, hmtypes, hm_variables), _e2.substitute(subs, constants, objects, hmtypes, hm_variables), _comp );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -8501,14 +8510,14 @@ public class RDDL {
 		}
 
 		@Override
-		public GRBVar getGRBConstr(char sense, GRBModel model,
-								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+		public GRBVar getGRBConstr( char sense, GRBModel model,
+									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+									Map<TYPE_NAME, OBJECTS_DEF > objects , Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
 
-			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map,  hmtypes, hm_variables );
+			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map , hmtypes, hm_variables);
 			GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes, hm_variables);
 			GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes, hm_variables);
 
@@ -8620,7 +8629,7 @@ public class RDDL {
 					STRUCT_VAL_MEMBER v2 = s2._alMembers.get(i);
 					if (!v1._sLabel.equals(v2._sLabel))
 						throw new EvalException("Mismatched vector labels during elementwise vector operation: " + v1 + " vs " + v2 + " in" +
-							"\nOperand 1: " + s1 + "\nOperand 2: " + s2 + "\nComp: " + comp);
+								"\nOperand 1: " + s1 + "\nOperand 2: " + s2 + "\nComp: " + comp);
 					equal = (Boolean)ComputeCompResult(v1._oVal, v2._oVal, EQUAL);
 				}
 				//System.out.println("EQUAL: " + equal + " for "+ s1 + " and " + s2);
@@ -8630,7 +8639,13 @@ public class RDDL {
 			// Base cases...
 
 			// Handle special case of enum comparison
-			if (o1 instanceof LCONST || o2 instanceof LCONST) {
+			if (o1 instanceof ENUM_VAL || o2 instanceof ENUM_VAL) {
+				if (!(o1 instanceof ENUM_VAL && o2 instanceof ENUM_VAL))
+					throw new EvalException("Both values in object/enum comparison " + comp + " (" + o1 + "/" + o1.getClass() + "," + o2 + "/" + o2.getClass() + ") must be object/enum\n");
+				if (!(comp == NEQ || comp == EQUAL))
+					throw new EvalException("Can only compare object/enum (" + o1 + "/" + o1.getClass() + "," + o2 + "/" + o2.getClass() + ") with == or ~=, not " + comp + "\n");
+				return (comp == EQUAL) ? o1.equals(o2) : !o1.equals(o2);
+			}else if (o1 instanceof LCONST || o2 instanceof LCONST) {
 				if (!(o1 instanceof LCONST && o2 instanceof LCONST))
 					throw new EvalException("Both values in object/enum comparison " + comp + " (" + o1 + "/" + o1.getClass() + "," + o2 + "/" + o2.getClass() + ") must be object/enum\n");
 				if (!(comp == NEQ || comp == EQUAL))
@@ -8671,13 +8686,12 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_e1.collectGFluents(subs, s, gfluents);
 			_e2.collectGFluents(subs, s, gfluents);
 		}
 
 	}
-
 	//////////////////////////////////////////////////////////////////
 
 	public static class OBJECTS_DEF {
