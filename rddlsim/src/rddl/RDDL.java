@@ -1469,23 +1469,35 @@ public class RDDL {
 
 		@Override
 		public boolean equals(Object obj) {
-			//Checking if it is a ENUM_VAL or not.
-			if(!(obj instanceof ENUM_VAL))
-				return false;
-
-			//Checking if intval's are same or not | otherwise checking _sConstValue for @King, @Queen, etc..
-			ENUM_VAL c = (ENUM_VAL) obj;
-			if( c._intVal!=null) {
-				if((_intVal!=null))
-				{return c._intVal ==_intVal;}else{
-					return false;
-				}
-			}else if(_intVal==null){
-				return _sConstValue == c._sConstValue;
-			}else{
-				return false;
+			//NOTE: @2 != 2
+			if( obj instanceof ENUM_VAL ){
+				return (_sConstValue == ((ENUM_VAL)obj)._sConstValue);
 			}
+			return false;
 		}
+
+
+
+		//This implementation is Changed...
+//		@Override
+//		public boolean equals(Object obj) {
+//			//Checking if it is a ENUM_VAL or not.
+//			if(!(obj instanceof ENUM_VAL))
+//				return false;
+//
+//			//Checking if intval's are same or not | otherwise checking _sConstValue for @King, @Queen, etc..
+//			ENUM_VAL c = (ENUM_VAL) obj;
+//			if( c._intVal!=null) {
+//				if((_intVal!=null))
+//				{return c._intVal ==_intVal;}else{
+//					return false;
+//				}
+//			}else if(_intVal==null){
+//				return _sConstValue == c._sConstValue;
+//			}else{
+//				return false;
+//			}
+//		}
 
 
 		@Override
@@ -2983,65 +2995,6 @@ public class RDDL {
 								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			throw new NotImplementedException("This method is not implemented " + this.toString());
 		}
-
-
-
-/*		This ius old code.
-
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
-			//<i:E>, CDF <i:sum_-iE>
-			EXPR unif_rand = new REAL_CONST_EXPR(rand.nextUniform(0d, 1d));
-			EXPR ret = null;
-			EXPR cdf = null;
-			EXPR cdf_greater = null;
-			EXPR prev_cdf_lesser = null;
-			EXPR this_conjunction = null;
-			EXPR this_piece = null;
-			EXPR prev_cdf = new REAL_CONST_EXPR(0d);
-			for (int i = 0; i < _exprProbs.size(); i+=2) {
-				EXPR determinized_case = (EXPR)_exprProbs.get(i).sampleDeterminization(rand);
-				EXPR determinized_prob = (EXPR)_exprProbs.get(i+1).sampleDeterminization(rand);
-				if( cdf == null ){
-					cdf = determinized_prob;
-				}else{
-					cdf = new OPER_EXPR(cdf, determinized_prob, OPER_EXPR.PLUS);
-				}
-				//cdf >= rand
-				cdf_greater = new COMP_EXPR(cdf, unif_rand, COMP_EXPR.GREATEREQ);
-				//prev_cdf < rand
-				prev_cdf_lesser =  new COMP_EXPR(prev_cdf, unif_rand, COMP_EXPR.LESS);
-				//conjunction
-				this_conjunction = new CONN_EXPR(cdf_greater, prev_cdf_lesser, CONN_EXPR.AND);
-				//multiply @enum
-				this_piece = new OPER_EXPR(determinized_case, this_conjunction, OPER_EXPR.TIMES);
-				if(ret == null){
-					//summation
-					ret = this_piece;
-				}else{
-					ret = new OPER_EXPR(ret, this_piece, OPER_EXPR.PLUS);
-				}
-				prev_cdf = cdf;
-			}
-			return ret;
-		}
-
-
-
-
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) throws Exception
-		{
-			return new Discrete( _sTypeName._STypeName,
-					new ArrayList<EXPR>( _exprProbs.stream().map( m -> {
-						try {
-							return m.getMean( objects );
-						} catch (Exception e) {
-							e.printStackTrace();
-							return null;
-						}
-					}).collect( Collectors.toList() ) ) );
-		}*/
 
 		public TYPE_NAME  _sTypeName = null;
 
@@ -4709,6 +4662,7 @@ public class RDDL {
 							final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							final Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
 			try{
+				//This is expensive.
 				final boolean e1_const = e1_sub.isConstant( constants , objects, hmtypes,hm_variables  );
 				final boolean e2_const = e2_sub.isConstant( constants , objects, hmtypes,hm_variables  );
 				if( e1_const && e2_const ){

@@ -2544,15 +2544,11 @@ public class HOPPlanner extends Policy {
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> copied_state =  new HashMap<>();
 
         for(PVAR_NAME pvar : temp.keySet()){
-
             PVAR_NAME new_pvar = new PVAR_NAME(pvar._sPVarName);
             HashMap<ArrayList<LCONST>,Object> temp_hashmap = temp.get(pvar);
             HashMap<ArrayList<LCONST>,Object> new_hashmap =  new HashMap<>();
-
             for(ArrayList<LCONST> temp_array : temp_hashmap.keySet()){
-
                 ArrayList<LCONST> new_array = new ArrayList<>();
-
                 for(int i=0; i<temp_array.size(); i++){
                     LCONST temp_lconst = temp_array.get(i);
                     if(temp_lconst instanceof RDDL.OBJECT_VAL){
@@ -2562,49 +2558,25 @@ public class HOPPlanner extends Policy {
                         LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
                         new_array.add(new_lconst); }
                 }
-
-
                 int check = 0;
-
-
                 //This is for the Object
                 if( temp_hashmap.get(temp_array) instanceof Boolean){
                     Boolean new_objval = (Boolean) temp_hashmap.get(temp_array);
                     new_hashmap.put(new_array,new_objval);
                     check=1;}
-
                 if( temp_hashmap.get(temp_array) instanceof Double){
                     Double new_objval = (Double) temp_hashmap.get(temp_array);
                     new_hashmap.put(new_array,new_objval);
                     check=1;}
-
                 //This check if the object is of other instance and not implemented, Please implement this one.
                 assert(check==1);
                 if(check==0){
-
                     System.out.println("--------------------------------------------------------------------------------------------------------This Instance of an Object is Not Implemented");
-
-
-
                 }
-
-
             }
             copied_state.put(new_pvar,new_hashmap);
-
-
-
         }
-
-
-
-
         return copied_state;
-
-
-
-
-
     }
 
 
@@ -2756,47 +2728,14 @@ public class HOPPlanner extends Policy {
     protected Double runActionSimulation(State s, Integer num_rounds, ArrayList<PVAR_INST_DEF> act ) throws EvalException {
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
         Double avg_reward = 0.0;
-
-
         for(int i=0 ; i<num_rounds; i++){
-
-
             s.computeNextState(act, new RandomDataGenerator());
-
-
-
             final double immediate_reward = ((Number)rddl_domain._exprReward.sample(
                     new HashMap<LVAR,LCONST>(),rddl_state, rand)).doubleValue();
-
-
-
             avg_reward += immediate_reward;
             s.copyStateRDDLState(root_state,true);
-
-
-
-
-
-
         }
-
-
         return avg_reward/num_rounds;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -2864,11 +2803,7 @@ public class HOPPlanner extends Policy {
                 store_traj_states = pre_buffer_state.get(traj_id);
                 store_traj_actions = pre_buffer_action.get(traj_id);
                 store_traj_rewards = pre_buffer_reward.get(traj_id);
-
-
             }
-
-
             buffer_state.add(store_traj_states);
             buffer_action.add(store_traj_actions);
             buffer_reward.add(store_traj_rewards);
@@ -2938,7 +2873,7 @@ public class HOPPlanner extends Policy {
                             if(!not_pwl_expr.contains(cpf._exprEquals)){
                                 not_pwl_expr.add(cpf._exprEquals);
                             }
-                            EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects, hmtypes, hm_variables ), raw_terms);
+                            EXPR final_expr = generateDataForPWL(cpf._exprEquals.substitute(subs1,constants,objects, hmtypes, hm_variables ), raw_terms, rddl_state);
                             //This is Getting Condition.
                             RDDL.BOOL_EXPR conditional_state = new BOOL_CONST_EXPR(true);
                             for(int i=0;i<terms.size();i++){
@@ -2960,10 +2895,6 @@ public class HOPPlanner extends Policy {
                     replace_cpf_pwl.put(p,ifelse_expr); }
             }
         }
-
-
-
-
     }
 
     public EXPR recursiveAdditionIfElse(List<EXPR> condition_part,List<EXPR> true_part,Integer check_first){
@@ -2984,21 +2915,25 @@ public class HOPPlanner extends Policy {
 
 
     //This will generate Data.
-    public EXPR generateDataForPWL(EXPR e, ArrayList<RDDL.LTERM> raw_terms) throws Exception {
+    public EXPR generateDataForPWL(EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s) throws Exception {
         //Getting desired format  as  a String
+        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> method_state = deepCopyState(s);
         ArrayList<PVAR_NAME> input_variables           = new ArrayList<>();
         HashMap<Integer,ArrayList<Object>> input_array = new HashMap();
         HashMap<Integer,String> input_R_array          = new HashMap<Integer, String>();
         String output_R_array                          = new String();
         output_R_array                                 = "c(";
         ArrayList<Object> output_array                 = new ArrayList<>();
+        HashSet<Pair> Gfluents                         = new HashSet<>();
         for(int i=0;i<buffer_state.size();i++){
             ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>> state_trajectory  = buffer_state.get(i);
             ArrayList<ArrayList<PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
             for(int j=0;j<buffer_state.get(i).size();j++){
                 HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value = state_trajectory.get(j);
                 ArrayList<PVAR_INST_DEF> action_value = action_trajectory.get(j);
+                 s.copyStateRDDLState(state_value,true);
                 //This is a global temp variable which stores the values.m
+                e.collectGFluents(null,s,Gfluents);
                 variables_names.clear();
                 EXPR temp  = recursionSubstitution(e,state_value,action_value);
                 Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables );
@@ -3075,6 +3010,7 @@ public class HOPPlanner extends Policy {
         running_R_api = (double) end_timer - start_timer;
         //This will parse and give a EXPR Output.
         EXPR final_expr =parseEarthROutput(earth_output,input_variables,raw_terms);
+        s.copyStateRDDLState(method_state,true);
         return(final_expr);
     }
 
@@ -3230,12 +3166,10 @@ public class HOPPlanner extends Policy {
             assert( value == 0d || value == 1d );
             ret = new Boolean( value == 0d ? false : true );
         }
-        else
-        if( type_map.get( pName ).equals( GRB.INTEGER ) ){
+        else if( type_map.get( pName ).equals( GRB.INTEGER ) ){
             value = Math.rint( value );
             ret = new Integer( (int)value );
-        }
-        else{
+        } else{
             ret = new Double( value );
         }
         return ret;
