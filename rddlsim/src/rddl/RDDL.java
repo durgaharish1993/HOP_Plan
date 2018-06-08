@@ -1345,12 +1345,6 @@ public class RDDL {
 		public String _sConstValue;
 		public int    _nHashCode;
 
-		@Override
-		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return true;
-		}
-
 		public boolean isPiecewiseLinear(final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 final Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			return true;
@@ -1526,7 +1520,8 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			return new INT_CONST_EXPR(enum_to_int(null,hmtypes,hm_variables)).getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
+			return new INT_CONST_EXPR( enum_to_int(null, hmtypes, hm_variables))
+					.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
 		}
 
 		@Override
@@ -8396,7 +8391,6 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			assert( isConstant(constants, objects, hmtypes, hm_variables) );
 
 			if( (_e1 instanceof LCONST && _e2 instanceof LCONST)
 					|| (_e1 instanceof ENUM_VAL && _e2 instanceof ENUM_VAL) ){
@@ -8405,6 +8399,8 @@ public class RDDL {
 						_comp.equals(NEQ) ? ( _e1.equals(_e2) ? 0d : 1d ) : Double.NaN;
 			}
 
+			assert( isConstant(constants, objects, hmtypes, hm_variables) );
+			
 			//handling for when comparison is between objects (z1 == z2)
 			final double d1 = _e1.getDoubleValue(constants, objects, hmtypes, hm_variables);
 			final double d2 = _e2.getDoubleValue(constants, objects, hmtypes, hm_variables);
@@ -8422,8 +8418,14 @@ public class RDDL {
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
-			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) && _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
+				Map<TYPE_NAME, OBJECTS_DEF > objects, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
+			if( isConstant() ){
+				return true;
+			}
+			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) 
+					&& _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
 		}
 
 
@@ -8448,16 +8450,33 @@ public class RDDL {
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
+				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
+			if( (_e1 instanceof LCONST && _e2 instanceof LCONST)
+					|| (_e1 instanceof ENUM_VAL && _e2 instanceof ENUM_VAL) ){
+				return true;
+			}
 			return _e1.isConstant(constants, objects, hmtypes, hm_variables ) && _e2.isConstant(constants, objects, hmtypes, hm_variables );
 		}
 
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception {
+							   Map<TYPE_NAME, OBJECTS_DEF > objects, 
+							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception {
 			try {
-				return new COMP_EXPR(_e1.substitute(subs, constants, objects, hmtypes, hm_variables), _e2.substitute(subs, constants, objects, hmtypes, hm_variables), _comp );
+				final EXPR term1 = _e1.substitute(subs, constants, objects, hmtypes, hm_variables);
+				final EXPR term2 = _e2.substitute(subs, constants, objects, hmtypes, hm_variables);
+				ret = new COMP_EXPR(term1, term2, _comp );
+				try{
+					if (ret.isConstant(constants, objects, hmtypes, hm_variables)){
+						return new REAL_CONST_EXPR( getDoubleValue() );
+					}
+				}catch(Exception exc){
+					exc.printStackTrace();
+				}
+				return ret;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
