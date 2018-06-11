@@ -190,8 +190,19 @@ public class HOPPlanner extends Policy {
         for( Entry<PVAR_NAME, RDDL.PVARIABLE_DEF> entry : rddl_state._hmPVariables.entrySet() ){
 
             final RDDL.TYPE_NAME rddl_type = entry.getValue()._typeRange;
-            final char grb_type = rddl_type.equals( RDDL.TYPE_NAME.BOOL_TYPE ) ? GRB.BINARY :
-                    rddl_type.equals( RDDL.TYPE_NAME.INT_TYPE ) ? GRB.INTEGER : GRB.CONTINUOUS;
+            RDDL.TYPE_DEF tdef = rddl_state._hmTypes.get(rddl_type);
+
+             char grb_type = 'Z';
+
+            if(tdef instanceof RDDL.ENUM_TYPE_DEF){
+                grb_type = GRB.INTEGER;
+
+            }else{
+                grb_type = rddl_type.equals( RDDL.TYPE_NAME.BOOL_TYPE ) ? GRB.BINARY :
+                        rddl_type.equals( RDDL.TYPE_NAME.INT_TYPE ) ? GRB.INTEGER : GRB.CONTINUOUS;
+            }
+
+            assert(grb_type!='Z');
 
             object_type_name.put(entry.getKey(), entry.getValue()._alParamTypes);
             //object_val_mapping.put(object_type_name.get(entry.getKey()),  rddl_state._hmObject2Consts.get(object_type_name.get(entry.getKey()))   );
@@ -208,13 +219,14 @@ public class HOPPlanner extends Policy {
                     add(new Boolean("false"));	}};
                 value_range.put(entry.getKey(),temp_bool_range);
             }
+
             type_map.put( entry.getKey(), grb_type );
 
         }
 
 
 
-
+        System.out.println("dkjdkfkdjfkdfdkj");
 
 
     }
@@ -2337,7 +2349,7 @@ public class HOPPlanner extends Policy {
         Integer exp_steps = 8;
         Integer exp_rounds =10;
         HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
-        Integer START_LOOKAHEAD_VALUE = 1;
+        Integer START_LOOKAHEAD_VALUE = 2;
         Integer START_FUTURE_VALUE = 5;
         Integer current_lookAhead = START_LOOKAHEAD_VALUE;
         ////////////////////////////////////////////////////////////////////////////

@@ -8421,7 +8421,7 @@ public class RDDL {
 				Map<TYPE_NAME, OBJECTS_DEF > objects, 
 				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
 				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
-			if( isConstant() ){
+			if( isConstant(constants,objects,hmtypes,hm_variables) ){
 				return true;
 			}
 			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) 
@@ -8468,10 +8468,10 @@ public class RDDL {
 			try {
 				final EXPR term1 = _e1.substitute(subs, constants, objects, hmtypes, hm_variables);
 				final EXPR term2 = _e2.substitute(subs, constants, objects, hmtypes, hm_variables);
-				ret = new COMP_EXPR(term1, term2, _comp );
+				COMP_EXPR ret = new COMP_EXPR(term1, term2, _comp );
 				try{
 					if (ret.isConstant(constants, objects, hmtypes, hm_variables)){
-						return new REAL_CONST_EXPR( getDoubleValue() );
+						return new REAL_CONST_EXPR( getDoubleValue(constants,objects,hmtypes,hm_variables) );
 					}
 				}catch(Exception exc){
 					exc.printStackTrace();
