@@ -1448,7 +1448,9 @@ public class RDDL {
 			}
 		}
 
-		public int enum_to_int(PVAR_NAME p_name, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
+		public int enum_to_int(//removed this : PVAR_NAME p_name, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
 			if( _intVal != null ){
 				return _intVal;
 			}else{
@@ -1457,12 +1459,18 @@ public class RDDL {
                     TYPE_DEF tdef = hmtypes.get(tn);
                     if(tdef instanceof ENUM_TYPE_DEF){
                         ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-                        if(temp_tdef.contains(_sConstValue)){index =  temp_tdef.indexOf(_sConstValue);
-                        break;}
+                        if(temp_tdef.contains(_sConstValue)){
+                        	index =  temp_tdef.indexOf(_sConstValue);
+                        	break;
+                        }
                     }
                 }
-
-                return index;
+				//at least throw exception here instead of returning -1
+				try{
+					throw
+				}catch(){
+					throw
+				}
 
 //				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
 //				TYPE_DEF tdef = hmtypes.get(tn);
@@ -1491,7 +1499,11 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
-			return (double) enum_to_int(p_name,hmtypes,hm_variables);
+			try{
+				return (double) enum_to_int(p_name, hmtypes, hm_variables);
+			}catch(){
+				throw
+			}
 		}
 
 
