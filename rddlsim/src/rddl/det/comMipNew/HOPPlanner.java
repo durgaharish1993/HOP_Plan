@@ -1544,7 +1544,7 @@ public class HOPPlanner extends Policy {
                             String nam = null;
                             if(rhs_expr instanceof  ENUM_VAL){
                                  nam = RDDL.EXPR.getGRBName(this_future_init_state) +
-                                        "=" + RDDL.EXPR.getGRBName( new INT_CONST_EXPR(((ENUM_VAL)rhs_expr).enum_to_int(null,hmtypes,hm_variables)));
+                                        "=" + RDDL.EXPR.getGRBName( new INT_CONST_EXPR(((ENUM_VAL)rhs_expr).enum_to_int(hmtypes,hm_variables)));
 
                             }else{
                                  nam = RDDL.EXPR.getGRBName(this_future_init_state) +

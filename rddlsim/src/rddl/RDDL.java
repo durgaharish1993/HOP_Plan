@@ -1450,7 +1450,7 @@ public class RDDL {
 
 		public int enum_to_int(//removed this : PVAR_NAME p_name, 
 				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
-				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			if( _intVal != null ){
 				return _intVal;
 			}else{
@@ -1459,17 +1459,28 @@ public class RDDL {
                     TYPE_DEF tdef = hmtypes.get(tn);
                     if(tdef instanceof ENUM_TYPE_DEF){
                         ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-                        if(temp_tdef.contains(_sConstValue)){
-                        	index =  temp_tdef.indexOf(_sConstValue);
-                        	break;
-                        }
+                        for(int i=0;i<temp_tdef.size();i++){
+							if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
+								index = i;
+								break;
+							}
+
+						}
+
                     }
                 }
+
 				//at least throw exception here instead of returning -1
 				try{
-					throw
-				}catch(){
-					throw
+					if(index==-1){
+						throw new Exception("Not Found Ex" );
+					}else{
+						return index;
+					}
+
+				}catch( Exception exc ){
+					exc.printStackTrace();
+					throw exc;
 				}
 
 //				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
@@ -1479,11 +1490,11 @@ public class RDDL {
 			}
 		}
 
-		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			return true;
-		}
-
+//		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+//								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+//			return true;
+//		}
+//
 
 		@Override
 		public boolean equals(Object obj) {
@@ -1496,15 +1507,15 @@ public class RDDL {
 
 
 
-		public double getDoubleValue(
-				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
-			try{
-				return (double) enum_to_int(p_name, hmtypes, hm_variables);
-			}catch(){
-				throw
-			}
-		}
+//		public double getDoubleValue(
+//				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+//				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
+//			try{
+//				return (double) enum_to_int( hmtypes, hm_variables);
+//			}catch(Exception e){
+//				throw e;
+//			}
+//		}
 
 
 
@@ -1555,8 +1566,13 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			return new INT_CONST_EXPR( enum_to_int(null, hmtypes, hm_variables))
-					.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
+			try{
+				return new INT_CONST_EXPR( enum_to_int(hmtypes, hm_variables))
+						.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
+			}catch (Exception e){
+				throw e;
+			}
+
 		}
 
 		@Override
@@ -5484,8 +5500,8 @@ public class RDDL {
 				if(tdef instanceof ENUM_TYPE_DEF){
 					if(((ENUM_TYPE_DEF) tdef)._alPossibleValues.get(0) instanceof ENUM_VAL){
 						ArrayList<LCONST>  e_val = ((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-						int min_val = ((ENUM_VAL)e_val.get(0)).enum_to_int(_pName,hmtypes,hm_variables);
-						int max_val = ((ENUM_VAL)e_val.get(e_val.size()-1)).enum_to_int(_pName,hmtypes,hm_variables);
+						int min_val = ((ENUM_VAL)e_val.get(0)).enum_to_int(hmtypes,hm_variables);
+						int max_val = ((ENUM_VAL)e_val.get(e_val.size()-1)).enum_to_int(hmtypes,hm_variables);
 						INT_CONST_EXPR expr_min = new INT_CONST_EXPR(min_val);
 						INT_CONST_EXPR expr_max = new INT_CONST_EXPR(max_val);
 						GRBVar v1 = expr_min.getGRBConstr(sense,model,constants,objects,type_map,hmtypes,hm_variables);
