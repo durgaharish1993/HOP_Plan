@@ -43,10 +43,10 @@ public class HOPPlanner extends Policy {
     protected boolean SHOW_LEVEL_1 = true;
     protected boolean SHOW_LEVEL_2 = false;
     protected boolean SHOW_GUROBI_ADD = false;
-    protected boolean SHOW_PWL_NON_PWL = false;
+    protected boolean SHOW_PWL_NON_PWL = true;
     protected boolean SHOW_TIME_ZERO_GUROBI_ACTION = false;
-    protected boolean DO_GUROBI_INITIALIZATION = true;
-
+    //protected boolean DO_GUROBI_INITIALIZATION = true;
+    //DO_GUROBI_INITIALIZATION
     ///////////////////////////////////////////////////////////
     protected Map<Pair<String,String>,EXPR> substitute_expression_cache = new HashMap<>();
     private static final int GRB_INFUNBDINFO = 1;
@@ -1541,8 +1541,17 @@ public class HOPPlanner extends Policy {
 
                             GRBVar lhs_var = null;
                             lhs_var = this_future_init_state.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
-                            final String nam = RDDL.EXPR.getGRBName(this_future_init_state) +
-                                    "=" + RDDL.EXPR.getGRBName(rhs_expr);
+                            String nam = null;
+                            if(rhs_expr instanceof  ENUM_VAL){
+                                 nam = RDDL.EXPR.getGRBName(this_future_init_state) +
+                                        "=" + RDDL.EXPR.getGRBName( new INT_CONST_EXPR(((ENUM_VAL)rhs_expr).enum_to_int(null,hmtypes,hm_variables)));
+
+                            }else{
+                                 nam = RDDL.EXPR.getGRBName(this_future_init_state) +
+                                        "=" + RDDL.EXPR.getGRBName(rhs_expr);
+
+                            }
+
 
                             GRBConstr this_constr = grb_model.addConstr(lhs_var, GRB.EQUAL, rhs_var, nam);
                             //This Piece of Code is changed by HARISH.
@@ -2350,7 +2359,7 @@ public class HOPPlanner extends Policy {
         Integer exp_rounds =10;
         HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
         Integer START_LOOKAHEAD_VALUE = 2;
-        Integer START_FUTURE_VALUE = 5;
+        Integer START_FUTURE_VALUE = 1;
         Integer current_lookAhead = START_LOOKAHEAD_VALUE;
         ////////////////////////////////////////////////////////////////////////////
 
@@ -2359,10 +2368,10 @@ public class HOPPlanner extends Policy {
         int best_future    = Integer.MAX_VALUE;
         Boolean NPWL_OR_NOT = true;
         //This one is for lookahead value.
-        while(current_lookAhead<6){
+        while(current_lookAhead<40){
             //This is the starting value of future.
             Integer FUTURE_VALUE = START_FUTURE_VALUE;
-            while(FUTURE_VALUE < 10) {
+            while(FUTURE_VALUE < 100) {
                 ////////////////////////////////////////////////////////////////////////////
                 //This is place for setting up RDDL Object.
                 rddl = new RDDL(rddl_filepath);
@@ -2430,6 +2439,7 @@ public class HOPPlanner extends Policy {
 
                             }
                             explo_planner.TIME_LIMIT_MINS =optimization_time_out;
+                            explo_planner.DO_GUROBI_INITIALIZATION = true;
                             ArrayList<PVAR_INST_DEF> actions = explo_planner.getActions(state);
                             System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
                             state.checkActionConstraints(actions);
@@ -2501,7 +2511,7 @@ public class HOPPlanner extends Policy {
             }
             else {
                 //next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ;
-                next_look_ahead = current_lookahead + 2 ;}
+                next_look_ahead = current_lookahead * 2 ;}
         }
         else{
             next_look_ahead = current_lookahead;
@@ -2527,11 +2537,11 @@ public class HOPPlanner extends Policy {
         Integer next_future_value = current_future;
         if(change){
             if(current_future==1){
-                next_future_value = 2;
+                next_future_value = 4;
             }
             else {
                 //next_look_ahead = Double.valueOf(Math.pow(current_lookahead,2)).intValue() ;
-                next_future_value = current_future + 2 ;}
+                next_future_value = current_future * 2 ;}
         }
         else{
             next_future_value = current_future;
@@ -2580,6 +2590,11 @@ public class HOPPlanner extends Policy {
                     Double new_objval = (Double) temp_hashmap.get(temp_array);
                     new_hashmap.put(new_array,new_objval);
                     check=1;}
+
+                if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
+                    ENUM_VAL new_objval = (ENUM_VAL) temp_hashmap.get(temp_array);
+                    new_hashmap.put(new_array, new_objval);
+                    check=1; }
                 //This check if the object is of other instance and not implemented, Please implement this one.
                 assert(check==1);
                 if(check==0){
@@ -2879,7 +2894,7 @@ public class HOPPlanner extends Policy {
                             System.out.println(cpf._exprEquals.toString());
                         Boolean check_PWL = cpf._exprEquals.substitute(subs1,constants,objects, hmtypes, hm_variables ).sampleDeterminization(rand,constants,objects, hmtypes, hm_variables ).isPiecewiseLinear(constants,objects, hmtypes, hm_variables );
                         if(SHOW_PWL_NON_PWL)
-                            System.out.println(check_PWL);
+                            System.out.println("Substituted PWL: " + check_PWL);
                         if(!check_PWL){
                             DO_NPWL_PWL = true;
                             if(!not_pwl_expr.contains(cpf._exprEquals)){
@@ -2948,7 +2963,7 @@ public class HOPPlanner extends Policy {
                 e.collectGFluents(null,s,Gfluents);
                 variables_names.clear();
                 EXPR temp  = recursionSubstitution(e,state_value,action_value);
-                Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables );
+                Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables,  null);
                 if(i==0 && j==0 && !variables_names.isEmpty()){
                     input_variables.addAll(variables_names.keySet());
                 }
@@ -3106,7 +3121,7 @@ public class HOPPlanner extends Policy {
     public EXPR recursionSubstitution(EXPR e, HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value, ArrayList<PVAR_INST_DEF> action_value) throws Exception {
         try{
             if(e.isConstant(constants,objects, hmtypes, hm_variables )){
-                double val        = e.getDoubleValue(constants,objects, hmtypes, hm_variables );
+                double val        = e.getDoubleValue(constants,objects, hmtypes, hm_variables,  null);
                 EXPR real_expr    = new REAL_CONST_EXPR(val);
                 return real_expr;
             }

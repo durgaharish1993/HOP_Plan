@@ -29,6 +29,7 @@ public abstract class Policy {
 	public double TIME_LIMIT_MINS = 10;
 	public Boolean DO_NPWL_PWL = false;
 	public Boolean TIME_FUTURE_CACHE_USE = true;
+	public Boolean DO_GUROBI_INITIALIZATION = false;
 
 
 

@@ -328,6 +328,7 @@ public class Client {
 					//policy.TIME_LIMIT_MINS = timeforOptimizer;
 					//policy.DO_NPWL_PWL = false;
                     policy.DO_NPWL_PWL = NPWL_TO_PWL;
+					policy.DO_GUROBI_INITIALIZATION = false;
 					if(policy.DO_NPWL_PWL){
 						//This code is for random action
 						policy.runRandompolicyForState(state);
