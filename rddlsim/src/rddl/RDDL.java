@@ -1222,7 +1222,9 @@ public class RDDL {
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+				Map<TYPE_NAME, OBJECTS_DEF> objects, 
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			try{
 				return _pvarExpr.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
 			}
@@ -1335,7 +1337,7 @@ public class RDDL {
 	// Immutable... making public to avoid unnecessary
 	// method calls, relying on user to respect immutability
 	public abstract static class LCONST extends LTERM {
-
+		
 		public LCONST(String const_value) {
 			_sConstValue = const_value.intern();
 			_nHashCode = const_value.hashCode();
@@ -1490,10 +1492,10 @@ public class RDDL {
 			}
 		}
 
-//		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-//								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-//			return true;
-//		}
+		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+			return true;
+		}
 //
 
 		@Override
@@ -1507,17 +1509,15 @@ public class RDDL {
 
 
 
-//		public double getDoubleValue(
-//				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-//				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
-//			try{
-//				return (double) enum_to_int( hmtypes, hm_variables);
-//			}catch(Exception e){
-//				throw e;
-//			}
-//		}
-
-
+		public double getDoubleValue(
+				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
+			try{
+				return (double) enum_to_int( hmtypes, hm_variables);
+			}catch(Exception e){
+				throw e;
+			}
+		}
 
 		//This implementation is Changed...
 //		@Override
@@ -4676,25 +4676,33 @@ public class RDDL {
 		@Override
 		public boolean isPiecewiseLinear(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
-				return true;
+			try{
+			    if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
+			    	return true;
+			    }
+			}catch(){
+				
 			}
 
-			if( _op.equals(PLUS) || _op.equals(MINUS) || _op.equals(MIN) || _op.equals(MAX) ){
-				return _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) &&
-					   _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
-			}else if( _op.equals(TIMES) ){
-				return ( _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
-						|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
-			}else if( _op.equals(DIV) ){
-				return _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
-			}else{
-				try{
-					throw new Exception("unhandled case.");
-				}catch(Exception exc ){
-					exc.printStackTrace();
-					throw exc;
+			try{
+				if( _op.equals(PLUS) || _op.equals(MINUS) || _op.equals(MIN) || _op.equals(MAX) ){
+					return _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) &&
+						   _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
+				}else if( _op.equals(TIMES) ){
+					return ( _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
+							|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
+				}else if( _op.equals(DIV) ){
+					return _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
+				}else{
+					try{
+						throw new Exception("unhandled case.");
+					}catch(Exception exc ){
+						exc.printStackTrace();
+						throw exc;
+					}
 				}
+			}catch(){
+				throw
 			}
 			//return false;
 		}
