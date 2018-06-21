@@ -1,8 +1,32 @@
 ////////////////////////////////////////////////////////////////////
 //
-// RDDL MDP version of the Crossing Traffic demo domain for IPC 2018
-// by Thomas Keller (tho.keller [at] unibas.ch), based on the IPC 2011
-// and 2014 Crossing Traffic domain of Sungwook Yoon and Scott Sanner.
+// Crossing Traffic Robot Navigation
+//
+// Author: Sungwook Yoon (sungwook.yoon [at] gmail.com)
+//
+// Modified for competition and translation purposes by Scott Sanner.
+//
+// In a grid, a robot (R) must get to a goal (G) and avoid obstacles (O)
+// arriving randomly and moving left.  If an obstacle overlaps with the
+// robot, the robot disappears and can no longer move around.  The robot
+// can "duck" underneath a car by deliberately moving right/east when
+// a car is to the right of it (this can make the solution interesting...
+// the robot should start at the left side of the screen then).  The robot
+// receives -1 for every time step it has not reached the goal.  The goal
+// state is absorbing with 0 reward.
+//
+// ****************
+// *            R *
+// *  <-O <-O <-O *
+// *    <-O   <-O *
+// * <-O    <-O   *
+// *     <-O  <-O *
+// *            G *
+// ****************
+//
+// You can think of this as the RDDL version of Frogger:
+//
+//   http://en.wikipedia.org/wiki/Frogger
 //
 ////////////////////////////////////////////////////////////////////
 
@@ -24,7 +48,7 @@ domain crossing_traffic_demo_mdp {
         EAST(xpos, xpos)        : {non-fluent, bool, default = false};
         WEST(xpos, xpos)        : {non-fluent, bool, default = false};
         GOAL(xpos,ypos)         : {non-fluent, bool, default = false};
-        INPUT-RATE(ypos)        : {non-fluent, real, default = 0.2};
+        INPUT-RATE(ypos)        : {non-fluent, real, default = 0.3};
 
         // state-fluents
         agent-at(xpos, ypos)    : {state-fluent, bool, default = false};
@@ -64,7 +88,7 @@ domain crossing_traffic_demo_mdp {
                   (( NORTH(?y, ?y2) & ?x == ?x2 ) |
                    ( SOUTH(?y, ?y2) & ?x == ?x2 ) |
                    ( EAST(?x, ?x2) & ?y == ?y2 ) |
-                   ( WEST(?x, ?x2) & ?y == ?y2 ))]];
+                  ( WEST(?x, ?x2) & ?y == ?y2 ))]];
 
         // do not allow to move once the goal is reached
         forall_{?x : xpos, ?y : ypos} [ move(?x, ?y) => (~exists_{?x2 : xpos, ?y2 : ypos} [ agent-at(?x2,?y2) & GOAL(?x2,?y2) ]) ];

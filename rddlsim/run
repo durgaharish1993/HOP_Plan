@@ -1,6 +1,8 @@
+#!/bin/bash
 Home=.
 libDir=${Home}/lib
 CP=${Home}/bin
+#CP=/tmp/bin
 CYGWIN_SEP=";"
 UNIX_SEP=":"
 
@@ -14,4 +16,4 @@ for i in ${libDir}/*.jar ; do
     CP="${CP}${SEP}$i"
 done
 
-java -Xms100M -Xmx500M -classpath $CP $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20} ${21} ${22} ${23}
+java -Xms100M -Xmx500M -Djava.library.path=./lib/JRI.jar:./lib/JRIEngine.jar:./lib/REngine.jar -classpath $CP $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20} ${21} ${22} ${23}

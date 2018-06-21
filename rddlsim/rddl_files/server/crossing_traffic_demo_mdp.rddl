@@ -24,7 +24,7 @@ domain crossing_traffic_demo_mdp {
         EAST(xpos, xpos)        : {non-fluent, bool, default = false};
         WEST(xpos, xpos)        : {non-fluent, bool, default = false};
         GOAL(xpos,ypos)         : {non-fluent, bool, default = false};
-        INPUT-RATE(ypos)        : {non-fluent, real, default = 0.2};
+        INPUT-RATE(ypos)        : {non-fluent, real, default = 0.3};
 
         // state-fluents
         agent-at(xpos, ypos)    : {state-fluent, bool, default = false};
@@ -64,7 +64,7 @@ domain crossing_traffic_demo_mdp {
                   (( NORTH(?y, ?y2) & ?x == ?x2 ) |
                    ( SOUTH(?y, ?y2) & ?x == ?x2 ) |
                    ( EAST(?x, ?x2) & ?y == ?y2 ) |
-                   ( WEST(?x, ?x2) & ?y == ?y2 ))]];
+                  ( WEST(?x, ?x2) & ?y == ?y2 ))]];
 
         // do not allow to move once the goal is reached
         forall_{?x : xpos, ?y : ypos} [ move(?x, ?y) => (~exists_{?x2 : xpos, ?y2 : ypos} [ agent-at(?x2,?y2) & GOAL(?x2,?y2) ]) ];

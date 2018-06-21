@@ -7,119 +7,36 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0-tests.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-lang3-3.4.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.5.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/grappa1_4.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/gurobi.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/java_cup.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/jlex.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/jlex.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/JRI.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/JRIEngine.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/junit-4.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/REngine.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/xercesImpl.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/xml-apis.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Library/Frameworks/R.framework/Versions/3.3/Resources/library/rJava/jri/JRI.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Library/Frameworks/R.framework/Versions/3.3/Resources/library/rJava/jri/JRIEngine.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Library/Frameworks/R.framework/Versions/3.3/Resources/library/rJava/jri/REngine.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/java_cup.jar!/" />
-        </CLASSES>
-        <JAVADOC />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.5-javadoc.jar!/" />
+        </JAVADOC>
         <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-collections4-4.0-test-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/grappa1_4.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/java_cup.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jlex.jar!/" />
         </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/grappa1_4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/grappa1_4.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar:///Library/gurobi752/mac64/lib/gurobi.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
       </library>
     </orderEntry>
   </component>
