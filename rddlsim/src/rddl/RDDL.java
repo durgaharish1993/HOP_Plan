@@ -525,7 +525,8 @@ public class RDDL {
 
 		public ENUM_TYPE_DEF(String name, ENUM_VAL min, ENUM_VAL max) throws Exception {
 			super(name, "enum");
-			if (min._intVal == null || max._intVal == null || min._intVal > max._intVal)
+			if (min._intVal == null || max._intVal == null 
+					|| min._intVal > max._intVal)
 				throw new Exception("Could not instantiate integer range typedef for '" + name +
 						"' for range min '" + min + "' and max '" + max + "'");
 			_alPossibleValues = new ArrayList();
@@ -1432,8 +1433,6 @@ public class RDDL {
 	public static class ENUM_VAL extends LCONST {
 		public Integer _intVal = null;
 
-
-
 		public ENUM_VAL(String enum_name) {
 			super(enum_name);
 
@@ -1453,43 +1452,38 @@ public class RDDL {
 		public int enum_to_int(//removed this : PVAR_NAME p_name,
 							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			if( _intVal != null ){
-				return _intVal;
-			}else{
-				int index = -1;
-				for(TYPE_NAME tn : hmtypes.keySet()){
-					TYPE_DEF tdef = hmtypes.get(tn);
-					if(tdef instanceof ENUM_TYPE_DEF){
-						ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-						for(int i=0;i<temp_tdef.size();i++){
-							if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
-								index = i;
-								break;
-							}
-
+			int index = -1;
+			for(TYPE_NAME tn : hmtypes.keySet()){
+				TYPE_DEF tdef = hmtypes.get(tn);
+				if(tdef instanceof ENUM_TYPE_DEF){
+					ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
+					for(int i=0; i<temp_tdef.size(); i++){
+						if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
+							index = i;
+							break;
 						}
-
 					}
 				}
+			}
 
-				//at least throw exception here instead of returning -1
-				try{
-					if(index==-1){
-						throw new Exception("Not Found Ex" );
-					}else{
-						return index;
-					}
-
-				}catch( Exception exc ){
-					exc.printStackTrace();
-					throw exc;
+			//at least throw exception here instead of returning -1
+			try{
+				if(index==-1){
+					System.exit(1);
+					throw new Exception("Not Found Ex" );
+				}else{
+					return index;
 				}
+
+			}catch( Exception exc ){
+				exc.printStackTrace();
+				throw exc;
+			}
 
 //				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
 //				TYPE_DEF tdef = hmtypes.get(tn);
 //				assert(tdef instanceof ENUM_TYPE_DEF);
 //				return ((ENUM_TYPE_DEF) tdef)._alPossibleValues.indexOf(_sConstValue);
-			}
 		}
 
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
