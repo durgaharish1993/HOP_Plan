@@ -7554,45 +7554,63 @@ public class RDDL {
 			}
 
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map ,  hmtypes, hm_variables);
-			GRBLinExpr sum = new GRBLinExpr();
+			//check syntax
+			//handle exception in getGRBConstr
+			GRBVar[] conn_vars = _alSubNodes.stream().map(m -> m.getGRBConstr()).
+					collect(Collectors.toList()).toArray();
+			
+//			GRBLinExpr sum = new GRBLinExpr();
 
-			if(!_sConn.equals(IMPLY)){
-				for( final BOOL_EXPR  b : _alSubNodes ){
-					GRBVar v = b.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes, hm_variables);
-					sum.addTerm(1.0d, v);
-				}
-			}else if(n==2 && _sConn.equals(IMPLY)){
-				//This is the case for "=>" operator
-				NEG_EXPR temp_neg = new NEG_EXPR(_alSubNodes.get(0));
-				GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes, hm_variables);
-				sum.addTerm(1.0d,v);
-				BOOL_EXPR b = _alSubNodes.get(1);
-				GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes, hm_variables);
-				sum.addTerm(1.0d,v1);
-			}
+//			if(!_sConn.equals(IMPLY)){
+//				for( final BOOL_EXPR  b : _alSubNodes ){
+//					GRBVar v = b.getGRBConstr( GRB.EQUAL, model, constants, objects, type_map, hmtypes, hm_variables);
+//					sum.addTerm(1.0d, v);
+//				}
+//			}else if(n==2 && _sConn.equals(IMPLY)){
+//				//This is the case for "=>" operator
+//				NEG_EXPR temp_neg = new NEG_EXPR(_alSubNodes.get(0));
+//				GRBVar v= temp_neg.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes, hm_variables);
+//				sum.addTerm(1.0d,v);
+//				BOOL_EXPR b = _alSubNodes.get(1);
+//				GRBVar v1 = b.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map, hmtypes, hm_variables);
+//				sum.addTerm(1.0d,v1);
+//			}
 			try{
-				GRBLinExpr nz = new GRBLinExpr( );
-				nz.addTerm( n, this_var );
-
-				GRBLinExpr n_minus_1_plus_z = new GRBLinExpr();
-				n_minus_1_plus_z.addTerm(1.0d, this_var );
-				n_minus_1_plus_z.addConstant(n-1);
+//				GRBLinExpr nz = new GRBLinExpr( );
+//				nz.addTerm( n, this_var );
+//
+//				GRBLinExpr n_minus_1_plus_z = new GRBLinExpr();
+//				n_minus_1_plus_z.addTerm(1.0d, this_var );
+//				n_minus_1_plus_z.addConstant(n-1);
 				switch( _sConn ){
 //					[z = x1 ^ x2 ^... ^ xn] is captured by nz <= (x1+x2+...+xn) <= (n - 1) + z
 					case "^" :
-						model.addConstr( nz, GRB.LESS_EQUAL, sum ,  name_map.get(toString())+"_AND_1" );
-						model.addConstr( sum, GRB.LESS_EQUAL, n_minus_1_plus_z, name_map.get(toString())+"AND_2" );
+//http://www.gurobi.com/documentation/8.0/refman/java_grbmodel_addgenconstr5.html
+						model.addGenConstrAnd( this_var, conn_vars, this.toString() );
 						break;
+//						model.addConstr( nz, GRB.LESS_EQUAL, sum ,  name_map.get(toString())+"_AND_1" );
+//						model.addConstr( sum, GRB.LESS_EQUAL, n_minus_1_plus_z, name_map.get(toString())+"AND_2" );
+//						break;
 //					[z = x1 v x2 v ... v xn] is z <= (x1+x2+...+xn) <= nz
 					case "|" :
-						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_OR_1" );
-						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_OR_2" );
+						model.addGenConstrOr( this_var, conn_vars, this.toString() );
 						break;
+//						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_OR_1" );
+//						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_OR_2" );
+//						break;
 //					x=>y case : not x v y
 					case "=>":
-						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_IMPLY_1" );
-						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_IMPLY_2" );
+						assert( _alSubNodes.size() == 2 );
+						NEG_EXPR not_this = new NEG_EXPR( _alSubNodes.get(0) );
+						GRBVar not_this_var = not_this.getGRBConstr();
+						GRBVar other_var = _alSubNodes.get(1).getGRBConstr();
+						model.addGenConstrOr( this_var, 
+								new GRBVar[]{not_this_var, other_var}, this.toString() );
 						break;
+//						
+//						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_IMPLY_1" );
+//						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_IMPLY_2" );
+//						break;
 					default :
 						throw new Exception("Unknown case in getGRBConstr() " + _sConn );
 				}
@@ -8564,19 +8582,19 @@ public class RDDL {
 			GRBVar v1 = _e1.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes, hm_variables);
 			GRBVar v2 = _e2.getGRBConstr( GRB.EQUAL, model, constants, objects , type_map, hmtypes, hm_variables);
 
-			final GRBLinExpr minus_M_z = new GRBLinExpr();
-			minus_M_z.addTerm( -1.0d*M, this_var);
-
-			final GRBLinExpr M_z = new GRBLinExpr();
-			M_z.addTerm( 1.0d*M, this_var);
-
-			final GRBLinExpr M_one_minus_z = new GRBLinExpr();//M(1-z)=M-Mz
-			M_one_minus_z.addConstant(M);
-			M_one_minus_z.addTerm(-1d*M, this_var);
-
-			final GRBLinExpr minus_M_one_minus_z = new GRBLinExpr();//-M(1-z)=-M+Mz
-			minus_M_one_minus_z.addConstant(-1d*M);
-			minus_M_one_minus_z.addTerm(1d*M, this_var);
+//			final GRBLinExpr minus_M_z = new GRBLinExpr();
+//			minus_M_z.addTerm( -1.0d*M, this_var);
+//
+//			final GRBLinExpr M_z = new GRBLinExpr();
+//			M_z.addTerm( 1.0d*M, this_var);
+//
+//			final GRBLinExpr M_one_minus_z = new GRBLinExpr();//M(1-z)=M-Mz
+//			M_one_minus_z.addConstant(M);
+//			M_one_minus_z.addTerm(-1d*M, this_var);
+//
+//			final GRBLinExpr minus_M_one_minus_z = new GRBLinExpr();//-M(1-z)=-M+Mz
+//			minus_M_one_minus_z.addConstant(-1d*M);
+//			minus_M_one_minus_z.addTerm(1d*M, this_var);
 
 			final GRBLinExpr x_minus_y = new GRBLinExpr();
 			x_minus_y.addTerm(1, v1);
@@ -8586,40 +8604,51 @@ public class RDDL {
 				switch( _comp ){
 					case "<=" :
 					case "<" :
+						model.addGenConstrIndicator(this_var, true, x_minus_y, 
+								GRB.LESS_EQUAL, 0.0, v1.toString()+"<="+v2.toString());
+						break;
 						// z = [ x <= y ]
 						//-Mz <= x-y <= M(1-z)
 						// z = 1 : -M <= x-y  <= 0
 						// z = 0 : 0 <= x-y <= M
-						model.addConstr( minus_M_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_LEQ_1" );
-						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_one_minus_z, name_map.get(toString())+"_LEQ_2" );
-						break;
+//						model.addConstr( minus_M_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_LEQ_1" );
+//						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_one_minus_z, name_map.get(toString())+"_LEQ_2" );
+//						break;
 					case ">=" :
-
 					case ">" :
+						model.addGenConstrIndicator(this_var, true, x_minus_y, 
+								GRB.GREATER_EQUAL, 0.0, v1.toString()+">="+v2.toString());
+						break;
 						// z = [ x >= y ]
 						// -M(1-z) <= x-y <= Mz
 						// z = 1 : 0 <= x-y <= M
 						// z = 0 : -M <= x-y <= 0
-						model.addConstr( minus_M_one_minus_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_GEQ_1" );
-						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z, name_map.get(toString())+"_GEQ_2" );
-						break;
+//						model.addConstr( minus_M_one_minus_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_GEQ_1" );
+//						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z, name_map.get(toString())+"_GEQ_2" );
+//						break;
 					case "==" :
+						model.addGenConstrIndicator(this_var, true, x_minus_y, 
+								GRB.EQUAL, 0.0, v1.toString()+"=="+v2.toString());
+						break;
 						//z = [ x == y ]
 						//-M(1-z) <= x-y <= M(1-z), z in 0,1
 						//z=1 : 0 <= x-y <= 0
 						//z=0 : -M <= x-y <= M
-						model.addConstr( minus_M_one_minus_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_EQ_1" );
-						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_one_minus_z, name_map.get(toString())+"EQ_2" );
-						break;
+//						model.addConstr( minus_M_one_minus_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_EQ_1" );
+//						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_one_minus_z, name_map.get(toString())+"EQ_2" );
+//						break;
 					case "~=" :
+						model.addGenConstrIndicator(this_var, false, x_minus_y, 
+								GRB.EQUAL, 0.0, v1.toString()+"~="+v2.toString());
+						break;
 						//z = 1-t, t = [ x == y ]
 						//-M(1-t) <= x-y <= M(1-t), t in 0,1
 						//-Mz <= x-y <= Mz, z in 0,1
 						//z = 1 : -M <= x-y <= M
 						//z = 0 : 0 <= x-y <= 0
-						model.addConstr( minus_M_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_NEQ_1" );
-						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z , name_map.get(toString())+"_NEQ_2" );
-						break;
+//						model.addConstr( minus_M_z, GRB.LESS_EQUAL, x_minus_y, name_map.get(toString())+"_NEQ_1" );
+//						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z , name_map.get(toString())+"_NEQ_2" );
+//						break;
 					default :
 						try{
 							throw new Exception("unhandled case " + name_map.get(toString()) );
