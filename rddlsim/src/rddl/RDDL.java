@@ -7556,8 +7556,13 @@ public class RDDL {
 			GRBVar this_var = getGRBVar( this , model, constants, objects, type_map ,  hmtypes, hm_variables);
 			//check syntax
 			//handle exception in getGRBConstr
-			GRBVar[] conn_vars = _alSubNodes.stream().map(m -> m.getGRBConstr()).
-					collect(Collectors.toList()).toArray();
+			GRBVar[] conn_vars = (GRBVar[]) _alSubNodes.stream().map(m -> {
+				try {
+					return m.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map,hmtypes,hm_variables);
+				} catch (Exception e) {
+					throw new NoStackTraceRuntimeException();
+				}
+			}).collect(Collectors.toList()).toArray();
 			
 //			GRBLinExpr sum = new GRBLinExpr();
 
@@ -7585,15 +7590,15 @@ public class RDDL {
 				switch( _sConn ){
 //					[z = x1 ^ x2 ^... ^ xn] is captured by nz <= (x1+x2+...+xn) <= (n - 1) + z
 					case "^" :
-//http://www.gurobi.com/documentation/8.0/refman/java_grbmodel_addgenconstr5.html
-						model.addGenConstrAnd( this_var, conn_vars, this.toString() );
+						//http://www.gurobi.com/documentation/8.0/refman/java_grbmodel_addgenconstr5.html
+						model.addGenConstrAnd( this_var, conn_vars, EXPR.name_map.get(toString())+"_AND_1" );
 						break;
 //						model.addConstr( nz, GRB.LESS_EQUAL, sum ,  name_map.get(toString())+"_AND_1" );
 //						model.addConstr( sum, GRB.LESS_EQUAL, n_minus_1_plus_z, name_map.get(toString())+"AND_2" );
 //						break;
 //					[z = x1 v x2 v ... v xn] is z <= (x1+x2+...+xn) <= nz
 					case "|" :
-						model.addGenConstrOr( this_var, conn_vars, this.toString() );
+						model.addGenConstrOr( this_var, conn_vars, EXPR.name_map.get(toString())+"_OR_1" );
 						break;
 //						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_OR_1" );
 //						model.addConstr( sum, GRB.LESS_EQUAL, nz, name_map.get(toString())+"_OR_2" );
@@ -7602,10 +7607,9 @@ public class RDDL {
 					case "=>":
 						assert( _alSubNodes.size() == 2 );
 						NEG_EXPR not_this = new NEG_EXPR( _alSubNodes.get(0) );
-						GRBVar not_this_var = not_this.getGRBConstr();
-						GRBVar other_var = _alSubNodes.get(1).getGRBConstr();
-						model.addGenConstrOr( this_var, 
-								new GRBVar[]{not_this_var, other_var}, this.toString() );
+						GRBVar not_this_var = not_this.getGRBConstr(GRB.EQUAL,model,constants,objects,type_map,hmtypes,hm_variables);
+						GRBVar other_var = _alSubNodes.get(1).getGRBConstr(GRB.EQUAL,model,constants,objects,type_map,hmtypes,hm_variables);
+						model.addGenConstrOr( this_var, new GRBVar[]{not_this_var, other_var}, EXPR.name_map.get(toString())+"_IMPLY_1" );
 						break;
 //						
 //						model.addConstr( this_var , GRB.LESS_EQUAL, sum, name_map.get(toString())+"_IMPLY_1" );
@@ -8604,8 +8608,8 @@ public class RDDL {
 				switch( _comp ){
 					case "<=" :
 					case "<" :
-						model.addGenConstrIndicator(this_var, true, x_minus_y, 
-								GRB.LESS_EQUAL, 0.0, v1.toString()+"<="+v2.toString());
+						model.addGenConstrIndicator(this_var, 1, x_minus_y,
+								GRB.LESS_EQUAL, 0.0, EXPR.name_map.get(v1.toString())+"<="+EXPR.name_map.get(v2.toString()));
 						break;
 						// z = [ x <= y ]
 						//-Mz <= x-y <= M(1-z)
@@ -8616,8 +8620,8 @@ public class RDDL {
 //						break;
 					case ">=" :
 					case ">" :
-						model.addGenConstrIndicator(this_var, true, x_minus_y, 
-								GRB.GREATER_EQUAL, 0.0, v1.toString()+">="+v2.toString());
+						model.addGenConstrIndicator(this_var, 1, x_minus_y,
+								GRB.GREATER_EQUAL, 0.0, EXPR.name_map.get(v1.toString())+">="+EXPR.name_map.get(v2.toString()));
 						break;
 						// z = [ x >= y ]
 						// -M(1-z) <= x-y <= Mz
@@ -8627,8 +8631,8 @@ public class RDDL {
 //						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z, name_map.get(toString())+"_GEQ_2" );
 //						break;
 					case "==" :
-						model.addGenConstrIndicator(this_var, true, x_minus_y, 
-								GRB.EQUAL, 0.0, v1.toString()+"=="+v2.toString());
+						model.addGenConstrIndicator(this_var, 1, x_minus_y,
+								GRB.EQUAL, 0.0, EXPR.name_map.get(v1.toString())+"=="+EXPR.name_map.get(v2.toString()));
 						break;
 						//z = [ x == y ]
 						//-M(1-z) <= x-y <= M(1-z), z in 0,1
@@ -8638,8 +8642,8 @@ public class RDDL {
 //						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_one_minus_z, name_map.get(toString())+"EQ_2" );
 //						break;
 					case "~=" :
-						model.addGenConstrIndicator(this_var, false, x_minus_y, 
-								GRB.EQUAL, 0.0, v1.toString()+"~="+v2.toString());
+						model.addGenConstrIndicator(this_var, 0, x_minus_y,
+								GRB.EQUAL, 0.0, EXPR.name_map.get(v1.toString())+"~="+EXPR.name_map.get(v2.toString()));
 						break;
 						//z = 1-t, t = [ x == y ]
 						//-M(1-t) <= x-y <= M(1-t), t in 0,1
