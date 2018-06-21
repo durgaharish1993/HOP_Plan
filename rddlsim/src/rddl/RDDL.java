@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import gurobi.*;
 import org.apache.commons.collections4.map.AbstractReferenceMap;
 import org.apache.commons.collections4.map.ReferenceMap;
-import org.apache.commons.lang3.NotImplementedException;
+//import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import rddl.parser.parser;
 import util.Pair;
@@ -815,7 +815,7 @@ public class RDDL {
 	public static class PVARIABLE_STATE_DEF extends PVARIABLE_WITH_DEFAULT_DEF {
 
 		public PVARIABLE_STATE_DEF(String name, boolean non_fluent,
-				String range, ArrayList param_types, Object def_value) {
+								   String range, ArrayList param_types, Object def_value) {
 			super(name, range, param_types);
 			_bNonFluent = non_fluent;
 			_oDefValue = def_value;
@@ -836,7 +836,7 @@ public class RDDL {
 				sb.append(")");
 			}
 			sb.append(" : {" + (_bNonFluent ? "non-fluent" : "state-fluent") +
-					  ", " + _typeRange + ", default = " +	_oDefValue + "};");
+					", " + _typeRange + ", default = " +	_oDefValue + "};");
 			return sb.toString();
 		}
 
@@ -866,7 +866,7 @@ public class RDDL {
 				sb.append(")");
 			}
 			sb.append(" : {" + (_bDerived ? "derived-fluent" : "interm-fluent") + ", " + _typeRange +
-					  ", level = " + _nLevel + "};");
+					", level = " + _nLevel + "};");
 			return sb.toString();
 		}
 
@@ -899,7 +899,7 @@ public class RDDL {
 	public static class PVARIABLE_ACTION_DEF extends PVARIABLE_WITH_DEFAULT_DEF {
 
 		public PVARIABLE_ACTION_DEF(String name, String range,
-				ArrayList param_types, Object def_value) {
+									ArrayList param_types, Object def_value) {
 			super(name, range, param_types);
 			_oDefValue = def_value;
 
@@ -1030,7 +1030,7 @@ public class RDDL {
 	//       objects/enums from general arithmetic expressions.
 	public static abstract class LTERM extends EXPR {
 		public Object getTermSub(HashMap<LVAR, LCONST> subs, State s, RandomDataGenerator r)
-		throws EvalException {
+				throws EvalException {
 			return sample(subs, s, r);
 		}
 
@@ -1046,12 +1046,12 @@ public class RDDL {
 			return this;
 		}
 
-        public GRBVar getGRBConstr(char sense, GRBModel model,
+		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-            throw new Exception("This is not defined, LTERM");
+			throw new Exception("This is not defined, LTERM");
 
-        }
+		}
 
 
 
@@ -1099,7 +1099,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException(toString());
+			throw new Exception(toString());
 		}
 
 		public String toString() {
@@ -1107,12 +1107,12 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			// Nothing to collect
 		}
 
 		public Object sample(HashMap<LVAR, LCONST> subs, State s, RandomDataGenerator r)
-		throws EvalException {
+				throws EvalException {
 			LCONST sub = subs.get(this);
 			if (sub == null)
 				throw new EvalException("RDDL.PVAR_EXPR: No substitution in " + subs + " for " + this + "\n" + this);
@@ -1157,7 +1157,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException(toString());
+			throw new Exception(toString());
 		}
 
 		@Override
@@ -1179,12 +1179,12 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			// Nothing to collect
 		}
 
 		public Object sample(HashMap<LVAR, LCONST> subs, State s, RandomDataGenerator r)
-		throws EvalException {
+				throws EvalException {
 			LCONST sub = subs.get(this);
 			if (sub == null)
 				throw new EvalException("RDDL.PVAR_EXPR: No substitution in " + subs + " for " + this + "\n" + this);
@@ -1222,8 +1222,8 @@ public class RDDL {
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, 
-				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				Map<TYPE_NAME, OBJECTS_DEF> objects,
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			try{
 				return _pvarExpr.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
@@ -1250,8 +1250,8 @@ public class RDDL {
 							Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			try {
 				if( isConstant(constants, objects, hmtypes,hm_variables ) ){
-                    return this;
-                }
+					return this;
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -1283,9 +1283,9 @@ public class RDDL {
 
 		@Override
 		public GRBVar addGRBObjectiveTerm(GRBModel model,
-				  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				  Map<TYPE_NAME, OBJECTS_DEF> objects,
-				  Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes,HashMap<PVAR_NAME,PVARIABLE_DEF> hm_variables) throws Exception{
+										  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
+										  Map<TYPE_NAME, OBJECTS_DEF> objects,
+										  Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes,HashMap<PVAR_NAME,PVARIABLE_DEF> hm_variables) throws Exception{
 			return _pvarExpr.addGRBObjectiveTerm(model, constants, objects, type_map,hmtypes,hm_variables);
 		}
 
@@ -1322,7 +1322,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_pvarExpr.collectGFluents(subs, s, gfluents);
 		}
 
@@ -1337,7 +1337,7 @@ public class RDDL {
 	// Immutable... making public to avoid unnecessary
 	// method calls, relying on user to respect immutability
 	public abstract static class LCONST extends LTERM {
-		
+
 		public LCONST(String const_value) {
 			_sConstValue = const_value.intern();
 			_nHashCode = const_value.hashCode();
@@ -1378,12 +1378,12 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			// Nothing to collect
 		}
 
 		public Object sample(HashMap<LVAR, LCONST> subs, State s, RandomDataGenerator r)
-			throws EvalException {
+				throws EvalException {
 			return this;
 		}
 
@@ -1450,18 +1450,18 @@ public class RDDL {
 			}
 		}
 
-		public int enum_to_int(//removed this : PVAR_NAME p_name, 
-				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
-				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+		public int enum_to_int(//removed this : PVAR_NAME p_name,
+							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
+							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			if( _intVal != null ){
 				return _intVal;
 			}else{
 				int index = -1;
 				for(TYPE_NAME tn : hmtypes.keySet()){
-                    TYPE_DEF tdef = hmtypes.get(tn);
-                    if(tdef instanceof ENUM_TYPE_DEF){
-                        ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-                        for(int i=0;i<temp_tdef.size();i++){
+					TYPE_DEF tdef = hmtypes.get(tn);
+					if(tdef instanceof ENUM_TYPE_DEF){
+						ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
+						for(int i=0;i<temp_tdef.size();i++){
 							if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
 								index = i;
 								break;
@@ -1469,8 +1469,8 @@ public class RDDL {
 
 						}
 
-                    }
-                }
+					}
+				}
 
 				//at least throw exception here instead of returning -1
 				try{
@@ -1703,7 +1703,7 @@ public class RDDL {
 		// Name was interned so can check reference equality
 		public boolean equals(Object o) {
 			return _sPVarNameCanon == ((PVAR_NAME)o)._sPVarNameCanon
-			       && _bPrimed == ((PVAR_NAME)o)._bPrimed;
+					&& _bPrimed == ((PVAR_NAME)o)._bPrimed;
 		}
 
 		// Does the job to handle "'"... could make more efficient
@@ -1757,7 +1757,7 @@ public class RDDL {
 		public double getDoubleValue(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables, PVAR_NAME p_name) throws Exception {
-				throw new UnsupportedOperationException(toString());
+			throw new UnsupportedOperationException(toString());
 		}
 
 		public static char upper( char... types ){
@@ -2079,7 +2079,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented,DiracDelta" + this.toString());
+			throw new Exception("This method is not implemented,DiracDelta" + this.toString());
 		}
 
 
@@ -2171,7 +2171,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprRealValue.collectGFluents(subs, s, gfluents);
 		}
 	}
@@ -2185,7 +2185,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented, KronDelta" + this.toString());
+			throw new Exception("This method is not implemented, KronDelta" + this.toString());
 		}
 
 
@@ -2286,7 +2286,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprIntValue.collectGFluents(subs, s, gfluents);
 		}
 	}
@@ -2301,7 +2301,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented,Uniform" + this.toString());
+			throw new Exception("This method is not implemented,Uniform" + this.toString());
 		}
 
 		@Override
@@ -2345,7 +2345,7 @@ public class RDDL {
 
 
 
-	//This is old implementation.
+		//This is old implementation.
 /*
 		@Override
 		public EXPR sampleDeterminization(RandomDataGenerator rand) throws Exception {
@@ -2444,7 +2444,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-		throws EvalException {
+				throws EvalException {
 			_exprLowerReal.collectGFluents(subs, s, gfluents);
 			_exprUpperReal.collectGFluents(subs, s, gfluents);
 		}
@@ -2460,7 +2460,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented, Normal"+this.toString());
+			throw new Exception("This method is not implemented, Normal"+this.toString());
 
 		}
 
@@ -2584,7 +2584,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_normalMeanReal.collectGFluents(subs, s, gfluents);
 			_normalVarReal.collectGFluents(subs, s, gfluents);
 		}
@@ -2624,7 +2624,7 @@ public class RDDL {
 
 
 			System.out.println("This is the class " + toString());
-			throw new NotImplementedException("This method is not implemented");
+			throw new Exception("This method is not implemented");
 
 		}
 
@@ -2633,7 +2633,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented, Dirichlet"+ this.toString());
+			throw new Exception("This method is not implemented, Dirichlet"+ this.toString());
 		}
 
 		//This is old implementation .
@@ -2670,7 +2670,7 @@ public class RDDL {
 		}
 
 		public Object sample(HashMap<LVAR, LCONST> subs, State s,
-				RandomDataGenerator r) throws EvalException {
+							 RandomDataGenerator r) throws EvalException {
 			// Build a vector of size _discrete._sTypeName as a STRUCT_VAL
 			LCONST_TYPE_DEF etd = (LCONST_TYPE_DEF)s._hmTypes.get(_sTypeName);
 			if (etd == null)
@@ -2694,7 +2694,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprAlpha.collectGFluents(subs, s, gfluents);
 		}
 
@@ -2757,7 +2757,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented,Multinomial" + this.toString());
+			throw new Exception("This method is not implemented,Multinomial" + this.toString());
 		}
 
 
@@ -2887,7 +2887,7 @@ public class RDDL {
 		}
 
 		public Object sample(HashMap<LVAR, LCONST> subs, State s,
-				RandomDataGenerator r) throws EvalException {
+							 RandomDataGenerator r) throws EvalException {
 			Object o_count = ((EXPR)_exprCount).sample(subs, s, r);
 			if (!(o_count instanceof Integer))
 				throw new EvalException("Expected integer for evaluation of multinomial count expression, but received " +
@@ -2924,7 +2924,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprCount.collectGFluents(subs, s, gfluents);
 			_distDiscrete.collectGFluents(subs, s, gfluents);
 		}
@@ -3048,7 +3048,7 @@ public class RDDL {
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects,
 								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented " + this.toString());
+			throw new Exception("This method is not implemented " + this.toString());
 		}
 
 		public TYPE_NAME  _sTypeName = null;
@@ -3109,24 +3109,24 @@ public class RDDL {
 			if (USE_PREFIX) {
 				sb.append("(Discrete " + (_sTypeName != null ? _sTypeName : "") + " ( ");
 				for (int i = 0; i < _exprProbs.size(); i+=2) {
-                                    if (_exprProbs.get(i) instanceof ENUM_VAL)
-					sb.append("(" + ((ENUM_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
-                                    else if (_exprProbs.get(i) instanceof OBJECT_VAL)
-                                        sb.append("(" + ((OBJECT_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
-                                    else
-                                        sb.append("(" + ((EXPR)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
-                                }
+					if (_exprProbs.get(i) instanceof ENUM_VAL)
+						sb.append("(" + ((ENUM_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
+					else if (_exprProbs.get(i) instanceof OBJECT_VAL)
+						sb.append("(" + ((OBJECT_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
+					else
+						sb.append("(" + ((EXPR)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)) + ") ");
+				}
 				sb.append(")");
 			} else {
 				sb.append("Discrete(" + (_sTypeName != null ? _sTypeName + ", ": ""));
 				for (int i = 0; i < _exprProbs.size(); i+=2) {
-                                    if (_exprProbs.get(i) instanceof ENUM_VAL)
-					sb.append(((i > 0) ? ", " : "") + ((ENUM_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
-                                    else if (_exprProbs.get(i) instanceof OBJECT_VAL)
-                                        sb.append(((i > 0) ? ", " : "") + ((OBJECT_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
-                                    else
-                                        sb.append(((i > 0) ? ", " : "") + ((EXPR)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
-                                }
+					if (_exprProbs.get(i) instanceof ENUM_VAL)
+						sb.append(((i > 0) ? ", " : "") + ((ENUM_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
+					else if (_exprProbs.get(i) instanceof OBJECT_VAL)
+						sb.append(((i > 0) ? ", " : "") + ((OBJECT_VAL)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
+					else
+						sb.append(((i > 0) ? ", " : "") + ((EXPR)_exprProbs.get(i)) + " : " + ((EXPR)_exprProbs.get(i+1)));
+				}
 			}
 			sb.append(")");
 			return sb.toString();
@@ -3181,7 +3181,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			for (Object o : _exprProbs)
 				if (o instanceof EXPR)
 					((EXPR)o).collectGFluents(subs, s, gfluents);
@@ -3199,7 +3199,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented,Exponential" + this.toString());
+			throw new Exception("This method is not implemented,Exponential" + this.toString());
 		}
 
 
@@ -3293,7 +3293,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprMeanReal.collectGFluents(subs, s, gfluents);
 		}
 
@@ -3314,7 +3314,7 @@ public class RDDL {
 
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
-			throw new NotImplementedException("This method is not implemented,Weibull" + this.toString());
+			throw new Exception("This method is not implemented,Weibull" + this.toString());
 		}
 
 
@@ -3412,7 +3412,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprShape.collectGFluents(subs, s, gfluents);
 			_exprScale.collectGFluents(subs, s, gfluents);
 		}
@@ -3434,7 +3434,7 @@ public class RDDL {
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 
-			throw new NotImplementedException("This method is not implemented,Gamma" + this.toString());
+			throw new Exception("This method is not implemented,Gamma" + this.toString());
 
 
 		}
@@ -3547,7 +3547,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprShape.collectGFluents(subs, s, gfluents);
 			_exprScale.collectGFluents(subs, s, gfluents);
 		}
@@ -3567,7 +3567,7 @@ public class RDDL {
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 
-			throw new NotImplementedException("This method is not implemented,Poisson" + this.toString());
+			throw new Exception("This method is not implemented,Poisson" + this.toString());
 
 
 		}
@@ -3699,7 +3699,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprMean.collectGFluents(subs, s, gfluents);
 		}
 
@@ -3761,7 +3761,7 @@ public class RDDL {
 		@Override
 		public GRBVar getGRBConstr(char sense, GRBModel model, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<TYPE_NAME, OBJECTS_DEF> objects, Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 
-			throw new NotImplementedException("This method is not implemented,Bernoulli" + this.toString());
+			throw new Exception("This method is not implemented,Bernoulli" + this.toString());
 
 
 		}
@@ -3888,7 +3888,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_exprProb.collectGFluents(subs, s, gfluents);
 		}
 
@@ -3968,8 +3968,8 @@ public class RDDL {
 				EXPR expr = ((EXPR)obj);
 				try {
 					if( expr.isConstant( null , null, null,null ) ){
-                        return getDoubleValue(null, null,null , null,  null) == expr.getDoubleValue( null, null, null, null,  null);
-                    }
+						return getDoubleValue(null, null,null , null,  null) == expr.getDoubleValue( null, null, null, null,  null);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -4084,7 +4084,7 @@ public class RDDL {
 										   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 
-				return this;
+			return this;
 
 		}
 
@@ -4203,7 +4203,7 @@ public class RDDL {
 		}*/
 
 		public boolean isConstant( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-		   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
+								   Map< TYPE_NAME, OBJECTS_DEF >  objects ) throws Exception{
 			return false;
 		}
 
@@ -4222,7 +4222,7 @@ public class RDDL {
 				STRUCT_EXPR_MEMBER s = (STRUCT_EXPR_MEMBER)o;
 				return _sLabel.equals(s._sLabel) && _expr.equals(s._expr);
 			} else
-			return false;
+				return false;
 		}
 
 		public String toString() {
@@ -4283,7 +4283,7 @@ public class RDDL {
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
-							return null;
+								return null;
 							})
 							.collect( Collectors.toList( ) ) ) );
 
@@ -4406,7 +4406,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			for (STRUCT_EXPR_MEMBER m : _alSubExpr)
 				m._expr.collectGFluents(subs, s, gfluents);
 		}
@@ -4598,8 +4598,8 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( isConstant( null, null, null, null ) ){
-                    return Double.hashCode( getDoubleValue( null , null, null ,null,  null) );
-                }
+					return Double.hashCode( getDoubleValue( null , null, null ,null,  null) );
+				}
 
 				EXPR reducible = reduce( _e1, _e2, _op, null, null, null, null );
 				if( reducible instanceof OPER_EXPR ){
@@ -4623,8 +4623,8 @@ public class RDDL {
 			//Depends on (<E> \ 0).equals(<E>E+E)
 			try {
 				if( isConstant(null,null, null, null ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null,  null) ).equals( obj );
-                }
+					return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null,  null) ).equals( obj );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -4677,17 +4677,17 @@ public class RDDL {
 		public boolean isPiecewiseLinear(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										 Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			try{
-			    if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
-			    	return true;
-			    }
-			}catch(){
-				
+				if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
+					return true;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 
 			try{
 				if( _op.equals(PLUS) || _op.equals(MINUS) || _op.equals(MIN) || _op.equals(MAX) ){
 					return _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) &&
-						   _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
+							_e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
 				}else if( _op.equals(TIMES) ){
 					return ( _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
 							|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
@@ -4701,8 +4701,8 @@ public class RDDL {
 						throw exc;
 					}
 				}
-			}catch(){
-				throw
+			}catch(Exception e ){
+				throw e;
 			}
 			//return false;
 		}
@@ -4795,8 +4795,8 @@ public class RDDL {
 
 			if (!op.equals(PLUS) && !op.equals(MINUS) && !op.equals(TIMES) && !op.equals(DIV) && !op.equals(MIN) && !op.equals(MAX))
 				//throw new Exception("Unrecognized arithmetic operator: " + op);
-			assert( op.equals(PLUS) || op.equals(MINUS) || op.equals(TIMES) || op.equals(DIV)
-					|| op.equals( MIN ) || op.equals( MAX ) );
+				assert( op.equals(PLUS) || op.equals(MINUS) || op.equals(TIMES) || op.equals(DIV)
+						|| op.equals( MIN ) || op.equals( MAX ) );
 			_op = op.intern();
 			_e1 = e1;
 			_e2 = e2;
@@ -4848,7 +4848,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 
 			HashSet<Pair> local_fluents = new HashSet<Pair>();
 
@@ -4868,7 +4868,7 @@ public class RDDL {
 
 			if (_op == OPER_EXPR.TIMES &&
 					((e1_eval != null && (e1_eval.equals(D_ZERO) || e1_eval.equals(I_ZERO) || e1_eval.equals(B_ZERO) || e1_eval.equals(E_ZERO))) ||
-					 (e2_eval != null && (e2_eval.equals(D_ZERO) || e2_eval.equals(I_ZERO) || e2_eval.equals(B_ZERO) || e2_eval.equals(E_ZERO)))))
+							(e2_eval != null && (e2_eval.equals(D_ZERO) || e2_eval.equals(I_ZERO) || e2_eval.equals(B_ZERO) || e2_eval.equals(E_ZERO)))))
 				return; // We have a state-independent 0 times some value... the result must be 0 so we need not collect fluents
 
 			if (e1_eval == null)
@@ -4903,7 +4903,7 @@ public class RDDL {
 				STRUCT_VAL_MEMBER v2 = s2._alMembers.get(i);
 				if (!v1._sLabel.equals(v2._sLabel))
 					throw new EvalException("Mismatched vector labels during elementwise vector operation: " + v1 + " vs " + v2 + " in" +
-						"\nOperand 1: " + s1 + "\nOperand 2: " + s2 + "\nOp: " + op);
+							"\nOperand 1: " + s1 + "\nOperand 2: " + s2 + "\nOp: " + op);
 				ret.addMember(v1._sLabel, ComputeArithmeticResult(v1._oVal, v2._oVal, op));
 			}
 			return ret;
@@ -4925,7 +4925,7 @@ public class RDDL {
 		if (o2 instanceof Boolean)
 			o2 = ((Boolean)o2 == true ? 1 : 0);
 		if (!((o1 instanceof Integer) || (o1 instanceof Double))
-			|| !((o2 instanceof Integer) || (o2 instanceof Double)))
+				|| !((o2 instanceof Integer) || (o2 instanceof Double)))
 			throw new EvalException("Operands 1 '" + o1 + "' (type:" + o1.getClass() + ") and 2 '" + o2 + "' (type:" + o2.getClass() + ") must be castable to int or real");
 
 		// Perform int operations where possible
@@ -5070,8 +5070,8 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( isConstant( null , null, null, null ) ){
-                    return Double.hashCode( getDoubleValue( null , null, null,null,  null) );
-                }
+					return Double.hashCode( getDoubleValue( null , null, null,null,  null) );
+				}
 				else if( _alVariables.isEmpty() ){
 					return _e.hashCode();
 				}
@@ -5087,7 +5087,7 @@ public class RDDL {
 			if( _expandCache.containsKey(new Pair<>(this.toString(), _alVariables) ) ){
 				return _expandCache.get(new Pair<>(this.toString(), _alVariables));
 			}
-			
+
 			List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants, hmtypes , hm_variables);
 			String type = null;
 			switch( _op ){
@@ -5121,7 +5121,7 @@ public class RDDL {
 
 				if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
 					return new REAL_CONST_EXPR( getDoubleValue(constants, objects, hmtypes ,hm_variables,  null) )
-						.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
+							.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
 				}
 
 				List<EXPR> terms = expandQuantifier( _e, _alVariables, objects, constants,  hmtypes, hm_variables );
@@ -5245,18 +5245,18 @@ public class RDDL {
 							   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 
 			try {
-                if (isConstant(constants, objects, hmtypes,hm_variables  )) {
-                    return new REAL_CONST_EXPR(getDoubleValue(constants, objects, hmtypes,hm_variables,  null));
-                }
+				if (isConstant(constants, objects, hmtypes,hm_variables  )) {
+					return new REAL_CONST_EXPR(getDoubleValue(constants, objects, hmtypes,hm_variables,  null));
+				}
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
+
 			try{
 				List<LTERM> new_terms = _alVariables.stream().map( m -> m.substitute(subs, constants, objects,  hmtypes,hm_variables  ) )
-					.collect( Collectors.toList() );
+						.collect( Collectors.toList() );
 				final List<LTYPED_VAR> al_new_terms = new_terms.stream().filter( m -> m instanceof LTYPED_VAR )
-					.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
+						.map( m -> (LTYPED_VAR)m ).collect( Collectors.toList() );
 				//expanding under sum is expensive
 				//defer this till getGRBConstr()
 
@@ -5297,7 +5297,7 @@ public class RDDL {
 		}
 
 		public Object sample(HashMap<LVAR,LCONST> subs, State s,
-				RandomDataGenerator r) throws EvalException {
+							 RandomDataGenerator r) throws EvalException {
 
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
 			Object result = null;
@@ -5365,7 +5365,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
 
@@ -5482,7 +5482,7 @@ public class RDDL {
 				return lookup;
 			}
 			assert( isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
-            //System.out.println(_alTerms.toString());
+			//System.out.println(_alTerms.toString());
 			assert (_alTerms.stream().allMatch(m -> m instanceof LCONST));
 
 			GRBVar this_var = getGRBVar(this, model, constants, objects, type_map, hmtypes, hm_variables);
@@ -5935,7 +5935,7 @@ public class RDDL {
 							}
 							return null;
 						})
-							.collect( Collectors.toList() ) ) );
+								.collect( Collectors.toList() ) ) );
 				//return m.getMean(objects);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -5949,15 +5949,15 @@ public class RDDL {
 										  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			try{
 				return new FUN_EXPR( _sName, new ArrayList<EXPR>(
-					_alArgs.stream().map(m -> {
-						try {
-							return m.sampleDeterminization(rand,constants,objects,  hmtypes,hm_variables  );
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					})
-					.collect( Collectors.toList() ) ) );
+						_alArgs.stream().map(m -> {
+							try {
+								return m.sampleDeterminization(rand,constants,objects,  hmtypes,hm_variables  );
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							return null;
+						})
+								.collect( Collectors.toList() ) ) );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -5996,20 +5996,20 @@ public class RDDL {
 
 			if( _sName.equals( MIN ) || _sName.equals( MAX )
 					|| _sName.equals( ABS ) || _sName.equals( SGN ) ){
-				 try{
-					 return _alArgs.stream().allMatch(
-						 m -> {
-							 try {
-								 return m.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
-							 } catch (Exception e) {
-								 e.printStackTrace();
-							 }
-							 return false;
-						 });
-				 }catch(Exception exc){
-					 exc.printStackTrace();
-					 throw exc;
-				 }
+				try{
+					return _alArgs.stream().allMatch(
+							m -> {
+								try {
+									return m.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								return false;
+							});
+				}catch(Exception exc){
+					exc.printStackTrace();
+					throw exc;
+				}
 			}
 
 			return false;
@@ -6030,15 +6030,15 @@ public class RDDL {
 			List<Double> evals = null;
 			try{
 				evals = _alArgs.stream()
-					.map( m -> {
-						try {
-							return m.getDoubleValue( constants, objects,  hmtypes,hm_variables,  null);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						return null;
-					})
-					.collect( Collectors.toList() );
+						.map( m -> {
+							try {
+								return m.getDoubleValue( constants, objects,  hmtypes,hm_variables,  null);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							return null;
+						})
+						.collect( Collectors.toList() );
 			}catch(Exception exc){
 				exc.printStackTrace();
 				throw exc;
@@ -6127,7 +6127,7 @@ public class RDDL {
 								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
 				return new REAL_CONST_EXPR( getDoubleValue(constants, objects,  hmtypes,hm_variables,  null) )
-					.getGRBConstr(sense, model, constants, objects, type_map,hmtypes, hm_variables);
+						.getGRBConstr(sense, model, constants, objects, type_map,hmtypes, hm_variables);
 			}
 
 			if( grb_cache.containsKey(this) ){
@@ -6148,10 +6148,10 @@ public class RDDL {
 				}else if( _sName.equals( ABS ) ){
 					assert( _alArgs.size() == 1 );
 					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) ,
-						new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
+							new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
 					ret = new IF_EXPR( comp_expr, _alArgs.get(0),
 							new OPER_EXPR( new REAL_CONST_EXPR(-1d),
-							_alArgs.get(0), OPER_EXPR.TIMES ) );
+									_alArgs.get(0), OPER_EXPR.TIMES ) );
 				}
 //				else if( _sName.equals( MOD ) ){
 //					//x%y == x/y - floor(x/y)
@@ -6402,7 +6402,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 
 			for (EXPR e : _alArgs)
 				e.collectGFluents(subs, s, gfluents);
@@ -6451,12 +6451,12 @@ public class RDDL {
 				Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			try {
 				if( isConstant( constants, null, hmtypes,hm_variables  ) ){
-                    final double d = getDoubleValue(constants, null,  hmtypes,hm_variables,  null);
-                    assert( d== 1d || d == 0d );
-                    return (d == 1) ?
-                    		_trueBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables ) :
-                			_falseBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables );
-                }
+					final double d = getDoubleValue(constants, null,  hmtypes,hm_variables,  null);
+					assert( d== 1d || d == 0d );
+					return (d == 1) ?
+							_trueBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables ) :
+							_falseBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -6477,9 +6477,9 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( _test.isConstant(null, null, null, null ) ){
-                    return _test.getDoubleValue( null, null, null,null,  null) == 1d ?
-                    		_trueBranch.equals(obj) : _falseBranch.equals(obj);
-                }
+					return _test.getDoubleValue( null, null, null,null,  null) == 1d ?
+							_trueBranch.equals(obj) : _falseBranch.equals(obj);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -6497,16 +6497,16 @@ public class RDDL {
 										 Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			return _test.isConstant(constants, objects, hmtypes,hm_variables  ) || (
 					_test.isPiecewiseLinear( constants , objects,  hmtypes,hm_variables  )
-					&& _trueBranch.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  )
-					&& _falseBranch.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
+							&& _trueBranch.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  )
+							&& _falseBranch.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
 		}
 
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			return _test.isConstant(constants, objects,  hmtypes,hm_variables  ) &&
 					( _test.getDoubleValue(constants, objects, hmtypes, hm_variables,  null) == 1d ?
-						_trueBranch.isConstant(constants, objects,  hmtypes,hm_variables  )
-						: _falseBranch.isConstant(constants, objects,  hmtypes,hm_variables  ) );
+							_trueBranch.isConstant(constants, objects,  hmtypes,hm_variables  )
+							: _falseBranch.isConstant(constants, objects,  hmtypes,hm_variables  ) );
 		}
 
 		@Override
@@ -6516,17 +6516,17 @@ public class RDDL {
 			EXPR new_test = _test.substitute(subs, constants, objects,  hmtypes, hm_variables );
 			try {
 				if( new_test.isConstant(constants, objects,  hmtypes,hm_variables  ) ){
-                    final double d = new_test.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null);
-                    assert( d  == 0d || d == 1d );
-                    if( d == 1d ){
-                        return _trueBranch.substitute(subs, constants, objects,  hmtypes, hm_variables );
-                    }else {
-                        return _falseBranch.substitute(subs, constants, objects,  hmtypes, hm_variables);
-                    }
-                }else{
-                    return new IF_EXPR(new_test, _trueBranch.substitute(subs, constants, objects,  hmtypes, hm_variables ),
-                            _falseBranch.substitute(subs, constants, objects,  hmtypes, hm_variables ) );
-                }
+					final double d = new_test.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null);
+					assert( d  == 0d || d == 1d );
+					if( d == 1d ){
+						return _trueBranch.substitute(subs, constants, objects,  hmtypes, hm_variables );
+					}else {
+						return _falseBranch.substitute(subs, constants, objects,  hmtypes, hm_variables);
+					}
+				}else{
+					return new IF_EXPR(new_test, _trueBranch.substitute(subs, constants, objects,  hmtypes, hm_variables ),
+							_falseBranch.substitute(subs, constants, objects,  hmtypes, hm_variables ) );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -6614,8 +6614,8 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( _test.isConstant(null, null, null, null ) ){
-                    return _test.getDoubleValue( null, null, null,null,  null) == 1d ? _trueBranch.hashCode() : _falseBranch.hashCode();
-                }
+					return _test.getDoubleValue( null, null, null,null,  null) == 1d ? _trueBranch.hashCode() : _falseBranch.hashCode();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -6629,7 +6629,7 @@ public class RDDL {
 			try{
 				if( isConstant(constants , objects,  hmtypes,hm_variables  ) ){
 					return _test.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null) == 1d ? _trueBranch.getDoubleValue(constants, objects, hmtypes, hm_variables,  null) :
-						_falseBranch.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null);
+							_falseBranch.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null);
 				}
 			}catch( Exception exc ){
 				exc.printStackTrace();
@@ -6667,7 +6667,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			//System.out.println("\nGfluents before " + "[" + gfluents.size() + "] " + _test + ": " + gfluents + "... subs:" + subs + " / det:" + _test._bDet);
 			HashSet<Pair> test_gfluents = new HashSet<Pair>();
 			_test.collectGFluents(subs, s, test_gfluents);
@@ -6706,7 +6706,7 @@ public class RDDL {
 							   final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							   final Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			return new CASE((LTERM) _termVal.substitute(subs, constants, objects,  hmtypes, hm_variables ),
-							_expr.substitute(subs, constants, objects,  hmtypes, hm_variables ));
+					_expr.substitute(subs, constants, objects,  hmtypes, hm_variables ));
 		}
 
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -6720,7 +6720,7 @@ public class RDDL {
 		}
 
 		public CASE getMean( Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
+							 Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
 			return new CASE( _termVal, _expr.getMean(constants, objects, hmtypes, hm_variables ) );
 		}
 
@@ -6728,7 +6728,7 @@ public class RDDL {
 										  Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 										  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			return new CASE(_termVal,
-				_expr.sampleDeterminization(rand, constants, objects,  hmtypes, hm_variables ));
+					_expr.sampleDeterminization(rand, constants, objects,  hmtypes, hm_variables ));
 		}
 
 		@Override
@@ -6798,9 +6798,9 @@ public class RDDL {
 
 			for( int i = 1; i < _cases.size(); ++i ){
 				ret = new OPER_EXPR(ret, new OPER_EXPR(
-								new COMP_EXPR(_term, _cases.get(i)._termVal, COMP_EXPR.EQUAL),
-								_cases.get(i)._expr,
-								OPER_EXPR.TIMES), OPER_EXPR.PLUS);
+						new COMP_EXPR(_term, _cases.get(i)._termVal, COMP_EXPR.EQUAL),
+						_cases.get(i)._expr,
+						OPER_EXPR.TIMES), OPER_EXPR.PLUS);
 
 			}
 			return ret.getGRBConstr(sense, model, constants, objects, type_map, hmtypes, hm_variables);
@@ -6824,13 +6824,13 @@ public class RDDL {
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 				Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			return _cases.stream().allMatch(m ->{
-							try{
-								return m.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
-							}
-							catch (Exception e){
-								e.printStackTrace();
-								throw new RuntimeException(e);
-							}
+				try{
+					return m.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
+				}
+				catch (Exception e){
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
 
 
 			} );
@@ -6925,7 +6925,7 @@ public class RDDL {
 			return new SWITCH_EXPR(
 					(LTERM) _term.substitute(subs, constants, objects, hmtypes,hm_variables ),
 					(ArrayList) _cases.stream()
-					.map(m->{
+							.map(m->{
 								try{
 									return m.substitute(subs, constants, objects, hmtypes,hm_variables );
 								}
@@ -6936,7 +6936,7 @@ public class RDDL {
 
 								}
 
-								}).collect(Collectors.toList())    );
+							}).collect(Collectors.toList())    );
 
 //			LTERM new_term = (LTERM) _term.substitute(subs, constants, objects);
 //			Stream<CASE> case_stream = _cases.stream();
@@ -7003,8 +7003,8 @@ public class RDDL {
 						.collect( Collectors.toList() );
 				if( matches.size() == 0 ){
 					List<CASE> defaults = _cases.stream()
-						.filter( m -> m._bDefaultCase )
-						.collect( Collectors.toList() );
+							.filter( m -> m._bDefaultCase )
+							.collect( Collectors.toList() );
 					assert( defaults.size() == 1 );
 					return defaults.get(0)._expr.isConstant(constants, objects,  hmtypes,hm_variables );
 				}else if( matches.size() == 1 ){
@@ -7059,7 +7059,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_term.collectGFluents(subs, s, gfluents);
 			for (CASE c : _cases)
 				c._expr.collectGFluents(subs, s, gfluents);
@@ -7115,7 +7115,7 @@ public class RDDL {
 										   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
 			try{
 				return new QUANT_EXPR( _sQuantType, _alVariables,
-					_expr.sampleDeterminization(rand,constants,objects, hmtypes,hm_variables ) );
+						_expr.sampleDeterminization(rand,constants,objects, hmtypes,hm_variables ) );
 			}catch(Exception exc){
 				EXPR expanded = expandBooleanQuantifier(constants, objects, hmtypes,hm_variables );
 				return expanded.sampleDeterminization(rand, constants, objects, hmtypes,hm_variables );
@@ -7154,8 +7154,8 @@ public class RDDL {
 
 			try {
 				if( isConstant( null , null, null, null ) ){
-                    return Double.hashCode( getDoubleValue( null , null, null,null,  null) );
-                }
+					return Double.hashCode( getDoubleValue( null , null, null,null,  null) );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				if( _alVariables.size() == 0 ){
@@ -7208,9 +7208,9 @@ public class RDDL {
 							}
 							try {
 								if( t.isConstant(constants, objects,  hmtypes,hm_variables ) ){
-                                    return t.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ?
-                                            new BOOL_CONST_EXPR(true) : new BOOL_CONST_EXPR(false);
-                                }
+									return t.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ?
+											new BOOL_CONST_EXPR(true) : new BOOL_CONST_EXPR(false);
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -7272,8 +7272,8 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( isConstant( null , null, null, null ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue( null , null, null, null,  null) ).equals(obj);
-                }
+					return new REAL_CONST_EXPR( getDoubleValue( null , null, null, null,  null) ).equals(obj);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -7313,7 +7313,7 @@ public class RDDL {
 				if(al_new_terms.isEmpty()){
 					return inner_sub;
 				} else {
-					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType, 
+					QUANT_EXPR unexpanded = new QUANT_EXPR(_sQuantType,
 							new ArrayList<>(al_new_terms), inner_sub);
 					EXPR expanded = unexpanded.expandBooleanQuantifier(constants, objects,  hmtypes,hm_variables );
 					return expanded.substitute(subs, constants, objects,  hmtypes,hm_variables );
@@ -7403,7 +7403,7 @@ public class RDDL {
 					result = interm_result;
 				else
 					result = (_sQuantType == FORALL) ? result && interm_result
-							  						 : result || interm_result;
+							: result || interm_result;
 				//System.out.println("After: " + result + " " + (_sQuantType == FORALL));
 
 				// Early cutoff detection
@@ -7426,7 +7426,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 
 			//System.out.println("VARS: " + _alVariables);
 			ArrayList<ArrayList<LCONST>> possible_subs = s.generateAtoms(_alVariables);
@@ -7493,17 +7493,17 @@ public class RDDL {
 			try {
 				return new CONN_EXPR( new ArrayList<BOOL_EXPR>(
 						_alSubNodes.stream()
-							.map(m ->
-							{
-								try{
-									return ((BOOL_EXPR)m.getMean(constants, objects, hmtypes, hm_variables ));
-								}
-								catch (Exception e){
-									e.printStackTrace();
-									throw new RuntimeException(e);
-								}
-							})
-							.collect(Collectors.toList() ) ), _sConn );
+								.map(m ->
+								{
+									try{
+										return ((BOOL_EXPR)m.getMean(constants, objects, hmtypes, hm_variables ));
+									}
+									catch (Exception e){
+										e.printStackTrace();
+										throw new RuntimeException(e);
+									}
+								})
+								.collect(Collectors.toList() ) ), _sConn );
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
@@ -7534,16 +7534,16 @@ public class RDDL {
 		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			return new CONN_EXPR( new ArrayList< BOOL_EXPR > (
-				_alSubNodes.stream()
-					.map( m -> {
-						try {
-							return (BOOL_EXPR)m.addTerm(new_term, constants, objects,  hmtypes,hm_variables );
-						} catch (Exception e) {
-							e.printStackTrace();
-							throw new RuntimeException(e);
-						}
-					})
-					.collect( Collectors.toList() ) ), _sConn );
+					_alSubNodes.stream()
+							.map( m -> {
+								try {
+									return (BOOL_EXPR)m.addTerm(new_term, constants, objects,  hmtypes,hm_variables );
+								} catch (Exception e) {
+									e.printStackTrace();
+									throw new RuntimeException(e);
+								}
+							})
+							.collect( Collectors.toList() ) ), _sConn );
 		}
 
 		@Override
@@ -7645,7 +7645,7 @@ public class RDDL {
 						_alSubNodes = new ArrayList<>( stream.filter( m -> {
 							try {
 								return !( m.isConstant(constants, objects, hmtypes,hm_variables  ) &&
-	                                    (m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d) );
+										(m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d) );
 							} catch (Exception e) {
 								e.printStackTrace();
 								return true;
@@ -7670,10 +7670,10 @@ public class RDDL {
 					case "=>" :
 						try {
 							if( _alSubNodes.get(0).isConstant(constants, objects, hmtypes,hm_variables  ) && _alSubNodes.get(0).getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ){
-	                            _alSubNodes = new ArrayList<>( _alSubNodes.subList(1, _alSubNodes.size() ) );
+								_alSubNodes = new ArrayList<>( _alSubNodes.subList(1, _alSubNodes.size() ) );
 
-	                            filter( constants, objects, hmtypes,hm_variables  );//T => T => x = x
-	                        }
+								filter( constants, objects, hmtypes,hm_variables  );//T => T => x = x
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -7684,7 +7684,7 @@ public class RDDL {
 				throw e;
 			}
 		}
-		
+
 
 		@Override
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -7696,8 +7696,8 @@ public class RDDL {
 					e.printStackTrace();
 					throw new RuntimeException(e);
 				}
-			   }) ){
-					return true;
+			}) ){
+				return true;
 			}
 
 			switch( _sConn ){
@@ -7706,7 +7706,7 @@ public class RDDL {
 							.anyMatch( m -> {
 								try {
 									return m.isConstant(constants, objects, hmtypes,hm_variables  )
-										&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 0d;
+											&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 0d;
 								} catch (Exception e) {
 									e.printStackTrace();
 									throw new RuntimeException(e);
@@ -7717,7 +7717,7 @@ public class RDDL {
 							.anyMatch( m -> {
 								try {
 									return m.isConstant(constants, objects, hmtypes,hm_variables  )
-										&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d;
+											&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d;
 								} catch (Exception e) {
 									e.printStackTrace();
 									throw new RuntimeException(e);
@@ -7796,9 +7796,9 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( isConstant( null , null, null, null ) ){
-                    //x ^ y ^ false for e.g.
-                    return Double.hashCode( getDoubleValue( null, null, null, null,  null) );
-                }
+					//x ^ y ^ false for e.g.
+					return Double.hashCode( getDoubleValue( null, null, null, null,  null) );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				if( _alSubNodes.size() == 1 ){
@@ -7836,14 +7836,14 @@ public class RDDL {
 							( _sConn.equals("|") ? ( sum >= 1 ? 1 : 0 ) : Double.NaN ) );
 				}else if( _sConn.equals("=>") ){
 					try {
-					        if(_alSubNodes.size()==1){
-                                return _alSubNodes.get(0).getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
+						if(_alSubNodes.size()==1){
+							return _alSubNodes.get(0).getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
 
-                            }else{
-                                return new CONN_EXPR( new NEG_EXPR( _alSubNodes.get(0) ),
-                                        new CONN_EXPR( new ArrayList< BOOL_EXPR >( _alSubNodes.subList(1, _alSubNodes.size() ) ) , _sConn ), OR )
-                                        .getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
-                            }
+						}else{
+							return new CONN_EXPR( new NEG_EXPR( _alSubNodes.get(0) ),
+									new CONN_EXPR( new ArrayList< BOOL_EXPR >( _alSubNodes.subList(1, _alSubNodes.size() ) ) , _sConn ), OR )
+									.getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
+						}
 
 					} catch (Exception e) {
 						//e.printStackTrace();
@@ -7901,21 +7901,21 @@ public class RDDL {
 									Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 									Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			List<EXPR> new_expr = _alSubNodes.stream().map( m -> {
-					try {
-						return m.substitute(subs, constants, objects, hmtypes,hm_variables  );
-					} catch (Exception e) {
-						e.printStackTrace();
-						throw new RuntimeException(e);
-					}
-				}).map(m -> {
-					try {
-						return m.isConstant(constants, objects, hmtypes,hm_variables  ) ?
-                            new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ? true : false ) : (BOOL_EXPR)m;
-					} catch (Exception e) {
-						e.printStackTrace();
-						return m;
-					}
-				}).collect(Collectors.toList());
+				try {
+					return m.substitute(subs, constants, objects, hmtypes,hm_variables  );
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			}).map(m -> {
+				try {
+					return m.isConstant(constants, objects, hmtypes,hm_variables  ) ?
+							new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ? true : false ) : (BOOL_EXPR)m;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return m;
+				}
+			}).collect(Collectors.toList());
 			try {
 				return new CONN_EXPR( new ArrayList( new_expr ), _sConn );
 				//calls filter() in constructor
@@ -7994,7 +7994,7 @@ public class RDDL {
 					result = interm_result;
 				else
 					result = (_sConn == AND) ? result && interm_result
-							  				 : result || interm_result;
+							: result || interm_result;
 
 				// Early cutoff detection
 				if (_sConn == AND && result == false)
@@ -8010,7 +8010,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 
 			// First go through and check for early termination in the case of AND / OR
 			HashSet<Pair> local_fluents = new HashSet<Pair>();
@@ -8161,8 +8161,8 @@ public class RDDL {
 		public boolean equals(Object obj) {
 			try {
 				if( isConstant( null , null, null, null ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue( null, null, null, null,  null) ).equals(obj);
-                }
+					return new REAL_CONST_EXPR( getDoubleValue( null, null, null, null,  null) ).equals(obj);
+				}
 
 				if( obj instanceof NEG_EXPR ){
 					NEG_EXPR n = (NEG_EXPR)obj;
@@ -8191,15 +8191,15 @@ public class RDDL {
 							   Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			try {
 				if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
-                    return new REAL_CONST_EXPR( getDoubleValue(constants, objects, hmtypes,hm_variables,  null) );
-                }
+					return new REAL_CONST_EXPR( getDoubleValue(constants, objects, hmtypes,hm_variables,  null) );
+				}
 
 				EXPR sub = _subnode.substitute(subs, constants, objects, hmtypes,hm_variables  );
 				if( sub.isConstant(constants, objects, hmtypes,hm_variables  ) ){
-                    final double d = sub.getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
-                    assert( d == 0d || d == 1d );
-                    return new BOOL_CONST_EXPR( d == 1 ? false : true );
-                }
+					final double d = sub.getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
+					assert( d == 0d || d == 1d );
+					return new BOOL_CONST_EXPR( d == 1 ? false : true );
+				}
 				return new NEG_EXPR( sub );
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -8211,8 +8211,8 @@ public class RDDL {
 		public int hashCode() {
 			try {
 				if( isConstant(null , null, null,null ) ){
-                    return Double.hashCode( getDoubleValue(null, null, null, null,  null) );
-                }
+					return Double.hashCode( getDoubleValue(null, null, null, null,  null) );
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -8255,7 +8255,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			_subnode.collectGFluents(subs, s, gfluents);
 		}
 	}
@@ -8283,19 +8283,19 @@ public class RDDL {
 			return this;
 		}
 
-	/*
-		This is old code.
+		/*
+            This is old code.
 
-		@Override
-		public EXPR sampleDeterminization(RandomDataGenerator rand) {
-			return this;
-		}
+            @Override
+            public EXPR sampleDeterminization(RandomDataGenerator rand) {
+                return this;
+            }
 
-		@Override
-		public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
-			return this;
-		}
-*/
+            @Override
+            public EXPR getMean(Map<TYPE_NAME, OBJECTS_DEF> objects) {
+                return this;
+            }
+    */
 		@Override
 		public EXPR addTerm(LVAR new_term, Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 							Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
@@ -8341,8 +8341,8 @@ public class RDDL {
 				EXPR e = (EXPR)obj;
 				try {
 					if( e.isConstant( null , null, null, null ) ){
-                        return e.getDoubleValue( null , null, null, null,  null) == getDoubleValue(null, null, null, null,  null);
-                    }
+						return e.getDoubleValue( null , null, null, null,  null) == getDoubleValue(null, null, null, null,  null);
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -8394,7 +8394,7 @@ public class RDDL {
 		}
 
 		public void collectGFluents(HashMap<LVAR, LCONST> subs,	State s, HashSet<Pair> gfluents)
-			throws EvalException {
+				throws EvalException {
 			// Nothing to collect
 		}
 	}
@@ -8475,7 +8475,7 @@ public class RDDL {
 			}
 
 			assert( isConstant(constants, objects, hmtypes, hm_variables) );
-			
+
 			//handling for when comparison is between objects (z1 == z2)
 			final double d1 = _e1.getDoubleValue(constants, objects, hmtypes, hm_variables,  null);
 			final double d2 = _e2.getDoubleValue(constants, objects, hmtypes, hm_variables,  null);
@@ -8493,13 +8493,13 @@ public class RDDL {
 		@Override
 		public boolean isPiecewiseLinear(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects, 
-				HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				Map<TYPE_NAME, OBJECTS_DEF > objects,
+				HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables  ) throws Exception{
 			if( isConstant(constants,objects,hmtypes,hm_variables) ){
 				return true;
 			}
-			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables ) 
+			return _e1.isPiecewiseLinear(constants, objects, hmtypes, hm_variables )
 					&& _e2.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
 		}
 
@@ -8525,7 +8525,7 @@ public class RDDL {
 		@Override
 		public boolean isConstant(
 				Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				Map<TYPE_NAME, OBJECTS_DEF > objects,HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 				HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception{
 			if( (_e1 instanceof LCONST && _e2 instanceof LCONST)
 					|| (_e1 instanceof ENUM_VAL && _e2 instanceof ENUM_VAL) ){
@@ -8537,8 +8537,8 @@ public class RDDL {
 		@Override
 		public EXPR substitute(Map<LVAR, LCONST> subs,
 							   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							   Map<TYPE_NAME, OBJECTS_DEF > objects, 
-							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+							   Map<TYPE_NAME, OBJECTS_DEF > objects,
+							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables ) throws Exception {
 			try {
 				final EXPR term1 = _e1.substitute(subs, constants, objects, hmtypes, hm_variables);
@@ -8785,8 +8785,8 @@ public class RDDL {
 		public boolean equals(Object o) {
 			PVAR_INST_DEF pid = (PVAR_INST_DEF)o;
 			return _sPredName.equals(pid._sPredName)
-				&& _oValue.equals(pid._oValue)
-				&& _alTerms.equals(pid._alTerms);
+					&& _oValue.equals(pid._oValue)
+					&& _alTerms.equals(pid._alTerms);
 		}
 
 		public int hashCode() {
