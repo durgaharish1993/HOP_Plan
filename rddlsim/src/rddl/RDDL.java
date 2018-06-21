@@ -35,6 +35,8 @@ public class RDDL {
 	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
 	protected static final LVAR FUTURE_PREDICATE  = new LVAR("?future");
 	protected static final String REG_EXPR_      = ".*(time|future).*";
+	protected static final Boolean SHOW_TRACE_EXCEPTIONS = false;
+	protected static final Boolean SHOW_MODIFIED_EXCEPTIONS = false;
 
 	public RDDL() { }
 
@@ -1214,7 +1216,12 @@ public class RDDL {
 				return _pvarExpr.isConstant(constants, objects, hmtypes,hm_variables );
 			}
 			catch(Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: isConstant :: "+ toString());
+
 				throw e;
 			}
 		}
@@ -1230,6 +1237,7 @@ public class RDDL {
 			}
 			catch(Exception e){
 				e.printStackTrace();
+
 				throw e;
 			}
 		}
@@ -1453,43 +1461,38 @@ public class RDDL {
 		public int enum_to_int(//removed this : PVAR_NAME p_name,
 							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			if( _intVal != null ){
-				return _intVal;
-			}else{
-				int index = -1;
-				for(TYPE_NAME tn : hmtypes.keySet()){
-					TYPE_DEF tdef = hmtypes.get(tn);
-					if(tdef instanceof ENUM_TYPE_DEF){
-						ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
-						for(int i=0;i<temp_tdef.size();i++){
-							if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
-								index = i;
-								break;
-							}
 
+			int index = -1;
+			for(TYPE_NAME tn : hmtypes.keySet()){
+				TYPE_DEF tdef = hmtypes.get(tn);
+				if(tdef instanceof ENUM_TYPE_DEF){
+					ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
+					for(int i=0;i<temp_tdef.size();i++){
+						if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
+							index = i;
+							break;
 						}
 
 					}
-				}
 
-				//at least throw exception here instead of returning -1
-				try{
-					if(index==-1){
-						throw new Exception("Not Found Ex" );
-					}else{
-						return index;
-					}
-
-				}catch( Exception exc ){
-					exc.printStackTrace();
-					throw exc;
 				}
+			}
+
+			//at least throw exception here instead of returning -1
+			try{
+				if(index==-1){
+					throw new Exception("Not Found Ex" );
+				}else{ return index; }
+			}catch( Exception exc ){
+				exc.printStackTrace();
+				throw exc;
+			}
 
 //				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
 //				TYPE_DEF tdef = hmtypes.get(tn);
 //				assert(tdef instanceof ENUM_TYPE_DEF);
 //				return ((ENUM_TYPE_DEF) tdef)._alPossibleValues.indexOf(_sConstValue);
-			}
+
 		}
 
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -5931,7 +5934,8 @@ public class RDDL {
 							try {
 								return m.getMean(constants, objects, hmtypes, hm_variables );
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
 							}
 							return null;
 						})
