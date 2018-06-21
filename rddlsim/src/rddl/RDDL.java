@@ -1452,15 +1452,13 @@ public class RDDL {
 		public int enum_to_int(//removed this : PVAR_NAME p_name,
 							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
 							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			int index = -1;
 			for(TYPE_NAME tn : hmtypes.keySet()){
 				TYPE_DEF tdef = hmtypes.get(tn);
 				if(tdef instanceof ENUM_TYPE_DEF){
 					ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
 					for(int i=0; i<temp_tdef.size(); i++){
 						if(temp_tdef.get(i)._sConstValue.equals(_sConstValue)){
-							index = i;
-							break;
+							return i;
 						}
 					}
 				}
@@ -1468,13 +1466,8 @@ public class RDDL {
 
 			//at least throw exception here instead of returning -1
 			try{
-				if(index==-1){
-					System.exit(1);
-					throw new Exception("Not Found Ex" );
-				}else{
-					return index;
-				}
-
+				System.exit(1);
+				throw new Exception("Not Found Ex" );
 			}catch( Exception exc ){
 				exc.printStackTrace();
 				throw exc;
@@ -4519,9 +4512,17 @@ public class RDDL {
 					case "min" :
 						//make if expr using v1 and v2
 						try {
-							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, _e2, COMP_EXPR.LESSEQ ) ,_e1, _e2 );
-							GRBVar if_min_var = ife.getGRBConstr( sense, model, constants, objects , type_map, hmtypes, hm_variables);
-							model.addConstr( this_var, GRB.EQUAL, if_min_var,  nam );
+							model.addGenConstrMin( this_var, new GRBVar[]{v1, v2},
+									Double.MAX_VALUE, this.toString() );
+							GetGRBUB instead of MAX_VALUE? HARISH
+							this.toString() HARISH
+							
+//							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, 
+//									_e2, COMP_EXPR.LESSEQ ) ,_e1, _e2 );
+//							GRBVar if_min_var = ife.getGRBConstr( sense, model, 
+//									constants, objects , type_map, hmtypes, 
+//									hm_variables);
+//							model.addConstr( this_var, GRB.EQUAL, if_min_var,  nam );
 						} catch (Exception e) {
 							e.printStackTrace();
 							throw e;
@@ -4529,9 +4530,14 @@ public class RDDL {
 						break;
 					case "max" :
 						try {
-							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, _e2, COMP_EXPR.GREATEREQ ) ,_e1, _e2 );
-							GRBVar ife_max_var = ife.getGRBConstr( sense, model, constants, objects, type_map, hmtypes, hm_variables);
-							model.addConstr(this_var, GRB.EQUAL, ife_max_var, nam );
+							model.addGenConstrMax( this_var, new GRBVar[]{v1, v2},
+									Double.MIN_VALUE, this.toString() );
+							GetGRBLB instead of MAX_VALUE? HARISH
+							this.toString() HARISH
+									
+//							IF_EXPR ife = new IF_EXPR( new COMP_EXPR( _e1, _e2, COMP_EXPR.GREATEREQ ) ,_e1, _e2 );
+//							GRBVar ife_max_var = ife.getGRBConstr( sense, model, constants, objects, type_map, hmtypes, hm_variables);
+//							model.addConstr(this_var, GRB.EQUAL, ife_max_var, nam );
 						} catch (Exception e) {
 							e.printStackTrace();
 							throw e;
@@ -6118,7 +6124,9 @@ public class RDDL {
 		public GRBVar getGRBConstr(char sense, GRBModel model,
 								   Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								   Map<TYPE_NAME, OBJECTS_DEF> objects,
-								   Map<PVAR_NAME, Character> type_map, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
+								   Map<PVAR_NAME, Character> type_map, 
+								   HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+								   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
 				return new REAL_CONST_EXPR( getDoubleValue(constants, objects,  hmtypes,hm_variables,  null) )
 						.getGRBConstr(sense, model, constants, objects, type_map,hmtypes, hm_variables);
@@ -6130,22 +6138,39 @@ public class RDDL {
 //			assert( isPiecewiseLinear(constants, objects) );
 
 			try{
-				EXPR ret = null;
+				final GRBVar this_var = getGRBVar(this, model, constants, objects, 
+						type_map, hmtypes, hm_variables);
 				if( _sName.equals( MIN ) ){
-					ret = _alArgs.stream().reduce(
-							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MIN )).get();
-				}else if( _sName.equals( MAX ) ){
+					model.addGenConstrMin( this_var, 
+							_alArgs.stream().map(m -> m.getGRBConstr())
+							.collect(Collectors.toList()).toArray(), 
+							Double.MAX_VALUE, this.toString());
 
-					ret = _alArgs.stream().reduce(
-							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MAX )).get();
+					GetGRBUB instead of MAX_VALUE? HARISH
+					this.toString() HARISH
+//					ret = _alArgs.stream().reduce(
+//							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MIN )).get();
+				}else if( _sName.equals( MAX ) ){
+					model.addGenConstrMax( this_var, 
+							_alArgs.stream().map(m -> m.getGRBConstr())
+							.collect(Collectors.toList()).toArray(), 
+							Double.MIN_VALUE, this.toString());
+
+					GetGRBLB instead of MIN_VALUE? HARISH
+					this.toString() HARISH
+							
+//					ret = _alArgs.stream().reduce(
+//							(a,b) -> new OPER_EXPR( a, b, OPER_EXPR.MAX )).get();
 
 				}else if( _sName.equals( ABS ) ){
 					assert( _alArgs.size() == 1 );
-					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) ,
-							new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
-					ret = new IF_EXPR( comp_expr, _alArgs.get(0),
-							new OPER_EXPR( new REAL_CONST_EXPR(-1d),
-									_alArgs.get(0), OPER_EXPR.TIMES ) );
+					model.addGenConstrAbs( this_var, _alArgs.get(0).getGRBConstr(),
+							this.toString() );
+//					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0) ,
+//							new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
+//					ret = new IF_EXPR( comp_expr, _alArgs.get(0),
+//							new OPER_EXPR( new REAL_CONST_EXPR(-1d),
+//									_alArgs.get(0), OPER_EXPR.TIMES ) );
 				}
 //				else if( _sName.equals( MOD ) ){
 //					//x%y == x/y - floor(x/y)
@@ -6164,11 +6189,11 @@ public class RDDL {
 					assert( _alArgs.size() == 1 );
 					COMP_EXPR comp_expr = new COMP_EXPR( _alArgs.get(0), new REAL_CONST_EXPR(0d), COMP_EXPR.GREATEREQ );
 					ret = new IF_EXPR( comp_expr, new INT_CONST_EXPR(1), new INT_CONST_EXPR(-1) );
+					GRBVar ret_var = ret.getGRBConstr(GRB.EQUAL, model, constants, 
+							objects, type_map,hmtypes, hm_variables);
+					model.addConstr( this_var, sense, ret_var, 
+							name_map.get(toString())+"="+name_map.get(ret.toString()) );
 				}
-
-				final GRBVar this_var = getGRBVar(this, model, constants, objects, type_map, hmtypes, hm_variables);
-				GRBVar ret_var = ret.getGRBConstr(GRB.EQUAL, model, constants, objects, type_map,hmtypes, hm_variables);
-				model.addConstr( this_var, sense, ret_var, name_map.get(toString())+"="+name_map.get(ret.toString()) );
 				return this_var;
 			}catch( Exception exc ){
 				exc.printStackTrace();
