@@ -367,8 +367,13 @@ public class Client {
 					}
 					//This will set TIME_LIMIT_MINS to avg of time left per time-step
 					policy.TIME_LIMIT_MINS = avg_timeout_gurobi_step;
-					ArrayList<PVAR_INST_DEF> actions =
-							policy.getActions(obs == null ? null : state);
+					ArrayList<PVAR_INST_DEF> actions = new ArrayList<>();
+					try {
+						 actions = policy.getActions(obs == null ? null : state);
+					}catch (Exception exe){
+						actions = policy.baseLineAction(state);
+
+					}
 					msg = createXMLAction(actions);
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>The current State : "+state._state.toString());
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> Action Taken :"+actions.toString());

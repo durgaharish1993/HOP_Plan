@@ -1345,6 +1345,7 @@ public class HOPPlanner extends Policy {
             time_terms_indices.add( i );
         }
 
+
         ArrayList<Integer> future_terms_indices = new ArrayList<Integer>( future_TERMS.size() );
         for( int i = 0 ; i < future_TERMS.size(); ++i ){
             future_terms_indices.add( i );

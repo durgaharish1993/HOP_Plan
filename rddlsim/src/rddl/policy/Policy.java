@@ -120,5 +120,9 @@ public abstract class Policy {
 	}
 
 
+	public ArrayList<PVAR_INST_DEF> baseLineAction(State s){
+		return new ArrayList<PVAR_INST_DEF>();
+	}
+
 	
 }
