@@ -129,22 +129,48 @@ public class Client {
 		}
 
 		//This is new added to this file.
-		host = args[1];
-		clientName = args[2];
-		port = Integer.valueOf(args[4]);
-		final String instanceName = args[6];
-		String planner_class   = args[3];
-		String Instance_name   = args[6];
-		String n_lookahead     = args[7];
-		String n_futures       = args[8];
-		String gurobi_timeout  = args[9];
-		String future_sampling = args[10];
-		String hindsight_stra  = args[11];
-		Double per_explo_time  = Double.valueOf(args[12]);
 
+//		./rddlsim/rddl_files/client
+//		localhost
+//	    HOPPlanner
+//		rddl.det.comMipNew.HOPPlanner
+//		2323
+//		1
+//		inst_reservoir_res8
+//		5
+//		5
+//		0.1
+//		SAMPLE
+//		ROOT
+//		10
+                System.out.println(args.toString());
+		host = args[0];
+		clientName = args[1];
+        String planner_class   = args[2];
+		port = Integer.valueOf(args[3]);
 
+		final String instanceName = args[5];
+		String n_lookahead     = args[6];
+		String n_futures       = args[7];
+		String gurobi_timeout  = args[8];
+		String future_sampling = args[9];
+		String hindsight_stra  = args[10];
+		Double per_explo_time  = Double.valueOf(args[11]);
+		Boolean manual_NPWL    = ((String)args[12]) =="true" ? true : false;
+//        $HOST
+//        $PLANNER_NAME
+//        $PLANNER_CLASS
+//        $PORT
+//        $RANDOM_SEED
+//        $INSTANCE
+//        $LOOKAHEAD
+//        $FUTURES
+//        $OPTIMIZE_TIME
+//        $POLICY_SAMPLE
+//        $POLICY_TYPE
+//        $PERCENTAG_EXPLO
+//        $NPWL_PWL
 
-		ArrayList<String> parameters = new ArrayList<String>(Arrays.asList(args).subList(7,args.length-2));
 
 		double timeLeft = 0;
 		try {
@@ -197,10 +223,10 @@ public class Client {
 			// Cannot assume always in rddl.policy
 			Class c = Class.forName(planner_class);
 			if ( args.length > 4 ) {
-				port = Integer.valueOf(args[4]);
+				port = Integer.valueOf(args[3]);
 			}
 			if ( args.length > 5) {
-				randomSeed = Integer.valueOf(args[5]);
+				randomSeed = Integer.valueOf(args[4]);
 			}
 			rddl = new RDDL(RDDL_FILENAME);
 			if (!rddl._tmInstanceNodes.containsKey(instanceName)) {
@@ -233,6 +259,7 @@ public class Client {
 //					String future_gen_type,String hindsight_strat, RDDL rddl_object, State s
 //
             //This piece of code allocates exploration time...
+
 			policy = (Policy)c.getConstructor(
 					new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
 					Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
@@ -241,7 +268,7 @@ public class Client {
 
 			Double total_explo_time = timeAllowed *(per_explo_time/100);
 
-
+			policy.DO_NPWL_PWL = manual_NPWL;
 			Pair<Boolean,Pair<Integer,Integer>> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME,instanceName,Integer.valueOf(n_futures),
 					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state,total_explo_time,Double.valueOf(gurobi_timeout));
 
@@ -327,6 +354,9 @@ public class Client {
 					//policy.TIME_LIMIT_MINS
 					//policy.TIME_LIMIT_MINS = timeforOptimizer;
 					//policy.DO_NPWL_PWL = false;
+					//policy.DO_NPWL_PWL = manual_NPWL;
+
+
                     policy.DO_NPWL_PWL = NPWL_TO_PWL;
 					policy.DO_GUROBI_INITIALIZATION = false;
 					if(policy.DO_NPWL_PWL){
