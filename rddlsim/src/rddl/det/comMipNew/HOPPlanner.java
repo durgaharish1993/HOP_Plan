@@ -473,18 +473,11 @@ public class HOPPlanner extends Policy {
             System.out.println("These are Root Actions:" + ret_list.get(0).toString());
             ArrayList<PVAR_INST_DEF> returning_action = ret_list.get(0);
             if(exit_code.equals(3)){
-                //Solution is infeasible.
-                HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>  copiedState = deepCopyState(rddl_state);
-                ArrayList<PVAR_INST_DEF> act = getRandomActionForSimulation(s,new Random(1));
-                Double avg_reward_random = runActionSimulation(s,30, act);
-                Double avg_reward_noop   = runActionSimulation(s,30, ret_list.get(0));
-                if(avg_reward_random>avg_reward_noop){
-                    returning_action = act;
-                    if(SHOW_LEVEL_1)
-                        System.out.println("Choosing Random Action");
-                }
-                else {
-                    returning_action = ret_list.get(0);
+                try {
+                    throw new Exception("Model Infeasiblity Excepiton");
+                }catch(Exception e){
+                    cleanUp(static_grb_model);
+                    throw e;
                 }
             }
             //System.out.println("These are Consensus Actions:" + ret_list.get(1).toString());
@@ -581,11 +574,7 @@ public class HOPPlanner extends Policy {
             grb_env.set( GRB.DoubleParam.TimeLimit, TIME_LIMIT_MINS*60 );
             if(OUTPUT_NAME_MAP_FILE){
                 outputNAMEMAPFile(static_grb_model);
-
             }
-
-
-
             exit_code = goOptimize( static_grb_model);
         }
 
@@ -2524,9 +2513,18 @@ public class HOPPlanner extends Policy {
                             explo_planner.DO_GUROBI_INITIALIZATION = true;
                             System.out.println(">>>>>>>>>>This is State ::: ");
                             System.out.println(state._state.toString());
-                            ArrayList<PVAR_INST_DEF> actions = explo_planner.getActions(state);
-                            System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
-                            state.checkActionConstraints(actions);
+                            ArrayList<PVAR_INST_DEF> actions = new ArrayList<>();
+
+                            try {
+                                actions = explo_planner.getActions(state);
+                                System.out.println("The Action Taken is >>>>>>>>>>>>>>>>>>>>>>>" + actions.toString());
+                                state.checkActionConstraints(actions);
+                            }catch(Exception e){
+                                // This is the case when actions are infeasible or gurobi has infeasiblity.
+                                actions = baseLineAction(rddl_state);
+
+                            }
+
 
                             state.computeNextState(actions, rand);
                             final double immediate_reward = ((Number) domain._exprReward.sample(
@@ -2584,6 +2582,31 @@ public class HOPPlanner extends Policy {
         return return_value;
     }
 
+
+    public ArrayList<PVAR_INST_DEF> baseLineAction(State s) {
+
+        ArrayList<PVAR_INST_DEF> noop_action      = new ArrayList<>();
+        ArrayList<PVAR_INST_DEF> returning_action = new ArrayList<>();
+        try {
+            HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> copiedState = deepCopyState(s);
+            ArrayList<PVAR_INST_DEF> act = getRandomActionForSimulation(s, new Random(1));
+            Double avg_reward_random = runActionSimulation(s, 30, act);
+            Double avg_reward_noop = runActionSimulation(s, 30, noop_action);
+            if(avg_reward_random>avg_reward_noop){
+                returning_action = act;
+                if(SHOW_LEVEL_1)
+                    System.out.println("Choosing Random Action");
+            }
+            else {
+                returning_action = noop_action;
+            }
+        } catch(Exception e){
+            returning_action = noop_action;
+        }
+
+
+        return returning_action;
+    }
 
 
     static Integer getLookAheadValue(Integer current_lookahead, Boolean change){
