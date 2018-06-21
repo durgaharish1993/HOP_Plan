@@ -174,7 +174,7 @@ public class Server implements Runnable {
 			File[] subDirs = new File(args[0]).listFiles(File::isDirectory);
 			// Check if there are subdirectories called "client" and "server"
 			for (File subDir : subDirs) {
-					if (subDir.getName().equals("server")) {
+				if (subDir.getName().equals("server")) {
 					SERVER_FILES_DIR =  new String(subDir.getPath());
 				} else if (subDir.getName().equals("client")) {
 					CLIENT_FILES_DIR =  new String(subDir.getPath());
