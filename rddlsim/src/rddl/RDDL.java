@@ -8710,6 +8710,7 @@ public class RDDL {
 //						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z, name_map.get(toString())+"_GEQ_2" );
 //						break;
 					case "==" :
+						
 						model.addGenConstrIndicator(this_var, 1, x_minus_y,
 								GRB.EQUAL, 0.0, EXPR.name_map.get(_e1.toString())+"=="+EXPR.name_map.get(_e2.toString()));
 						break;
