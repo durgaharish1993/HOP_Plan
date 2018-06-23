@@ -111,8 +111,6 @@ public class HOPPlanner extends Policy {
     protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> pre_buffer_action = new ArrayList<>();
     protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
     
-    protected int number_of_iterations = 30;
-    
     //This is the range of actions to be taken, This will get initalized when the domain gets initalized and will get updated for picking random Actions.
     protected HashMap<PVAR_NAME,ArrayList> value_range = new HashMap<>();
     protected HashMap<PVAR_NAME,ArrayList<RDDL.TYPE_NAME>> object_type_name  = new HashMap<>();
@@ -2704,7 +2702,8 @@ public class HOPPlanner extends Policy {
 
 
 
-//    protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(PVAR_NAME action_var, RDDL.TYPE_NAME action_type, Random rand){
+//    protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(
+//    	PVAR_NAME action_var, RDDL.TYPE_NAME action_type, Random rand){
 //        //This function gives the intansiations of the parameters.
 //        HashMap<ArrayList<LCONST>,Object> action_terms_assign = new HashMap<>();
 //
@@ -2744,11 +2743,26 @@ public class HOPPlanner extends Policy {
 
 
 
-    protected ArrayList<PVAR_INST_DEF> getRandomAction(State s, Random randint) throws EvalException {
-        //Need to Write Function for Getting a Random Action.
-        ArrayList<PVAR_INST_DEF> final_output_actions = new ArrayList<>();
+    protected ArrayList<PVAR_INST_DEF> getRandomAction(
+    		final State s, final Random randint) throws EvalException {
+
+    	final ArrayList<PVAR_INST_DEF> final_output_actions = new ArrayList<>();
+        for (final Entry<PVAR_NAME, ArrayList<ArrayList<LCONST>>> 
+        	 action_pvar_instantiations : rddl_action_vars.entrySet()){
+        	final PVAR_NAME action_pvar = action_pvar_instantiations.getKey();
+        	final PVARIABLE_DEF pdef = s._hmPVariables.get(action_pvar);
+        	
+        	for (ArrayList<LCONST> 
+        		 one_instantiation : action_pvar_instantiations.getValue()){
+        		
+        	}
+            
+        }
+    	
+    	
         //This is  a buffer list to check the instansiations are already exists or not.
         ArrayList<ArrayList<LCONST>> alaction_terms = new ArrayList<>();
+        
         for (PVAR_NAME action_var : rddl_action_vars.keySet()) {
             alaction_terms.clear();
             RDDL.TYPE_NAME type_val = s._hmPVariables.get(action_var)._typeRange;
