@@ -35,6 +35,8 @@ public class RDDL {
 	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
 	protected static final LVAR FUTURE_PREDICATE  = new LVAR("?future");
 	protected static final String REG_EXPR_      = ".*(time|future).*";
+	protected static final Boolean SHOW_TRACE_EXCEPTIONS = false;
+	protected static final Boolean SHOW_MODIFIED_EXCEPTIONS = false;
 
 	public RDDL() { }
 
@@ -1215,7 +1217,11 @@ public class RDDL {
 				return _pvarExpr.isConstant(constants, objects, hmtypes,hm_variables );
 			}
 			catch(Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: isConstant :: "+ toString());
 				throw e;
 			}
 		}
@@ -1230,7 +1236,12 @@ public class RDDL {
 				return _pvarExpr.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
 			}
 			catch(Exception e){
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: isConstant :: "+ toString());
+
 				throw e;
 			}
 		}
@@ -1254,7 +1265,11 @@ public class RDDL {
 					return this;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: addTerm :: "+ toString());
 				throw e;
 			}
 			return _pvarExpr.addTerm(new_term, constants, objects, hmtypes,hm_variables );
@@ -1469,7 +1484,11 @@ public class RDDL {
 				System.exit(1);
 				throw new Exception("Not Found Ex" );
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  enum_to_Int of ENUM_VAL  :: "+ toString());
 				throw exc;
 			}
 
@@ -1869,8 +1888,11 @@ public class RDDL {
 				try{
 					throw new Exception("Name map has expr name but no GRBVar in cache.");
 				}catch( Exception excp ){
-					excp.printStackTrace();
-					System.exit(1);
+					if(SHOW_TRACE_EXCEPTIONS)
+						excp.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception :: isConstant :: "+ expr.toString());
 				}
 			}
 			return name_map.get(expr_string);
@@ -2009,8 +2031,11 @@ public class RDDL {
 				//System.out.println("Adding var " + expr.toString() + " " + new_var + "[" + lb + "," + ub + "]" + " type : " + type );
 				return new_var;
 			} catch (GRBException e) {
-				e.printStackTrace();
-				System.exit(1);
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: grbVar :: "+ expr.toString());
 			}
 			return null;
 		}
@@ -2034,8 +2059,11 @@ public class RDDL {
 				model.update();
 				return this_var;
 			} catch (GRBException e) {
-				e.printStackTrace();
-				System.exit(1);
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: addGRBObjectiveTerm in EXPR Abstract Class :: "+ toString());
 			}
 			return null;
 		}
@@ -2763,7 +2791,11 @@ public class RDDL {
 						try {
 							return new OPER_EXPR( _exprCount.getMean(constants, objects,  hmtypes, hm_variables ), m.getMean(constants, objects,  hmtypes, hm_variables ), OPER_EXPR.TIMES );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: getMean in Multinomial Class :: "+ toString());
 							return null;
 						}
 					}).collect( Collectors.toList() ) ) );
@@ -2779,7 +2811,11 @@ public class RDDL {
 				//ignoring count here since we cannot handle vectors
 				return _distDiscrete.sampleDeterminization(rand,constants,objects, hmtypes ,hm_variables );
 			}catch(Exception exc){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: SampleDeterminization in Multinomial Class :: "+ toString());
 				throw exc;
 			}
 
@@ -2832,7 +2868,11 @@ public class RDDL {
 						try {
 							return m.addTerm(new_term, constants, objects, hmtypes,hm_variables  );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: addTerm Multinomial  :: "+ toString());
 						}
 						return null;
 					})
@@ -2864,7 +2904,11 @@ public class RDDL {
 						try {
 							return m.substitute(subs, constants, objects,  hmtypes,hm_variables  );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: Substitute in multinomial class :: "+ toString());
 						}
 						return null;
 					}).collect( Collectors.toList() );
@@ -2956,9 +3000,11 @@ public class RDDL {
 					try {
 						otherwise_prob = new OPER_EXPR(otherwise_prob, case_prob, "-");
 					} catch (Exception e) { // Fatal error
-						e.printStackTrace();
-						System.err.println(e);
-						System.exit(1);
+						if(SHOW_TRACE_EXCEPTIONS)
+							e.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception :: Discrete Method Discrete class :: "+ toString());
 					}
 				}
 				_exprProbs.set(last_index, otherwise_prob);
@@ -2979,7 +3025,11 @@ public class RDDL {
 						try {
 							return m.getMean(constants, objects,  hmtypes, hm_variables );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: getMean failed in Discrete :: "+ toString());
 							return null;
 						}
 					}).collect( Collectors.toList() ) ) );
@@ -3054,7 +3104,11 @@ public class RDDL {
 						try {
 							return m.addTerm(new_term, constants, objects, hmtypes,hm_variables  );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: addTerm in Discrete Class :: "+ toString());
 						}
 						return null;
 					})
@@ -3084,7 +3138,11 @@ public class RDDL {
 				try {
 					return m.substitute(subs, constants, objects,  hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception :: substitute in Discrete Class :: "+ toString());
 				}
 				return null;
 			}).collect( Collectors.toList() );
@@ -3442,7 +3500,11 @@ public class RDDL {
 			try {
 				return new OPER_EXPR( _exprShape.getMean(constants,objects,  hmtypes, hm_variables ), _exprScale.getMean(constants,objects,  hmtypes, hm_variables ), OPER_EXPR.TIMES );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: getMean of Weibull Class :: "+ toString());
 				throw e;
 			}
 		}
@@ -3763,7 +3825,11 @@ public class RDDL {
 			try {
 				return new COMP_EXPR(_exprProb.getMean(constants,objects,  hmtypes, hm_variables ), new REAL_CONST_EXPR(0.5d), COMP_EXPR.GREATEREQ );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: getMean of Bernoulli Class :: "+ toString());
 				throw e;
 			}
 		}
@@ -3783,7 +3849,11 @@ public class RDDL {
 				return new COMP_EXPR( new REAL_CONST_EXPR( sample ),
 						new OPER_EXPR( new REAL_CONST_EXPR(1d), _exprProb , OPER_EXPR.MINUS ), COMP_EXPR.GREATER );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: SampleDeterminization of Bernoulli Class :: "+ toString());
 			}
 			return null;
 
@@ -3945,7 +4015,11 @@ public class RDDL {
 				try {
 					obj_cannon = obj_op.reduce( obj_op._e1, obj_op._e2, obj_op._op,  null , null, null, null );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception :: equals of Const_EXPR Class :: "+ toString());
 				}
 				if( obj_cannon instanceof CONST_EXPR ){
 					return getDoubleValue(null, null, null, null,  null) == ( (CONST_EXPR)obj_cannon ).getDoubleValue(null, null,null , null,  null);
@@ -3958,7 +4032,11 @@ public class RDDL {
 						return getDoubleValue(null, null,null , null,  null) == expr.getDoubleValue( null, null, null, null,  null);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception :: Equals, of Const_EXPR class :: "+ toString());
 				}
 			}
 			return false;
@@ -3984,8 +4062,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			} catch (GRBException e) {
-				e.printStackTrace();
-				System.exit(1);
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: getGRBConstr of CONSTR_EXPR class :: "+ toString());
 			}
 			return null;
 		}
@@ -4268,7 +4349,11 @@ public class RDDL {
 								try {
 									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.getMean(constants,objects,  hmtypes, hm_variables ) );
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception :: getMean of STRUCT_EXPR :: "+ toString());
 								}
 								return null;
 							})
@@ -4298,7 +4383,11 @@ public class RDDL {
 						try {
 							return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.addTerm(new_term, constants, objects, hmtypes,hm_variables  ) );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: addTerm of STRUCT_EXPR :: "+ toString());
 						}
 						return null;
 					})
@@ -4347,7 +4436,11 @@ public class RDDL {
 								try {
 									return new STRUCT_EXPR_MEMBER( m._sLabel, m._expr.substitute(subs, constants, objects,  hmtypes,hm_variables  ) );
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception :: Substitute of STRUCT_EXPR :: "+ toString());
 
 								}
 								return null;
@@ -4440,7 +4533,11 @@ public class RDDL {
 			try {
 				return new OPER_EXPR( _e1.sampleDeterminization(rand,constants,objects, hmtypes ,hm_variables ), _e2.sampleDeterminization(rand,constants,objects, hmtypes ,hm_variables ), _op );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: sampleDeterminization of OPER_EXPR :: "+ toString());
 				throw e;
 			}
 		}
@@ -4452,7 +4549,11 @@ public class RDDL {
 				return new OPER_EXPR( _e1.addTerm(new_term, constants, objects, hmtypes,hm_variables  ),
 						_e2.addTerm(new_term, constants, objects, hmtypes,hm_variables  ), _op );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: addTerm of OPER_EXPR :: "+ toString());
 				throw e;
 			}
 		}
@@ -4464,7 +4565,7 @@ public class RDDL {
 			if( grb_cache.containsKey( this ) ){
 				return grb_cache.get( this );
 			}
-
+			System.out.println(this.toString());
 			assert( isPiecewiseLinear(constants, objects, hmtypes,hm_variables ) );
 
 			GRBLinExpr exp = new GRBLinExpr();
@@ -4530,7 +4631,11 @@ public class RDDL {
 //									hm_variables);
 //							model.addConstr( this_var, GRB.EQUAL, if_min_var,  nam );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: getGRBConstr of OPER_EXPR :: "+ toString());
 							throw e;
 						}
 						break;
@@ -4548,7 +4653,11 @@ public class RDDL {
 //							GRBVar ife_max_var = ife.getGRBConstr( sense, model, constants, objects, type_map, hmtypes, hm_variables);
 //							model.addConstr(this_var, GRB.EQUAL, ife_max_var, nam );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception :: getGRBConstr 2 of OPER_EXPR :: "+ toString());
 							throw e;
 						}
 						break;
@@ -4556,7 +4665,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			} catch(Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: getGRBConstr 3 of OPER_EXPR :: "+ toString());
 				throw exc;
 			}
 		}
@@ -4596,7 +4709,11 @@ public class RDDL {
 					try{
 						throw new Exception("unknown op type " + toString() );
 					}catch( Exception exc ){
-						exc.printStackTrace();
+						if(SHOW_TRACE_EXCEPTIONS)
+							exc.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception :: getGRBType of OPER_EXPR class :: "+ toString());
 						throw exc;
 					}
 			}
@@ -4616,7 +4733,11 @@ public class RDDL {
 				}
 				return reducible.hashCode();
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: hashCode of OPER_EXPR Class :: "+ toString());
 			}
 			return Objects.hash("OPER_EXPR", _e1, _e2, _op);
 		}
@@ -4635,7 +4756,11 @@ public class RDDL {
 					return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null,  null) ).equals( obj );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception :: Equals of OPER_EXPR :: "+ toString());
 			}
 
 			if( obj instanceof EXPR ){
@@ -5684,7 +5809,11 @@ public class RDDL {
 					//System.out.print("This expression is not substituted"+this.toString()+ "type "+_sType);
 					throw new Exception("Uncaught case : " + this.toString() + " type " + _sType );
 				}catch( Exception exc ){
-					exc.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						exc.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception :: getConstantValue of PVAR_EXPR :: "+ toString());
 					throw exc;
 				}
 			}
@@ -5940,14 +6069,22 @@ public class RDDL {
 							try {
 								return m.getMean(constants, objects, hmtypes, hm_variables );
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
+
+								if(SHOW_MODIFIED_EXCEPTIONS)
+									System.out.println("Handled Exception :: getMean 1 of FUN_EXPR:: "+ toString());
 							}
 							return null;
 						})
 								.collect( Collectors.toList() ) ) );
 				//return m.getMean(objects);
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::getMean 2 of FUN_EXPR   :: "+ toString());
 				throw e;
 			}
 		}
@@ -5962,13 +6099,21 @@ public class RDDL {
 							try {
 								return m.sampleDeterminization(rand,constants,objects,  hmtypes,hm_variables  );
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
+
+								if(SHOW_MODIFIED_EXCEPTIONS)
+									System.out.println("Handled Exception :: sampleDeterminzation of FUN_EXPR  :: "+ toString());
 							}
 							return null;
 						})
 								.collect( Collectors.toList() ) ) );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  sampleDeterminzation of FUN_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -5982,13 +6127,21 @@ public class RDDL {
 					try {
 						return m.isConstant(constants, objects, hmtypes,hm_variables  );
 					} catch (Exception e) {
-						e.printStackTrace();
+						if(SHOW_TRACE_EXCEPTIONS)
+							e.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception ::  isConstant FUN_EXXPR  :: "+ toString());
 					}
 
 					return false;
 				});
 			}catch(Exception exc){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  isConstant  of FUN_EXPR  :: "+ toString());
 				throw exc;
 			}
 		}
@@ -6011,12 +6164,20 @@ public class RDDL {
 								try {
 									return m.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception ::  isPieceWiseLinear 1 of FUN_EXPR  :: "+ toString());
 								}
 								return false;
 							});
 				}catch(Exception exc){
-					exc.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						exc.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  isPWL of FUN_EXPR  :: "+ toString());
 					throw exc;
 				}
 			}
@@ -6043,13 +6204,21 @@ public class RDDL {
 							try {
 								return m.getDoubleValue( constants, objects,  hmtypes,hm_variables,  null);
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
+
+								if(SHOW_MODIFIED_EXCEPTIONS)
+									System.out.println("Handled Exception ::  getDoubleValue  of FUN_EXPR  :: "+ toString());
 							}
 							return null;
 						})
 						.collect( Collectors.toList() );
 			}catch(Exception exc){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getDoubleValue  of FUN_EXPR  :: "+ toString());;
 				throw exc;
 			}
 
@@ -6123,8 +6292,11 @@ public class RDDL {
 			try{
 				throw new UnsupportedOperationException("not implemented case " + toString() );
 			}catch( Exception exc ){
-				exc.printStackTrace();
-				System.exit(1);
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getDoubleValue  of FUN_EXPR  :: "+ toString());
 			}
 			return Double.NaN;
 		}
@@ -6160,7 +6332,11 @@ public class RDDL {
 							conn_1.add(_alArgs.get(k).getGRBConstr(GRB.EQUAL,model,constants,objects,type_map,hmtypes,hm_variables));
 
 						} catch (Exception e){
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  getGRBConstr of FUN_EXPR  :: "+ toString());
 						}
 					}
 
@@ -6184,7 +6360,11 @@ public class RDDL {
 							conn_1.add(_alArgs.get(k).getGRBConstr(GRB.EQUAL,model,constants,objects,type_map,hmtypes,hm_variables));
 
 						} catch (Exception e){
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  getGRBConstr of FUN_EXPR  :: "+ toString());
 						}
 					}
 
@@ -6238,7 +6418,11 @@ public class RDDL {
 				}
 				return this_var;
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of FUN_EXPR  :: "+ toString());
 				throw exc;
 			}
 			//return null;
@@ -6258,7 +6442,11 @@ public class RDDL {
 					try {
 						return m.getGRB_Type(constants, type_map, hmtypes, hm_variables );
 					} catch (Exception e) {
-						e.printStackTrace();
+						if(SHOW_TRACE_EXCEPTIONS)
+							e.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception ::  getGRB_TYPE of FUN_EXPR  :: "+ toString());
 					}
 					return null;
 				})
@@ -6277,7 +6465,11 @@ public class RDDL {
 				try {
 					return m.addTerm(new_term, constants, objects, hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  AddTerm of FUN_EXPR  :: "+ toString());
 				}
 				return null;
 			})
@@ -6333,7 +6525,11 @@ public class RDDL {
 				try {
 					return m.substitute(subs, constants, objects,  hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  substitute of FUN_EXPR  :: "+ toString());
 				}
 				return null;
 			}).collect( Collectors.toList() );
@@ -6519,7 +6715,11 @@ public class RDDL {
 							_falseBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRB_Type of FUN_EXPR  :: "+ toString());
 				throw e;
 			}
 			return upper( _trueBranch.getGRB_Type(constants, type_map, hmtypes, hm_variables ),
@@ -6542,7 +6742,11 @@ public class RDDL {
 							_trueBranch.equals(obj) : _falseBranch.equals(obj);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  Equals of FUN_EXPR  :: "+ toString());
 			}
 
 			if( obj instanceof IF_EXPR ){
@@ -6589,7 +6793,11 @@ public class RDDL {
 							_falseBranch.substitute(subs, constants, objects,  hmtypes, hm_variables ) );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  substitutue of FUN_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -6666,7 +6874,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of FUN_EXPR  :: "+ toString());
 				throw exc;
 			}
 		}
@@ -6678,7 +6890,11 @@ public class RDDL {
 					return _test.getDoubleValue( null, null, null,null,  null) == 1d ? _trueBranch.hashCode() : _falseBranch.hashCode();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  hashCode of FUN_EXPR  :: "+ toString());
 			}
 			return Objects.hash( "IF_EXPR", _test, _trueBranch, _falseBranch );
 		}
@@ -6693,7 +6909,11 @@ public class RDDL {
 							_falseBranch.getDoubleValue(constants, objects,  hmtypes, hm_variables,  null);
 				}
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getDoubleValue of FUN_EXPR  :: "+ toString());
 				throw exc;
 			}
 			//This is added by harish.
@@ -6837,7 +7057,11 @@ public class RDDL {
 						try {
 							return m.sampleDeterminization(rand, constants, objects, hmtypes,hm_variables );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  SampleDeterminization of SWITCH_EXPR  :: "+ toString());
 							throw new RuntimeException(e);
 
 
@@ -6874,7 +7098,11 @@ public class RDDL {
 						try {
 							return m.getMean(constants, objects, hmtypes, hm_variables);
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  getMean of SWTICH_EXPR  :: "+ toString());
 						}
 						return null;
 					}).collect( Collectors.toList() ) ) );
@@ -6889,7 +7117,11 @@ public class RDDL {
 					return m.isPiecewiseLinear(constants, objects, hmtypes,hm_variables );
 				}
 				catch (Exception e){
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  isPWL of SWITCH_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 				}
 
@@ -6940,7 +7172,11 @@ public class RDDL {
 				try {
 					return m._expr.getGRB_Type(constants, type_map, hmtypes, hm_variables );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  getGRB_TYpe of SWITCH_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 
 				}
@@ -6957,7 +7193,11 @@ public class RDDL {
 						try {
 							return new CASE( m._termVal, m._expr.addTerm(new_term, constants, objects,  hmtypes,hm_variables ) );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  addTerm of SWITCH_EXPR  :: "+ toString());
 							throw new RuntimeException(e);
 						}
 
@@ -7074,7 +7314,11 @@ public class RDDL {
 					try{
 						throw new Exception("mutiple matching cases?" );
 					}catch( Exception exc ){
-						exc.printStackTrace();
+						if(SHOW_TRACE_EXCEPTIONS)
+							exc.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception ::  isConstant  of SWITCH_EXPR  :: "+ toString());
 						throw exc;
 					}
 				}
@@ -7110,7 +7354,11 @@ public class RDDL {
 						return c._expr.sample(subs, s, r);
 				throw new EvalException("No case for '" + seval + "' in " + _cases);
 			} catch (Exception e) {
-				e.printStackTrace(System.err);
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  sample of SWITCH_EXPR  :: "+ toString());
 				throw new EvalException("RDDL.SWITCH_EXPR: Error:\n" + e + "while evaluating:\n" + this);
 			}
 		}
@@ -7199,8 +7447,11 @@ public class RDDL {
 			try {
 				return new QUANT_EXPR( _sQuantType, _alVariables, _expr.addTerm(new_term, constants, objects,  hmtypes,hm_variables )  );
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  addTerm of QUANT_EXPR  :: "+ toString());
 			}
 			return null;
 		}
@@ -7218,7 +7469,11 @@ public class RDDL {
 					return Double.hashCode( getDoubleValue( null , null, null,null,  null) );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  hashCode of QUANT_EXPR  :: "+ toString());
 				if( _alVariables.size() == 0 ){
 					return _expr.hashCode();
 				}
@@ -7273,7 +7528,11 @@ public class RDDL {
 											new BOOL_CONST_EXPR(true) : new BOOL_CONST_EXPR(false);
 								}
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
+
+								if(SHOW_MODIFIED_EXCEPTIONS)
+									System.out.println("Handled Exception ::  expandBooleanQuantifier of QUANT_EXPR  :: "+ toString());
 							}
 							return null;
 						}
@@ -7287,7 +7546,11 @@ public class RDDL {
 				_expandCache.put(new Pair<>(this.toString(), _alVariables), result);
 				return result;
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  expandBooleanQauntifier 2  of QUANT_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -7298,7 +7561,11 @@ public class RDDL {
 			try{
 				return _expr.isConstant(constants, objects, hmtypes,hm_variables );
 			}catch(Exception exc){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception(Here we are handling by expanding) ::  isConstant of QUANT_EXPR  :: "+ toString());
 				EXPR expanded = expandBooleanQuantifier(constants, objects, hmtypes,hm_variables );
 				return expanded.isConstant(constants, objects, hmtypes,hm_variables );
 			}
@@ -7324,7 +7591,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			} catch (GRBException e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of QUANT_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -7336,7 +7607,11 @@ public class RDDL {
 					return new REAL_CONST_EXPR( getDoubleValue( null , null, null, null,  null) ).equals(obj);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  equals of QUANT_EXPR  :: "+ toString());
 			}
 			if( _alVariables.size() == 0 ){
 				return _expr.equals(obj);
@@ -7359,7 +7634,11 @@ public class RDDL {
 					return new REAL_CONST_EXPR(getDoubleValue(constants, objects,  hmtypes,hm_variables,  null));
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  substitute of QUANT_EXPR  :: "+ toString());
 			}
 
 			try{
@@ -7382,7 +7661,11 @@ public class RDDL {
 			} catch (Exception e) {
 
 
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception(We handle by expanding ) ::  substitute of QUANT_EXPR  :: "+ toString());
 				EXPR expanded = expandBooleanQuantifier(constants, objects,  hmtypes,hm_variables );
 				return expanded.substitute(subs, constants, objects,  hmtypes,hm_variables );
 //				Pair key_pair = new Pair(this.toString(),_alVariables);
@@ -7560,13 +7843,21 @@ public class RDDL {
 										return ((BOOL_EXPR)m.getMean(constants, objects, hmtypes, hm_variables ));
 									}
 									catch (Exception e){
-										e.printStackTrace();
+										if(SHOW_TRACE_EXCEPTIONS)
+											e.printStackTrace();
+
+										if(SHOW_MODIFIED_EXCEPTIONS)
+											System.out.println("Handled Exception ::  getMean of CONN_EXPR  :: "+ toString());
 										throw new RuntimeException(e);
 									}
 								})
 								.collect(Collectors.toList() ) ), _sConn );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getMean 2 of CONN_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -7581,7 +7872,11 @@ public class RDDL {
 						try {
 							return (BOOL_EXPR) m.sampleDeterminization(rand,constants,objects,  hmtypes,hm_variables );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  SampleDeterminization of CONN_EXPR  :: "+ toString());
 							throw new RuntimeException(e);
 						}
 					}).collect( Collectors.toList() ) ), _sConn );
@@ -7600,7 +7895,11 @@ public class RDDL {
 								try {
 									return (BOOL_EXPR)m.addTerm(new_term, constants, objects,  hmtypes,hm_variables );
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception ::  addTerm of CONN_EXPR  :: "+ toString());
 									throw new RuntimeException(e);
 								}
 							})
@@ -7700,7 +7999,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of CONN_EXPR  :: "+ toString());
 				throw exc;
 			}
 		}
@@ -7713,7 +8016,11 @@ public class RDDL {
 				try {
 					return m.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  isPWL of CONN_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 				}
 			});
@@ -7730,7 +8037,11 @@ public class RDDL {
 					return;
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  filter of CONN_EXPR  :: "+ toString());
 			}
 
 			try{
@@ -7742,7 +8053,11 @@ public class RDDL {
 								return !( m.isConstant(constants, objects, hmtypes,hm_variables  ) &&
 										(m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d) );
 							} catch (Exception e) {
-								e.printStackTrace();
+								if(SHOW_TRACE_EXCEPTIONS)
+									e.printStackTrace();
+
+								if(SHOW_MODIFIED_EXCEPTIONS)
+									System.out.println("Handled Exception ::  filter  of CONN_EXPR ^ :: "+ toString());
 								return true;
 							}
 						}).collect( Collectors.toList() ) );
@@ -7755,7 +8070,11 @@ public class RDDL {
 									try {
 										return !( m.isConstant(constants, objects, hmtypes,hm_variables  )  && m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null)==0d );
 									} catch (Exception e) {
-										e.printStackTrace();
+										if(SHOW_TRACE_EXCEPTIONS)
+											e.printStackTrace();
+
+										if(SHOW_MODIFIED_EXCEPTIONS)
+											System.out.println("Handled Exception ::  filter of CONN_EXPR |  :: "+ toString());
 										return true;
 									}
 								})
@@ -7770,12 +8089,20 @@ public class RDDL {
 								filter( constants, objects, hmtypes,hm_variables  );//T => T => x = x
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  filter => of CONN_EXPR  :: "+ toString());
 						}
 				}
 				assert( !_alSubNodes.isEmpty() );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  filter of CONN_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -7788,7 +8115,11 @@ public class RDDL {
 				try {
 					return m.isConstant(constants, objects, hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  isConstant of CONN_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 				}
 			}) ){
@@ -7803,7 +8134,11 @@ public class RDDL {
 									return m.isConstant(constants, objects, hmtypes,hm_variables  )
 											&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 0d;
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception ::  isConstant of CONN_EXPR  ^ :: "+ toString());
 									throw new RuntimeException(e);
 								}
 							});
@@ -7814,7 +8149,11 @@ public class RDDL {
 									return m.isConstant(constants, objects, hmtypes,hm_variables  )
 											&& m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d;
 								} catch (Exception e) {
-									e.printStackTrace();
+									if(SHOW_TRACE_EXCEPTIONS)
+										e.printStackTrace();
+
+									if(SHOW_MODIFIED_EXCEPTIONS)
+										System.out.println("Handled Exception ::  isConstant of CONN_EXPR |  :: "+ toString());
 									throw new RuntimeException(e);
 								}
 							});
@@ -7833,7 +8172,11 @@ public class RDDL {
 						try {
 							return m.isConstant(constants, objects, hmtypes,hm_variables  );
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  isConstant of CONN_EXPR <=> :: "+ toString());
 							throw new RuntimeException(e);
 						}
 					});
@@ -7841,7 +8184,11 @@ public class RDDL {
 			try{
 				throw new Exception("unhandled case CONN_EXPR " + toString() );
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  isConstant  of CONN_EXPR  :: "+ toString());
 				throw exc;
 			}
 		}
@@ -7895,7 +8242,11 @@ public class RDDL {
 					return Double.hashCode( getDoubleValue( null, null, null, null,  null) );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  hashCode of CONN_EXPR  :: "+ toString());
 				if( _alSubNodes.size() == 1 ){
 					return _alSubNodes.get(0).hashCode();
 				}
@@ -7912,7 +8263,11 @@ public class RDDL {
 				try {
 					return m.isConstant(constants, objects, hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  getDoubleValue of CONN_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 				}
 			}) ){
@@ -7922,7 +8277,11 @@ public class RDDL {
 						try {
 							return m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null);
 						} catch (Exception e) {
-							e.printStackTrace();
+							if(SHOW_TRACE_EXCEPTIONS)
+								e.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  getDoubleValue of CONN_EXPR  :: "+ toString());
 							throw new RuntimeException(e);
 						}
 					}).sum();
@@ -7941,7 +8300,11 @@ public class RDDL {
 						}
 
 					} catch (Exception e) {
-						//e.printStackTrace();
+						if(SHOW_TRACE_EXCEPTIONS)
+							e.printStackTrace();
+
+						if(SHOW_MODIFIED_EXCEPTIONS)
+							System.out.println("Handled Exception ::  getDoubleValue of CONN_EXPR  :: "+ toString());
 						throw e;
 					}
 				}
@@ -7971,7 +8334,11 @@ public class RDDL {
 					}
 				}
 			}catch (Exception e){
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  equals of CONN_EXPR  :: "+ toString());
 			}
 			try{
 
@@ -7986,7 +8353,11 @@ public class RDDL {
 					return _alSubNodes.get(0).equals(obj);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  equals  of CONN_EXPR  :: "+ toString());
 			}
 			return false;
 		}
@@ -7999,7 +8370,11 @@ public class RDDL {
 				try {
 					return m.substitute(subs, constants, objects, hmtypes,hm_variables  );
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  substitute of CONN_EXPR  :: "+ toString());
 					throw new RuntimeException(e);
 				}
 			}).map(m -> {
@@ -8007,7 +8382,11 @@ public class RDDL {
 					return m.isConstant(constants, objects, hmtypes,hm_variables  ) ?
 							new BOOL_CONST_EXPR( m.getDoubleValue(constants, objects, hmtypes,hm_variables,  null) == 1d ? true : false ) : (BOOL_EXPR)m;
 				} catch (Exception e) {
-					e.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  substitute of CONN_EXPR  :: "+ toString());
 					return m;
 				}
 			}).collect(Collectors.toList());
@@ -8015,7 +8394,11 @@ public class RDDL {
 				return new CONN_EXPR( new ArrayList( new_expr ), _sConn );
 				//calls filter() in constructor
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  substitute of CONN_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -8268,7 +8651,11 @@ public class RDDL {
 					return ((NEG_EXPR)_subnode)._subnode.equals(obj);
 				}//!!x=y
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  equals of NEG_EXPR  :: "+ toString());
 			}
 			return false;
 		}
@@ -8297,7 +8684,11 @@ public class RDDL {
 				}
 				return new NEG_EXPR( sub );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  substitute of NEG_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -8309,7 +8700,11 @@ public class RDDL {
 					return Double.hashCode( getDoubleValue(null, null, null, null,  null) );
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  hashCode of NEG_EXPR  :: "+ toString());
 			}
 			return _subnode.hashCode()*(-1);//!!x=x
 		}
@@ -8335,7 +8730,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			} catch (GRBException e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of NEG_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -8419,7 +8818,11 @@ public class RDDL {
 //				model.update();
 				return this_var;
 			}catch( GRBException exc ){
-				exc.printStackTrace();
+				exc.printStackTrace();if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBConstr of NEG_EXPR  :: "+ toString());
 				System.out.println( "Error code " + exc.getErrorCode() );
 				System.out.println( exc.getMessage() );
 				throw exc;
@@ -8439,7 +8842,11 @@ public class RDDL {
 						return e.getDoubleValue( null , null, null, null,  null) == getDoubleValue(null, null, null, null,  null);
 					}
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						e1.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  equals of NEG_EXPR  :: "+ toString());
 				}
 			}
 			return false;
@@ -8540,7 +8947,11 @@ public class RDDL {
 			try {
 				return new COMP_EXPR( _e1.addTerm(new_term, constants, objects, hmtypes, hm_variables), _e2.addTerm(new_term, constants, objects, hmtypes, hm_variables), _comp );
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  addTerm of COMP_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -8552,7 +8963,11 @@ public class RDDL {
 					return (int)getDoubleValue(null, null, null, null,  null);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  hashcode of COMP_EXPR  :: "+ toString());
 			}
 			return Objects.hash( "Comp_Expr", _e1, _comp, _e2 );
 		}
@@ -8607,7 +9022,11 @@ public class RDDL {
 					return new REAL_CONST_EXPR( getDoubleValue(null, null, null, null,  null) ).equals(obj);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  equals of COMP_EXPR  :: "+ toString());
 			}
 
 			if( obj instanceof COMP_EXPR ){
@@ -8644,11 +9063,19 @@ public class RDDL {
 						return new REAL_CONST_EXPR( getDoubleValue(constants,objects,hmtypes,hm_variables,  null) );
 					}
 				}catch(Exception exc){
-					exc.printStackTrace();
+					if(SHOW_TRACE_EXCEPTIONS)
+						exc.printStackTrace();
+
+					if(SHOW_MODIFIED_EXCEPTIONS)
+						System.out.println("Handled Exception ::  Substitute of COMP_EXPR  :: "+ toString());
 				}
 				return ret;
 			} catch (Exception e) {
-				e.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					e.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  substitute of COMP_EXPR  :: "+ toString());
 				throw e;
 			}
 		}
@@ -8710,7 +9137,7 @@ public class RDDL {
 //						model.addConstr( x_minus_y, GRB.LESS_EQUAL, M_z, name_map.get(toString())+"_GEQ_2" );
 //						break;
 					case "==" :
-						
+
 						model.addGenConstrIndicator(this_var, 1, x_minus_y,
 								GRB.EQUAL, 0.0, EXPR.name_map.get(_e1.toString())+"=="+EXPR.name_map.get(_e2.toString()));
 						break;
@@ -8744,14 +9171,21 @@ public class RDDL {
 						try{
 							throw new Exception("unhandled case " + name_map.get(toString()) );
 						}catch( Exception exc ){
-							exc.printStackTrace();
-							System.exit(1);
+							if(SHOW_TRACE_EXCEPTIONS)
+								exc.printStackTrace();
+
+							if(SHOW_MODIFIED_EXCEPTIONS)
+								System.out.println("Handled Exception ::  getGRBVar of COMP_EXPR  :: "+ toString());
 						}
 				}
 //				model.update();
 				return this_var;
 			}catch( Exception exc ){
-				exc.printStackTrace();
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  getGRBVAr of COMP_EXPR  :: "+ toString());
 				throw exc;
 			}
 		}
