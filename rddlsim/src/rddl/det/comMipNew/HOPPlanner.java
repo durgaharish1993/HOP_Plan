@@ -2656,15 +2656,6 @@ public class HOPPlanner extends Policy {
         }
 
         return next_future_value;
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -2688,26 +2679,27 @@ public class HOPPlanner extends Policy {
                         LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
                         new_array.add(new_lconst); }
                 }
-                int check = 0;
-                //This is for the Object
+                //This is for deep copy for Object
+                Object temp_objval = temp_hashmap.get(temp_array);
+                Object new_objval = null;
                 if( temp_hashmap.get(temp_array) instanceof Boolean){
-                    Boolean new_objval = (Boolean) temp_hashmap.get(temp_array);
-                    new_hashmap.put(new_array,new_objval);
-                    check=1;}
-                if( temp_hashmap.get(temp_array) instanceof Double){
-                    Double new_objval = (Double) temp_hashmap.get(temp_array);
-                    new_hashmap.put(new_array,new_objval);
-                    check=1;}
-
-                if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
-                    ENUM_VAL new_objval = (ENUM_VAL) temp_hashmap.get(temp_array);
-                    new_hashmap.put(new_array, new_objval);
-                    check=1; }
-                //This check if the object is of other instance and not implemented, Please implement this one.
-                assert(check==1);
-                if(check==0){
-                    System.out.println("--------------------------------------------------------------------------------------------------------This Instance of an Object is Not Implemented");
+                    new_objval = new Boolean(((Boolean)temp_objval).booleanValue());
                 }
+                else if( temp_hashmap.get(temp_array) instanceof Double){
+                	new_objval = new Double(((Double)temp_objval).doubleValue());
+                }
+                else if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
+                	new_objval = new ENUM_VAL(((ENUM_VAL)temp_objval)._sConstValue);
+                }
+                else if(temp_hashmap.get(temp_array) instanceof  Integer){
+                	new_objval = new Integer(((Integer)temp_objval).intValue());
+                }
+                else{
+                    System.out.println(temp_objval + " instance of an Object is Not Implemented");
+                    throw new AssertionError();
+                }
+                assert( new_objval != null );
+                new_hashmap.put(new_array, new_objval);
             }
             copied_state.put(new_pvar,new_hashmap);
         }
@@ -2814,16 +2806,12 @@ public class HOPPlanner extends Policy {
         return final_output_actions;
     }
 
-    protected  ArrayList<PVAR_INST_DEF>  getRandomActionForSimulation(State s,Random rand1) throws EvalException {
+    protected  ArrayList<PVAR_INST_DEF>  getRandomActionForSimulation(State s,
+    		Random rand1) throws EvalException {
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
 
         boolean check_action_feasible = false;
-
-
-
-
-        check_action_feasible = false;
-        ArrayList<PVAR_INST_DEF> random_action =null;
+        ArrayList<PVAR_INST_DEF> random_action = null;
         int cur_while_check = 0;
 
         while(!check_action_feasible && (cur_while_check<number_of_iterations)){
