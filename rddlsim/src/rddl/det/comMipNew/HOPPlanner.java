@@ -110,18 +110,22 @@ public class HOPPlanner extends Policy {
     protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> pre_buffer_state = new ArrayList<>();
     protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> pre_buffer_action = new ArrayList<>();
     protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
-    protected Integer number_of_iterations = 30;
+    
+    protected int number_of_iterations = 30;
+    
     //This is the range of actions to be taken, This will get initalized when the domain gets initalized and will get updated for picking random Actions.
     protected HashMap<PVAR_NAME,ArrayList> value_range = new HashMap<>();
     protected HashMap<PVAR_NAME,ArrayList<RDDL.TYPE_NAME>> object_type_name  = new HashMap<>();
     protected HashMap<RDDL.TYPE_NAME,LCONST> object_val_mapping = new HashMap<>();
-    protected Double rejection_prob = 0.1;
+    protected double rejection_prob = 0.1;
+    
     //This stores the Expression which are not PWL.
     protected List<EXPR> not_pwl_expr = new ArrayList<>();
     protected HashMap<PVAR_NAME,Object> rddl_state_default = new HashMap<>();
     protected HashMap<PVAR_NAME,Object> variables_names = new HashMap<>();
     protected HashMap<PVAR_NAME,ArrayList<EXPR>> replace_cpf_pwl = new HashMap<>();
-    protected Double running_R_api = 0.0;
+    
+    protected double running_R_api = 0.0;
     //these are removed between invocations of getActions()
     protected List<EXPR> to_remove_expr = new ArrayList<RDDL.EXPR>();
     protected List<GRBConstr> to_remove_constr = new ArrayList<>();
@@ -159,9 +163,7 @@ public class HOPPlanner extends Policy {
     protected FUTURE_SAMPLING future_gen;
     protected Random randint = new Random();
 
-
     protected int exit_code ;
-
 
     private static final RDDL.TYPE_NAME future_TYPE = new RDDL.TYPE_NAME( "future" );
     protected ArrayList< LCONST > future_TERMS = new ArrayList<>();
@@ -170,12 +172,6 @@ public class HOPPlanner extends Policy {
     }
     protected HINDSIGHT_STRATEGY hindsight_method;
     protected HashMap< HashMap<EXPR, Object>, Integer > all_votes = new HashMap<>();
-
-
-
-
-
-
 
     public HOPPlanner(Integer n_futures, Integer n_lookahead, String inst_name, String gurobi_timeout,
                       String future_gen_type,String hindsight_strat, RDDL rddl_object, State s) throws Exception {
@@ -2708,72 +2704,43 @@ public class HOPPlanner extends Policy {
 
 
 
-    protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(PVAR_NAME action_var, RDDL.TYPE_NAME action_type, Random rand){
-        //This function gives the intansiations of the parameters.
-        //
-
-
-
-
-        HashMap<ArrayList<LCONST>,Object> action_terms_assign = new HashMap<>();
-
-        ArrayList<RDDL.TYPE_NAME> temp_objects = object_type_name.get(action_var);
-        ArrayList<LCONST> action_terms    = new ArrayList<>();
-
-
-
-        for(int i = 0;i<temp_objects.size();i++){
-            ArrayList<LCONST> temp_array =rddl_state._hmObject2Consts.get(temp_objects.get(i));
-            //This is selecting the object value and creating a ArrayList<LCONST> whichs goes as _alTerms
-            int j = rand.nextInt(temp_array.size());
-            LCONST val = temp_array.get(j);
-            if(val instanceof RDDL.OBJECT_VAL){
-
-
-                RDDL.OBJECT_VAL new_val = new RDDL.OBJECT_VAL(val._sConstValue);
-
-                action_terms.add(new_val);
-
-
-
-            }
-
-        }
-
-
-        //Selecting the value of each object.
-        if(action_type.equals(RDDL.TYPE_NAME.REAL_TYPE)){
-            //select_range Has values [min,max]
-            ArrayList<Double> select_range = value_range.get(action_var);
-            Double take_action_val = select_range.get(0) + ((select_range.get(1)-select_range.get(0)) * rand.nextFloat());
-            action_terms_assign.put(action_terms,take_action_val);
-
-        }
-
-
-
-
-        if(action_type.equals(RDDL.TYPE_NAME.BOOL_TYPE)){
-
-            ArrayList<Boolean>  select_range = value_range.get(action_var);
-            int j = rand.nextInt(select_range.size());
-
-            Boolean take_action_val = select_range.get(j);
-            action_terms_assign.put(action_terms,take_action_val);
-
-
-        }
-
-
-
-
-
-        return action_terms_assign;
-
-
-
-
-    }
+//    protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(PVAR_NAME action_var, RDDL.TYPE_NAME action_type, Random rand){
+//        //This function gives the intansiations of the parameters.
+//        HashMap<ArrayList<LCONST>,Object> action_terms_assign = new HashMap<>();
+//
+//        ArrayList<RDDL.TYPE_NAME> temp_objects = object_type_name.get(action_var);
+//        ArrayList<LCONST> action_terms    = new ArrayList<>();
+//
+//        for(int i = 0;i<temp_objects.size();i++){
+//            ArrayList<LCONST> temp_array =rddl_state._hmObject2Consts.get(temp_objects.get(i));
+//            //This is selecting the object value and creating a ArrayList<LCONST> whichs goes as _alTerms
+//            int j = rand.nextInt(temp_array.size());
+//            LCONST val = temp_array.get(j);
+//            if(val instanceof RDDL.OBJECT_VAL){
+//                RDDL.OBJECT_VAL new_val = new RDDL.OBJECT_VAL(val._sConstValue);
+//                action_terms.add(new_val);
+//            }
+//        }
+//
+//
+//        //Selecting the value of each object.
+//        if(action_type.equals(RDDL.TYPE_NAME.REAL_TYPE)){
+//            //select_range Has values [min,max]
+//            ArrayList<Double> select_range = value_range.get(action_var);
+//            Double take_action_val = select_range.get(0) + ((select_range.get(1)-select_range.get(0)) * rand.nextFloat());
+//            action_terms_assign.put(action_terms,take_action_val);
+//
+//        }
+//
+//        if(action_type.equals(RDDL.TYPE_NAME.BOOL_TYPE)){
+//            ArrayList<Boolean>  select_range = value_range.get(action_var);
+//            int j = rand.nextInt(select_range.size());
+//            Boolean take_action_val = select_range.get(j);
+//            action_terms_assign.put(action_terms,take_action_val);
+//        }
+//
+//        return action_terms_assign;
+//    }
 
 
 
