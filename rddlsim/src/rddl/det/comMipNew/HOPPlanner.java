@@ -2951,6 +2951,18 @@ public class HOPPlanner extends Policy {
 //
 //
 //		//This is for State_vars, Interm_vars, Observ_vars.
+
+        //Reward
+        Map<LVAR,LCONST> subs2 = new HashMap<>();
+        EXPR sub_expr =rddl_state._reward.substitute(subs2,constants,objects, hmtypes, hm_variables );
+        Boolean check_pwl =sub_expr.isPiecewiseLinear(constants,objects,hmtypes,hm_variables);
+        ArrayList<RDDL.LTERM> raw_terms1 = new ArrayList<>();
+        if(!check_pwl){
+
+            EXPR final_expr   = generateDataForPWL(sub_expr,raw_terms1,rddl_state);
+        }
+
+
         ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> pvar_variables = new ArrayList<>();
         pvar_variables.add(rddl_state_vars); pvar_variables.add(rddl_interm_vars); pvar_variables.add(rddl_observ_vars);
         for( final HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> map : pvar_variables ) {
@@ -3013,6 +3025,15 @@ public class HOPPlanner extends Policy {
 //                    replace_cpf_pwl.put(p,ifelse_expr); }
             }
         }
+
+
+
+
+
+
+
+
+
     }
 
     public EXPR recursiveAdditionIfElse(List<EXPR> condition_part,List<EXPR> true_part,Integer check_first){
@@ -3028,7 +3049,6 @@ public class HOPPlanner extends Policy {
         return new RDDL.IF_EXPR(cond_expr,true_expr,recursiveAdditionIfElse(cond_sub_list,true_sub_list,2));
 
     }
-
 
 
 
@@ -3052,6 +3072,8 @@ public class HOPPlanner extends Policy {
                 s.copyStateRDDLState(state_value,true);
                 //This is a global temp variable which stores the values.m
                 e.collectGFluents(null,s,Gfluents);
+                //Collected the GFluents
+                //getExpressionValue(e,state_value,action_value,Gfluents);
                 variables_names.clear();
                 EXPR temp  = recursionSubstitution(e,state_value,action_value);
                 Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables,  null);
