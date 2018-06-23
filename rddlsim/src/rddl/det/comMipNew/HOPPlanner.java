@@ -2818,35 +2818,18 @@ public class HOPPlanner extends Policy {
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
 
         boolean check_action_feasible = false;
-
-
-
-
         check_action_feasible = false;
         ArrayList<PVAR_INST_DEF> random_action =null;
         int cur_while_check = 0;
-
-        while(!check_action_feasible && (cur_while_check<number_of_iterations)){
+        while(!check_action_feasible && (cur_while_check<number_of_iterations)) {
             //System.out.println("ITERATION.");
-            cur_while_check = cur_while_check+1;
-
-
-            random_action = getRandomAction(s,rand1);
+            cur_while_check = cur_while_check + 1;
+            random_action = getRandomAction(s, rand1);
             check_action_feasible = s.checkActionConstraints(random_action);
-
-
-
         }
-
-
         //When the actions are infeasible.
         if(! check_action_feasible){
-
-
             System.out.println("The actions are not feasible");
-
-
-
         }
 
         s.copyStateRDDLState(root_state,true);
