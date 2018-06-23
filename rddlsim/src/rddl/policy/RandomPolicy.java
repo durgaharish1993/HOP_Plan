@@ -28,13 +28,19 @@ public class RandomPolicy extends Policy {
 		final ArrayList<PVAR_INST_DEF> ret = new ArrayList<>();
 		
 		// Get an action (assuming all actions are enum type)
-		final ArrayList<PVAR_NAME> pvars = s._alActionNames;
+		ArrayList<PVAR_NAME> pvars;
+		Collections.copy(pvars, s._alActionNames);
+		Collections.shuffle(pvars);
+		
 		for( PVAR_NAME p : pvars ){
 			// Get type of action var
 			final PVARIABLE_DEF pdef = s._hmPVariables.get(p);
 			final TYPE_NAME tdef = pdef._typeRange;
 			// Get term instantions for that action
-			final ArrayList<ArrayList<LCONST>> instantiations = s.generateAtoms(p);
+			ArrayList<ArrayList<LCONST>> instantiations;
+			Collections.copy(instantiations, s.generateAtoms(p));
+			Collections.shuffle(instantiations);
+			
 			for( ArrayList<LCONST> inst : instantiations ){
 				if( tdef.equals(TYPE_NAME.BOOL_TYPE) ){
 					final Boolean val = rand_gen.nextBoolean();
@@ -44,6 +50,11 @@ public class RandomPolicy extends Policy {
 					}catch(EvalException exc){
 						ret.remove(ret.size()-1);
 						ret.add(new PVAR_INST_DEF(p._sPVarName, !val,inst) );
+						try{
+							s.checkStateActionConstraints(ret);
+						}catch(EvalException exc){
+							ret.remove(ret.size()-1);
+						}
 					}
 				}else if( tdef.equals(TYPE_NAME.INT_TYPE) ){
 					for( int attempt = 0; attempt < NUM_TRIES; ++attempt ){
@@ -84,6 +95,7 @@ public class RandomPolicy extends Policy {
 						}
 					}
 				}
+				System.out.println(ret);
 			}
 		}
 		
