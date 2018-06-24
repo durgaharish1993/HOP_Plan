@@ -48,7 +48,7 @@ public class RandomPolicy extends Policy {
 						s.checkStateActionConstraints(ret);
 					}catch(EvalException exc){
 						ret.remove(ret.size()-1);
-						ret.add(new PVAR_INST_DEF(p._sPVarName, !val,inst) );
+						ret.add(new PVAR_INST_DEF(p._sPVarName, !val, inst) );
 						try{
 							s.checkStateActionConstraints(ret);
 						}catch(EvalException exc){
@@ -69,7 +69,7 @@ public class RandomPolicy extends Policy {
 				}else if( tdef.equals(TYPE_NAME.REAL_TYPE) ){
 					for( int attempt = 0; attempt < NUM_TRIES; ++attempt ){
 						final Double val = rand_gen.nextDouble();
-						ret.add(new PVAR_INST_DEF(p._sPVarName,  val,inst) );
+						ret.add(new PVAR_INST_DEF(p._sPVarName, val, inst) );
 						try{
 							s.checkStateActionConstraints(ret);
 							break;
@@ -83,8 +83,8 @@ public class RandomPolicy extends Policy {
 					final ArrayList<ENUM_VAL> enums = new ArrayList<ENUM_VAL>((ArrayList)edef._alPossibleValues);
 					for( int attempt = 0; attempt < NUM_TRIES && !enums.isEmpty(); ++attempt ){
 						final int rand_index = rand_gen.nextInt(enums.size());
-						ret.add(new PVAR_INST_DEF(p._sPVarName, (Object)(enums.get(rand_index)),inst
-								));
+						ret.add(new PVAR_INST_DEF(p._sPVarName, 
+								(Object)(enums.get(rand_index)),inst));
 						try{
 							s.checkStateActionConstraints(ret);
 							break;
