@@ -154,7 +154,10 @@ public class HOPPlanner extends Policy {
         };
 
         public abstract EXPR getFuture( final EXPR e , final RandomDataGenerator rand,
-                                        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  );
+            Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+            Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  
+            HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, 
+            HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  );
     }
 
     protected int num_futures = 0;
@@ -166,7 +169,7 @@ public class HOPPlanner extends Policy {
     private static final RDDL.TYPE_NAME future_TYPE = new RDDL.TYPE_NAME( "future" );
     protected ArrayList< LCONST > future_TERMS = new ArrayList<>();
     protected enum HINDSIGHT_STRATEGY {
-        ROOT, ALL_ACTIONS, CONSENSUS, ROOT_CONSENSUS
+        ROOT, ALL_ACTIONS, CONSENSUS
     }
     protected HINDSIGHT_STRATEGY hindsight_method;
     protected HashMap< HashMap<EXPR, Object>, Integer > all_votes = new HashMap<>();
@@ -226,12 +229,6 @@ public class HOPPlanner extends Policy {
             type_map.put( entry.getKey(), grb_type );
 
         }
-
-
-
-        System.out.println("dkjdkfkdjfkdfdkj");
-
-
     }
 
 
@@ -697,19 +694,19 @@ public class HOPPlanner extends Policy {
         src.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>> >() {
             @Override
             public void accept(PVAR_NAME pvar, ArrayList<ArrayList<LCONST>> u) {
-                u.parallelStream().forEach( new Consumer<ArrayList<LCONST>>() {
+                u.stream().forEach( new Consumer<ArrayList<LCONST>>() {
                     @Override
                     public void accept(ArrayList<LCONST> terms) {
                         try{
                             EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms ).addTerm(TIME_PREDICATE, constants, objects, hmtypes,hm_variables )
                                     .addTerm( future_PREDICATE, constants, objects,  hmtypes,hm_variables  );
-                            TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
+                            TIME_TERMS.stream().forEach( new Consumer<LCONST>() {
                                 @Override
                                 public void accept(LCONST time_term ) {
                                     try{
                                         EXPR this_t = pvar_expr.substitute( Collections.singletonMap( TIME_PREDICATE, time_term),
                                                 constants, objects,  hmtypes,hm_variables  );
-                                        future_TERMS.parallelStream().forEach( new Consumer< LCONST >() {
+                                        future_TERMS.stream().forEach( new Consumer< LCONST >() {
                                             @Override
                                             public void accept(LCONST future_term) {
                                                 //System.out.println(this_t.toString());
@@ -985,7 +982,7 @@ public class HOPPlanner extends Policy {
                     TIME_TERMS.stream().forEach(new Consumer<LCONST>() {
                         @Override
                         public void accept(LCONST time_term) {
-                            future_TERMS.parallelStream().forEach(new Consumer<LCONST>() {
+                            future_TERMS.stream().forEach(new Consumer<LCONST>() {
                                 @Override
                                 public void accept(LCONST future_term) {
 
@@ -1055,7 +1052,7 @@ public class HOPPlanner extends Policy {
         });
         System.out.println("Checking hindsight_method");
         //hindishgt constraint
-        getHindSightConstraintExpr(hindsight_method).parallelStream().forEach( new Consumer<RDDL.BOOL_EXPR>() {
+        getHindSightConstraintExpr(hindsight_method).stream().forEach( new Consumer<RDDL.BOOL_EXPR>() {
 
             @Override
             public void accept( RDDL.BOOL_EXPR t) {
@@ -1198,45 +1195,6 @@ public class HOPPlanner extends Policy {
 
                 break;
 
-
-            case ROOT_CONSENSUS://This is Added by harish for getting
-                System.out.println("-----> This is for ROOT_CONSENSUS CASE");
-                rddl_action_vars.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>>> () {
-                    public void accept( PVAR_NAME pvar , ArrayList<ArrayList<LCONST>> u) {
-                        u.forEach( new Consumer< ArrayList<LCONST>>() {
-                            @Override
-                            public void accept(ArrayList<LCONST> terms) {
-                                try {
-                                    PVAR_EXPR pvar_expr = new PVAR_EXPR(pvar._sPVarName, terms);
-                                    EXPR with_tf = pvar_expr.addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
-                                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables );
-
-                                    EXPR this_t = with_tf.substitute(Collections.singletonMap(TIME_PREDICATE,
-                                            TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
-                                    EXPR ref_expr = this_t.substitute(Collections.singletonMap(future_PREDICATE,
-                                            future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
-
-                                    for (final LCONST future : future_TERMS) {
-
-                                        EXPR addedd = this_t.substitute(Collections.singletonMap(future_PREDICATE, future), constants, objects, hmtypes, hm_variables );
-                                        System.out.println(addedd.toString());
-                                        try {
-                                            ret.add(new RDDL.COMP_EXPR(ref_expr, addedd, RDDL.COMP_EXPR.EQUAL));
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                                catch (Exception e){e.printStackTrace();}
-
-                            }
-                        });
-                    };
-                });
-                break;
-
-
-
             default: try{
                 throw new Exception("Unknown hindsight strategy " + hindsight_method );
             }	catch( Exception exc ){
@@ -1264,10 +1222,10 @@ public class HOPPlanner extends Policy {
         //This piece of code is changed by HARISH
         //System.out.println(non_stationary);
 
-        future_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
+        future_TERMS.stream().forEach( new Consumer<LCONST>() {
             @Override
             public void accept(LCONST future_term) {
-                TIME_TERMS.parallelStream().forEach( new Consumer<LCONST>() {
+                TIME_TERMS.stream().forEach( new Consumer<LCONST>() {
                     @Override
                     public void accept(LCONST time_term) {
                         try {
@@ -2046,13 +2004,16 @@ public class HOPPlanner extends Policy {
             }
 
         }
-        if(action_value.size()==0){ return; }
+        if(action_value.size()==0){ 
+        	return; 
+    	}
+        
         HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> src= new HashMap<>();
         src.putAll(rddl_action_vars);
         src.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>> >() {
             @Override
             public void accept(PVAR_NAME pvar, ArrayList<ArrayList<LCONST>> u) {
-                u.parallelStream().forEach( new Consumer<ArrayList<LCONST>>() {
+                u.stream().forEach( new Consumer<ArrayList<LCONST>>() {
                     @Override
                     public void accept(ArrayList<LCONST> terms) {
                         //System.out.print(pvar.toString());
@@ -2087,10 +2048,6 @@ public class HOPPlanner extends Policy {
                 });
             }
         });
-
-
-
-
     }
 
 
@@ -2118,47 +2075,34 @@ public class HOPPlanner extends Policy {
     }
 
 
-    public void removeRootPolicyConstraints(final GRBModel grb_model) throws GRBException{
-        System.out.println("Number of Constraints Before:" + grb_model.get(GRB.IntAttr.NumConstrs));
-
-        for( final GRBConstr constr : root_policy_constr ){
-
-//			System.out.println(constr.toString());
-            try{
-//				System.out.println("Removing constraint " + );
-                constr.get(StringAttr.ConstrName);
-                //get can throw an exception
-
-            }catch(GRBException exc){
-                System.out.println(exc.getErrorCode());
-                exc.printStackTrace();
-                //System.exit(1);
-            }
-            grb_model.remove( constr );
-            grb_model.update();
-            //System.out.println(grb_model.get( IntAttr.NumConstrs ));
-            //System.out.println(grb_model.toString());
-
-
-        }
-
-        System.out.println("Number of Constraints After :"+ grb_model.get(GRB.IntAttr.NumConstrs));
-
-
-        root_policy_constr.clear();
-
-        root_policy_expr.clear();
-
-
-
-
-
-
-
-
-    }
-
-
+//    public void removeRootPolicyConstraints(final GRBModel grb_model) throws GRBException{
+//        System.out.println("Number of Constraints Before:" + grb_model.get(GRB.IntAttr.NumConstrs));
+//
+//        for( final GRBConstr constr : root_policy_constr ){
+//
+////			System.out.println(constr.toString());
+//            try{
+////				System.out.println("Removing constraint " + );
+//                constr.get(StringAttr.ConstrName);
+//                //get can throw an exception
+//
+//            }catch(GRBException exc){
+//                System.out.println(exc.getErrorCode());
+//                exc.printStackTrace();
+//                //System.exit(1);
+//            }
+//            grb_model.remove( constr );
+//            grb_model.update();
+//            //System.out.println(grb_model.get( IntAttr.NumConstrs ));
+//            //System.out.println(grb_model.toString());
+//
+//
+//        }
+//
+//        System.out.println("Number of Constraints After :"+ grb_model.get(GRB.IntAttr.NumConstrs));
+//        root_policy_constr.clear();
+//        root_policy_expr.clear();
+//    }
 
 
     protected void handleOOM(GRBModel grb_model) throws GRBException {
@@ -2232,7 +2176,7 @@ public class HOPPlanner extends Policy {
     protected void addRootPolicyConstraints(final GRBModel grb_model) throws Exception{
         GRBExpr old_obj = grb_model.getObjective();
 
-        getHindSightConstraintExpr(hindsight_method).parallelStream().forEach( new Consumer<RDDL.BOOL_EXPR>() {
+        getHindSightConstraintExpr(hindsight_method).stream().forEach( new Consumer<RDDL.BOOL_EXPR>() {
 
             @Override
             public void accept( RDDL.BOOL_EXPR t) {
@@ -2700,49 +2644,6 @@ public class HOPPlanner extends Policy {
         return copied_state;
     }
 
-
-
-//    protected HashMap<ArrayList<LCONST>,Object> getActionInstantiations(
-//    	PVAR_NAME action_var, RDDL.TYPE_NAME action_type, Random rand){
-//        //This function gives the intansiations of the parameters.
-//        HashMap<ArrayList<LCONST>,Object> action_terms_assign = new HashMap<>();
-//
-//        ArrayList<RDDL.TYPE_NAME> temp_objects = object_type_name.get(action_var);
-//        ArrayList<LCONST> action_terms    = new ArrayList<>();
-//
-//        for(int i = 0;i<temp_objects.size();i++){
-//            ArrayList<LCONST> temp_array =rddl_state._hmObject2Consts.get(temp_objects.get(i));
-//            //This is selecting the object value and creating a ArrayList<LCONST> whichs goes as _alTerms
-//            int j = rand.nextInt(temp_array.size());
-//            LCONST val = temp_array.get(j);
-//            if(val instanceof RDDL.OBJECT_VAL){
-//                RDDL.OBJECT_VAL new_val = new RDDL.OBJECT_VAL(val._sConstValue);
-//                action_terms.add(new_val);
-//            }
-//        }
-//
-//
-//        //Selecting the value of each object.
-//        if(action_type.equals(RDDL.TYPE_NAME.REAL_TYPE)){
-//            //select_range Has values [min,max]
-//            ArrayList<Double> select_range = value_range.get(action_var);
-//            Double take_action_val = select_range.get(0) + ((select_range.get(1)-select_range.get(0)) * rand.nextFloat());
-//            action_terms_assign.put(action_terms,take_action_val);
-//
-//        }
-//
-//        if(action_type.equals(RDDL.TYPE_NAME.BOOL_TYPE)){
-//            ArrayList<Boolean>  select_range = value_range.get(action_var);
-//            int j = rand.nextInt(select_range.size());
-//            Boolean take_action_val = select_range.get(j);
-//            action_terms_assign.put(action_terms,take_action_val);
-//        }
-//
-//        return action_terms_assign;
-//    }
-
-
-
     protected ArrayList<PVAR_INST_DEF> getRandomAction(
     		final State s, final Random randint) throws EvalException {
 
@@ -2751,7 +2652,7 @@ public class HOPPlanner extends Policy {
         	 action_pvar_instantiations : rddl_action_vars.entrySet()){
         	final PVAR_NAME action_pvar = action_pvar_instantiations.getKey();
         	final PVARIABLE_DEF pdef = s._hmPVariables.get(action_pvar);
-        	
+        	final TYPE_NAME tname = pdef
         	for (ArrayList<LCONST> 
         		 one_instantiation : action_pvar_instantiations.getValue()){
         		
