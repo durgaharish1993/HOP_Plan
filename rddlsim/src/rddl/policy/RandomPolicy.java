@@ -157,7 +157,7 @@ public class RandomPolicy extends Policy {
 				getLegalActions(s, tmp_false, start_index+1, legal_actions);
 				
 				//noop choice
-				getLegalActions(s, cur_action, tmp_visited, legal_actions);
+				getLegalActions(s, cur_action, start_index+1, legal_actions);
 			}
 			else if( s._hmTypes.get(tdef) instanceof ENUM_TYPE_DEF ){
 				final ENUM_TYPE_DEF edef = (ENUM_TYPE_DEF)s._hmTypes.get(tdef);
@@ -169,7 +169,7 @@ public class RandomPolicy extends Policy {
 					getLegalActions(s, this_tmp, start_index+1, legal_actions);
 				}
 				//noop choice
-				getLegalActions(s, cur_action, tmp_visited, legal_actions);
+				getLegalActions(s, cur_action, start_index+1, legal_actions);
 			}
 		}
 		//gets here when each choice is assigned a value
