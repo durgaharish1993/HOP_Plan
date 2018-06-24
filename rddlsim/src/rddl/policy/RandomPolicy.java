@@ -121,7 +121,7 @@ public class RandomPolicy extends Policy {
 			//exhaustive : make list of all legal actions
 			try{
 				ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions = new ArrayList<>();
-				getLegalActions(s, new ArrayList<>(), new TreeSet<Pair<PVAR_NAME, ArrayList<LCONST>>>(), legal_actions);
+				getLegalActions(s, new ArrayList<>(), 0, legal_actions);
 				ret = legal_actions.get(rand_gen.nextInt(legal_actions.size()));
 			}catch(EvalException exc1){
 				ret = new ArrayList<PVAR_INST_DEF>();	
@@ -132,10 +132,11 @@ public class RandomPolicy extends Policy {
 
 	protected void getLegalActions(final State s,
 			final ArrayList<PVAR_INST_DEF> cur_action, 
-			final TreeSet<Pair<PVAR_NAME, ArrayList<LCONST>>> visited,
+			final int start_index,
 			final ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions) throws EvalException{
 		
-		for( final Pair<PVAR_NAME, ArrayList<LCONST>> choice : choices ){
+		if( start_index < choices.size() ){
+			choice = choices.get(start_index);
 			final PVAR_NAME p = choice._o1;
 			final ArrayList<LCONST> instantiations = choice._o2;
 			
@@ -143,22 +144,17 @@ public class RandomPolicy extends Policy {
 			final PVARIABLE_DEF pdef = s._hmPVariables.get(p);
 			final TYPE_NAME tdef = pdef._typeRange;
 			
-			if (visited.contains(new Pair<PVAR_NAME, ArrayList<LCONST>>(p, instantiations))){
-				continue;
-			}
 			
 			if( tdef.equals(TYPE_NAME.BOOL_TYPE) ){
 
-				TreeSet<Pair<PVAR_NAME, ArrayList<LCONST>>> tmp_visited = new TreeSet(visited);
-				tmp_visited.add(new Pair<>(p, instantiations));
 
 				ArrayList<PVAR_INST_DEF> tmp_true = new ArrayList<PVAR_INST_DEF>(cur_action);
 				tmp_true.add(new PVAR_INST_DEF(p._sPVarName,Boolean.TRUE,instantiations));
-				getLegalActions(s, tmp_true, tmp_visited, legal_actions);
+				getLegalActions(s, tmp_true, start_index+1, legal_actions);
 
 				ArrayList<PVAR_INST_DEF> tmp_false = new ArrayList<PVAR_INST_DEF>(cur_action);
 				tmp_false.add(new PVAR_INST_DEF(p._sPVarName, Boolean.FALSE, instantiations));
-				getLegalActions(s, tmp_false, tmp_visited, legal_actions);
+				getLegalActions(s, tmp_false, start_index+1, legal_actions);
 				
 				//noop choice
 				getLegalActions(s, cur_action, tmp_visited, legal_actions);
@@ -167,13 +163,10 @@ public class RandomPolicy extends Policy {
 				final ENUM_TYPE_DEF edef = (ENUM_TYPE_DEF)s._hmTypes.get(tdef);
 				final ArrayList<ENUM_VAL> enums = new ArrayList<ENUM_VAL>((ArrayList)edef._alPossibleValues);
 
-				TreeSet<Pair<PVAR_NAME, ArrayList<LCONST>>>  tmp_visited = new TreeSet(visited);
-				tmp_visited.add(new Pair<>(p, instantiations));
-				
 				for( final ENUM_VAL eval : enums ){
 					ArrayList<PVAR_INST_DEF> this_tmp = new ArrayList<PVAR_INST_DEF>(cur_action);
 					this_tmp.add(new PVAR_INST_DEF(p._sPVarName, eval , instantiations));
-					getLegalActions(s, this_tmp, tmp_visited, legal_actions);
+					getLegalActions(s, this_tmp, start_index+1, legal_actions);
 				}
 				//noop choice
 				getLegalActions(s, cur_action, tmp_visited, legal_actions);
