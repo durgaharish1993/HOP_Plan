@@ -2143,7 +2143,6 @@ public class HOPPlanner extends Policy {
     }
 
 
-    //This is added by Harish.
     protected void addRootPolicyConstraints(final GRBModel grb_model) throws Exception{
         GRBExpr old_obj = grb_model.getObjective();
 
@@ -2157,9 +2156,7 @@ public class HOPPlanner extends Policy {
 
                         GRBConstr this_constr = grb_model.addConstr( gvar, GRB.EQUAL, 1, RDDL.EXPR.getGRBName(t) );
                         saved_expr.add( t ); // saved_vars.add( gvar );
-                        root_policy_expr.add(t);
                         saved_constr.add(this_constr);
-                        root_policy_constr.add(this_constr);
                     } catch (GRBException e) {
                         e.printStackTrace();
                         //System.exit(1);
@@ -2205,15 +2202,10 @@ public class HOPPlanner extends Policy {
 
         grb_model.setObjective(old_obj);
         grb_model.update();
-
-
-
-
-
     }
 
     @Override
-    public void runRandompolicyForState(State s)throws Exception{
+    public double runRandompolicyForState(State s)throws Exception{
         //Copying the state
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
         	copiedState = deepCopyState(s);
@@ -2226,6 +2218,9 @@ public class HOPPlanner extends Policy {
         buffer_state = stats[0];
         buffer_action = stats[1];
         buffer_reward = stats[2];
+        
+        return buffer_reward.stream().mapToDouble(
+        		m -> m.stream().mapToDouble(n -> n).sum()).sum() / ((double)buffer_reward.size());
         
         //We are updating current as previous.
 //        pre_buffer_action = buffer_action;
@@ -2421,9 +2416,8 @@ public class HOPPlanner extends Policy {
         ArrayList<PVAR_INST_DEF> noop_action      = new ArrayList<>();
         ArrayList<PVAR_INST_DEF> returning_action = new ArrayList<>();
         try {
-            ArrayList<PVAR_INST_DEF> act = this.random_policy.getActions(s); 
-            Double avg_reward_random = runActionSimulation(s, 30, act);
-            Double avg_reward_noop = runActionSimulation(s, 30, noop_action);
+            final double avg_reward_random = runRandomPolicyForState(s);
+            final double avg_reward_noop = runNoopPolicyForState(s);
             if(avg_reward_random > avg_reward_noop){
                 returning_action = act;
                 if(SHOW_LEVEL_1)
@@ -2435,7 +2429,6 @@ public class HOPPlanner extends Policy {
         } catch(Exception e){
             returning_action = noop_action;
         }
-
 
         return returning_action;
     }
