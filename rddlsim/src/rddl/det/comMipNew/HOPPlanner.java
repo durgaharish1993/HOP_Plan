@@ -98,15 +98,10 @@ public class HOPPlanner extends Policy {
     protected List<EXPR> saved_expr = new ArrayList<>();
     protected List<GRBConstr> saved_constr = new ArrayList<>();
     
-    //This is like a memory which stores the states.
-    protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
-    //This is like a memory which stores the actions.
-    protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> buffer_action = new ArrayList<>();
-    protected ArrayList<ArrayList<Double>> buffer_reward = new ArrayList<>();
-    //This stores the previous memory of state action, reward.
-    protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> pre_buffer_state = new ArrayList<>();
-    protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> pre_buffer_action = new ArrayList<>();
-    protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
+//    //This stores the previous memory of state action, reward.
+//    protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> pre_buffer_state = new ArrayList<>();
+//    protected ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> pre_buffer_action = new ArrayList<>();
+//    protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
     
     //This is the range of actions to be taken, This will get initalized when the domain gets initalized and will get updated for picking random Actions.
     protected HashMap<PVAR_NAME,ArrayList<RDDL.TYPE_NAME>> object_type_name  = new HashMap<>();
@@ -186,6 +181,7 @@ public class HOPPlanner extends Policy {
         this.TIME_LIMIT_MINS       = Double.valueOf(gurobi_timeout);
         initializeCompetitionRDDL(rddl_object, inst_name, s);
         this.setRandSeed(Long.parseLong(rand_seed))
+        this.random_policy = new RandomPolicy();
 
         this.objects = new HashMap<>( rddl_instance._hmObjects );
         if( rddl_nonfluents != null && rddl_nonfluents._hmObjects != null ){
@@ -2218,112 +2214,36 @@ public class HOPPlanner extends Policy {
 
     @Override
     public void runRandompolicyForState(State s)throws Exception{
-
-
         //Copying the state
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> copiedState = new HashMap<>();
-        copiedState = deepCopyState(s);
-        System.out.println("I am after deepCopy State");
+        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
+        	copiedState = deepCopyState(s);
         //Getting Random Trajectories and adding to buffer.
-        runRandomPolicy(s,2, 100, randint);
+        num_trajectories = 30;
+        length_trajectories = 10;
+        
+        ArrayList[] stats = runRandomPolicy(s, length_trajectories, 
+        		num_trajectories, randint);
+        buffer_state = stats[0];
+        buffer_action = stats[1];
+        buffer_reward = stats[2];
+        
         //We are updating current as previous.
-        pre_buffer_action = buffer_action;
-        pre_buffer_state  = buffer_state;
-        pre_buffer_reward = buffer_reward;
+//        pre_buffer_action = buffer_action;
+//        pre_buffer_state  = buffer_state;
+//        pre_buffer_reward = buffer_reward;
         //This is for random policy immediate average reward.
-        Double sum_rand_reward=0.0;
-        Double max_rand_reward=-Double.MAX_VALUE;
-        for(int num_traj=0 ; num_traj < buffer_reward.size();num_traj++){
-            ArrayList<Double> traj_reward = buffer_reward.get(num_traj);
-            if(!traj_reward.isEmpty()){
-                sum_rand_reward = sum_rand_reward + traj_reward.get(0);
-                if(traj_reward.get(0)>max_rand_reward){
-                    max_rand_reward = traj_reward.get(0);
-                }
-            }
-        }
-        Double average_rand_reward = sum_rand_reward/buffer_reward.size();
-        long endTime1 = System.currentTimeMillis();
-        s.copyStateRDDLState(copiedState,true);
     }
 
 
 
 
     public void convertNPWLtoPWL(State s) throws Exception {
-
         long startTime1 = System.currentTimeMillis();
         checkNonLinearExpressions(s);
         long endTime2 = System.currentTimeMillis();
         double pwl_timer_value =(double) (endTime2-startTime1)/1000;
         double r_api_timer = running_R_api/1000;
-
-
-
     }
-
-
-
-
-    public HashMap<String,String> getResourceAvailbility(HashMap<String,String>vehicle_availbility) throws Exception{
-        StringBuilder sb = new StringBuilder();
-        HashMap<String,String> output_dict = new HashMap<String,String>();
-        Integer temp_count = 0;
-        for(String vehicle_number : vehicle_availbility.keySet()) {
-            if(vehicle_availbility.get(vehicle_number)=="true") {
-
-                sb.append(vehicle_number+":");
-                temp_count=temp_count+1;
-
-
-            }
-
-        }
-        output_dict.put("Vehicles_available", sb.toString());
-        output_dict.put("Number_available",temp_count.toString());
-
-        return(output_dict);
-
-    }
-
-
-    public String getGreedyChoice(HashMap<String, Double> distance_emergency , HashMap<String, String> vehicle_availbility) throws Exception{
-
-
-        System.out.print("Here I am to find which one was the greedy Choice");
-
-
-
-        String best_choice = "";
-        Double best_distance = 10000000.0;
-        for (String vehicle_number : distance_emergency.keySet()) {
-
-            if(vehicle_availbility.get(vehicle_number)=="true") {
-
-                if(distance_emergency.get(vehicle_number)<best_distance) {
-
-                    best_choice = vehicle_number;
-                    best_distance = distance_emergency.get(vehicle_number);
-                }
-
-
-            }
-
-
-        }
-
-        String out_put = best_choice +" : "+ best_distance.toString();
-
-
-
-
-
-        return(out_put);
-
-
-    }
-
-
 
     @Override
     public Pair<Boolean,Pair<Integer,Integer>> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
@@ -2501,11 +2421,10 @@ public class HOPPlanner extends Policy {
         ArrayList<PVAR_INST_DEF> noop_action      = new ArrayList<>();
         ArrayList<PVAR_INST_DEF> returning_action = new ArrayList<>();
         try {
-            HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> copiedState = deepCopyState(s);
-            ArrayList<PVAR_INST_DEF> act = getRandomActionForSimulation(s, new Random(1));
+            ArrayList<PVAR_INST_DEF> act = this.random_policy.getActions(s); 
             Double avg_reward_random = runActionSimulation(s, 30, act);
             Double avg_reward_noop = runActionSimulation(s, 30, noop_action);
-            if(avg_reward_random>avg_reward_noop){
+            if(avg_reward_random > avg_reward_noop){
                 returning_action = act;
                 if(SHOW_LEVEL_1)
                     System.out.println("Choosing Random Action");
@@ -2539,15 +2458,6 @@ public class HOPPlanner extends Policy {
         }
 
         return next_look_ahead;
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -2619,181 +2529,135 @@ public class HOPPlanner extends Policy {
         return copied_state;
     }
 
-    protected ArrayList<PVAR_INST_DEF> getRandomAction(
-    		final State s, final Random randint) throws EvalException {
+//    protected ArrayList<PVAR_INST_DEF> getRandomAction(
+//    		final State s, final Random randint) throws EvalException {
+//
+//    	final ArrayList<PVAR_INST_DEF> final_output_actions = new ArrayList<>();
+//        for (final Entry<PVAR_NAME, ArrayList<ArrayList<LCONST>>> 
+//        	 action_pvar_instantiations : rddl_action_vars.entrySet()){
+//        	final PVAR_NAME action_pvar = action_pvar_instantiations.getKey();
+//        	final PVARIABLE_DEF pdef = s._hmPVariables.get(action_pvar);
+//        	final TYPE_NAME tname = pdef
+//        	for (ArrayList<LCONST> 
+//        		 one_instantiation : action_pvar_instantiations.getValue()){
+//        		
+//        	}
+//            
+//        }
+//    	
+//    	
+//        //This is  a buffer list to check the instansiations are already exists or not.
+//        ArrayList<ArrayList<LCONST>> alaction_terms = new ArrayList<>();
+//        
+//        for (PVAR_NAME action_var : rddl_action_vars.keySet()) {
+//            alaction_terms.clear();
+//            RDDL.TYPE_NAME type_val = s._hmPVariables.get(action_var)._typeRange;
+//            HashMap<ArrayList<LCONST>, Object> final_action_val = new HashMap<>();
+//            //This function instansiates t
+//            HashMap<ArrayList<LCONST>, Object> action_terms_val = getActionInstantiations(action_var, type_val, randint);
+//            for (ArrayList<LCONST> o : action_terms_val.keySet()) {
+//                if (!alaction_terms.contains(o)) {
+//                    Double rand_number = randint.nextDouble();
+//                    if (!(rand_number < rejection_prob)) {
+//                        alaction_terms.add(o);
+//                        final_action_val.put(o, action_terms_val.get(o));
+//                    }
+//                }
+//            }
+//            ArrayList<PVAR_INST_DEF> output_actions = new ArrayList<>();
+//            for (ArrayList<LCONST> key : final_action_val.keySet()) {
+//                PVAR_INST_DEF aa = new PVAR_INST_DEF(action_var._sPVarName, final_action_val.get(key), key);
+//                final_output_actions.add(aa);
+//            }
+//        }
+//        return final_output_actions;
+//    }
 
-    	final ArrayList<PVAR_INST_DEF> final_output_actions = new ArrayList<>();
-        for (final Entry<PVAR_NAME, ArrayList<ArrayList<LCONST>>> 
-        	 action_pvar_instantiations : rddl_action_vars.entrySet()){
-        	final PVAR_NAME action_pvar = action_pvar_instantiations.getKey();
-        	final PVARIABLE_DEF pdef = s._hmPVariables.get(action_pvar);
-        	final TYPE_NAME tname = pdef
-        	for (ArrayList<LCONST> 
-        		 one_instantiation : action_pvar_instantiations.getValue()){
-        		
-        	}
-            
-        }
-    	
-    	
-        //This is  a buffer list to check the instansiations are already exists or not.
-        ArrayList<ArrayList<LCONST>> alaction_terms = new ArrayList<>();
+//    protected  ArrayList<PVAR_INST_DEF>  getRandomActionForSimulation(State s,
+//    		Random rand1) throws EvalException {
+//        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
+//
+//        boolean check_action_feasible = false;
+//        ArrayList<PVAR_INST_DEF> random_action = null;
+//        int cur_while_check = 0;
+//
+//        while(!check_action_feasible && (cur_while_check<number_of_iterations)){
+//            //System.out.println("ITERATION.");
+//            cur_while_check = cur_while_check+1;
+//            random_action = getRandomAction(s,rand1);
+//            check_action_feasible = s.checkActionConstraints(random_action);
+//        }
+//
+//        //When the actions are infeasible.
+//        if(! check_action_feasible){
+//            System.out.println("The actions are not feasible");
+//        }
+//
+//        s.copyStateRDDLState(root_state,true);
+//        return random_action;
+//    }
+
+//    protected Double runActionSimulation(State s, Integer num_rounds, 
+//    		ArrayList<PVAR_INST_DEF> act ) throws EvalException {
+//        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state
+//        	= deepCopyState(s);
+//        Double avg_reward = 0.0;
+//        for(int i=0 ; i<num_rounds; i++){
+//            s.computeNextState(act, this._random);
+//            final double immediate_reward = ((Number)rddl_domain._exprReward.sample(
+//                    new HashMap<LVAR,LCONST>(), rddl_state, rand)).doubleValue();
+//            avg_reward += immediate_reward;
+//            s.copyStateRDDLState(root_state, true);
+//        }
+//        return avg_reward/num_rounds;
+//    }
+
+    protected void runRandomPolicy(final State rddl_state, 
+    		int trajectory_length, int number_trajectories, Random rand1) throws EvalException {
+
+
+        HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
+        	traj_inital_state = deepCopyState(rddl_state);
         
-        for (PVAR_NAME action_var : rddl_action_vars.keySet()) {
-            alaction_terms.clear();
-            RDDL.TYPE_NAME type_val = s._hmPVariables.get(action_var)._typeRange;
-            HashMap<ArrayList<LCONST>, Object> final_action_val = new HashMap<>();
-            //This function instansiates t
-            HashMap<ArrayList<LCONST>, Object> action_terms_val = getActionInstantiations(action_var, type_val, randint);
-            for (ArrayList<LCONST> o : action_terms_val.keySet()) {
-                if (!alaction_terms.contains(o)) {
-                    Double rand_number = randint.nextDouble();
-                    if (!(rand_number < rejection_prob)) {
-                        alaction_terms.add(o);
-                        final_action_val.put(o, action_terms_val.get(o));
-                    }
-                }
-            }
-            ArrayList<PVAR_INST_DEF> output_actions = new ArrayList<>();
-            for (ArrayList<LCONST> key : final_action_val.keySet()) {
-                PVAR_INST_DEF aa = new PVAR_INST_DEF(action_var._sPVarName, final_action_val.get(key), key);
-                final_output_actions.add(aa);
-            }
-        }
-        return final_output_actions;
-    }
+        final ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
+        final ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> buffer_action = new ArrayList<>();
+        final ArrayList<ArrayList<Double>> buffer_reward = new ArrayList<>();
 
-    protected  ArrayList<PVAR_INST_DEF>  getRandomActionForSimulation(State s,
-    		Random rand1) throws EvalException {
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
-
-        boolean check_action_feasible = false;
-        ArrayList<PVAR_INST_DEF> random_action = null;
-        int cur_while_check = 0;
-
-        while(!check_action_feasible && (cur_while_check<number_of_iterations)){
-            //System.out.println("ITERATION.");
-            cur_while_check = cur_while_check+1;
-
-
-            random_action = getRandomAction(s,rand1);
-            check_action_feasible = s.checkActionConstraints(random_action);
-
-
-
-        }
-
-
-        //When the actions are infeasible.
-        if(! check_action_feasible){
-
-
-            System.out.println("The actions are not feasible");
-
-
-
-        }
-
-        s.copyStateRDDLState(root_state,true);
-        return random_action;
-
-
-
-
-    }
-
-
-
-
-    protected Double runActionSimulation(State s, Integer num_rounds, ArrayList<PVAR_INST_DEF> act ) throws EvalException {
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> root_state  = deepCopyState(s);
-        Double avg_reward = 0.0;
-        for(int i=0 ; i<num_rounds; i++){
-            s.computeNextState(act, new RandomDataGenerator());
-            final double immediate_reward = ((Number)rddl_domain._exprReward.sample(
-                    new HashMap<LVAR,LCONST>(),rddl_state, rand)).doubleValue();
-            avg_reward += immediate_reward;
-            s.copyStateRDDLState(root_state,true);
-        }
-        return avg_reward/num_rounds;
-    }
-
-
-
-
-    protected void runRandomPolicy(final State rddl_state, int trajectory_length, int number_trajectories, Random rand1) throws EvalException {
-
-
-        HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> traj_inital_state = deepCopyState(rddl_state);
-
-        buffer_state.clear();
-        buffer_action.clear();
-        buffer_reward.clear();
         for (int j = 0; j < number_trajectories; j++) {
             //HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_state_values  = deepCopyState(rddl_state)
             rddl_state.copyStateRDDLState(traj_inital_state, true);
-            traj_inital_state = deepCopyState(rddl_state);
-            ArrayList<HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>> store_traj_states = new ArrayList<>();
+
+            ArrayList<HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>> 
+            	store_traj_states = new ArrayList<>();
             ArrayList<Double> store_traj_rewards = new ArrayList<>();
             ArrayList<ArrayList<PVAR_INST_DEF>> store_traj_actions = new ArrayList<>();
-            boolean check_action_feasible = false;
-            boolean all_infeasible = false;
+            
             for (int i = 0; i < trajectory_length; i++) {
-                check_action_feasible = false;
-                ArrayList<PVAR_INST_DEF> traj_action = null;
-                int cur_while_check = 0;
-                while (!check_action_feasible && (cur_while_check < number_of_iterations)) {
-                    try{
-                        //System.out.println("ITERATION.");
-                        cur_while_check = cur_while_check + 1;
-                        traj_action = getRandomAction(rddl_state, rand1);
-                        //System.out.print(traj_action.toString());
-                        check_action_feasible = rddl_state.checkActionConstraints(traj_action);
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-                //When the actions are infeasible.
-                if (!check_action_feasible) {
-                    System.out.println("The actions are not feasible");
-                    all_infeasible = true;
-                    break;
-                }
-                //Check the action Constraint
-                HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> store_state = deepCopyState(rddl_state);
+                ArrayList<PVAR_INST_DEF> traj_action 
+                	= this.random_policy.getActions(rddl_state);
+                HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
+                	store_state = deepCopyState(rddl_state);
                 store_traj_states.add(store_state);
                 //Advance to Next State
-                rddl_state.computeNextState(traj_action, new RandomDataGenerator());
+                rddl_state.computeNextState(traj_action, this._random);
                 //Calculate Immediate Reward
-                final double immediate_reward = ((Number) rddl_domain._exprReward.sample(
-                        new HashMap<LVAR, LCONST>(), rddl_state, rand)).doubleValue();
+                final double immediate_reward = 
+                		Math.pow(rddl_innstance._dDiscount, i) * 
+                			((Number) rddl_domain._exprReward.sample(
+                				new HashMap<LVAR, LCONST>(), rddl_state, rand)).doubleValue();
                 store_traj_rewards.add(immediate_reward);
                 store_traj_actions.add(traj_action);
                 //System.out.println("Immediate Reward :"+ immediate_reward);
                 rddl_state.advanceNextState();
             }
 
-
-            //This is checking the trajectory turned out to be bad.
-            if (check_action_feasible && all_infeasible) {
-                // we are overriding the pre_buffer_state values.
-                int traj_id = rand1.nextInt(pre_buffer_state.size());
-                store_traj_states = pre_buffer_state.get(traj_id);
-                store_traj_actions = pre_buffer_action.get(traj_id);
-                store_traj_rewards = pre_buffer_reward.get(traj_id);
-            }
             buffer_state.add(store_traj_states);
             buffer_action.add(store_traj_actions);
             buffer_reward.add(store_traj_rewards);
-
-
         }
-
-
+        rddl_state.copyStateRDDLState(traj_inital_state, true);
+        return new ArrayList[]{buffer_state, buffer_action, buffer_reward};
     }
-
 
     protected void checkNonLinearExpressions(final State rddl_state) throws Exception {
         //Clear the things
