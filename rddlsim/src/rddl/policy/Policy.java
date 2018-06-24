@@ -24,14 +24,6 @@ public abstract class Policy {
 	public RandomDataGenerator _random = new RandomDataGenerator();
 	public String _sInstanceName;
 	public RDDL _rddl;
-	public int lookahead;
-	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
-	public double TIME_LIMIT_MINS = 10;
-	public Boolean DO_NPWL_PWL = false;
-	public Boolean TIME_FUTURE_CACHE_USE = true;
-	public Boolean DO_GUROBI_INITIALIZATION = false;
-
-
 
 	public Policy() {
 		
@@ -93,32 +85,4 @@ public abstract class Policy {
 	public String toString() {
 		return "Policy for '" + _sInstanceName + "'";
 	}
-
-
-	public void runRandompolicyForState(State s) throws Exception{}
-
-
-
-	protected void runRandompolicy(State s, int trajectory_length, int number_trajectories, Random rand1)throws Exception{}
-
-	public void convertNPWLtoPWL(State s) throws Exception{}
-
-	public void dispose_Gurobi() throws GRBException {}
-
-
-
-	public Pair<Boolean,Pair<Integer,Integer>> CompetitionExploarationPhase(String rddl_filepath, String instanceName, Integer n_futures, Integer n_lookahead, String gurobi_timeout,
-                                                              String future_gen_type,String hindsight_strat, RDDL rddl_object, State s, Double total_explo_time, Double optimization_time_out) throws Exception{
-        Pair<Integer,Integer> safe_parameters = new Pair(4,5);
-	    return new Pair(true,safe_parameters);
-	}
-
-
-
-	public Pair<Integer,Integer> CompetitionExploarationPhase(String rddl_filepath, String instanceName, ArrayList<String> parameters) throws Exception{
-		return new Pair<>(5,4);
-	}
-
-
-	
 }
