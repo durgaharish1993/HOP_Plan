@@ -28,8 +28,8 @@ public class RandomPolicy extends Policy {
 		final ArrayList<PVAR_INST_DEF> ret = new ArrayList<>();
 		
 		// Get an action (assuming all actions are enum type)
-		ArrayList<PVAR_NAME> pvars = new ArrayList<>(s._alActionNames.size());
-		Collections.copy(pvars, s._alActionNames);
+		final ArrayList<PVAR_NAME> pvars = new ArrayList<>();
+		pvars.addAll(s._alActionNames);
 		Collections.shuffle(pvars, rand_gen);
 		
 		for( PVAR_NAME p : pvars ){
@@ -37,7 +37,7 @@ public class RandomPolicy extends Policy {
 			final PVARIABLE_DEF pdef = s._hmPVariables.get(p);
 			final TYPE_NAME tdef = pdef._typeRange;
 			// Get term instantions for that action
-			ArrayList<ArrayList<LCONST>> instantiations = s.generateAtoms(p);
+			final ArrayList<ArrayList<LCONST>> instantiations = s.generateAtoms(p);
 			Collections.shuffle(instantiations, rand_gen);
 			
 			for( ArrayList<LCONST> inst : instantiations ){
