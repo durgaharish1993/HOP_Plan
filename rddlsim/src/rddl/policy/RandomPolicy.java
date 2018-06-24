@@ -15,6 +15,7 @@ import util.Pair;
 public class RandomPolicy extends Policy {
 	Random rand_gen;
 	final private static int NUM_TRIES = 30;
+	final private static int MAX_DEPTH = 10;
 	protected ArrayList<Pair<PVAR_NAME, ArrayList<LCONST>>> choices = null;
 	
 	protected void initializeChoices(State s) throws Exception{
@@ -120,6 +121,7 @@ public class RandomPolicy extends Policy {
 		}catch(EvalException exc){
 			//exhaustive : make list of all legal actions
 			try{
+				Collections.shuffle(choices);
 				ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions = new ArrayList<>();
 				getLegalActions(s, new ArrayList<>(), 0, legal_actions);
 				ret = legal_actions.get(rand_gen.nextInt(legal_actions.size()));
@@ -135,7 +137,7 @@ public class RandomPolicy extends Policy {
 			final int start_index,
 			final ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions) throws EvalException{
 		System.out.println("Current Index : " +String.valueOf(start_index) +  "  Action : " +  cur_action.toString() );
-		if( start_index < choices.size() ){
+		if( start_index < MAX_DEPTH ){
 			Pair<PVAR_NAME, ArrayList<LCONST>> choice = choices.get(start_index);
 			final PVAR_NAME p = choice._o1;
 			final ArrayList<LCONST> instantiations = choice._o2;
