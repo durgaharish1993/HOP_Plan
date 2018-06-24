@@ -12,16 +12,13 @@ import rddl.RDDL.*;
 
 public class RandomPolicy extends Policy {
 	
-	Random rand_gen;
 	final private static int NUM_TRIES = 30;
 	
 	public RandomPolicy () {
-		this.rand_gen = new Random();
 	}
 	
 	public RandomPolicy(String instance_name) {
 		super(instance_name);
-		this.rand_gen = new Random();
 	}
 
 	public ArrayList<PVAR_INST_DEF> getActions(State s) throws EvalException {
@@ -30,7 +27,7 @@ public class RandomPolicy extends Policy {
 		// Get an action (assuming all actions are enum type)
 		final ArrayList<PVAR_NAME> pvars = new ArrayList<>();
 		pvars.addAll(s._alActionNames);
-		Collections.shuffle(pvars, rand_gen);
+		Collections.shuffle(pvars, this._random);
 		
 		for( PVAR_NAME p : pvars ){
 			// Get type of action var
@@ -38,7 +35,7 @@ public class RandomPolicy extends Policy {
 			final TYPE_NAME tdef = pdef._typeRange;
 			// Get term instantions for that action
 			final ArrayList<ArrayList<LCONST>> instantiations = s.generateAtoms(p);
-			Collections.shuffle(instantiations, rand_gen);
+			Collections.shuffle(instantiations, this._random);
 			
 			for( ArrayList<LCONST> inst : instantiations ){
 				if( tdef.equals(TYPE_NAME.BOOL_TYPE) ){
@@ -97,7 +94,11 @@ public class RandomPolicy extends Policy {
 				System.out.println(ret);
 			}
 		}
-		
+		try{
+			s.checkStateActionConstraints(ret);
+		}catch(EvalException exc){
+			return new ArrayList<PVAR_INST_DEF>();
+		}
 		return ret;
 	}
 
