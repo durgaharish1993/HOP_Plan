@@ -134,9 +134,9 @@ public class RandomPolicy extends Policy {
 			final ArrayList<PVAR_INST_DEF> cur_action, 
 			final int start_index,
 			final ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions) throws EvalException{
-		
+		System.out.println("Current Index : " +String.valueOf(start_index) +  "  Action : " +  cur_action.toString() );
 		if( start_index < choices.size() ){
-			choice = choices.get(start_index);
+			Pair<PVAR_NAME, ArrayList<LCONST>> choice = choices.get(start_index);
 			final PVAR_NAME p = choice._o1;
 			final ArrayList<LCONST> instantiations = choice._o2;
 			
@@ -177,6 +177,7 @@ public class RandomPolicy extends Policy {
 			s.checkStateActionConstraints(cur_action);
 			legal_actions.add(cur_action);
 		}catch(EvalException exc){
+			//System.out.println("Legal Actions : "+ legal_actions.toString());
 
 		}
 	}
