@@ -169,6 +169,10 @@ public class RandomPolicy extends Policy {
 			}
 		}
 		//gets here when each choice is assigned a value
-		legal_actions.add(cur_action);
+		try{
+			s.checkStateActionConstraints(cur_action);
+			legal_actions.add(cur_action);
+		}catch(EvalException exc){
+		}
 	}
 }
