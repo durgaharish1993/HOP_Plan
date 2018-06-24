@@ -45,7 +45,7 @@ public class HOPPlanner extends Policy {
     public static final String  OUTPUT_FILE = "model_toy.lp";
     public static final String OUTPUT_NAMEMAP_FILE = "model_toy_namemap.txt";
     public Boolean OUTPUT_NAME_MAP_FILE = true;
-    protected RandomDataGenerator rand;
+
     protected boolean SHOW_LEVEL_1 = false;
     protected boolean SHOW_LEVEL_2 = false;
     protected boolean SHOW_GUROBI_ADD = false;
@@ -97,10 +97,7 @@ public class HOPPlanner extends Policy {
     //these are never removed
     protected List<EXPR> saved_expr = new ArrayList<>();
     protected List<GRBConstr> saved_constr = new ArrayList<>();
-    //This is for getting training data CONSENSUS and ROOT ACTION.
-    protected List<EXPR> root_policy_expr = new ArrayList<>();
-    protected List<GRBConstr> root_policy_constr = new ArrayList<>();
-    //These are added by Harish.
+    
     //This is like a memory which stores the states.
     protected ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
     //This is like a memory which stores the actions.
@@ -112,10 +109,7 @@ public class HOPPlanner extends Policy {
     protected ArrayList<ArrayList<Double>> pre_buffer_reward = new ArrayList<>();
     
     //This is the range of actions to be taken, This will get initalized when the domain gets initalized and will get updated for picking random Actions.
-    protected HashMap<PVAR_NAME,ArrayList> value_range = new HashMap<>();
     protected HashMap<PVAR_NAME,ArrayList<RDDL.TYPE_NAME>> object_type_name  = new HashMap<>();
-    protected HashMap<RDDL.TYPE_NAME,LCONST> object_val_mapping = new HashMap<>();
-    protected double rejection_prob = 0.1;
     
     //This stores the Expression which are not PWL.
     protected List<EXPR> not_pwl_expr = new ArrayList<>();
@@ -127,7 +121,6 @@ public class HOPPlanner extends Policy {
     //these are removed between invocations of getActions()
     protected List<EXPR> to_remove_expr = new ArrayList<RDDL.EXPR>();
     protected List<GRBConstr> to_remove_constr = new ArrayList<>();
-    protected ArrayList<Double> objectiveValues = new ArrayList<Double>();
 
 
     public static enum FUTURE_SAMPLING{
@@ -153,40 +146,48 @@ public class HOPPlanner extends Policy {
             }
         };
 
-        public abstract EXPR getFuture( final EXPR e , final RandomDataGenerator rand,
-            Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
-            Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  
-            HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, 
-            HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  );
+        public abstract EXPR getFuture( final EXPR e , 
+        	final RandomDataGenerator rand,
+            final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants, 
+            final Map<RDDL.TYPE_NAME, RDDL.OBJECTS_DEF> objects,  
+            final HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, 
+            final HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables  );
     }
 
-    protected int num_futures = 0;
+    protected int num_futures;
+    protected int lookahead;
     protected FUTURE_SAMPLING future_gen;
-    protected Random randint = new Random();
 
-    protected int exit_code ;
-
-    private static final RDDL.TYPE_NAME future_TYPE = new RDDL.TYPE_NAME( "future" );
+    private static final RDDL.TYPE_NAME 
+    	future_TYPE = new RDDL.TYPE_NAME( "future" );
     protected ArrayList< LCONST > future_TERMS = new ArrayList<>();
     protected enum HINDSIGHT_STRATEGY {
         ROOT, ALL_ACTIONS, CONSENSUS
     }
     protected HINDSIGHT_STRATEGY hindsight_method;
-    protected HashMap< HashMap<EXPR, Object>, Integer > all_votes = new HashMap<>();
+    protected HashMap< HashMap<EXPR, Object>, Integer > 
+    	all_votes = new HashMap<>();
 
-    public HOPPlanner(Integer n_futures, Integer n_lookahead, String inst_name, String gurobi_timeout,
-                      String future_gen_type,String hindsight_strat, RDDL rddl_object, State s) throws Exception {
+    /*COMPETITION PARAMETERS*/
+	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
+	public Boolean DO_NPWL_PWL = false;
+	public Boolean TIME_FUTURE_CACHE_USE = true;
+	public Boolean DO_GUROBI_INITIALIZATION = false;
+	public double TIME_LIMIT_MINS = 10;
 
-        this.num_futures      = n_futures;
-        this.lookahead        = Integer.valueOf(n_lookahead);
+    public HOPPlanner(String n_futures, String n_lookahead, String inst_name, 
+                      String future_gen_type, String hindsight_strat, 
+                      RDDL rddl_object, String rand_seed, State s) throws Exception {
+
+        this.num_futures      = Integer.parseInt(n_futures);
+        this.lookahead        = Integer.parseInt(n_lookahead);
         this.future_gen       = FUTURE_SAMPLING.valueOf(future_gen_type);
         this.hindsight_method = HINDSIGHT_STRATEGY.valueOf(hindsight_strat);
-        TIME_LIMIT_MINS       = Double.valueOf(gurobi_timeout);
-        rand = new RandomDataGenerator( );
-        initializeCompetitionRDDL(rddl_object,inst_name,s);
+        this.TIME_LIMIT_MINS       = Double.valueOf(gurobi_timeout);
+        initializeCompetitionRDDL(rddl_object, inst_name, s);
+        this.setRandSeed(Long.parseLong(rand_seed))
 
-
-        objects = new HashMap<>( rddl_instance._hmObjects );
+        this.objects = new HashMap<>( rddl_instance._hmObjects );
         if( rddl_nonfluents != null && rddl_nonfluents._hmObjects != null ){
             objects.putAll( rddl_nonfluents._hmObjects );
         }
@@ -208,50 +209,26 @@ public class HOPPlanner extends Policy {
                         rddl_type.equals( RDDL.TYPE_NAME.INT_TYPE ) ? GRB.INTEGER : GRB.CONTINUOUS;
             }
 
-            assert(grb_type!='Z');
+            assert(grb_type != 'Z');
 
-            object_type_name.put(entry.getKey(), entry.getValue()._alParamTypes);
+            this.object_type_name.put(entry.getKey(), entry.getValue()._alParamTypes);
             //object_val_mapping.put(object_type_name.get(entry.getKey()),  rddl_state._hmObject2Consts.get(object_type_name.get(entry.getKey()))   );
 
-            if(rddl_type.equals(RDDL.TYPE_NAME.REAL_TYPE)){
-                ArrayList<Double> temp_dec_range =new ArrayList<Double>(){{
-                    add(0.0);
-                    add(50.0); }};
-                value_range.put(entry.getKey(),temp_dec_range);
-            }
-
-            if(rddl_type.equals(RDDL.TYPE_NAME.BOOL_TYPE)){
-                ArrayList<Boolean> temp_bool_range = new ArrayList<Boolean>(){{  add(new Boolean("true"));
-                    add(new Boolean("false"));	}};
-                value_range.put(entry.getKey(),temp_bool_range);
-            }
-
-            type_map.put( entry.getKey(), grb_type );
+            this.type_map.put( entry.getKey(), grb_type );
 
         }
     }
 
-
-
-
-    protected void initializeCompetitionRDDL(final RDDL rddl_object,String instanceName,State s) throws Exception{
-        //I need to think how to remove this.
-        this._rddl = rddl_object;
-        RDDL.NONFLUENTS nonFluents = null;
-        RDDL.DOMAIN domain = null;
-        RDDL.INSTANCE instance = rddl_object._tmInstanceNodes.get(instanceName);
-        if (instance._sNonFluents != null) {
-            nonFluents = rddl_object._tmNonFluentNodes.get(instance._sNonFluents);
-        }
-        if (nonFluents != null && !instance._sDomain.equals(nonFluents._sDomain)) {
-            System.err.println("Domain name of instance and fluents do not match: " +
-                    instance._sDomain + " vs. " + nonFluents._sDomain);
-            System.exit(1);
-        }
-        this.rddl_obj      = rddl_object;
+    protected void initializeCompetitionRDDL(final RDDL rddl_object,
+    		String instanceName, State s) throws Exception{
+    	//rddl.Policy members
+    	this._rddl = this.rddl_obj
+        this._sInstanceName = instanceName;
+    	//this class members 
+    	this.rddl_obj      = rddl_object;
         this.instance_name = instanceName; //instance_rddl._tmInstanceNodes.keySet().iterator().next() ;
         this.domain_name   = instance._sDomain;  //domain_rddl._tmDomainNodes.keySet().iterator().next();
-        //This is addition for HOP Planners ( added by Harish).
+
         rddl_instance      = rddl_obj._tmInstanceNodes.get( instance_name );
         if (rddl_instance == null){
             throw new Exception("Instance '" + instance_name +
@@ -286,7 +263,6 @@ public class HOPPlanner extends Policy {
         this.string_observ_vars = cleanMap( rddl_observ_vars );
         this.string_interm_vars = cleanMap( rddl_interm_vars );
 
-
         for(Map.Entry<PVAR_NAME, RDDL.PVARIABLE_DEF> entry : rddl_state._hmPVariables.entrySet()){
             PVAR_NAME temp_pvar = entry.getKey();
             if(entry.getValue() instanceof RDDL.PVARIABLE_STATE_DEF){
@@ -294,7 +270,6 @@ public class HOPPlanner extends Policy {
                 rddl_state_default.put(temp_pvar,val);
             }
         }
-
     }
 
 
