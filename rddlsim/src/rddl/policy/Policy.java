@@ -27,7 +27,7 @@ public abstract class Policy {
 	public int lookahead;
 	public ArrayList<PVAR_INST_DEF> gurobi_initialization = null;
 	public double TIME_LIMIT_MINS = 10;
-	public Boolean DO_NPWL_PWL = false;
+	public Boolean DO_NPWL_PWL = true;
 	public Boolean TIME_FUTURE_CACHE_USE = true;
 	public Boolean DO_GUROBI_INITIALIZATION = false;
 
