@@ -24,29 +24,36 @@ public class EarthForPlanner {
 
         ArrayList<Object> val = generateFeatureTargetEarth(e,s,buffer_state,buffer_action,random);
         String earth_PWL = runEarth((HashMap<RDDL.PVAR_NAME,String>)val.get(0),(String)val.get(1));
-        reconstruct_expr(earth_PWL,val.get(2),val.get(3));
+        EXPR final_expr =reconstruct_expr(earth_PWL,(ArrayList<RDDL.PVAR_NAME>)val.get(2),raw_terms);
+        return final_expr;
 
     }
 
 
 
-    protected ArrayList<String> getInputVector(TreeSet<RDDL.PVAR_NAME>variables,HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>gfluents,
-                   ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>>> buffer_state,
-                   ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action){
+    protected ArrayList<String> getInputVector(TreeSet<RDDL.PVAR_NAME>variables,HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>lvar_lcont_map,
+                                               HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> state_value,
+                                               ArrayList<RDDL.PVAR_INST_DEF> action_value){
 
         //I need to debug and work.
         //This loop is for ordering the inputVariables via variables.
-//        for(RDDL.PVAR_NAME key : variables){
-//            for(Pair key1 : gfluents){
-//                if(key1._o1.equals(key)){
-//
-//
-//                }
-//            }
-//
-//
-//
-//        }
+        for(RDDL.PVAR_NAME key : variables){
+            ArrayList<RDDL.LCONST> cur_lconsts= lvar_lcont_map.get(key);
+            if(state_value.containsKey(key)){
+                HashMap<ArrayList<RDDL.LCONST>,Object> cur_lconst_object = state_value.get(key);
+
+
+
+
+
+
+
+            }
+
+
+
+
+        }
         ArrayList temp_array = new ArrayList<>();
         temp_array.add("1"); temp_array.add("2");
         return temp_array;
@@ -89,12 +96,12 @@ public class EarthForPlanner {
                     var_lconsts.put((RDDL.PVAR_NAME)key._o1,(ArrayList<RDDL.LCONST>)key._o2);
 
                 }
-                for(RDDL.PVAR_NAME key : variables){
-                    var_order_lconst.add(new Pair((RDDL.PVAR_NAME)key,var_lconsts.get(key)));
-                }
+//                for(RDDL.PVAR_NAME key : variables){
+//                    var_order_lconst.add(new Pair((RDDL.PVAR_NAME)key,var_lconsts.get(key)));
+//                }
 
                 //The order is as per variables which is a TreeSet.
-                ArrayList<String> si1 = getInputVector(variables,var_lconsts,buffer_state,buffer_action);
+                ArrayList<String> si1 = getInputVector(variables,var_lconsts,state_value,action_value);
                 for(int k=0;k<si1.size();k++){
                     //not the first time.
                     if(input_Feat_R_array.containsKey(k)){
@@ -141,7 +148,7 @@ public class EarthForPlanner {
         final_output_list.add(final_input_R_data);
         final_output_list.add(final_output_R_data);
         final_output_list.add(variables);
-        final_output_list.add(var_order_lconst);
+        //final_output_list.add(var_order_lconst);
 
 
         return final_output_list;
@@ -187,7 +194,7 @@ public class EarthForPlanner {
 
 
 
-    public RDDL.EXPR reconstruct_expr(String earthOutput, ArrayList<RDDL.PVAR_NAME> input_variables, TreeSet<Pair> pvar_ord_lconst) throws Exception {
+    public RDDL.EXPR reconstruct_expr(String earthOutput, ArrayList<RDDL.PVAR_NAME> input_variables,ArrayList<RDDL.LTERM> raw_terms) throws Exception {
 
         //Sample Earth Output
         //Earth Output
@@ -234,12 +241,12 @@ public class EarthForPlanner {
                 if(string_pvar.contains(hinge_values[0])){
                     real_val = Double.parseDouble(hinge_values[1]);
                     RDDL.PVAR_EXPR temp_pvar_expr        = new RDDL.PVAR_EXPR(hinge_values[0],raw_terms);
+
                     RDDL.REAL_CONST_EXPR temp_const_expr = new RDDL.REAL_CONST_EXPR(real_val);
                     RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_pvar_expr,temp_const_expr,"-");
                     RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new RDDL.REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
                     hinge_function.put(key_val,max_oper_expr);
-                    if(SHOW_PWL_NON_PWL)
-                        System.out.println("PWL_NON_PWL ::: " + max_oper_expr.toString());
+
                 }
                 if(string_pvar.contains(hinge_values[1])){
                     real_val = Double.parseDouble(hinge_values[0]);
@@ -250,8 +257,7 @@ public class EarthForPlanner {
                     RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new RDDL.REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
 
                     hinge_function.put(key_val,max_oper_expr);
-                    if(SHOW_PWL_NON_PWL)
-                        System.out.println("PWL_NON_PWL ::: "+ max_oper_expr.toString());
+
                 }
             }
 

@@ -24,6 +24,7 @@ public abstract class Policy {
 	public RandomDataGenerator _random = new RandomDataGenerator();
 	public String _sInstanceName;
 	public RDDL _rddl;
+	public boolean DO_NPWL_PWL= true;
 
 	public Policy() {
 		
@@ -85,4 +86,7 @@ public abstract class Policy {
 	public String toString() {
 		return "Policy for '" + _sInstanceName + "'";
 	}
+
+
+
 }

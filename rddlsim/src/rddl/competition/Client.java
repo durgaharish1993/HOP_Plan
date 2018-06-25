@@ -47,6 +47,7 @@ import rddl.RDDL.NONFLUENTS;
 import rddl.RDDL.PVAR_INST_DEF;
 import rddl.RDDL.PVAR_NAME;
 import rddl.State;
+import rddl.det.comMipNew.HOPPlanner;
 import rddl.parser.parser;
 import rddl.policy.Policy;
 import rddl.policy.RandomBoolPolicy;
@@ -155,7 +156,7 @@ public class Client {
 		String gurobi_timeout  = args[8];
 		String future_sampling = args[9];
 		String hindsight_stra  = args[10];
-		Double per_explo_time  = Double.valueOf(args[11]);
+		String per_explo_time  = args[11];
 		Boolean manual_NPWL    = ((String)args[12]) =="true" ? true : false;
 //        $HOST
 //        $PLANNER_NAME
@@ -251,26 +252,28 @@ public class Client {
 					domain._exprReward, instance._nNonDefActions);
 
 
-			////////////////////////////////////////////////////////////////
-			//This is for exploration.
 			Policy policy = null;
 
-//			Integer n_futures, Integer n_lookahead, String inst_name, String gurobi_timeout,
-//					String future_gen_type,String hindsight_strat, RDDL rddl_object, State s
+//			String n_futures, String n_lookahead, String inst_name,
+//					String gurobi_timeout, String future_gen_type, String hindsight_strat,String rand_seed
+//					RDDL rddl_object, State s
 //
-			//This piece of code allocates exploration time...
+//			HOPPlanner(String n_futures, String n_lookahead, String inst_name,
+//					String gurobi_timeout, String future_gen_type, String hindsight_strat, String rand_seed,
+//					RDDL rddl_object, State s)
 
 			policy = (Policy)c.getConstructor(
-					new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
-					Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
+					new Class[]{String.class,String.class,String.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(
+							n_futures, n_lookahead,instanceName,gurobi_timeout,future_sampling,hindsight_stra,String.valueOf(randomSeed),rddl,state);
 			policy.setRDDL(rddl);
 			policy.setRandSeed(randomSeed);
 
-			Double total_explo_time = timeAllowed *(per_explo_time/100);
+			Double total_explo_time = timeAllowed *(Double.valueOf(per_explo_time)/100);
 
 			policy.DO_NPWL_PWL = manual_NPWL;
-			Pair<Boolean,Pair<Integer,Integer>> best_parameters=policy.CompetitionExploarationPhase(RDDL_FILENAME,instanceName,Integer.valueOf(n_futures),
-					Integer.valueOf(n_lookahead),gurobi_timeout,future_sampling,hindsight_stra,rddl,state,total_explo_time,Double.valueOf(gurobi_timeout));
+
+			Pair<Boolean,Pair<Integer,Integer>> best_parameters=((HOPPlanner)policy).CompetitionExplorationPhase(RDDL_FILENAME,instanceName,gurobi_timeout,future_sampling,
+					hindsight_stra,String.valueOf(randomSeed),rddl,state,String.valueOf(total_explo_time));
 
 			////////////////////////////////////////////////////////////////
 			//parameters.set(2, best_parameters._o1.toString()); // this is for setting lookahead
@@ -279,9 +282,8 @@ public class Client {
 			n_lookahead=best_parameters._o2._o1.toString();
 			n_futures = best_parameters._o2._o2.toString();
 			policy = (Policy)c.getConstructor(
-					new Class[]{Integer.class,Integer.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(Integer.valueOf(n_futures),
-					Integer.valueOf(n_lookahead),instanceName,gurobi_timeout,future_sampling,hindsight_stra,rddl,state);
-
+					new Class[]{String.class,String.class,String.class,String.class,String.class,String.class,String.class,RDDL.class,State.class}).newInstance(
+					n_futures, n_lookahead,instanceName,gurobi_timeout,future_sampling,hindsight_stra,String.valueOf(randomSeed),rddl,state);
 
 			policy.setRDDL(rddl);
 			policy.setRandSeed(randomSeed);
@@ -357,16 +359,16 @@ public class Client {
 					//policy.DO_NPWL_PWL = manual_NPWL;
 
 
-					policy.DO_NPWL_PWL = NPWL_TO_PWL;
-					policy.DO_GUROBI_INITIALIZATION = false;
-					if(policy.DO_NPWL_PWL){
-						//This code is for random action
-						policy.runRandompolicyForState(state);
-						//Convert NPWL to PWL
-						policy.convertNPWLtoPWL(state);
-					}
-					//This will set TIME_LIMIT_MINS to avg of time left per time-step
-					policy.TIME_LIMIT_MINS = avg_timeout_gurobi_step;
+//					policy.DO_NPWL_PWL = NPWL_TO_PWL;
+//					policy.DO_GUROBI_INITIALIZATION = false;
+//					if(policy.DO_NPWL_PWL){
+//						//This code is for random action
+//						policy.runRandompolicyForState(state);
+//						//Convert NPWL to PWL
+//						policy.convertNPWLtoPWL(state);
+//					}
+//					//This will set TIME_LIMIT_MINS to avg of time left per time-step
+//					policy.TIME_LIMIT_MINS = avg_timeout_gurobi_step;
 					ArrayList<PVAR_INST_DEF> actions =
 							policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
