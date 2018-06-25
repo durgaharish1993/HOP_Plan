@@ -849,7 +849,7 @@ public class HOPPlanner extends Policy {
                                             new_rhs_stationary = substitute_expression_cache.get(key_rhs);
                                         }else{
                                             new_rhs_stationary = e_rhs.substitute(subs, constants, objects,  hmtypes,hm_variables  );
-                                            substitute_expression_cache.put(key_rhs,new_lhs_stationary);
+                                            substitute_expression_cache.put(key_rhs,new_rhs_stationary);
                                         }
                                     }else{
                                         new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects,  hmtypes,hm_variables  );
@@ -1285,9 +1285,7 @@ public class HOPPlanner extends Policy {
                             synchronized (grb_model) {
 
                                 GRBVar this_future_var = null;
-
                                 this_future_var = subs_tf.getGRBConstr(GRB.EQUAL, grb_model, constants, objects, type_map, hmtypes, hm_variables);
-
                                 saved_expr.add(subs_tf);
                                 //System.out.println(saved_expr);
 //							saved_vars.add( this_future_var );
