@@ -1095,13 +1095,25 @@ public class HOPPlanner extends Policy {
         grb_model.setObjective( new GRBLinExpr() );
         grb_model.update();
 
-        EXPR stationary_clear = rddl_state._reward.substitute( Collections.EMPTY_MAP, 
-        		constants, objects, hmtypes, hm_variables );
+        EXPR stationary_clear = null;
         if( !first_time && stationary_clear._bDet ){
         	return;
         }else if( !stationary_clear.bDet ){
         	stationary_clear = future_gen.getFuture(stationary_clear, 
         			this._random, constants, objects, hmtypes, hm_variables);
+        }else{
+        	stationary_clear = rddl_state._reward;
+        }
+        
+        CHECK THIS HARISH
+        key = new Pair<String, String>(stationary_clear.toString(), 
+				Collection.EMPTY_MAP.toString());
+        if( substitute_expression_cache.containsKey( key ) ){
+        	stationary_clear = substitute_expression_cache.get(key);
+        }else{
+        	stationary_clear = stationary_clear.substitute( Collections.EMPTY_MAP, 
+            		constants, objects, hmtypes, hm_variables );
+        	substitute_expression_cache.put(key, stationary_clear);
         }
         
         final EXPR non_stationary = stationary_clear.addTerm( TIME_PREDICATE , 
@@ -1159,27 +1171,25 @@ public class HOPPlanner extends Policy {
     		final HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> subs,
             final GRBModel grb_model,
             final boolean first_time) throws GRBException {
-        System.out.println("----translateCPT----");
+        System.out.println("----translateCPTs----");
         //THIS FUNCTION IS CALLED FOR EVERY NEW STATE.
         //Timer timer1 = new Timer();
-        long startTime1 = System.currentTimeMillis();
-        GRBExpr old_obj = grb_model.getObjective();
+        final GRBExpr old_obj = grb_model.getObjective();
 
-        ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> src
+        final ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> src
                 = new ArrayList< HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> >();
         src.add( rddl_state_vars ); src.add( rddl_interm_vars ); src.add( rddl_observ_vars );
 
-        ArrayList<Integer> time_terms_indices = new ArrayList<Integer>( TIME_TERMS.size() );
+        final ArrayList<Integer> time_terms_indices = new ArrayList<Integer>( TIME_TERMS.size() );
         for( int i = 0 ; i < TIME_TERMS.size(); ++i ){
             time_terms_indices.add( i );
         }
 
-        ArrayList<Integer> future_terms_indices = new ArrayList<Integer>( future_TERMS.size() );
+        final ArrayList<Integer> future_terms_indices = new ArrayList<Integer>( future_TERMS.size() );
         for( int i = 0 ; i < future_TERMS.size(); ++i ){
             future_terms_indices.add( i );
         }
         //System.out.println("-------This is were we are sampling the future!!!!--");
-        //This function is inherited from HOPTranslate.java.
         src.stream().forEach( new Consumer< HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST> > > >() {
 
             @Override
@@ -1194,14 +1204,6 @@ public class HOPPlanner extends Policy {
                             public void accept(ArrayList<LCONST> terms) {
                                 try {
                                     PVAR_NAME p = entry.getKey();
-
-//                                if (!isStochastic(p._sPVarName) && !replace_cpf_pwl.containsKey(p)) {
-//                                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<This is not stochastic Pvar ---------->>>>>>>>>> : " + p._sPVarName);
-//                                    return;
-//                                }
-
-
-                                    //System.out.println("These variables are translated : "+ p._sPVarName);
                                     CPF_DEF cpf = null;
                                     if (rddl_state_vars.containsKey(p)) {
                                         cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName + "'"));
@@ -1209,27 +1211,32 @@ public class HOPPlanner extends Policy {
                                         cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName));
                                     }
 
-
                                     if ( !first_time && cpf._exprEquals._bDet && 
                                     		!replace_cpf_pwl.containsKey(p)) {
-                                        //System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<This is not stochastic Pvar ---------->>>>>>>>>> : " + p._sPVarName);
+                                        System.out.println("---Skipping" + p );
                                         return;
                                     }
 
                                     Map<LVAR, LCONST> subs = getSubs(cpf._exprVarName._alTerms, terms);
+                                    
                                     EXPR new_lhs_stationary = cpf._exprVarName.substitute(subs, constants, objects, hmtypes, hm_variables);
 
                                     ArrayList<EXPR> temp_array_expr = new ArrayList<>();
 
-
                                     if (replace_cpf_pwl.containsKey(p)) {
-
                                         temp_array_expr = replace_cpf_pwl.get(p);
-
                                     } else {
-                                        EXPR temp_expr = cpf._exprEquals.substitute(subs, constants, objects, hmtypes, hm_variables);
-                                        temp_array_expr.add(temp_expr);
-
+                                    	HARISH CHECK THIS
+                                    	final Pair<> key = new Pair<>(
+                                			cpf._exprEquals.toString(), subs.toString());
+                                    	if ( this.substitute_expression_cache.containsKey(key) ){
+                                    		temp_array_expr.add( this.substitute_expression_cache.get(key) );
+                                    	}else{
+                                    		final EXPR temp_expr = cpf._exprEquals.substitute(subs, 
+                                            		constants, objects, hmtypes, hm_variables);
+                                    		substitute_expression_cache.put(key, temp_expr);
+                                    		temp_array_expr.add(temp_expr);	
+                                    	}
                                     }
 
                                     temp_array_expr.forEach(new Consumer<EXPR>() {
@@ -1244,24 +1251,29 @@ public class HOPPlanner extends Policy {
 
                                                 time_terms_indices.stream().forEach(new Consumer<Integer>() {
                                                     @Override
-                                                    public void accept(Integer time_term_index) {
+                                                    public void accept(final Integer time_term_index) {
                                                         try {
-                                                            EXPR lhs_with_f_temp = null;
+                                                            EXPR lhs_with_f = null;
                                                             if (rddl_state_vars.containsKey(p)) {
                                                                 if (time_term_index == lookahead - 1) {
                                                                     return;
                                                                 }
 
-                                                                lhs_with_f_temp = lhs_with_tf.substitute(
-                                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index + 1)), constants, objects, hmtypes, hm_variables);
+                                                                lhs_with_f = lhs_with_tf.substitute(
+                                                                    Collections.singletonMap(TIME_PREDICATE, 
+                                                            			TIME_TERMS.get(time_term_index + 1)), 
+                                                                    constants, objects, hmtypes, hm_variables);
                                                             } else {
-                                                                lhs_with_f_temp = lhs_with_tf.substitute(
-                                                                        Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects, hmtypes, hm_variables);
+                                                            	lhs_with_f = lhs_with_tf.substitute(
+                                                                    Collections.singletonMap(TIME_PREDICATE, 
+                                                                		TIME_TERMS.get(time_term_index)), 
+                                                                    constants, objects, hmtypes, hm_variables);
                                                             }
-                                                            final EXPR lhs_with_f = lhs_with_f_temp;
 
                                                             final EXPR rhs_with_f = rhs_with_tf.substitute(
-                                                                    Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(time_term_index)), constants, objects, hmtypes, hm_variables);
+                                                                Collections.singletonMap(TIME_PREDICATE, 
+                                                        		TIME_TERMS.get(time_term_index)), constants, 
+                                                                objects, hmtypes, hm_variables);
 
                                                             future_terms_indices.stream().forEach(
                                                                     new Consumer<Integer>() {
@@ -1334,34 +1346,15 @@ public class HOPPlanner extends Policy {
                         });
                     }});}});
 
-
-
-
-//								System.out.println(new_lhs_stationary );//.+ " " + new_rhs_stationary );
-        //This is commented by HARISH.
-        //System.out.println(new_lhs_stationary + " " + new_rhs_stationary );
-
-
-
         grb_model.setObjective(old_obj);
         grb_model.update();
-        long endTime1 = System.currentTimeMillis();
-        double t3 = ((double)endTime1-(double)startTime1)/1000;
-
     }
 
-
-
-
-
-
-
     protected void translateInitialState( final GRBModel grb_model,
-                                          HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs )
-            throws GRBException {
-        System.out.println("----Translating Initial State (HOPTRanslate.java)------");
+    		final HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> subs ) throws GRBException {
+        System.out.println("----Translating Initial State----");
 
-        GRBExpr old_obj = grb_model.getObjective();
+        final GRBExpr old_obj = grb_model.getObjective();
 
         for( final PVAR_NAME p : rddl_state_vars.keySet() ){
             for( final ArrayList<LCONST> terms : rddl_state_vars.get( p ) ){
