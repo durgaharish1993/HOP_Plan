@@ -1824,13 +1824,11 @@ public class HOPPlanner extends Policy {
                 }).collect( Collectors.toList() ) );
     }
 
-
-
-
-    public void setActionVariables(ArrayList<PVAR_INST_DEF> action_zero, GRBModel static_grb_model){
+    public void setActionVariables(final ArrayList<PVAR_INST_DEF> action_zero, 
+    		final GRBModel static_grb_model){
         Object val = null;
         HashMap<EXPR,Object> action_value = new HashMap<>();
-        for(int i =0; i<action_zero.size();i++){
+        for(int i = 0; i < action_zero.size(); i++){
             PVAR_INST_DEF act = action_zero.get(i);
             if( act._oValue instanceof Double){
                 val = (Double) act._oValue; }
@@ -1838,26 +1836,29 @@ public class HOPPlanner extends Policy {
                 val = (Boolean) act._oValue;
                 val = val.equals(true) ? 1.0 : 0.0; }
             else{
-                val = (Integer) act._oValue; }
-
-            for(int j=0; j<future_TERMS.size();j++){
-                try {
-                    EXPR action_var = new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
-                            .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
-                            .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
-                            .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
-                            .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(j)), constants, objects, hmtypes, hm_variables );
-                    action_value.put(action_var, val);
-                }
-                catch (Exception e){e.printStackTrace();}
+                val = (Integer) act._oValue; 
             }
 
+            for(int j = 0; j < future_TERMS.size(); j++){
+                try {
+                    EXPR action_var = new PVAR_EXPR(act._sPredName._sPVarName, act._alTerms)
+                        .addTerm(TIME_PREDICATE, constants, objects, hmtypes, hm_variables )
+                        .addTerm(future_PREDICATE, constants, objects, hmtypes, hm_variables )
+                        .substitute(Collections.singletonMap(TIME_PREDICATE, TIME_TERMS.get(0)), constants, objects, hmtypes, hm_variables )
+                        .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(j)), constants, objects, hmtypes, hm_variables );
+                    action_value.put(action_var, val);
+                }
+                catch (Exception e){
+                	e.printStackTrace();
+            	}
+            }
         }
-        if(action_value.size()==0){ 
+        
+        if(action_value.size() == 0){ 
         	return; 
     	}
         
-        HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> src= new HashMap<>();
+        HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> src = new HashMap<>();
         src.putAll(rddl_action_vars);
         src.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>> >() {
             @Override
@@ -1883,7 +1884,8 @@ public class HOPPlanner extends Policy {
                                             if(SHOW_TIME_ZERO_GUROBI_ACTION){
                                                 System.out.println("Setting value Action : " + action_var.toString() +"  value :" +action_value.get(action_var).toString() );
                                             }
-                                            this_var.set(GRB.DoubleAttr.Start, (Double) action_value.get(action_var)); }
+                                            this_var.set(GRB.DoubleAttr.Start, (Double) action_value.get(action_var)); 
+                                        }
                                     } catch (GRBException e) {
                                         e.printStackTrace();
                                     } catch (Exception e) {
@@ -1892,7 +1894,9 @@ public class HOPPlanner extends Policy {
 
                                 }
                             });
-                        } catch (Exception e){e.printStackTrace();}
+                        } catch (Exception e) {
+                        	e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -2008,39 +2012,6 @@ public class HOPPlanner extends Policy {
                 }
             }
         });
-
-        //startring actionv ars at 0.0
-//		rddl_action_vars.forEach( new BiConsumer<PVAR_NAME, ArrayList<ArrayList<LCONST>>>() {
-//			@Override
-//			public void accept(PVAR_NAME pvar, ArrayList<ArrayList<LCONST>> u) {
-//				u.forEach( new Consumer<ArrayList<LCONST>>() {
-//					@Override
-//					public void accept(ArrayList<LCONST> terms) {
-//						TIME_TERMS.forEach( new Consumer<LCONST>() {
-//							public void accept(LCONST time_term) {
-//								future_TERMS.forEach( new Consumer<LCONST>(){
-//									@Override
-//									public void accept(LCONST future_term) {
-//										EXPR this_expr = new PVAR_EXPR( pvar._sPVarName, terms )
-//											.addTerm( TIME_PREDICATE, constants, objects )
-//											.substitute( Collections.singletonMap( TIME_PREDICATE, time_term), constants, objects)
-//											.addTerm( future_PREDICATE, constants, objects )
-//											.substitute( Collections.singletonMap( future_PREDICATE, future_term), constants, objects);
-//										final GRBVar this_var = EXPR.getGRBVar(this_expr, grb_model, constants, objects, type_map);
-//										try {
-//											this_var.set( DoubleAttr.Start, 0.0 );
-//										} catch (GRBException e) {
-//											e.printStackTrace();
-//											//System.exit(1);
-//										}
-//									}
-//								});
-//							};
-//						});
-//					}
-//				});
-//			}
-//		});
 
         grb_model.setObjective(old_obj);
         grb_model.update();
