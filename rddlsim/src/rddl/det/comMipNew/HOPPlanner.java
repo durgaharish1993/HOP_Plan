@@ -39,6 +39,8 @@ import rddl.policy.RandomPolicy;
 import rddl.policy.Policy;
 import util.Pair;
 
+import rddl.det.comMipNew.EarthForPlanner.*;
+
 public class HOPPlanner extends Policy {
 
     private static final boolean SHOW_TIMING = false;
@@ -1912,7 +1914,7 @@ public class HOPPlanner extends Policy {
                             try {
                                 actions = explo_planner.getActions(state);
                                 System.out.println("The Action Taken is >>" + actions.toString());
-                                state.checkSTATEActionConstraints(actions);
+                                state.checkStateActionConstraints(actions);
                             }catch(Exception e){
                                 // This is the case when actions are infeasible or gurobi has infeasiblity.
                                 actions = baseLineAction(rddl_state);
@@ -2134,16 +2136,18 @@ public class HOPPlanner extends Policy {
     }
 
     protected void checkNonLinearExpressions(final State rddl_state) throws Exception {
-        
-    	buffers = runRandomPolicy(rddl_state, 2, 100);
-    	PASS BUFFERS TO FITTING
+
+        ArrayList[] buffers = runRandomPolicy(rddl_state, 2, 100);
+    	//PASS BUFFERS TO FITTING
+        EarthForPlanner earth_obj =new EarthForPlanner();
     	
     	//Reward
         final Map<LVAR,LCONST> subs2 = new HashMap<>();
         
         EXPR sub_expr = null;
-        if( substitute_expression_cache.containsKey(...) ){
-        	 
+        Pair<String,String> key_check = new Pair<>(rddl_state._reward.toString(),subs2.toString());
+        if( substitute_expression_cache.containsKey(key_check) ){
+            substitute_expression_cache.get(key_check);
         }else{
         	sub_expr = rddl_state._reward.substitute(subs2, constants, objects,
         		hmtypes, hm_variables );
@@ -2153,9 +2157,9 @@ public class HOPPlanner extends Policy {
         		hmtypes, hm_variables);
         ArrayList<RDDL.LTERM> raw_terms1 = new ArrayList<>();
         if(!check_pwl){
-            EXPR final_expr   = fitPWL(sub_expr, raw_terms1, rddl_state, buffers);
-            STORE THIS IS replace_reward_pwl
-            replace_reward_pwl = final_expr
+            EXPR final_expr   = earth_obj.fitPWL(sub_expr, raw_terms1, rddl_state, buffers);
+            //STORE THIS IS replace_reward_pwl
+            replace_reward_pwl = final_expr;
         }
 
         ArrayList<HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>>> pvar_variables = new ArrayList<>();
@@ -2181,15 +2185,15 @@ public class HOPPlanner extends Policy {
                     try {
                         if (SHOW_PWL_NON_PWL)
                             System.out.println(cpf._exprEquals.toString());
-                        
                         EXPR subs_expr = null;
-                        if( subst_cache.containsKey(...)){
-                        	subs_expr = 
+                        Pair<String,String> key_check_expr = new Pair<>(cpf._exprEquals.toString(),subs1.toString());
+                        if( substitute_expression_cache.containsKey(key_check_expr)){
+                        	subs_expr = substitute_expression_cache.get(key_check_expr);
                         }else{
                         	subs_expr = cpf._exprEquals.substitute(subs1, constants, objects, hmtypes, hm_variables);
                         }
                         
-                        det_expr = subs_expr.sampleDeterminization(rand, constants, objects, hmtypes, hm_variables);
+                        EXPR det_expr = subs_expr.sampleDeterminization(_random, constants, objects, hmtypes, hm_variables);
                         
                         final boolean check_PWL = det_expr.isPiecewiseLinear(constants, objects, hmtypes, hm_variables);
                         
@@ -2197,15 +2201,9 @@ public class HOPPlanner extends Policy {
                             System.out.println("Substituted PWL: " + check_PWL);
                         if (!check_PWL) {
                             pvar_npwl = true;
-
-                            EXPR final_expr = fitPWL(det_expr, raw_terms, 
-                            		rddl_state, buffers);
-                            
-                            PLEASE TELL ME WHY YOU NEED TO SUBSTITUTE AGAIN
-                            final_pwl_cond.add(
-                            		final_expr.substitute(subs1, constants, objects, hmtypes, hm_variables));
+                            EXPR final_expr = earth_obj.fitPWL(det_expr, raw_terms,rddl_state, buffers);
+                            final_pwl_cond.add(final_expr);
                         } else {
-                        	//thi sis important
                         	final_pwl_cond.add( det_expr );
                         }
                     } catch (Exception e) {
@@ -2412,59 +2410,6 @@ public class HOPPlanner extends Policy {
     }
 
 
-
-
-    public EXPR recursionSubstitution(EXPR e, HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value, ArrayList<PVAR_INST_DEF> action_value) throws Exception {
-        try{
-            if(e.isConstant(constants,objects, hmtypes, hm_variables )){
-                double val        = e.getDoubleValue(constants,objects, hmtypes, hm_variables,  null);
-                EXPR real_expr    = new REAL_CONST_EXPR(val);
-                return real_expr;
-            }
-        }catch (Exception exe){
-            exe.printStackTrace();
-        }
-
-        if(e instanceof PVAR_EXPR){
-            PVAR_NAME key = ((PVAR_EXPR) e)._pName;
-            if(state_value.containsKey(key)){
-                HashMap<ArrayList<LCONST>,Object> t = state_value.get(((PVAR_EXPR) e)._pName);
-                //Value is Available
-                if(t.containsKey(((PVAR_EXPR) e)._alTerms)){
-                    Object val = t.get(((PVAR_EXPR) e)._alTerms);
-                    if(val instanceof Double){
-                        variables_names.put(key,val);
-                        return new REAL_CONST_EXPR((Double) val);
-                    } else{
-                        throw new EvalException("THis case not Handled"); }
-                }
-                else{
-                    //Get the Default Value.
-                    Object val = rddl_state_default.get(key);
-                    if(val instanceof Double){
-                        variables_names.put(key,val);
-                        return new REAL_CONST_EXPR((Double) val);
-                    } else{
-                        throw new EvalException("THis case not Handled");
-                    }
-                }
-            }
-
-        }
-        if(e instanceof RDDL.OPER_EXPR){
-            EXPR e1   = ((RDDL.OPER_EXPR) e)._e1;
-            EXPR e2   = ((RDDL.OPER_EXPR) e)._e2;
-            String op = ((RDDL.OPER_EXPR) e)._op;
-            EXPR real_expr_1  = recursionSubstitution(e1,state_value,action_value);
-            EXPR real_expr_2  = recursionSubstitution(e2,state_value,action_value);
-            EXPR new_oper = new RDDL.OPER_EXPR( real_expr_1, real_expr_2,op);
-            return new_oper;
-        }
-        return null;
-
-
-
-    }
 
     protected Object sanitize(PVAR_NAME pName, double value) {
         if( value == -1*value ){
