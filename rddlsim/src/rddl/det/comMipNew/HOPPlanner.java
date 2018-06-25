@@ -2045,9 +2045,76 @@ public class HOPPlanner extends Policy {
         grb_model.setObjective(old_obj);
         grb_model.update();
     }
+    
+    @Override
+    public double runNooopPolicyForState(State s)throws Exception{
+        //Copying the state
+    	HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
+    	copiedState = deepCopyState(s);
+	    //Getting Random Trajectories and adding to buffer.
+	    num_trajectories = 30;
+	    length_trajectories = 10;
+	    
+	    ArrayList[] stats = runNoopPolicy(s, length_trajectories, 
+	    		num_trajectories, randint);
+	    buffer_state = stats[0];
+	    buffer_action = stats[1];
+	    buffer_reward = stats[2];
+	    
+	    return buffer_reward.stream().mapToDouble(
+	    		m -> m.stream().mapToDouble(n -> n).sum()).sum() / ((double)buffer_reward.size());
+	    
+    }
+    
+    protected void runNoopPolicy(final State rddl_state, 
+    		int trajectory_length, int number_trajectories) throws EvalException {
+
+    	ArrayList<PVAR_INST_DEF> noop_action = new ArrayList<>();
+    	
+        HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
+        	traj_inital_state = deepCopyState(rddl_state);
+        
+        final ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
+        final ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> buffer_action = new ArrayList<>();
+        final ArrayList<ArrayList<Double>> buffer_reward = new ArrayList<>();
+
+        for (int j = 0; j < number_trajectories; j++) {
+            //HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_state_values  = deepCopyState(rddl_state)
+            rddl_state.copyStateRDDLState(traj_inital_state, true);
+
+            ArrayList<HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>> 
+            	store_traj_states = new ArrayList<>();
+            ArrayList<Double> store_traj_rewards = new ArrayList<>();
+            ArrayList<ArrayList<PVAR_INST_DEF>> store_traj_actions = new ArrayList<>();
+            
+            for (int i = 0; i < trajectory_length; i++) {
+                ArrayList<PVAR_INST_DEF> traj_action = noop_action; 
+                HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
+                	store_state = deepCopyState(rddl_state);
+                store_traj_states.add(store_state);
+                //Advance to Next State
+                rddl_state.computeNextState(traj_action, this._random);
+                //Calculate Immediate Reward
+                final double immediate_reward = 
+                		Math.pow(rddl_innstance._dDiscount, i) * 
+                			((Number) rddl_domain._exprReward.sample(
+                				new HashMap<LVAR, LCONST>(), rddl_state, rand)).doubleValue();
+                store_traj_rewards.add(immediate_reward);
+                store_traj_actions.add(traj_action);
+                //System.out.println("Immediate Reward :"+ immediate_reward);
+                rddl_state.advanceNextState();
+            }
+
+            buffer_state.add(store_traj_states);
+            buffer_action.add(store_traj_actions);
+            buffer_reward.add(store_traj_rewards);
+        }
+        rddl_state.copyStateRDDLState(traj_inital_state, true);
+        return new ArrayList[]{buffer_state, buffer_action, buffer_reward};
+    }
 
     @Override
-    public double runRandompolicyForState(State s)throws Exception{
+    public double runRandomPolicyForState(State s)throws Exception{
         //Copying the state
         HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
         	copiedState = deepCopyState(s);
@@ -2263,7 +2330,7 @@ public class HOPPlanner extends Policy {
             final double avg_reward_random = runRandomPolicyForState(s);
             final double avg_reward_noop = runNoopPolicyForState(s);
             if(avg_reward_random > avg_reward_noop){
-                returning_action = act;
+                returning_action = this.random_policy.getActions(s);
                 if(SHOW_LEVEL_1)
                     System.out.println("Choosing Random Action");
             }
