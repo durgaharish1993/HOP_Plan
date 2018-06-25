@@ -1435,7 +1435,8 @@ public class HOPPlanner extends Policy {
 
 
 
-    protected ArrayList<PVAR_INST_DEF> getRootActions(Map<EXPR, Double> ret_expr, State s, int decision_value) {
+    protected ArrayList<PVAR_INST_DEF> getRootActions(
+    		final Map<EXPR, Double> ret_expr, final State s) {
         System.out.println("------Gettting RootActions (Overrided) -------");
         final ArrayList<PVAR_INST_DEF> ret = new ArrayList<PVAR_INST_DEF>();
         if( ret_expr == null ){
@@ -1474,27 +1475,20 @@ public class HOPPlanner extends Policy {
                                         this_future_actions.put(action_var, value);
                                     }
                                 }
-                                catch (Exception e){e.printStackTrace();}
-
-
+                                catch (Exception e){
+                                	e.printStackTrace();
+                                }
                             }
 
                         });
                     }
                 } );
 
-
-
-
                 if( all_votes.containsKey( this_future_actions ) ){
                     all_votes.put( this_future_actions,  all_votes.get( this_future_actions ) + 1 );
                 }else{
                     all_votes.put( this_future_actions,  1 );
                 }
-
-
-
-
 
             }
         });
@@ -1503,7 +1497,7 @@ public class HOPPlanner extends Policy {
         HashMap<EXPR, Object> chosen_vote = null;
 
 
-        if( hindsight_method.equals( HINDSIGHT_STRATEGY.CONSENSUS )  || decision_value==1){
+        if( hindsight_method.equals( HINDSIGHT_STRATEGY.CONSENSUS ) ){
             final int max_votes = all_votes.values().stream().mapToInt(m->m).max().getAsInt();
             List<Entry<HashMap<EXPR, Object>, Integer>> ties  =
                     all_votes.entrySet().stream().filter( m -> (m.getValue()==max_votes) )
@@ -1511,7 +1505,7 @@ public class HOPPlanner extends Policy {
             if(ties.size()==1){
                 chosen_vote=ties.get(0).getKey();
             }else{
-                chosen_vote = ties.get( rand.nextInt(0, ties.size()-1) ).getKey();
+                chosen_vote = ties.get( this._random.nextInt(ties.size()) ).getKey();
             }
         }
 
@@ -1542,9 +1536,10 @@ public class HOPPlanner extends Policy {
                                             .substitute(Collections.singletonMap(future_PREDICATE, future_TERMS.get(0)), constants, objects, hmtypes, hm_variables );
                                     assert (ret_expr.containsKey(lookup));
                                     ret_value = sanitize(action_var._pName, ret_expr.get(lookup));
-                                    break;
-                                }catch (Exception e){e.printStackTrace();}
-
+                                }catch (Exception e){
+                                	e.printStackTrace();
+                                }
+                                break;
                             case CONSENSUS :
                                 ret_value = winning_vote.containsKey( action_var ) ?
                                         winning_vote.get( action_var ) : def_val;
@@ -1587,9 +1582,9 @@ public class HOPPlanner extends Policy {
                                     synchronized (violations) {
                                         violations.add(added);
                                     }
-                                }catch (Exception e){e.printStackTrace();}
-
-
+                                }catch (Exception e){
+                                	e.printStackTrace();
+                                }
                             }
                         });
                     }
@@ -2027,7 +2022,7 @@ public class HOPPlanner extends Policy {
 	    length_trajectories = 10;
 	    
 	    ArrayList[] stats = runNoopPolicy(s, length_trajectories, 
-	    		num_trajectories, randint);
+	    		num_trajectories);
 	    buffer_state = stats[0];
 	    buffer_action = stats[1];
 	    buffer_reward = stats[2];
@@ -2094,7 +2089,7 @@ public class HOPPlanner extends Policy {
         length_trajectories = 10;
         
         ArrayList[] stats = runRandomPolicy(s, length_trajectories, 
-        		num_trajectories, randint);
+        		num_trajectories);
         buffer_state = stats[0];
         buffer_action = stats[1];
         buffer_reward = stats[2];
