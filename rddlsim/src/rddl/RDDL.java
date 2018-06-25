@@ -1730,7 +1730,7 @@ public class RDDL {
 		public static final String ENUM   = "[Enum]".intern();
 		public static final String STRUCT = "[Struct]".intern();
 
-		public static final int M = (int)1e4; //Integer.MAX_VALUE;
+		public static final int M = (int)1e6; //Integer.MAX_VALUE;
 
 		String  _sType = UNKNOWN; // real, int, bool, enum
 		public boolean _bDet  = false;    // deterministic?  (if not, then stochastic)
