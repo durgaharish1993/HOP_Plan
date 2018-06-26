@@ -1,5 +1,6 @@
 package rddl.det.comMipNew;
 
+import gurobi.GRB;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.rosuda.JRI.Rengine;
@@ -16,14 +17,14 @@ import rddl.RDDL.EXPR;
 public class EarthForPlanner {
 
 
-    public EXPR fitPWL(EXPR e, State s, ArrayList[] buffers, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception{
+    public EXPR fitPWL(EXPR e, State s, ArrayList[] buffers, HashMap<RDDL.PVAR_NAME,Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception{
 
         ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>>> buffer_state = buffers[0];
         ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action = buffers[1];
 
 
         ArrayList<Object> val = generateFeatureTargetEarth(e,s,buffer_state,buffer_action,hm_variables,hmtypes,random);
-        String earth_PWL = runEarth((HashMap<String,String>)val.get(0),(String)val.get(1));
+        String earth_PWL = runEarth((TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>>) val.get(2),(HashMap<String,String>)val.get(0),(String)val.get(1),type_map,hm_variables,hmtypes);
         EXPR final_expr =reconstruct_expr(earth_PWL,(TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>>) val.get(2),hm_variables,hmtypes);
         return final_expr;
 
@@ -33,8 +34,9 @@ public class EarthForPlanner {
 
 
     protected HashMap<String,String> getInputVector(TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>>variables, HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>lvar_lcont_map,
-                                               HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> state_value,
-                                               ArrayList<RDDL.PVAR_INST_DEF> action_value,HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
+                                                    HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> state_value,
+                                               ArrayList<RDDL.PVAR_INST_DEF> action_value,HashMap<RDDL.PVAR_NAME,
+                                                RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
 
         //I need to debug and work.
         //This loop is for ordering the inputVariables via variables.
@@ -66,7 +68,7 @@ public class EarthForPlanner {
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
                     feat_values.put(key,String.valueOf(f_val));
                 }else if(feat_val instanceof RDDL.ENUM_VAL){
-                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables;
+                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables);
                     feat_values.put(key,String.valueOf(f_val));
 
                 }else{
@@ -102,7 +104,7 @@ public class EarthForPlanner {
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
                     feat_values.put(key,String.valueOf(f_val));
                 }else if(feat_val instanceof RDDL.ENUM_VAL){
-                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables;
+                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables);
                     feat_values.put(key,String.valueOf(f_val));
 
                 } else{
@@ -125,11 +127,13 @@ public class EarthForPlanner {
         for(int i=0 ; i<key_val._o2.size();i++){
             String temp_str=key_val._o2.get(i).toString();
             //Assuming $t1,$u2, etc.
-            temp_str =temp_str.substring(1,temp_str.length());
+            temp_str = temp_str.substring(1,temp_str.length());
+
 
             val = val+"_"+temp_str;
 
         }
+        val=val.replaceAll("[-+.^:,]","");
         return val;
 
 
@@ -138,7 +142,7 @@ public class EarthForPlanner {
 
 
     public ArrayList<Object> generateFeatureTargetEarth(RDDL.EXPR e, State s, ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>>> buffer_state, ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action,
-                                                        HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes,RandomDataGenerator random) throws Exception{
+                                                          HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes,RandomDataGenerator random) throws Exception{
 
         HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> method_start_state= deepCopyState(s);
         HashMap<String,String> input_Feat_R_array        = new HashMap<>();
@@ -171,8 +175,19 @@ public class EarthForPlanner {
                     si1= getInputVector(variables,var_lconsts,state_value,action_value,hm_variables,hmtypes);
                     HashMap subs = new HashMap<RDDL.LVAR,RDDL.LCONST>();
                     s.copyStateRDDLState(state_value,true);
-                    double target_val = (double)e.sample(subs,s,random);
-                    input_output_data.add(new Pair(String.valueOf(target_val),si1));
+                    Object target_val = e.sample(subs,s,random);
+                    String final_target_val = null;
+                    if(target_val instanceof Integer){
+                        final_target_val = ((Integer)target_val).toString();
+
+                    }else if(target_val instanceof Boolean){
+                        final_target_val = ((Integer)((Boolean)target_val ? 1 : 0)).toString();
+                    }else if(target_val instanceof Double){
+                        final_target_val = ((Double)target_val).toString();
+                    }
+
+
+                    input_output_data.add(new Pair(final_target_val,si1));
 
                 }catch (Exception e1){
                     e1.printStackTrace();
@@ -246,7 +261,8 @@ public class EarthForPlanner {
 
 
 
-    protected String runEarth(HashMap<String,String> input_features, String output) throws Exception{
+    protected String runEarth(TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>> variables, HashMap<String,String> input_features, String output, HashMap<RDDL.PVAR_NAME,Character> type_map,
+                              HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes ) throws Exception{
 
         //Starting Rengine.
         Rengine engine = Rengine.getMainEngine();
@@ -257,15 +273,39 @@ public class EarthForPlanner {
         engine.eval("library(earth)");
         String feature_format = new String();
         Integer check = 0;
+
+
+
+
         for( Map.Entry<String,String> entry1 : input_features.entrySet()){
+
             engine.eval(entry1.getKey() + "<-"+ entry1.getValue());
+            RDDL.PVAR_NAME pName = variables.get(entry1.getKey())._o1;
+            hm_variables.get(pName);
+            if(type_map.get(pName).equals(GRB.INTEGER) ){
+                engine.eval(entry1.getKey() + "<-" + "as.factor("+entry1.getKey() +")");
+            }else if(type_map.get(pName).equals(GRB.BINARY)){
+                engine.eval(entry1.getKey() + "<-" + "as.factor("+entry1.getKey() +")");
+            }else if(type_map.get(pName).equals(GRB.CONTINUOUS)){
+                continue;
+            }else{
+                try{
+                    throw new Exception("THis case is not handled in R.");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
             if(check==0){
                 feature_format = entry1.getKey();
-                check =1; }
-            else{ feature_format.concat(" + "+ entry1.getKey()); }
+                check =1;
+            } else{
+                feature_format=feature_format.concat(" + "+ entry1.getKey());
+            }
         }
 
         engine.eval("target <-" + output );
+        //engine.eval("target<-as.factor(target)");
         engine.eval("model<-earth( target ~ " + feature_format + ",nprune=2)");
         String rss_val =engine.eval("format(model$rss)").asString();
         String gcv_val =engine.eval("format(model$gcv)").asString();
@@ -304,22 +344,22 @@ public class EarthForPlanner {
         //Parsing things with equations.
         for(int i=0;i<list_output.length;i++){
             String temp_str = list_output[i].trim();
-            if(temp_str.equals("")){continue;}
-            //This is for Bias,
-            if(!(temp_str.contains("-") || temp_str.contains("+"))){
+            if(temp_str.equals("")) {
+                continue;
+            }else if( temp_str.contains("e-")  && (!temp_str.contains("*"))){
                 bias =Double.parseDouble(temp_str);
-            }
-            if(temp_str.contains("*")){
+                continue;
+
+            } else if(temp_str.contains("*")){
+
                 temp_str = temp_str.replaceAll("\\s","");
                 temp_str = temp_str.replaceAll("\\+","");
                 String [] term_val = temp_str.split("\\*");
                 NumberFormat format = NumberFormat.getInstance();
                 Double coeffic = format.parse(term_val[0]).doubleValue();
                 coefficient_mapping.put(term_val[1],coeffic);
-            }
-
-
-            if(temp_str.contains("bf") && temp_str.contains("h(")){
+                continue;
+            }else if(temp_str.contains("bf") && temp_str.contains("h(")){
                 String[] term_val =temp_str.split("\\s");
                 String key_val = term_val[0];
                 String hinge_str = term_val[2];
@@ -348,8 +388,41 @@ public class EarthForPlanner {
 
                     hinge_function.put(key_val,max_oper_expr);
 
+
                 }
+                continue;
+            }else if(temp_str.contains("bf")){
+
+                String[] term_val =temp_str.split("\\s");
+                String key_val = term_val[0];
+                String hinge_str = term_val[2];
+
+                String [] hinge_values = hinge_str.split("-");
+                for(String key : variables.keySet()){
+                    if(hinge_str.length() >= key.length() ){
+                        if(hinge_str.substring(0,key.length()).equals(key)){
+                            RDDL.PVAR_EXPR temp_pvar_expr        = new RDDL.PVAR_EXPR(variables.get(key)._o1._sPVarName,variables.get(key)._o2);
+                            hinge_function.put(key_val,temp_pvar_expr);
+                            break;
+                        }
+
+                    }
+
+
+                }
+
+
+                continue;
+
+
+            } else if(!(temp_str.contains("-") || temp_str.contains("+"))){
+
+                bias =Double.parseDouble(temp_str);
+                continue;
             }
+
+
+
 
         }
         RDDL.EXPR final_expr = new RDDL.REAL_CONST_EXPR(bias);

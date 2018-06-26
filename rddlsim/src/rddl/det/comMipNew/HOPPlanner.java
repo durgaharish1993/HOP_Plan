@@ -416,8 +416,7 @@ public class HOPPlanner extends Policy {
             ret_list.clear();
             ArrayList<PVAR_INST_DEF> ret = getRootActions(ret_expr,s);
             //System.out.println("####################################################");
-            System.out.println("These are Root Actions:" + ret_list.get(0).toString());
-            ArrayList<PVAR_INST_DEF> returning_action = ret_list.get(0);
+
             if(exit_code ==3 ){
                 try {
                     throw new Exception("Model Infeasiblity Excepiton");
@@ -428,7 +427,7 @@ public class HOPPlanner extends Policy {
             }
 
             cleanUp(static_grb_model);
-            return returning_action;
+            return ret;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1901,8 +1900,8 @@ public class HOPPlanner extends Policy {
                             
                             explo_planner.TIME_LIMIT_MINS = Double.valueOf(gurobi_timeout);
                             explo_planner.DO_GUROBI_INITIALIZATION = true;
-                            System.out.println(">>>>>>>>>>This is State ::: ");
-                            System.out.println(state._state.toString());
+                            //System.out.println(">>>>>>>>>>This is State ::: ");
+                            //System.out.println(state._state.toString());
                             ArrayList<PVAR_INST_DEF> actions = new ArrayList<>();
 
                             try {
@@ -1927,7 +1926,7 @@ public class HOPPlanner extends Policy {
                                 max_step_reward = immediate_reward;
                             }
                         }catch (Exception e){
-                            //e.printStackTrace();
+                            e.printStackTrace();
                         }
                     }
                     if(round_best_action!=null){
@@ -2131,7 +2130,7 @@ public class HOPPlanner extends Policy {
         return new ArrayList[]{buffer_state, buffer_action, buffer_reward};
     }
 
-    protected void checkNonLinearExpressions(final State rddl_state) throws Exception {
+    public void checkNonLinearExpressions(final State rddl_state) throws Exception {
 
         ArrayList[] buffers = runRandomPolicy(rddl_state, 2, 100);
     	//PASS BUFFERS TO FITTING
@@ -2143,7 +2142,7 @@ public class HOPPlanner extends Policy {
         EXPR sub_expr = null;
         Pair<String,String> key_check = new Pair<>(rddl_state._reward.toString(),subs2.toString());
         if( substitute_expression_cache.containsKey(key_check) ){
-            substitute_expression_cache.get(key_check);
+            sub_expr=substitute_expression_cache.get(key_check);
         }else{
         	sub_expr = rddl_state._reward.substitute(subs2, constants, objects,
         		hmtypes, hm_variables );
@@ -2154,7 +2153,7 @@ public class HOPPlanner extends Policy {
         ArrayList<RDDL.LTERM> raw_terms1 = new ArrayList<>();
         if(!check_pwl){
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
-            EXPR final_expr   = earth_obj.fitPWL(sub_expr, rddl_state, buffers, hm_variables,hmtypes,this._random);
+            EXPR final_expr   = earth_obj.fitPWL(sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
             replace_reward_pwl = final_expr;
         }
@@ -2198,7 +2197,7 @@ public class HOPPlanner extends Policy {
                             System.out.println("Substituted PWL: " + check_PWL);
                         if (!check_PWL) {
                             pvar_npwl = true;
-                            EXPR final_expr = earth_obj.fitPWL(det_expr,rddl_state, buffers, hm_variables,hmtypes,this._random);
+                            EXPR final_expr = earth_obj.fitPWL(det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);
                         } else {
                         	final_pwl_cond.add( det_expr );
