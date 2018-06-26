@@ -2139,7 +2139,7 @@ public class HOPPlanner extends Policy {
     	
     	//Reward
         final Map<LVAR,LCONST> subs2 = new HashMap<>();
-        
+
         EXPR sub_expr = null;
         Pair<String,String> key_check = new Pair<>(rddl_state._reward.toString(),subs2.toString());
         if( substitute_expression_cache.containsKey(key_check) ){
@@ -2148,13 +2148,13 @@ public class HOPPlanner extends Policy {
         	sub_expr = rddl_state._reward.substitute(subs2, constants, objects,
         		hmtypes, hm_variables );
         }
-        
+
         final boolean check_pwl = sub_expr.isPiecewiseLinear(constants, objects,
         		hmtypes, hm_variables);
         ArrayList<RDDL.LTERM> raw_terms1 = new ArrayList<>();
         if(!check_pwl){
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
-            EXPR final_expr   = earth_obj.fitPWL(sub_expr, raw_terms1, rddl_state, buffers,this._random);
+            EXPR final_expr   = earth_obj.fitPWL(sub_expr, rddl_state, buffers, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
             replace_reward_pwl = final_expr;
         }
@@ -2198,7 +2198,7 @@ public class HOPPlanner extends Policy {
                             System.out.println("Substituted PWL: " + check_PWL);
                         if (!check_PWL) {
                             pvar_npwl = true;
-                            EXPR final_expr = earth_obj.fitPWL(det_expr, raw_terms,rddl_state, buffers,this._random);
+                            EXPR final_expr = earth_obj.fitPWL(det_expr,rddl_state, buffers, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);
                         } else {
                         	final_pwl_cond.add( det_expr );
@@ -2217,195 +2217,6 @@ public class HOPPlanner extends Policy {
         }
 
     }
-//
-//    //This will generate Data.
-//    public EXPR generateDataForPWL(EXPR e, ArrayList<RDDL.LTERM> raw_terms,
-//    		State s, buffers) throws Exception {
-//        //Getting desired format  as  a String
-//        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> method_state = deepCopyState(s);
-//        ArrayList<PVAR_NAME> input_variables           = new ArrayList<>();
-//        HashMap<Integer,ArrayList<Object>> input_array = new HashMap();
-//        HashMap<Integer,String> input_R_array          = new HashMap<Integer, String>();
-//        String output_R_array                          = new String();
-//        output_R_array                                 = "c(";
-//        ArrayList<Object> output_array                 = new ArrayList<>();
-//        HashSet<Pair> Gfluents                         = new HashSet<>();
-//        for(int i=0;i<buffer_state.size();i++){
-//            ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>> state_trajectory  = buffer_state.get(i);
-//            ArrayList<ArrayList<PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
-//            for(int j=0;j<buffer_state.get(i).size();j++){
-//                HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value = state_trajectory.get(j);
-//                ArrayList<PVAR_INST_DEF> action_value = action_trajectory.get(j);
-//                s.copyStateRDDLState(state_value,true);
-//                //This is a global temp variable which stores the values.m
-//                e.collectGFluents(null,s,Gfluents);
-//                //Collected the GFluents
-//                //getExpressionValue(e,state_value,action_value,Gfluents);
-//                variables_names.clear();
-//
-//
-//                HARISH use EXPR.sample() HERE to find the VALUES
-//                EXPR temp  = recursionSubstitution(e,state_value,action_value);
-//
-//
-//                Double val = temp.getDoubleValue(constants,objects, hmtypes, hm_variables,  null);
-//                if(i==0 && j==0 && !variables_names.isEmpty()){
-//                    input_variables.addAll(variables_names.keySet());
-//                }
-//                for(int k=0;k<input_variables.size();k++){
-//                    if(input_array.containsKey(k)){
-//                        input_array.get(k).add(variables_names.get(input_variables.get(k)));
-//                        String temp_str =input_R_array.get(k);
-//                        input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
-//                    }
-//                    else{
-//                        ArrayList<Object> temp_array = new ArrayList<>();
-//                        temp_array.add(variables_names.get(input_variables.get(k)));
-//                        input_array.put(k,temp_array);
-//                        String temp_str ="c(";
-//                        input_R_array.put(k,temp_str + variables_names.get(input_variables.get(k)).toString()+", ");
-//                    }
-//                }
-//                output_array.add(val);
-//                String temp_str = output_R_array;
-//                output_R_array = temp_str + val.toString() + ", ";
-//            }
-//        }
-//        //Making Sure to close the brackets.
-//        HashMap<PVAR_NAME,String> final_input_R_data = new HashMap<>();
-//
-//        for( Map.Entry<Integer,String> entry1 : input_R_array.entrySet()){
-//            input_variables.get(entry1.getKey());
-//            String temp_str = entry1.getValue();
-//            temp_str = temp_str.trim();
-//            temp_str = temp_str.substring(0,temp_str.length()-1) + ")";
-//            final_input_R_data.put(input_variables.get(entry1.getKey()),temp_str);
-//
-//        }
-//        String final_output_R_data = output_R_array.trim().substring(0,output_R_array.trim().length()-1) + ")";
-//        //////////??????#############################################################################
-//        //Getting R functions.
-//
-//
-//        //Not thinking about optimizing the code, Just make it work.
-//        //This is for number of examples
-//        long start_timer = System.currentTimeMillis();
-//        Rengine engine = Rengine.getMainEngine();
-//        if(engine == null)
-//            engine = new Rengine(new String[] {"--vanilla"}, false, null);
-//
-//        //Rengine engine  = new Rengine(new String[] {"--no-save"},false,null);
-//        engine.eval("library(earth)");
-//        String feature_format = new String();
-//        Integer check = 0;
-//        for( Map.Entry<PVAR_NAME,String> entry1 : final_input_R_data.entrySet()){
-//            engine.eval(entry1.getKey()._sPVarName + "<-"+ entry1.getValue());
-//            if(check==0){
-//                feature_format = entry1.getKey()._sPVarName;
-//                check =1; }
-//            else{
-//                feature_format.concat(" + "+ entry1.getKey()._sPVarName); }
-//        }
-//
-//        engine.eval("target <-" + final_output_R_data );
-//        engine.eval("model<-earth( target ~ " + feature_format + ",nprune=2)");
-//        String rss_val =engine.eval("format(model$rss)").asString();
-//        String gcv_val =engine.eval("format(model$gcv)").asString();
-//        engine.eval("print(summary(model))");
-//        if(SHOW_PWL_NON_PWL) {
-//            System.out.println("THE GCV VALUE :" + gcv_val);
-//            System.out.println("The RSS VALUE :" + rss_val);
-//        }
-//        engine.eval("a=predict(model,1)");
-//        String earth_output = engine.eval("format(model,style='bf')").asString();
-//        long end_timer = System.currentTimeMillis();
-//        running_R_api = (double) end_timer - start_timer;
-//        //This will parse and give a EXPR Output.
-//        EXPR final_expr =parseEarthROutput(earth_output,input_variables,raw_terms);
-//        s.copyStateRDDLState(method_state,true);
-//        return final_expr;
-//    }
-
-//
-//    public EXPR parseEarthROutput(String earthOutput, ArrayList<PVAR_NAME> input_variables, ArrayList<RDDL.LTERM> raw_terms) throws Exception {
-//        String[] list_output = earthOutput.split("\n");
-//        ArrayList<String> string_pvar = new ArrayList<>();
-//        for(int i=0;i<input_variables.size();i++){
-//            string_pvar.add(input_variables.get(i)._sPVarName);
-//        }
-//        HashMap<String,Double> coefficient_mapping = new HashMap<>();
-//        HashMap<String,EXPR> hinge_function  = new HashMap<>();
-//        Double bias = 0.0;
-//        //Parsing things with equations.
-//        for(int i=0;i<list_output.length;i++){
-//            String temp_str = list_output[i].trim();
-//            if(temp_str.equals("")){continue;}
-//            //This is for Bias,
-//            if(!(temp_str.contains("-") || temp_str.contains("+"))){
-//                bias =Double.parseDouble(temp_str);
-//            }
-//            if(temp_str.contains("*")){
-//                temp_str = temp_str.replaceAll("\\s","");
-//                temp_str = temp_str.replaceAll("\\+","");
-//                String [] term_val = temp_str.split("\\*");
-//                NumberFormat format = NumberFormat.getInstance();
-//                Double coeffic = format.parse(term_val[0]).doubleValue();
-//                coefficient_mapping.put(term_val[1],coeffic);
-//            }
-//            //Earth Output
-//            // 1 +
-//            //   1.3 * bf1
-//            //
-//            // bf1 : h(53.2847-rlevel)
-//
-//
-//
-//            if(temp_str.contains("bf") && temp_str.contains("h(")){
-//                String[] term_val =temp_str.split("\\s");
-//                String key_val = term_val[0];
-//                String hinge_str = term_val[2];
-//                hinge_str = hinge_str.replace("h(","");
-//                hinge_str = hinge_str.replace(")","");
-//                String [] hinge_values = hinge_str.split("-");
-//                Double real_val = 0.0;
-//                if(string_pvar.contains(hinge_values[0])){
-//                    real_val = Double.parseDouble(hinge_values[1]);
-//                    PVAR_EXPR temp_pvar_expr        = new PVAR_EXPR(hinge_values[0],raw_terms);
-//                    REAL_CONST_EXPR temp_const_expr = new REAL_CONST_EXPR(real_val);
-//                    RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_pvar_expr,temp_const_expr,"-");
-//                    RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
-//                    hinge_function.put(key_val,max_oper_expr);
-//                    if(SHOW_PWL_NON_PWL)
-//                        System.out.println("PWL_NON_PWL ::: " + max_oper_expr.toString());
-//                }
-//                if(string_pvar.contains(hinge_values[1])){
-//                    real_val = Double.parseDouble(hinge_values[0]);
-//                    PVAR_EXPR temp_pvar_expr        = new PVAR_EXPR(hinge_values[1],raw_terms);
-//                    REAL_CONST_EXPR temp_const_expr = new REAL_CONST_EXPR(real_val);
-//
-//                    RDDL.OPER_EXPR temp_oper_expr        = new RDDL.OPER_EXPR(temp_const_expr,temp_pvar_expr,"-");
-//                    RDDL.OPER_EXPR max_oper_expr         = new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0), temp_oper_expr,"max");
-//
-//                    hinge_function.put(key_val,max_oper_expr);
-//                    if(SHOW_PWL_NON_PWL)
-//                        System.out.println("PWL_NON_PWL ::: "+ max_oper_expr.toString());
-//                }
-//            }
-//
-//        }
-//        REAL_CONST_EXPR bias_expr = new REAL_CONST_EXPR(bias);
-//        RDDL.OPER_EXPR final_expr =new RDDL.OPER_EXPR(new REAL_CONST_EXPR(0.0),bias_expr,"+");
-//        Integer temp_count = 0;
-//        for(String key: coefficient_mapping.keySet()){
-//            Double real_value = coefficient_mapping.get(key);
-//            REAL_CONST_EXPR temp_real_expr= new REAL_CONST_EXPR(real_value);
-//            RDDL.OPER_EXPR temp_oper_expr  = new RDDL.OPER_EXPR(temp_real_expr,hinge_function.get(key),"*");
-//            RDDL.OPER_EXPR temp_final_expr = final_expr;
-//            final_expr = new RDDL.OPER_EXPR(temp_final_expr,temp_oper_expr,"+");
-//        }
-//        return final_expr;
-//    }
-//
 
 
     protected Object sanitize(PVAR_NAME pName, double value) {
