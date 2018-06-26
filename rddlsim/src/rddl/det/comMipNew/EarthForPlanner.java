@@ -1,5 +1,6 @@
 package rddl.det.comMipNew;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 import org.rosuda.JRI.Rengine;
@@ -32,13 +33,13 @@ public class EarthForPlanner {
 
 
 
-    protected HashMap<String,String> getInputVector(TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>>variables, HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>lvar_lcont_map,
+    protected HashMap<String,ArrayList<String>> getInputVector(TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>>variables, HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>lvar_lcont_map,
                                                HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> state_value,
                                                ArrayList<RDDL.PVAR_INST_DEF> action_value,HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
 
         //I need to debug and work.
         //This loop is for ordering the inputVariables via variables.
-        HashMap<String,String> feat_values = new HashMap<>();
+        HashMap<String,ArrayList<String>> feat_values = new HashMap<>();
         for(String key : variables.keySet()){
             ArrayList<RDDL.LCONST> cur_lconsts= variables.get(key)._o2;
 
@@ -59,14 +60,35 @@ public class EarthForPlanner {
                 }
 
                 if(feat_val instanceof Double){
-                    feat_values.put(key,String.valueOf((Double)feat_val ));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf((Double)feat_val));
+                    feat_values.put(key,temp_array);
                 }else if(feat_val instanceof Integer){
-                    feat_values.put(key,String.valueOf((Integer) feat_val ));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf((Integer) feat_val ));
+                    feat_values.put(key,temp_array);
                 }else if(feat_val instanceof Boolean){
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
-                    feat_values.put(key,String.valueOf(f_val));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf(f_val));
+                    feat_values.put(key,temp_array);
                 }else if(feat_val instanceof RDDL.ENUM_VAL){
-                    throw new Exception("ENUM_CASE HAS TO BE SUPPORTED");
+                    ArrayList<String> hot_encoding= new ArrayList<>();
+                    int encode =((RDDL.ENUM_VAL) feat_val).enum_to_int(hmtypes,hm_variables);
+                    int enum_size = ((RDDL.ENUM_VAL) feat_val).enumSize(hmtypes,hm_variables);
+                    for(int i=0 ;i<enum_size;i++){
+                        if(i==encode){
+                            hot_encoding.add("1.0");
+
+                        }else{
+                            hot_encoding.add("0.0");
+                        }
+
+                    }
+
+                    feat_values.put(key,hot_encoding);
+
+
 
                 }else{
                     throw new Exception("The value is not a Double,Integer,boolean or ENUM_VAL");
@@ -94,16 +116,33 @@ public class EarthForPlanner {
 
 
                 if(feat_val instanceof Double){
-                    feat_values.put(key,String.valueOf((Double)feat_val ));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf((Double)feat_val));
+                    feat_values.put(key,temp_array);
                 }else if(feat_val instanceof Integer){
-                    feat_values.put(key,String.valueOf((Integer)feat_val ));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf((Integer) feat_val ));
+                    feat_values.put(key,temp_array);
                 }else if(feat_val instanceof Boolean){
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
-                    feat_values.put(key,String.valueOf(f_val));
+                    ArrayList<String> temp_array = new ArrayList<>();
+                    temp_array.add(String.valueOf(f_val));
+                    feat_values.put(key,temp_array);
+                }else if(feat_val instanceof RDDL.ENUM_VAL){
+                    ArrayList<String> hot_encoding= new ArrayList<>();
+                    int encode =((RDDL.ENUM_VAL) feat_val).enum_to_int(hmtypes,hm_variables);
+                    int enum_size = ((RDDL.ENUM_VAL) feat_val).enumSize(hmtypes,hm_variables);
+                    for(int i=0 ;i<enum_size;i++){
+                        if(i==encode){
+                            hot_encoding.add("1.0");
+                        }else{
+                            hot_encoding.add("0.0");
+                        }
+                    }
+                    feat_values.put(key,hot_encoding);
                 }else{
-                    throw new Exception("In Action value did not find  a Double,Integer,boolean");
+                    throw new Exception("The value is not a Double,Integer,boolean or ENUM_VAL");
                 }
-
 
             }
 
@@ -145,7 +184,9 @@ public class EarthForPlanner {
 
         TreeMap<String,Pair<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>>> variables = new TreeMap<>();
         HashMap<RDDL.PVAR_NAME,ArrayList<RDDL.LCONST>> var_lconsts = new HashMap<>();
-        ArrayList<Pair<String,HashMap<String,String>>> input_output_data = new ArrayList<>();
+        ArrayList<Pair<String,HashMap<String,ArrayList<String>>>> input_output_data = new ArrayList<>();
+        HashMap<String,ArrayList<String>> real_feat_R_feat = new HashMap<>();
+        HashMap<String,String> R_feat_real_feat = new HashMap<>();
         for(int i=0;i<buffer_state.size();i++){
             ArrayList<HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>> state_trajectory  = buffer_state.get(i);
             ArrayList<ArrayList<RDDL.PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
@@ -159,17 +200,34 @@ public class EarthForPlanner {
                 for(Pair key : Gfluents){
                     // "<rlevel, [$t1]>" this type feature name doesn't work in R.  converting to rlevel_t1_t2....
                     String str_key =_getRFeat( key );
-
                     if(!variables.containsKey(str_key))
-                        variables.put(str_key,key);
+                        variables.put(str_key,new Pair(key._o1,key._o2));
                 }
-                HashMap<String,String> si1 = null;
+                HashMap<String,ArrayList<String>> si1 = null;
                 try{
                     si1= getInputVector(variables,var_lconsts,state_value,action_value,hm_variables,hmtypes);
                     HashMap subs = new HashMap<RDDL.LVAR,RDDL.LCONST>();
                     s.copyStateRDDLState(state_value,true);
-                    double target_val = (double)e.sample(subs,s,random);
-                    input_output_data.add(new Pair(String.valueOf(target_val),si1));
+                    Object target_val = e.sample(subs,s,random);
+                    Double final_target_val = null;
+                    if(target_val instanceof Double){
+                        final_target_val = (Double) target_val;
+
+                    }else if(target_val instanceof Integer){
+                        final_target_val =(Double) ((Integer) target_val).doubleValue();
+
+                    }else if(target_val instanceof Boolean){
+                        final_target_val =(Boolean) target_val ? 1.0 : 0.0;
+
+                    }else{
+                        try{
+                            throw new Exception("Sample function giving different output not Integer, Double, Boolean");
+                        }catch (Exception e1){
+                            e1.printStackTrace();
+
+                        }
+                    }
+                    input_output_data.add(new Pair(String.valueOf(final_target_val),si1));
 
                 }catch (Exception e1){
                     e1.printStackTrace();
@@ -181,34 +239,57 @@ public class EarthForPlanner {
         }
 
         //construction of Input and target vector in R format.
+
+
+
         for(int k=0 ; k<input_output_data.size();k++){
             //This is output R data
             String temp_str =input_output_data.get(k)._o1;
-            output_R_array = output_R_array+ temp_str+ ",";
+            output_R_array = output_R_array + temp_str+ ",";
 
             //This is for input R data. variables has features and
             for(String feat_name : variables.keySet()){
-                HashMap<String,String> temp_map = input_output_data.get(k)._o2;
-                if(temp_map.containsKey(feat_name)){
-                    if(!input_Feat_R_array.containsKey(feat_name)){
-                        //This is first time Addition.
-                        input_Feat_R_array.put(feat_name,"c("+temp_map.get(feat_name));
-                    }else{
-                        String temp_str1 = input_Feat_R_array.get(feat_name);
-                        input_Feat_R_array.put(feat_name,temp_str1 +", "+temp_map.get(feat_name) );
-                    }
+                HashMap<String,ArrayList<String>> temp_map = input_output_data.get(k)._o2;
 
-
-                }else{//When feature rlevel_r3 not available.
-                    //Sparse the feature is not avilable in the input_features for that Example.
-                    if(!input_Feat_R_array.containsKey(feat_name)){
-                        //This is first time Addition.
-                        input_Feat_R_array.put(feat_name,"c("+ "0.0");
-                    }else{
-                        String temp_str1 = input_Feat_R_array.get(feat_name);
-                        input_Feat_R_array.put(feat_name,temp_str1+", "+ "0.0" );
-                    }
+                //Real Feat ---> R Feat
+                ArrayList<String> r_features =new ArrayList<>();
+                for(int i=0 ; i<temp_map.get(feat_name).size();i++){
+                    r_features.add(feat_name+"_"+String.valueOf(i));
                 }
+                real_feat_R_feat.put(feat_name,r_features);
+
+                //R Feat --> Real Feat.
+                for(int i=0; i<r_features.size();i++){
+                    R_feat_real_feat.put(r_features.get(i),feat_name);
+                }
+                if(temp_map.containsKey(feat_name)) {
+                    r_features = real_feat_R_feat.get(feat_name);
+                    for (int i = 0; i < r_features.size(); i++) {
+                        if (!input_Feat_R_array.containsKey(r_features.get(i))) {
+                            //This is first time Addition.
+                            input_Feat_R_array.put(r_features.get(i), "c(" + temp_map.get(feat_name));
+
+                        } else {
+                            String temp_str1 = input_Feat_R_array.get(feat_name);
+                            input_Feat_R_array.put(r_features.get(i), temp_str1 + ", " + temp_map.get(feat_name));
+                        }
+
+                    }
+                }else{
+                    //If feature not avilable.
+                    r_features = real_feat_R_feat.get(feat_name);
+                    for (int i = 0; i < r_features.size(); i++) {
+                        if (!input_Feat_R_array.containsKey(r_features.get(i))) {
+                            //This is first time Addition.
+                            input_Feat_R_array.put(r_features.get(i), "c(" + "0.0");
+                        } else {
+                            String temp_str1 = input_Feat_R_array.get(feat_name);
+                            input_Feat_R_array.put(r_features.get(i), temp_str1 + ", " + "0.0");
+                        }
+                    }
+
+                }
+
             }
         }
 
@@ -219,7 +300,7 @@ public class EarthForPlanner {
         //Making Sure to close the brackets.
         HashMap<String,String> final_input_R_data = new HashMap<>();
         //This for loop to remove "," and add ")" for input_features.
-        for(String key : variables.keySet()){
+        for(String key : R_feat_real_feat.keySet()){
             String temp_str =input_Feat_R_array.get(key);
             temp_str = temp_str.trim();
             temp_str = temp_str+ ")";
@@ -232,6 +313,8 @@ public class EarthForPlanner {
         final_output_list.add(final_input_R_data);
         final_output_list.add(final_output_R_data);
         final_output_list.add(variables);
+        final_output_list.add(real_feat_R_feat);
+        final_output_list.add(R_feat_real_feat);
 
 
 

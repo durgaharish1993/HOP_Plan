@@ -1492,6 +1492,45 @@ public class RDDL {
 				throw exc;
 			}
 
+
+
+
+//				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
+//				TYPE_DEF tdef = hmtypes.get(tn);
+//				assert(tdef instanceof ENUM_TYPE_DEF);
+//				return ((ENUM_TYPE_DEF) tdef)._alPossibleValues.indexOf(_sConstValue);
+		}
+
+
+		public int enumSize(//removed this : PVAR_NAME p_name,
+							   HashMap<TYPE_NAME, TYPE_DEF> hmtypes,
+							   HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
+			for(TYPE_NAME tn : hmtypes.keySet()){
+				TYPE_DEF tdef = hmtypes.get(tn);
+				if(tdef instanceof ENUM_TYPE_DEF){
+					ArrayList<LCONST> temp_tdef =((ENUM_TYPE_DEF) tdef)._alPossibleValues;
+						return temp_tdef.size();
+					}
+					}
+
+
+
+			//at least throw exception here instead of returning -1
+			try{
+				System.exit(1);
+				throw new Exception("Not Found Ex" );
+			}catch( Exception exc ){
+				if(SHOW_TRACE_EXCEPTIONS)
+					exc.printStackTrace();
+
+				if(SHOW_MODIFIED_EXCEPTIONS)
+					System.out.println("Handled Exception ::  enum_to_Int of ENUM_VAL  :: "+ toString());
+				throw exc;
+			}
+
+
+
+
 //				TYPE_NAME tn  = hm_variables.get(p_name)._typeRange;
 //				TYPE_DEF tdef = hmtypes.get(tn);
 //				assert(tdef instanceof ENUM_TYPE_DEF);
