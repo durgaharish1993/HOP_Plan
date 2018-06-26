@@ -66,7 +66,8 @@ public class EarthForPlanner {
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
                     feat_values.put(key,String.valueOf(f_val));
                 }else if(feat_val instanceof RDDL.ENUM_VAL){
-                    throw new Exception("ENUM_CASE HAS TO BE SUPPORTED");
+                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables;
+                    feat_values.put(key,String.valueOf(f_val));
 
                 }else{
                     throw new Exception("The value is not a Double,Integer,boolean or ENUM_VAL");
@@ -100,11 +101,13 @@ public class EarthForPlanner {
                 }else if(feat_val instanceof Boolean){
                     double f_val = (Boolean) feat_val ? 1.0 : 0.0;
                     feat_values.put(key,String.valueOf(f_val));
-                }else{
+                }else if(feat_val instanceof RDDL.ENUM_VAL){
+                    int f_val = ((RDDL.ENUM_VAL)feat_val).enum_to_int(hmtypes,hm_variables;
+                    feat_values.put(key,String.valueOf(f_val));
+
+                } else{
                     throw new Exception("In Action value did not find  a Double,Integer,boolean");
                 }
-
-
             }
 
 
@@ -243,7 +246,7 @@ public class EarthForPlanner {
 
 
 
-    protected String runEarth(HashMap<String,String> input_features, String output ) throws Exception{
+    protected String runEarth(HashMap<String,String> input_features, String output) throws Exception{
 
         //Starting Rengine.
         Rengine engine = Rengine.getMainEngine();
@@ -259,8 +262,7 @@ public class EarthForPlanner {
             if(check==0){
                 feature_format = entry1.getKey();
                 check =1; }
-            else{
-                feature_format.concat(" + "+ entry1.getKey()); }
+            else{ feature_format.concat(" + "+ entry1.getKey()); }
         }
 
         engine.eval("target <-" + output );
