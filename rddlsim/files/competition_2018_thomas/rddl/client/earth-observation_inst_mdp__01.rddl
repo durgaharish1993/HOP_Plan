@@ -1,0 +1,69 @@
+instance earth-observation_inst_mdp__01 {
+    domain = earth-observation_mdp;
+
+    objects {
+        patch : { p0101, p0102, p0103,
+                  p0201, p0202, p0203,
+                  p0301, p0302, p0303 };
+    };
+
+    non-fluents {
+        FAILURE_PROB_HIGH_VIS = 0.062343;
+        FAILURE_PROB_MEDIUM_VIS = 0.345215;
+        FAILURE_PROB_LOW_VIS = 0.764650;
+
+        HIGH_TO_MEDIUM_VIS = 0.362887;
+        HIGH_TO_LOW_VIS = 0.101702;
+
+        MEDIUM_TO_HIGH_VIS = 0.277198;
+        MEDIUM_TO_LOW_VIS = 0.163034;
+
+        LOW_TO_MEDIUM_VIS = 0.310054;
+        LOW_TO_HIGH_VIS = 0.181279;
+
+        CONNECTED(p0101, p0202, @north-east);
+        CONNECTED(p0101, p0201, @east);
+
+        CONNECTED(p0102, p0203, @north-east);
+        CONNECTED(p0102, p0202, @east);
+        CONNECTED(p0102, p0201, @south-east);
+
+        CONNECTED(p0103, p0203, @east);
+        CONNECTED(p0103, p0202, @south-east);
+
+        CONNECTED(p0201, p0302, @north-east);
+        CONNECTED(p0201, p0301, @east);
+
+        CONNECTED(p0202, p0303, @north-east);
+        CONNECTED(p0202, p0302, @east);
+        CONNECTED(p0202, p0301, @south-east);
+
+        CONNECTED(p0203, p0303, @east);
+        CONNECTED(p0203, p0302, @south-east);
+
+        CONNECTED(p0301, p0102, @north-east);
+        CONNECTED(p0301, p0101, @east);
+
+        CONNECTED(p0302, p0103, @north-east);
+        CONNECTED(p0302, p0102, @east);
+        CONNECTED(p0302, p0101, @south-east);
+
+        CONNECTED(p0303, p0103, @east);
+        CONNECTED(p0303, p0102, @south-east);
+    };
+
+    init-state {
+        is-focal-point(p0102);
+        is-target(p0101);
+        visibility(p0102) = @high;
+        is-target(p0103);
+        is-target(p0201);
+        is-target(p0203);
+        is-target(p0301);
+        is-target(p0303);
+    };
+
+    horizon = 18;
+
+    discount = 1.0;
+}

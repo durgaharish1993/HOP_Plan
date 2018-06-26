@@ -1,0 +1,123 @@
+////////////////////////////////////////////////////////////////////
+//
+// TODO
+//
+////////////////////////////////////////////////////////////////////
+
+domain earth-observation_no_enums_mdp {
+    types {
+        patch            : object;
+        direction        : object;
+    };
+
+    pvariables {
+        FAILURE_PROB_HIGH_VIS              : { non-fluent, real, default = 0.05 };
+        FAILURE_PROB_MEDIUM_VIS            : { non-fluent, real, default = 0.3 };
+        FAILURE_PROB_LOW_VIS               : { non-fluent, real, default = 0.7 };
+
+        HIGH_TO_MEDIUM_VIS                 : { non-fluent, real, default = 0.3 };
+        HIGH_TO_LOW_VIS                    : { non-fluent, real, default = 0.1 };
+
+        MEDIUM_TO_HIGH_VIS                 : { non-fluent, real, default = 0.3 };
+        MEDIUM_TO_LOW_VIS                  : { non-fluent, real, default = 0.2 };
+
+        LOW_TO_MEDIUM_VIS                  : { non-fluent, real, default = 0.35 };
+        LOW_TO_HIGH_VIS                    : { non-fluent, real, default = 0.2 };
+
+        CONNECTED_EAST(patch, patch)       : { non-fluent, bool, default = false };
+        CONNECTED_NORTH_EAST(patch, patch) : { non-fluent, bool, default = false };
+        CONNECTED_SOUTH_EAST(patch, patch) : { non-fluent, bool, default = false };
+
+        is-focal-point(patch)              : { state-fluent, bool, default = false };
+        is-target(patch)                   : { state-fluent, bool, default = false };
+
+        visibility-is-high-helper(patch)   : { interm-fluent, bool, level = 1 };
+        visibility-is-medium-helper(patch) : { interm-fluent, bool, level = 2 };
+        visibility-is-low-helper(patch)    : { interm-fluent, bool, level = 3 }; 
+        visibility-is-high(patch)          : { state-fluent, bool, default = false };
+        visibility-is-medium(patch)        : { state-fluent, bool, default = true };
+        visibility-is-low(patch)           : { state-fluent, bool, default = false };        
+
+        slew-east                          : { action-fluent, bool, default = false };
+        slew-north-east                    : { action-fluent, bool, default = false };
+        slew-south-east                    : { action-fluent, bool, default = false };
+        take-image                         : { action-fluent, bool, default = false }; 
+    };
+
+    cpfs {
+        // The next focal point of the camera is the patch in slew-direction of the current focal point
+        is-focal-point'(?next) =
+            exists_{ ?last : patch } [ ( is-focal-point(?last) & CONNECTED_EAST(?last, ?next) & slew-east ) |
+                                       ( is-focal-point(?last) & CONNECTED_NORTH_EAST(?last, ?next) & slew-north-east ) |
+                                       ( is-focal-point(?last) & CONNECTED_SOUTH_EAST(?last, ?next) & slew-south-east ) ];
+
+        // The target status of a patch doesn't change unless an image is taken successfully
+        // (which depends on the current visibility)
+        is-target'(?p) =
+            if( is-target(?p) & is-focal-point(?p) & take-image & visibility-is-high(?p) )
+                then Bernoulli(FAILURE_PROB_HIGH_VIS)
+            else if ( is-target(?p) & is-focal-point(?p) & take-image & visibility-is-medium(?p) )
+                then Bernoulli(FAILURE_PROB_MEDIUM_VIS)
+            else if ( is-target(?p) & is-focal-point(?p) & take-image & visibility-is-low(?p) )
+                then Bernoulli(FAILURE_PROB_LOW_VIS)
+            else is-target(?p);
+
+        // These helper interm fluents are introduced to model the
+        // Discrete distribution over enum values
+        visibility-is-high-helper(?p) =
+            if ( visibility-is-high(?p) )
+                then Bernoulli(1.0 - HIGH_TO_LOW_VIS - HIGH_TO_MEDIUM_VIS)
+            else if ( visibility-is-medium(?p) )
+                then Bernoulli( MEDIUM_TO_HIGH_VIS )
+            else Bernoulli(LOW_TO_HIGH_VIS);
+
+        visibility-is-medium-helper(?p) =
+            if ( ~visibility-is-high-helper(?p) & visibility-is-high(?p) )
+                then Bernoulli(HIGH_TO_MEDIUM_VIS / (HIGH_TO_LOW_VIS + HIGH_TO_MEDIUM_VIS))
+            else if ( ~visibility-is-high-helper(?p) & visibility-is-medium(?p) )
+                then Bernoulli((1.0 - MEDIUM_TO_HIGH_VIS - MEDIUM_TO_LOW_VIS) / (1.0 - MEDIUM_TO_HIGH_VIS) )
+            else if ( ~visibility-is-high-helper(?p) )
+                then Bernoulli(LOW_TO_MEDIUM_VIS / (1.0 - LOW_TO_HIGH_VIS))
+            else false;
+
+        visibility-is-low-helper(?p) =
+            ( ~visibility-is-high-helper(?p) & ~visibility-is-medium-helper(?p));
+
+        visibility-is-high'(?p) = visibility-is-high-helper(?p);
+        visibility-is-medium'(?p) = visibility-is-medium-helper(?p);
+        visibility-is-low'(?p) = visibility-is-low-helper(?p);
+
+        // The visibility is determined based on the current visibility.
+        // visibility'(?p) = 
+        //     if(visibility(?p) == @high) then
+        //         Discrete( visibility-level,
+        //             @high   : 1.0 - HIGH_TO_LOW_VIS - HIGH_TO_MEDIUM_VIS,
+        //             @low    : HIGH_TO_LOW_VIS,
+        //             @medium : HIGH_TO_MEDIUM_VIS)
+        //     else if(visibility(?p) == @low) then
+        //         Discrete( visibility-level,
+        //             @high   : LOW_TO_HIGH_VIS,
+        //             @low    : 1.0 - LOW_TO_HIGH_VIS - LOW_TO_MEDIUM_VIS,
+        //             @medium : LOW_TO_MEDIUM_VIS)
+        //     else
+        //         Discrete( visibility-level,
+        //             @high   : MEDIUM_TO_HIGH_VIS,
+        //             @low    : MEDIUM_TO_LOW_VIS,
+        //             @medium : 1.0 - MEDIUM_TO_HIGH_VIS - MEDIUM_TO_LOW_VIS);
+    };
+
+    // Each patch that hasn't been photographed incurs a penalty of one, as
+    // well as each action apart from slew-east
+    reward = 0 - (sum_{ ?p : patch } [ is-target(?p) ]) - slew-north-east - slew-south-east - take-image;
+
+    action-preconditions {
+        // Do not slew the camera such that the focal point is out of the map
+        forall_{ ?p : patch } [ ( is-focal-point(?p) & slew-east ) => exists_{ ?p2 : patch } [ CONNECTED_EAST(?p, ?p2) ] ];
+        forall_{ ?p : patch } [ ( is-focal-point(?p) & slew-north-east ) => exists_{ ?p2 : patch } [ CONNECTED_NORTH_EAST(?p, ?p2) ] ];
+        forall_{ ?p : patch } [ ( is-focal-point(?p) & slew-south-east ) => exists_{ ?p2 : patch } [ CONNECTED_SOUTH_EAST(?p, ?p2) ] ];
+
+        // Execute one slew action and take-image only in conjunction with slew(@east)
+        slew-north-east + slew-south-east + (take-image | slew-east) == 1;
+        take-image => slew-east;
+  };
+}
