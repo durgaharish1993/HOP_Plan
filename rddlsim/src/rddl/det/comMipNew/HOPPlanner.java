@@ -1512,6 +1512,10 @@ public class HOPPlanner extends Policy {
 
     public void setActionVariables(final ArrayList<PVAR_INST_DEF> action_zero, 
     		final GRBModel static_grb_model){
+
+        if(action_zero.size()==0)
+            return;
+
         Object val = null;
         HashMap<EXPR,Object> action_value = new HashMap<>();
         for(int i = 0; i < action_zero.size(); i++){
@@ -1705,10 +1709,7 @@ public class HOPPlanner extends Policy {
     
 
     public double runNooopPolicyForState(State s)throws Exception{
-        //Copying the state
-    	HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
-    	copiedState = deepCopyState(s);
-	    //Getting Random Trajectories and adding to buffer.
+        //Getting Random Trajectories and adding to buffer.
 	    int num_trajectories = 30;
 	    int length_trajectories = 10;
 	    
@@ -1729,14 +1730,13 @@ public class HOPPlanner extends Policy {
     	ArrayList<PVAR_INST_DEF> noop_action = new ArrayList<>();
     	
         HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
-        	traj_inital_state = deepCopyState(rddl_state);
+        	traj_inital_state = State.deepCopyState(rddl_state);
         
         final ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
         final ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> buffer_action = new ArrayList<>();
         final ArrayList<ArrayList<Double>> buffer_reward = new ArrayList<>();
 
         for (int j = 0; j < number_trajectories; j++) {
-            //HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_state_values  = deepCopyState(rddl_state)
             rddl_state.copyStateRDDLState(traj_inital_state, true);
 
             ArrayList<HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>> 
@@ -1747,7 +1747,7 @@ public class HOPPlanner extends Policy {
             for (int i = 0; i < trajectory_length; i++) {
                 ArrayList<PVAR_INST_DEF> traj_action = noop_action; 
                 HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
-                	store_state = deepCopyState(rddl_state);
+                	store_state = State.deepCopyState(rddl_state);
                 store_traj_states.add(store_state);
                 //Advance to Next State
                 rddl_state.computeNextState(traj_action, this._random);
@@ -1772,9 +1772,7 @@ public class HOPPlanner extends Policy {
 
 
     public double runRandomPolicyForState(State s)throws Exception{
-        //Copying the state
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> 
-        	copiedState = deepCopyState(s);
+
         //Getting Random Trajectories and adding to buffer.
         int num_trajectories = 30;
         int length_trajectories = 10;
@@ -1885,8 +1883,8 @@ public class HOPPlanner extends Policy {
                     double round_reward = 0.0;
                     ArrayList<PVAR_INST_DEF> round_best_action = new ArrayList<>();
                     double max_step_reward = -Double.MAX_VALUE;
-                    ArrayList<PVAR_INST_DEF> round_best_actions = null;
                     //This is for sequential Steps..
+                    ArrayList<ArrayList<Object>> checking = new ArrayList<>();
                     for (int n = 0; n < exp_steps; n++) {
                         try {
 
@@ -1897,7 +1895,7 @@ public class HOPPlanner extends Policy {
                             if (explo_planner.DO_NPWL_PWL) {
                                 explo_planner.checkNonLinearExpressions(state);
                             }
-                            
+                            ArrayList<Object> temp_s_a_r = new ArrayList<>();
                             explo_planner.TIME_LIMIT_MINS = Double.valueOf(gurobi_timeout);
                             explo_planner.DO_GUROBI_INITIALIZATION = true;
                             //System.out.println(">>>>>>>>>>This is State ::: ");
@@ -1906,25 +1904,29 @@ public class HOPPlanner extends Policy {
 
                             try {
                                 if(found_round_best_action)
-                                    explo_planner.setActionVariables(round_best_actions,
+                                    explo_planner.setActionVariables(round_best_action,
                                             explo_planner.static_grb_model);
                                 actions = explo_planner.getActions(state);
                                 System.out.println("The Action Taken is >>" + actions.toString());
                                 state.checkStateActionConstraints(actions);
                             }catch(Exception e){
                                 // This is the case when actions are infeasible or gurobi has infeasiblity.
+                                e.printStackTrace();
                                 actions = baseLineAction(rddl_state);
                             }
 
                             state.computeNextState(actions, this._random);
+
                             final double immediate_reward = ((Number) domain._exprReward.sample(
                                     new HashMap<RDDL.LVAR, LCONST>(), state, this._random)).doubleValue();
+                            temp_s_a_r.add(state._state); temp_s_a_r.add(actions) ; temp_s_a_r.add(immediate_reward);
                             state.advanceNextState();
                             round_reward += immediate_reward;
                             if (immediate_reward > max_step_reward) {
                                 round_best_action = actions;
                                 max_step_reward = immediate_reward;
                             }
+                            checking.add(temp_s_a_r);
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -2036,66 +2038,21 @@ public class HOPPlanner extends Policy {
     }
 
 
-    protected HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> deepCopyState(final State rddl_state) {
 
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> temp = rddl_state._state;
-        HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> copied_state =  new HashMap<>();
-
-        for(PVAR_NAME pvar : temp.keySet()){
-            PVAR_NAME new_pvar = new PVAR_NAME(pvar._sPVarName);
-            HashMap<ArrayList<LCONST>,Object> temp_hashmap = temp.get(pvar);
-            HashMap<ArrayList<LCONST>,Object> new_hashmap =  new HashMap<>();
-            for(ArrayList<LCONST> temp_array : temp_hashmap.keySet()){
-                ArrayList<LCONST> new_array = new ArrayList<>();
-                for(int i=0; i<temp_array.size(); i++){
-                    LCONST temp_lconst = temp_array.get(i);
-                    if(temp_lconst instanceof RDDL.OBJECT_VAL){
-                        LCONST new_lconst = new RDDL.OBJECT_VAL(temp_lconst._sConstValue);
-                        new_array.add(new_lconst); }
-                    if(temp_lconst instanceof RDDL.ENUM_VAL){
-                        LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
-                        new_array.add(new_lconst); }
-                }
-                //This is for deep copy for Object
-                Object temp_objval = temp_hashmap.get(temp_array);
-                Object new_objval = null;
-                if( temp_hashmap.get(temp_array) instanceof Boolean){
-                    new_objval = new Boolean(((Boolean)temp_objval).booleanValue());
-                }
-                else if( temp_hashmap.get(temp_array) instanceof Double){
-                	new_objval = new Double(((Double)temp_objval).doubleValue());
-                }
-                else if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
-                	new_objval = new ENUM_VAL(((ENUM_VAL)temp_objval)._sConstValue);
-                }
-                else if(temp_hashmap.get(temp_array) instanceof  Integer){
-                	new_objval = new Integer(((Integer)temp_objval).intValue());
-                }
-                else{
-                    System.out.println(temp_objval + " instance of an Object is Not Implemented");
-                    throw new AssertionError();
-                }
-                assert( new_objval != null );
-                new_hashmap.put(new_array, new_objval);
-            }
-            copied_state.put(new_pvar,new_hashmap);
-        }
-        return copied_state;
-    }
 
     protected ArrayList[] runRandomPolicy(final State rddl_state,
     		int trajectory_length, int number_trajectories) throws EvalException {
 
 
         HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
-        	traj_inital_state = deepCopyState(rddl_state);
+        	traj_inital_state = State.deepCopyState(rddl_state);
         
         final ArrayList<ArrayList<HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>>>> buffer_state = new ArrayList<>();
         final ArrayList<ArrayList<ArrayList<PVAR_INST_DEF>>> buffer_action = new ArrayList<>();
         final ArrayList<ArrayList<Double>> buffer_reward = new ArrayList<>();
 
         for (int j = 0; j < number_trajectories; j++) {
-            //HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> traj_state_values  = deepCopyState(rddl_state)
+            //Deep copies traj_inital_state to rddl_state._state.
             rddl_state.copyStateRDDLState(traj_inital_state, true);
 
             ArrayList<HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>>> 
@@ -2107,7 +2064,7 @@ public class HOPPlanner extends Policy {
                 ArrayList<PVAR_INST_DEF> traj_action 
                 	= this.random_policy.getActions(rddl_state);
                 HashMap<PVAR_NAME, HashMap<ArrayList<LCONST>, Object>> 
-                	store_state = deepCopyState(rddl_state);
+                	store_state = State.deepCopyState(rddl_state);
                 store_traj_states.add(store_state);
                 //Advance to Next State
                 rddl_state.computeNextState(traj_action, this._random);
@@ -2132,7 +2089,7 @@ public class HOPPlanner extends Policy {
 
     public void checkNonLinearExpressions(final State rddl_state) throws Exception {
 
-        ArrayList[] buffers = runRandomPolicy(rddl_state, 2, 100);
+        ArrayList[] buffers = null;
     	//PASS BUFFERS TO FITTING
         EarthForPlanner earth_obj =new EarthForPlanner();
     	
@@ -2152,6 +2109,9 @@ public class HOPPlanner extends Policy {
         		hmtypes, hm_variables);
         ArrayList<RDDL.LTERM> raw_terms1 = new ArrayList<>();
         if(!check_pwl){
+
+            if(buffers==null)
+                buffers = runRandomPolicy(rddl_state, 2, 100);
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
             EXPR final_expr   = earth_obj.fitPWL(sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
@@ -2196,6 +2156,9 @@ public class HOPPlanner extends Policy {
                         if (SHOW_PWL_NON_PWL)
                             System.out.println("Substituted PWL: " + check_PWL);
                         if (!check_PWL) {
+
+                            if(buffers==null)
+                                buffers = runRandomPolicy(rddl_state, 2, 100);
                             pvar_npwl = true;
                             EXPR final_expr = earth_obj.fitPWL(det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);
@@ -2216,6 +2179,8 @@ public class HOPPlanner extends Policy {
         }
 
     }
+
+
 
 
     protected Object sanitize(PVAR_NAME pName, double value) {
