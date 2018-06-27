@@ -35,8 +35,8 @@ public class RDDL {
 	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
 	protected static final LVAR FUTURE_PREDICATE  = new LVAR("?future");
 	protected static final String REG_EXPR_      = ".*(time|future).*";
-	protected static final Boolean SHOW_TRACE_EXCEPTIONS = true;
-	protected static final Boolean SHOW_MODIFIED_EXCEPTIONS = true;
+	protected static final Boolean SHOW_TRACE_EXCEPTIONS = false;
+	protected static final Boolean SHOW_MODIFIED_EXCEPTIONS = false;
 
 	public RDDL() { }
 
@@ -1753,7 +1753,7 @@ public class RDDL {
 
 		public boolean isConstant(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
 								  Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception{
-			throw new UnsupportedOperationException(toString());
+			throw new NoStackTraceRuntimeException();
 		}
 
 		public boolean isPiecewiseLinear(final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
@@ -4916,6 +4916,12 @@ public class RDDL {
 						}else if( e2_const && e2_sub.getDoubleValue(constants, objects, hmtypes ,hm_variables,  null) == 1d ){
 							return e1_sub;
 						}else if( e1_sub instanceof BOOL_EXPR && e2_sub instanceof BOOL_EXPR ){
+//							if((e1_sub instanceof PVAR_EXPR) && (e2_sub instanceof PVAR_EXPR)  ){
+//								hmtypes.get(hm_variables.get(((PVAR_EXPR) e1_sub)._pName)._typeRange instanceof
+//							} else{
+//
+//							}
+
 							return new CONN_EXPR(e1_sub, e2_sub, CONN_EXPR.AND);
 						}else if( e1_sub instanceof BOOL_EXPR && !(e2_sub instanceof BOOL_EXPR) ){
 							return new IF_EXPR(e1_sub, e2_sub , new REAL_CONST_EXPR(0.0d) );
