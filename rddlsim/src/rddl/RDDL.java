@@ -4816,10 +4816,30 @@ public class RDDL {
 				throw exc;
 			}
 		}
+		
+		public static boolean isTrueBool(final EXPR e, 
+				final HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
+			if( e instanceof BOOL_EXPR ){
+				if( e instanceof PVAR_EXPR ){
+					this_pvar = (PVAR_EXPR)e;
+					if( hm_variables != null 
+							&& hm_variables.containsKey(this_pvar._pName)){
+						return hm_variables.get(this_pvar.pName)._typeRange
+								.equals(TYPE_NAME.BOOL_TYPE);
+					}else{
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
 
 		@Override
 		public boolean isPiecewiseLinear(Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-										 Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
+				 Map<TYPE_NAME, OBJECTS_DEF> objects, 
+				 HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+				 HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) throws Exception {
 			try{
 				if( isConstant(constants, objects, hmtypes,hm_variables  ) ){
 					return true;
@@ -4839,9 +4859,9 @@ public class RDDL {
 				}else if( _op.equals(TIMES) ){
 					return ( _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
 						|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
-						|| ( _e1 instanceof BOOL_EXPR && _e2 instanceof BOOL_EXPR )
-						|| ( _e1 instanceof BOOL_EXPR && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
-						|| ( _e2 instanceof BOOL_EXPR && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
+						|| ( isTrueBool(_e1, hm_variables) && isTrueBool(_e2, hm_variables) )
+						|| ( isTrueBool(_e1, hm_variables) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
+						|| ( isTrueBool(_e2, hm_variables) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
 						
 				}else if( _op.equals(DIV) ){
 					return _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
@@ -4883,7 +4903,9 @@ public class RDDL {
 
 		private EXPR reduce(final EXPR e1_sub, final EXPR e2_sub, final String op,
 							final Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants,
-							final Map<TYPE_NAME, OBJECTS_DEF> objects, HashMap<TYPE_NAME, TYPE_DEF> hmtypes, HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
+							final Map<TYPE_NAME, OBJECTS_DEF> objects, 
+							HashMap<TYPE_NAME, TYPE_DEF> hmtypes, 
+							HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables) {
 			try{
 				//This is expensive.
 				final boolean e1_const = e1_sub.isConstant( constants , objects, hmtypes,hm_variables  );
@@ -4915,7 +4937,7 @@ public class RDDL {
 							return e2_sub;
 						}else if( e2_const && e2_sub.getDoubleValue(constants, objects, hmtypes ,hm_variables,  null) == 1d ){
 							return e1_sub;
-						}else if( e1_sub instanceof BOOL_EXPR && e2_sub instanceof BOOL_EXPR ){
+						}else if( isTrueBool(e1_sub, hm_variables) && isTrueBool(e2_sub, hm_variables) ){
 //							if((e1_sub instanceof PVAR_EXPR) && (e2_sub instanceof PVAR_EXPR)  ){
 //								hmtypes.get(hm_variables.get(((PVAR_EXPR) e1_sub)._pName)._typeRange instanceof
 //							} else{
@@ -4923,9 +4945,10 @@ public class RDDL {
 //							}
 
 							return new CONN_EXPR(e1_sub, e2_sub, CONN_EXPR.AND);
-						}else if( e1_sub instanceof BOOL_EXPR && !(e2_sub instanceof BOOL_EXPR) ){
+						}else if( isTrueBool(e1_sub, hm_variables) && 
+								e2_sub.isPiecewiseLinear() ) ){
 							return new IF_EXPR(e1_sub, e2_sub , new REAL_CONST_EXPR(0.0d) );
-						}else if( e2_sub instanceof BOOL_EXPR && !(e1_sub instanceof BOOL_EXPR) ){
+						}else if( isTrueBool(e2_sub, hm_variables) && e1_sub.isPieceWiseLinear() ){
 							return new IF_EXPR(e2_sub, e1_sub , new REAL_CONST_EXPR(0.0d) );
 						}
 						break;
