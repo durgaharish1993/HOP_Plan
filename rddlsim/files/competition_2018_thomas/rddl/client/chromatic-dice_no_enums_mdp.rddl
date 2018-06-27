@@ -1,0 +1,1282 @@
+////////////////////////////////////////////////////////////////////
+//
+// RDDL MDP version of the ChromaticDice domain for IPC 2018 by Thomas
+// Keller (tho.keller [at] unibas.ch).
+//
+// ChromaticDice is a variant of the popular dice game Yahtzee (also
+// known as Kniffel and other names). The most important difference is
+// that dice show colored values upon rolling, where the color is
+// independent from the value (i.e., the same die can come up with a blue
+// 6 and a red 6 in two consecutive steps).
+//
+// The colors allow for some additional categories in a new middle section
+// (one for each color where the sum of all values with a certain color
+// count) and five new categories in the lower section (color versions of
+// three and four of a kind, full house and flush and rainbow). The color
+// versions of three and four of a kind differ from the value version in
+// that only the dice count that are of the right color, whereas all dice
+// count in the three-of-a-kind and four-of-a-kind categories.
+//
+// Like the "upper" section (with categories ones, twos, etc), the new
+// middle section allows for a bonus if the assigned dice meet certain
+// criteria. Since this domain is modelled without integer-valued variables,
+// we cannot a condition for the bonus that relies on the sum of all
+// entries in the section. Instead, we take a probabilistic approach, where
+// we keep track of levels that define a probability that the bonus is
+// received. If four or five dice count towards one of the categories, the
+// level increases, and if one or two dice count it is decreased. There is
+// such a level both for the upper and middle section, and both boni are
+// granted (or not) at the end of a run.
+//
+////////////////////////////////////////////////////////////////////
+
+domain chromatic-dice_no_enums_mdp {
+    requirements = { 
+        reward-deterministic,
+        preconditions
+    };
+
+    types {
+        die        : object;
+    };
+
+    pvariables {
+        // non-fluents
+      
+        SCORE_FIVE_OF_A_KIND            : {non-fluent, int, default = 50};
+        SCORE_LARGE_STRAIGHT            : {non-fluent, int, default = 40};
+        SCORE_SMALL_STRAIGHT            : {non-fluent, int, default = 30};
+        SCORE_FULL_HOUSE                : {non-fluent, int, default = 25};
+
+        SCORE_COLOR_FULL_HOUSE          : {non-fluent, int, default = 20};        
+        SCORE_RAINBOW                   : {non-fluent, int, default = 35};
+
+        // By default, this is higher as usual (45 instead of 35), but it
+        // is hard in the encoding where boni are granted only at the very
+        // end to assess the importance of the bonus, so we reward planners
+        // that do
+        BONUS_VALUE_PART_LEVEL_1        : {non-fluent, int, default = 45};
+        BONUS_VALUE_PART_LEVEL_2        : {non-fluent, int, default = 45};
+        BONUS_VALUE_PART_LEVEL_3        : {non-fluent, int, default = 45};
+        BONUS_VALUE_PART_LEVEL_4        : {non-fluent, int, default = 45};
+        BONUS_VALUE_PART_LEVEL_5        : {non-fluent, int, default = 45};
+        BONUS_VALUE_PART_LEVEL_6        : {non-fluent, int, default = 45};
+        BONUS_COLOR_PART_LEVEL_1        : {non-fluent, int, default = 40};
+        BONUS_COLOR_PART_LEVEL_2        : {non-fluent, int, default = 40};
+        BONUS_COLOR_PART_LEVEL_3        : {non-fluent, int, default = 40};
+        BONUS_COLOR_PART_LEVEL_4        : {non-fluent, int, default = 40};
+        BONUS_COLOR_PART_LEVEL_5        : {non-fluent, int, default = 40};
+        BONUS_COLOR_PART_LEVEL_6        : {non-fluent, int, default = 40};
+
+        BONUS_PROB_VALUE_PART_LEVEL_1   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_VALUE_PART_LEVEL_2   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_VALUE_PART_LEVEL_3   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_VALUE_PART_LEVEL_4   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_VALUE_PART_LEVEL_5   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_VALUE_PART_LEVEL_6   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_1   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_2   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_3   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_4   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_5   : {non-fluent, real, default = 0.0};
+        BONUS_PROB_COLOR_PART_LEVEL_6   : {non-fluent, real, default = 0.0};
+
+        VALUE_PROB_FOR_ONE              : {non-fluent, real, default = 0.166666667};
+        VALUE_PROB_FOR_TWO              : {non-fluent, real, default = 0.166666667};
+        VALUE_PROB_FOR_THREE            : {non-fluent, real, default = 0.166666667};
+        VALUE_PROB_FOR_FOUR             : {non-fluent, real, default = 0.166666667};
+        VALUE_PROB_FOR_FIVE             : {non-fluent, real, default = 0.166666667};
+        VALUE_PROB_FOR_SIX              : {non-fluent, real, default = 0.166666667};
+        COLOR_PROB_FOR_BLUE             : {non-fluent, real, default = 0.0};
+        COLOR_PROB_FOR_RED              : {non-fluent, real, default = 0.0};
+        COLOR_PROB_FOR_GREEN            : {non-fluent, real, default = 0.0};
+        COLOR_PROB_FOR_YELLOW           : {non-fluent, real, default = 0.0};
+        COLOR_PROB_FOR_PURPLE           : {non-fluent, real, default = 0.0};
+
+        // state-fluents
+        die-value-is-one(die)           : {state-fluent, bool, default = true};
+        die-value-is-two(die)           : {state-fluent, bool, default = false};
+        die-value-is-three(die)         : {state-fluent, bool, default = false};
+        die-value-is-four(die)          : {state-fluent, bool, default = false};
+        die-value-is-five(die)          : {state-fluent, bool, default = false};
+        die-value-is-six(die)           : {state-fluent, bool, default = false};
+
+        die-color-is-blue(die)          : {state-fluent, bool, default = true};
+        die-color-is-red(die)           : {state-fluent, bool, default = false};
+        die-color-is-green(die)         : {state-fluent, bool, default = false};
+        die-color-is-yellow(die)        : {state-fluent, bool, default = false};
+        die-color-is-purple(die)        : {state-fluent, bool, default = false};
+
+        // interm-fluents to determine if a die-value changes
+        die-value-is-one-helper(die)    : {interm-fluent, bool, level = 1};
+        die-value-is-two-helper(die)    : {interm-fluent, bool, level = 2};
+        die-value-is-three-helper(die)  : {interm-fluent, bool, level = 3};
+        die-value-is-four-helper(die)   : {interm-fluent, bool, level = 4};
+        die-value-is-five-helper(die)   : {interm-fluent, bool, level = 5};
+        die-value-is-six-helper(die)    : {interm-fluent, bool, level = 6};
+
+        die-color-is-blue-helper(die)   : {interm-fluent, bool, level = 1};
+        die-color-is-red-helper(die)    : {interm-fluent, bool, level = 2};
+        die-color-is-green-helper(die)  : {interm-fluent, bool, level = 3};
+        die-color-is-yellow-helper(die) : {interm-fluent, bool, level = 4};
+        die-color-is-purple-helper(die) : {interm-fluent, bool, level = 5};
+
+        current-phase-is-roll1          : {state-fluent, bool, default = true};
+        current-phase-is-roll2          : {state-fluent, bool, default = false};
+        current-phase-is-roll3          : {state-fluent, bool, default = false};
+        current-phase-is-assign         : {state-fluent, bool, default = false};
+        current-phase-is-assign-boni    : {state-fluent, bool, default = false};
+        current-phase-is-finish         : {state-fluent, bool, default = false};
+        
+        taken-ones                      : {state-fluent, bool, default = false};
+        taken-twos                      : {state-fluent, bool, default = false};
+        taken-threes                    : {state-fluent, bool, default = false};
+        taken-fours                     : {state-fluent, bool, default = false};
+        taken-fives                     : {state-fluent, bool, default = false};
+        taken-sixes                     : {state-fluent, bool, default = false};
+        taken-blues                     : {state-fluent, bool, default = false};
+        taken-reds                      : {state-fluent, bool, default = false};
+        taken-greens                    : {state-fluent, bool, default = false};
+        taken-yellows                   : {state-fluent, bool, default = false};
+        taken-purples                   : {state-fluent, bool, default = false};
+        taken-two-pairs                 : {state-fluent, bool, default = false};
+        taken-three-of-a-kind           : {state-fluent, bool, default = false};
+        taken-four-of-a-kind            : {state-fluent, bool, default = false};
+        taken-full-house                : {state-fluent, bool, default = false};
+        taken-small-straight            : {state-fluent, bool, default = false};
+        taken-large-straight            : {state-fluent, bool, default = false};
+        taken-chance                    : {state-fluent, bool, default = false};
+        taken-five-of-a-kind            : {state-fluent, bool, default = false};
+        taken-three-of-a-color          : {state-fluent, bool, default = false};
+        taken-four-of-a-color           : {state-fluent, bool, default = false};
+        taken-color-full-house          : {state-fluent, bool, default = false};
+        taken-flush                     : {state-fluent, bool, default = false};
+        taken-rainbow                   : {state-fluent, bool, default = false};
+        
+        bonus-level-value-part-is-1     : {state-fluent, bool, default = false};
+        bonus-level-value-part-is-2     : {state-fluent, bool, default = false};
+        bonus-level-value-part-is-3     : {state-fluent, bool, default = false};
+        bonus-level-value-part-is-4     : {state-fluent, bool, default = true};
+        bonus-level-value-part-is-5     : {state-fluent, bool, default = false};
+        bonus-level-value-part-is-6     : {state-fluent, bool, default = false};
+        
+        bonus-level-color-part-is-1     : {state-fluent, bool, default = false};
+        bonus-level-color-part-is-2     : {state-fluent, bool, default = false};
+        bonus-level-color-part-is-3     : {state-fluent, bool, default = false};
+        bonus-level-color-part-is-4     : {state-fluent, bool, default = true};
+        bonus-level-color-part-is-5     : {state-fluent, bool, default = false};
+        bonus-level-color-part-is-6     : {state-fluent, bool, default = false};
+        
+        receive-value-bonus             : {state-fluent, bool, default = false};
+        receive-color-bonus             : {state-fluent, bool, default = false};
+
+        // action-fluents
+        roll(die)                       : {action-fluent, bool, default = false};
+        assign-to-ones                  : {action-fluent, bool, default = false};
+        assign-to-twos                  : {action-fluent, bool, default = false};
+        assign-to-threes                : {action-fluent, bool, default = false};
+        assign-to-fours                 : {action-fluent, bool, default = false};
+        assign-to-fives                 : {action-fluent, bool, default = false};
+        assign-to-sixes                 : {action-fluent, bool, default = false};
+        assign-to-blues                 : {action-fluent, bool, default = false};
+        assign-to-reds                  : {action-fluent, bool, default = false};
+        assign-to-greens                : {action-fluent, bool, default = false};
+        assign-to-yellows               : {action-fluent, bool, default = false};
+        assign-to-purples               : {action-fluent, bool, default = false};
+        assign-to-two-pairs             : {action-fluent, bool, default = false};
+        assign-to-three-of-a-kind       : {action-fluent, bool, default = false};
+        assign-to-four-of-a-kind        : {action-fluent, bool, default = false};
+        assign-to-full-house            : {action-fluent, bool, default = false};
+        assign-to-small-straight        : {action-fluent, bool, default = false};
+        assign-to-large-straight        : {action-fluent, bool, default = false};
+        assign-to-chance                : {action-fluent, bool, default = false};
+        assign-to-five-of-a-kind        : {action-fluent, bool, default = false};
+        assign-to-three-of-a-color      : {action-fluent, bool, default = false};
+        assign-to-four-of-a-color       : {action-fluent, bool, default = false};
+        assign-to-color-full-house      : {action-fluent, bool, default = false};
+        assign-to-flush                 : {action-fluent, bool, default = false};
+        assign-to-rainbow               : {action-fluent, bool, default = false};
+    };
+
+    cpfs {
+         die-value-is-one'(?d) =
+            if (roll(?d)) then die-value-is-one-helper(?d)
+            else die-value-is-one(?d);
+
+        die-value-is-two'(?d) =
+            if (roll(?d)) then die-value-is-two-helper(?d)
+            else die-value-is-two(?d);
+
+        die-value-is-three'(?d) =
+            if (roll(?d)) then die-value-is-three-helper(?d)
+            else die-value-is-three(?d);
+
+        die-value-is-four'(?d) =
+            if (roll(?d)) then die-value-is-four-helper(?d)
+            else die-value-is-four(?d);
+
+        die-value-is-five'(?d) =
+            if (roll(?d)) then die-value-is-five-helper(?d)
+            else die-value-is-five(?d);
+
+        die-value-is-six'(?d) =
+            if (roll(?d)) then die-value-is-six-helper(?d)
+            else die-value-is-six(?d);
+
+        die-value-is-one-helper(?d) = 
+            Bernoulli(VALUE_PROB_FOR_ONE);
+
+        die-value-is-two-helper(?d) =
+            ~die-value-is-one-helper(?d) & Bernoulli(VALUE_PROB_FOR_TWO / (1.0 - VALUE_PROB_FOR_ONE));
+    
+        die-value-is-three-helper(?d) =
+            ~die-value-is-one-helper(?d) & ~die-value-is-two-helper(?d) &
+            Bernoulli(VALUE_PROB_FOR_THREE / (1.0 - VALUE_PROB_FOR_ONE - VALUE_PROB_FOR_TWO));
+
+        die-value-is-four-helper(?d) =
+            ~die-value-is-one-helper(?d) & ~die-value-is-two-helper(?d) & ~die-value-is-three-helper(?d) &
+            Bernoulli(VALUE_PROB_FOR_FOUR / (1.0 - VALUE_PROB_FOR_ONE - VALUE_PROB_FOR_TWO - VALUE_PROB_FOR_THREE));
+
+        die-value-is-five-helper(?d) =
+            ~die-value-is-one-helper(?d) & ~die-value-is-two-helper(?d) &
+            ~die-value-is-three-helper(?d) & ~die-value-is-four-helper(?d) &
+            Bernoulli(VALUE_PROB_FOR_FIVE / (1.0 - VALUE_PROB_FOR_ONE - VALUE_PROB_FOR_TWO - VALUE_PROB_FOR_THREE - VALUE_PROB_FOR_FOUR));
+
+        die-value-is-six-helper(?d) =
+            ~die-value-is-one-helper(?d) & ~die-value-is-two-helper(?d) & ~die-value-is-three-helper(?d) &
+            ~die-value-is-four-helper(?d) & ~die-value-is-five-helper(?d);
+
+        die-color-is-blue'(?d) =
+            if (roll(?d)) then die-color-is-blue-helper(?d)
+            else die-color-is-blue(?d);
+
+        die-color-is-red'(?d) =
+            if (roll(?d)) then die-color-is-red-helper(?d)
+            else die-color-is-red(?d);
+
+        die-color-is-green'(?d) =
+            if (roll(?d)) then die-color-is-green-helper(?d)
+            else die-color-is-green(?d);
+
+        die-color-is-yellow'(?d) =
+            if (roll(?d)) then die-color-is-yellow-helper(?d)
+            else die-color-is-yellow(?d);
+
+        die-color-is-purple'(?d) =
+            if (roll(?d)) then die-color-is-purple-helper(?d)
+            else die-color-is-purple(?d);
+
+        die-color-is-blue-helper(?d) = 
+            Bernoulli(COLOR_PROB_FOR_BLUE);
+
+        die-color-is-red-helper(?d) =
+            ~die-color-is-blue-helper(?d) & Bernoulli(COLOR_PROB_FOR_RED / (1.0 - COLOR_PROB_FOR_BLUE));
+    
+        die-color-is-green-helper(?d) =
+            ~die-color-is-blue-helper(?d) & ~die-color-is-red-helper(?d) &
+            Bernoulli(COLOR_PROB_FOR_GREEN / (1.0 - COLOR_PROB_FOR_BLUE - COLOR_PROB_FOR_RED));
+
+        die-color-is-yellow-helper(?d) =
+            ~die-color-is-blue-helper(?d) & ~die-color-is-red-helper(?d) & ~die-color-is-green-helper(?d) &
+            Bernoulli(COLOR_PROB_FOR_YELLOW / (1.0 - COLOR_PROB_FOR_BLUE - COLOR_PROB_FOR_RED - COLOR_PROB_FOR_GREEN));
+
+        die-color-is-purple-helper(?d) =
+            ~die-color-is-blue-helper(?d) & ~die-color-is-red-helper(?d) &
+            ~die-color-is-green-helper(?d) & ~die-color-is-yellow-helper(?d);
+
+         current-phase-is-roll1' =
+             ~( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+                (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+                (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+                (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+                (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+                (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+                (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+                (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+                (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+                (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+                (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+                (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+                (~current-phase-is-assign-boni) ) &
+             ~( taken-ones & taken-twos & taken-threes & taken-fours & taken-fives & taken-sixes &
+                taken-blues & taken-reds & taken-greens & taken-yellows & taken-purples & taken-two-pairs &
+                taken-three-of-a-kind & taken-four-of-a-kind & taken-full-house & taken-small-straight &
+                taken-large-straight & taken-chance & taken-five-of-a-kind & taken-three-of-a-color &
+                taken-four-of-a-color & taken-color-full-house & taken-flush & taken-rainbow) &
+             ~(current-phase-is-roll1) & ~(current-phase-is-roll2) & ~(current-phase-is-roll3);
+
+         current-phase-is-roll2' =
+             ~( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+                (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+                (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+                (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+                (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+                (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+                (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+                (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+                (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+                (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+                (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+                (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+                (~current-phase-is-assign-boni) ) &
+             ~( taken-ones & taken-twos & taken-threes & taken-fours & taken-fives & taken-sixes &
+                taken-blues & taken-reds & taken-greens & taken-yellows & taken-purples & taken-two-pairs &
+                taken-three-of-a-kind & taken-four-of-a-kind & taken-full-house & taken-small-straight &
+                taken-large-straight & taken-chance & taken-five-of-a-kind & taken-three-of-a-color &
+                taken-four-of-a-color & taken-color-full-house & taken-flush & taken-rainbow) &
+                current-phase-is-roll1;
+
+         current-phase-is-roll3' =
+             ~( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+                (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+                (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+                (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+                (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+                (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+                (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+                (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+                (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+                (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+                (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+                (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+                (~current-phase-is-assign-boni) ) &
+             ~( taken-ones & taken-twos & taken-threes & taken-fours & taken-fives & taken-sixes &
+                taken-blues & taken-reds & taken-greens & taken-yellows & taken-purples & taken-two-pairs &
+                taken-three-of-a-kind & taken-four-of-a-kind & taken-full-house & taken-small-straight &
+                taken-large-straight & taken-chance & taken-five-of-a-kind & taken-three-of-a-color &
+                taken-four-of-a-color & taken-color-full-house & taken-flush & taken-rainbow) &
+             ~current-phase-is-roll1 & current-phase-is-roll2;
+
+         current-phase-is-assign' =
+             ~( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+                (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+                (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+                (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+                (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+                (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+                (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+                (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+                (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+                (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+                (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+                (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+                (~current-phase-is-assign-boni) ) &
+             ~( taken-ones & taken-twos & taken-threes & taken-fours & taken-fives & taken-sixes &
+                taken-blues & taken-reds & taken-greens & taken-yellows & taken-purples & taken-two-pairs &
+                taken-three-of-a-kind & taken-four-of-a-kind & taken-full-house & taken-small-straight &
+                taken-large-straight & taken-chance & taken-five-of-a-kind & taken-three-of-a-color &
+                taken-four-of-a-color & taken-color-full-house & taken-flush & taken-rainbow) &
+             ~current-phase-is-roll1 & ~current-phase-is-roll2 & current-phase-is-roll3;
+
+         current-phase-is-assign-boni' =
+             ( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+               (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+               (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+               (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+               (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+               (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+               (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+               (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+               (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+               (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+               (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+               (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+               (~current-phase-is-assign-boni) );
+
+         current-phase-is-finish' =
+             ~( (assign-to-ones | taken-ones) & (assign-to-twos | taken-twos) &
+                (assign-to-threes | taken-threes) & (assign-to-fours | taken-fours) &
+                (assign-to-fives | taken-fives) & (assign-to-sixes | taken-sixes) &
+                (assign-to-blues | taken-blues) & (assign-to-reds | taken-reds) &
+                (assign-to-greens | taken-greens) & (assign-to-yellows | taken-yellows) &
+                (assign-to-purples | taken-purples) & (assign-to-two-pairs | taken-two-pairs) &
+                (assign-to-three-of-a-kind | taken-three-of-a-kind) & (assign-to-four-of-a-kind | taken-four-of-a-kind) &
+                (assign-to-full-house | taken-full-house) & (assign-to-small-straight | taken-small-straight) &
+                (assign-to-large-straight | taken-large-straight) & (assign-to-chance | taken-chance) &
+                (assign-to-five-of-a-kind | taken-five-of-a-kind) & (assign-to-three-of-a-color | taken-three-of-a-color) &
+                (assign-to-four-of-a-color | taken-four-of-a-color) & (assign-to-color-full-house | taken-color-full-house) &
+                (assign-to-flush | taken-flush) & (assign-to-rainbow |taken-rainbow) &
+                (~current-phase-is-assign-boni) ) &
+             ( taken-ones & taken-twos & taken-threes & taken-fours & taken-fives & taken-sixes &
+               taken-blues & taken-reds & taken-greens & taken-yellows & taken-purples & taken-two-pairs &
+               taken-three-of-a-kind & taken-four-of-a-kind & taken-full-house & taken-small-straight &
+               taken-large-straight & taken-chance & taken-five-of-a-kind & taken-three-of-a-color &
+               taken-four-of-a-color & taken-color-full-house & taken-flush & taken-rainbow);
+
+         taken-ones' = taken-ones | assign-to-ones;
+         taken-twos' = taken-twos | assign-to-twos;
+         taken-threes' = taken-threes | assign-to-threes;
+         taken-fours' = taken-fours | assign-to-fours;
+         taken-fives' = taken-fives | assign-to-fives;
+         taken-sixes' = taken-sixes | assign-to-sixes;
+         taken-blues' = taken-blues | assign-to-blues;
+         taken-reds' = taken-reds | assign-to-reds;
+         taken-greens' = taken-greens | assign-to-greens;
+         taken-yellows' = taken-yellows | assign-to-yellows;
+         taken-purples' = taken-purples | assign-to-purples;
+         taken-two-pairs' = taken-two-pairs | assign-to-two-pairs;
+         taken-three-of-a-kind' = taken-three-of-a-kind | assign-to-three-of-a-kind;
+         taken-four-of-a-kind' = taken-four-of-a-kind | assign-to-four-of-a-kind;
+         taken-full-house' = taken-full-house | assign-to-full-house;
+         taken-small-straight' = taken-small-straight | assign-to-small-straight;
+         taken-large-straight' = taken-large-straight | assign-to-large-straight;
+         taken-chance' = taken-chance | assign-to-chance;
+         taken-five-of-a-kind' = taken-five-of-a-kind | assign-to-five-of-a-kind;
+         taken-three-of-a-color' = taken-three-of-a-color | assign-to-three-of-a-color;
+         taken-four-of-a-color' = taken-four-of-a-color | assign-to-four-of-a-color;
+         taken-color-full-house' = taken-color-full-house | assign-to-color-full-house;
+         taken-flush' = taken-flush | assign-to-flush;
+         taken-rainbow' = taken-rainbow | assign-to-rainbow;
+
+         bonus-level-value-part-is-1' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then ( bonus-level-value-part-is-1 | bonus-level-value-part-is-2 |
+                        bonus-level-value-part-is-3 | bonus-level-value-part-is-4)
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then ( bonus-level-value-part-is-1 | bonus-level-value-part-is-2 |
+                        bonus-level-value-part-is-3 )
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then ( bonus-level-value-part-is-1 | bonus-level-value-part-is-2 )
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then false
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then false
+             else bonus-level-value-part-is-1;
+
+         bonus-level-value-part-is-2' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then bonus-level-value-part-is-5
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then bonus-level-value-part-is-4
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then bonus-level-value-part-is-3
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then bonus-level-value-part-is-1
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then false
+             else bonus-level-value-part-is-2;
+
+         bonus-level-value-part-is-3' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then bonus-level-value-part-is-6
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then bonus-level-value-part-is-5
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then bonus-level-value-part-is-4
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then bonus-level-value-part-is-2
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then bonus-level-value-part-is-1
+             else bonus-level-value-part-is-3;
+
+         bonus-level-value-part-is-4' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then false
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then bonus-level-value-part-is-6
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then bonus-level-value-part-is-5
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then bonus-level-value-part-is-3
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then bonus-level-value-part-is-2
+             else bonus-level-value-part-is-4;
+
+         bonus-level-value-part-is-5' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then false
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then false
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then bonus-level-value-part-is-6
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then bonus-level-value-part-is-4
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then bonus-level-value-part-is-3
+             else bonus-level-value-part-is-5;
+
+         bonus-level-value-part-is-6' =
+             // no value matches -> the bonus level decreases by three
+             if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 0 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 0 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 0 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 0 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 0 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 0 ) )
+                 then false
+             // only one value matches -> the bonus level decreases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 1 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 1 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 1 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 1 ) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 1 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 1 ) )
+                 then false
+             // only two values match -> the bonus level decreases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 2 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 2 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 2 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 2) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 2 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 2 ) )
+                 then false
+             // four values match -> the bonus level increases by one
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 4 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 4 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 4 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 4) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 4 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 4 ) )
+                 then ( bonus-level-value-part-is-5 | bonus-level-value-part-is-6 )
+             // all values match -> the bonus level increases by two
+             else if (( assign-to-ones & (sum_{?d : die} [ die-value-is-one(?d) ] ) == 5 ) |
+                 ( assign-to-twos & (sum_{?d : die} [ die-value-is-two(?d) ] ) == 5 ) |
+                 ( assign-to-threes & (sum_{?d : die} [ die-value-is-three(?d) ] ) == 5 ) |
+                 ( assign-to-fours & (sum_{?d : die} [ die-value-is-four(?d) ] ) == 5) |
+                 ( assign-to-fives & (sum_{?d : die} [ die-value-is-five(?d) ] ) == 5 ) |
+                 ( assign-to-sixes & (sum_{?d : die} [ die-value-is-six(?d) ] ) == 5 ) )
+                 then ( bonus-level-value-part-is-4 | bonus-level-value-part-is-5 | bonus-level-value-part-is-6 )
+             else bonus-level-value-part-is-6;
+                 
+
+
+
+
+         bonus-level-color-part-is-1' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then ( bonus-level-color-part-is-1 | bonus-level-color-part-is-2 |
+                        bonus-level-color-part-is-3 | bonus-level-color-part-is-4)
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then ( bonus-level-color-part-is-1 | bonus-level-color-part-is-2 | bonus-level-color-part-is-3)
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then ( bonus-level-color-part-is-1 | bonus-level-color-part-is-2)
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then false
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then false
+             else bonus-level-color-part-is-1;
+
+         bonus-level-color-part-is-2' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then bonus-level-color-part-is-5
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then bonus-level-color-part-is-4
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then bonus-level-color-part-is-3
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then bonus-level-color-part-is-1
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then false
+             else bonus-level-color-part-is-2;
+
+         bonus-level-color-part-is-3' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then bonus-level-color-part-is-6
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then bonus-level-color-part-is-5
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then bonus-level-color-part-is-4
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then bonus-level-color-part-is-2
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then bonus-level-color-part-is-1
+             else bonus-level-color-part-is-3;
+
+         bonus-level-color-part-is-4' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then false
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then bonus-level-color-part-is-6
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then bonus-level-color-part-is-5
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then bonus-level-color-part-is-3
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then bonus-level-color-part-is-2
+             else bonus-level-color-part-is-4;
+
+         bonus-level-color-part-is-5' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then false
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then false
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then bonus-level-color-part-is-6
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then bonus-level-color-part-is-4
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then bonus-level-color-part-is-3
+             else bonus-level-color-part-is-5;
+
+         bonus-level-color-part-is-6' =
+             // no color matches -> the color level decreases by three
+             if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 0 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 0 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 0 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 0 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 0 ) )
+                 then false
+             // only one color matches -> the color level decreases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 1 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 1 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 1 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 1 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 1 ) )
+                 then false
+             // only two colors match -> the bonus level decreases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 2 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 2 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 2 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 2 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 2 ) )
+                 then false
+             // four colors match -> the bonus level increases by one
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 4 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 4 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 4 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 4 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 4 ) )
+                 then ( bonus-level-color-part-is-5 | bonus-level-color-part-is-6)
+             // all colors match -> the bonus level increases by two
+             else if (( assign-to-reds & (sum_{?d : die} [ die-color-is-red(?d) ] ) == 5 ) |
+                 ( assign-to-greens & (sum_{?d : die} [ die-color-is-green(?d) ] ) == 5 ) |
+                 ( assign-to-blues & (sum_{?d : die} [ die-color-is-blue(?d) ] ) == 5 ) |
+                 ( assign-to-yellows & (sum_{?d : die} [ die-color-is-yellow(?d) ] ) == 5 ) |
+                 ( assign-to-purples & (sum_{?d : die} [ die-color-is-purple(?d) ] ) == 5 ) )
+                 then (bonus-level-color-part-is-4 | bonus-level-color-part-is-5 | bonus-level-color-part-is-6)
+             else bonus-level-color-part-is-6;
+
+         receive-value-bonus' =
+             if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-1) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_1)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-2) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_2)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-3) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_3)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-4) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_4)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-5) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_5)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-value-part-is-6) )
+                 then Bernoulli(BONUS_PROB_VALUE_PART_LEVEL_6)
+             else false;
+             
+
+         receive-color-bonus' =
+             if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-1) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_1)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-2) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_2)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-3) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_3)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-4) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_4)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-5) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_5)
+             else if ( (current-phase-is-assign-boni) & (bonus-level-color-part-is-6) )
+                 then Bernoulli(BONUS_PROB_COLOR_PART_LEVEL_6)
+             else false;
+    };
+    
+    reward =
+        /////////////////////////////////////// UPPER SECTION ///////////////////////////////////////
+        
+        ( if ( assign-to-ones )
+            then (        sum_{?d : die} [ die-value-is-one(?d) ] )
+        else if ( assign-to-twos )
+            then ( 2  * ( sum_{?d : die} [ die-value-is-two(?d) ] ) )
+        else if ( assign-to-threes )
+            then ( 3  * ( sum_{?d : die} [ die-value-is-three(?d) ] ) )
+        else if ( assign-to-fours )
+            then ( 4  * ( sum_{?d : die} [ die-value-is-four(?d) ] ) )
+        else if ( assign-to-fives )
+            then ( 5  * ( sum_{?d : die} [ die-value-is-five(?d) ] ) )
+        else if ( assign-to-sixes )
+            then ( 6  * ( sum_{?d : die} [ die-value-is-six(?d) ] ) )
+
+
+        /////////////////////////////////////// MIDDLE SECTION ///////////////////////////////////////
+        
+        // score in @reds category
+        else if ( assign-to-reds )
+            then ( sum_{?d : die} [ (die-color-is-red(?d)) *
+                                    ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) )] )
+
+        // score in @greens category
+        else if  ( assign-to-greens )
+            then ( sum_{?d : die} [ (die-color-is-green(?d)) *
+                                    ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) )] )
+
+        // score in @blues category
+        else if  ( assign-to-blues )
+            then ( sum_{?d : die} [ (die-color-is-blue(?d)) *
+                                    ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) )] )
+
+       // score in @yellows category
+        else if  ( assign-to-yellows )
+            then ( sum_{?d : die} [ (die-color-is-yellow(?d)) *
+                                    ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) )] )
+
+        // score in @purples category
+        else if  ( assign-to-purples )
+            then ( sum_{?d : die} [ (die-color-is-purple(?d)) *
+                                    ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) )] )
+
+        ///////////////////////////////////// LOWER SECTION (value matters) ///////////////////////////////////////
+
+        // score in @two-pairs category
+        else if ( assign-to-two-pairs &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d2 ~= ?d3) & (?d2 ~= ?d4) & (?d3 ~= ?d4) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d2)) | (die-value-is-two(?d1) & die-value-is-two(?d2)) |
+                           (die-value-is-three(?d1) & die-value-is-three(?d2)) | (die-value-is-four(?d1) & die-value-is-four(?d2)) |
+                           (die-value-is-five(?d1) & die-value-is-five(?d2)) | (die-value-is-six(?d1) & die-value-is-six(?d2))) &
+                          ((die-value-is-one(?d3) & die-value-is-one(?d4)) | (die-value-is-two(?d3) & die-value-is-two(?d4)) |
+                           (die-value-is-three(?d3) & die-value-is-three(?d4)) | (die-value-is-four(?d3) & die-value-is-four(?d4)) |
+                           (die-value-is-five(?d3) & die-value-is-five(?d4)) | (die-value-is-six(?d3) & die-value-is-six(?d4))) ] ) )
+            then ( sum_{?d : die} [ (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                    (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ] )
+
+        // score in @three-of-a-kind category
+        else if ( assign-to-three-of-a-kind &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d2 ~= ?d3) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d2)) | (die-value-is-two(?d1) & die-value-is-two(?d2)) |
+                          (die-value-is-three(?d1) & die-value-is-three(?d2)) | (die-value-is-four(?d1) & die-value-is-four(?d2)) |
+                          (die-value-is-five(?d1) & die-value-is-five(?d2)) | (die-value-is-six(?d1) & die-value-is-six(?d2))) &
+                         ((die-value-is-one(?d1) & die-value-is-one(?d3)) | (die-value-is-two(?d1) & die-value-is-two(?d3)) |
+                          (die-value-is-three(?d1) & die-value-is-three(?d3)) | (die-value-is-four(?d1) & die-value-is-four(?d3)) |
+                          (die-value-is-five(?d1) & die-value-is-five(?d3)) | (die-value-is-six(?d1) & die-value-is-six(?d3))) ] ) )
+            then ( sum_{?d : die} [ (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                    (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ] )
+
+        // score in @four-of-a-kind category
+        else if ( assign-to-four-of-a-kind &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d2 ~= ?d3) & (?d2 ~= ?d4) & (?d3 ~= ?d4) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d2)) | (die-value-is-two(?d1) & die-value-is-two(?d2)) |
+                           (die-value-is-three(?d1) & die-value-is-three(?d2)) | (die-value-is-four(?d1) & die-value-is-four(?d2)) |
+                           (die-value-is-five(?d1) & die-value-is-five(?d2)) | (die-value-is-six(?d1) & die-value-is-six(?d2))) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d3)) | (die-value-is-two(?d1) & die-value-is-two(?d3)) |
+                           (die-value-is-three(?d1) & die-value-is-three(?d3)) | (die-value-is-four(?d1) & die-value-is-four(?d3)) |
+                           (die-value-is-five(?d1) & die-value-is-five(?d3)) | (die-value-is-six(?d1) & die-value-is-six(?d3))) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d4)) | (die-value-is-two(?d1) & die-value-is-two(?d4)) |
+                           (die-value-is-three(?d1) & die-value-is-three(?d4)) | (die-value-is-four(?d1) & die-value-is-four(?d4)) |
+                           (die-value-is-five(?d1) & die-value-is-five(?d4)) | (die-value-is-six(?d1) & die-value-is-six(?d4))) ] ) )
+            then ( sum_{?d : die} [ (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                    (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ] )
+
+        // score in @full-house category
+        // In some versions, a five-of-a-kind may not be used as a full house (we allow it)        
+        else if ( assign-to-full-house &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die, ?d5 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d1 ~= ?d5) & (?d2 ~= ?d3) &
+                          (?d2 ~= ?d4) & (?d2 ~= ?d5) & (?d3 ~= ?d4) & (?d3 ~= ?d5) & (?d4 ~= ?d5) &
+                          ((die-value-is-one(?d1) & die-value-is-one(?d2) & die-value-is-one(?d3)) |
+                           (die-value-is-two(?d1) & die-value-is-two(?d2) & die-value-is-two(?d3)) |
+                           (die-value-is-three(?d1) & die-value-is-three(?d2) & die-value-is-three(?d3)) |
+                           (die-value-is-four(?d1) & die-value-is-four(?d2) & die-value-is-four(?d3)) |
+                           (die-value-is-five(?d1) & die-value-is-five(?d2) & die-value-is-five(?d3)) |
+                           (die-value-is-six(?d1) & die-value-is-six(?d2) & die-value-is-six(?d3))) &
+                          ((die-value-is-one(?d4) & die-value-is-one(?d5)) | (die-value-is-two(?d4) & die-value-is-two(?d5)) |
+                           (die-value-is-three(?d4) & die-value-is-three(?d5)) | (die-value-is-four(?d4) & die-value-is-four(?d5)) |
+                           (die-value-is-five(?d4) & die-value-is-five(?d5)) | (die-value-is-six(?d4) & die-value-is-six(?d5))) ] ) )
+            then SCORE_FULL_HOUSE
+
+        // score in @small-straight category
+        else if ( assign-to-small-straight &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d2 ~= ?d3) & (?d2 ~= ?d4) & (?d3 ~= ?d4) &
+                          ( ( (die-value-is-one(?d1)) & (die-value-is-two(?d2)) & (die-value-is-three(?d3)) & (die-value-is-four(?d4)) ) |
+                            ( (die-value-is-two(?d1)) & (die-value-is-three(?d2)) & (die-value-is-four(?d3)) & (die-value-is-five(?d4)) ) |
+                            ( (die-value-is-three(?d1)) & (die-value-is-four(?d2)) & (die-value-is-five(?d3)) & (die-value-is-six(?d4)) ) ) ] ) )
+            then SCORE_SMALL_STRAIGHT
+
+        // score in @large-straight category
+        else if ( assign-to-large-straight &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die, ?d5 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d1 ~= ?d5) & (?d2 ~= ?d3) &
+                          (?d2 ~= ?d4) & (?d2 ~= ?d5) & (?d3 ~= ?d4) & (?d3 ~= ?d5) & (?d4 ~= ?d5) &
+                          ( ( (die-value-is-one(?d1)) & (die-value-is-two(?d2)) & (die-value-is-three(?d3)) & (die-value-is-four(?d4)) & (die-value-is-five(?d5)) ) |
+                            ( (die-value-is-two(?d1)) & (die-value-is-three(?d2)) & (die-value-is-four(?d3)) & (die-value-is-five(?d4)) & (die-value-is-six(?d5)) ) ) ] ) )
+            then SCORE_LARGE_STRAIGHT
+
+        // score in @chance category
+        else if ( assign-to-chance )
+        then ( sum_{?d : die} [ (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ] )
+
+        // score in @five-of-a-kind category
+        else if ( assign-to-five-of-a-kind &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die, ?d5 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d1 ~= ?d5) & (?d2 ~= ?d3) &
+                          (?d2 ~= ?d4) & (?d2 ~= ?d5) & (?d3 ~= ?d4) & (?d3 ~= ?d5) & (?d4 ~= ?d5) &
+                          (die-value-is-one(?d1) & die-value-is-one(?d2) & die-value-is-one(?d3) & die-value-is-one(?d4) & die-value-is-one(?d5)) |
+                          (die-value-is-two(?d1) & die-value-is-two(?d2) & die-value-is-two(?d3) & die-value-is-two(?d4) & die-value-is-two(?d5)) |
+                          (die-value-is-three(?d1) & die-value-is-three(?d2) & die-value-is-three(?d3) & die-value-is-three(?d4) & die-value-is-three(?d5)) <
+                          (die-value-is-four(?d1) & die-value-is-four(?d2) & die-value-is-four(?d3) & die-value-is-four(?d4) & die-value-is-four(?d5)) |
+                          (die-value-is-five(?d1) & die-value-is-five(?d2) & die-value-is-five(?d3) & die-value-is-five(?d4) & die-value-is-five(?d5)) |
+                          (die-value-is-six(?d1) & die-value-is-six(?d2) & die-value-is-six(?d3) & die-value-is-six(?d4) & die-value-is-six(?d5)) ] ) )
+            then SCORE_FIVE_OF_A_KIND
+
+        ///////////////////////////////////// LOWER SECTION (color matters) ///////////////////////////////////////
+
+        // score in @three-of-a-color category
+        else if ( assign-to-three-of-a-color &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d2 ~= ?d3) &
+                          ((die-color-is-blue(?d1) & die-color-is-blue(?d2) & die-color-is-blue(?d3)) |
+                           (die-color-is-red(?d1) & die-color-is-red(?d2) & die-color-is-red(?d3)) |
+                           (die-color-is-green(?d1) & die-color-is-green(?d2) & die-color-is-green(?d3)) |
+                           (die-color-is-yellow(?d1) & die-color-is-yellow(?d2) & die-color-is-yellow(?d3)) |
+                           (die-color-is-purple(?d1) & die-color-is-purple(?d2) & die-color-is-purple(?d3)) ) ] ) )
+            then ( sum_{?d : die} [ ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ) *
+                                    ( exists_{?d2 : die, ?d3 : die} [ (?d ~= ?d2) & (?d ~= ?d3) & (?d2 ~= ?d3) &
+                                                                      ((die-color-is-blue(?d) & die-color-is-blue(?d2) & die-color-is-blue(?d3)) |
+                                                                       (die-color-is-red(?d) & die-color-is-red(?d2) & die-color-is-red(?d3)) |
+                                                                       (die-color-is-green(?d) & die-color-is-green(?d2) & die-color-is-green(?d3)) |
+                                                                       (die-color-is-yellow(?d) & die-color-is-yellow(?d2) & die-color-is-yellow(?d3)) |
+                                                                       (die-color-is-purple(?d) & die-color-is-purple(?d2) & die-color-is-purple(?d3)) ) ] ) ] )
+
+        // score in @four-of-a-color category
+        else if ( assign-to-four-of-a-color &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d2 ~= ?d3) & (?d2 ~= ?d4) & (?d3 ~= ?d4) &
+                          ((die-color-is-blue(?d1) & die-color-is-blue(?d2) & die-color-is-blue(?d3) & die-color-is-blue(?d4)) |
+                           (die-color-is-red(?d1) & die-color-is-red(?d2) & die-color-is-red(?d3) & die-color-is-red(?d4)) |
+                           (die-color-is-green(?d1) & die-color-is-green(?d2) & die-color-is-green(?d3) & die-color-is-green(?d4)) |
+                           (die-color-is-yellow(?d1) & die-color-is-yellow(?d2) & die-color-is-yellow(?d3) & die-color-is-yellow(?d4)) |
+                           (die-color-is-purple(?d1) & die-color-is-purple(?d2) & die-color-is-purple(?d3) & die-color-is-purple(?d4)) ) ] ) )
+            then ( sum_{?d : die} [ ( (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                      (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ) *
+                                    ( exists_{?d2 : die} [ (?d ~= ?d2) & ((die-color-is-blue(?d) & die-color-is-blue(?d2)) |
+                                                                          (die-color-is-red(?d) & die-color-is-red(?d2)) |
+                                                                          (die-color-is-green(?d) & die-color-is-green(?d2)) |
+                                                                          (die-color-is-yellow(?d) & die-color-is-yellow(?d2)) |
+                                                                          (die-color-is-purple(?d) & die-color-is-purple(?d2)) ) ] ) ] )
+
+        // score in @color-full-house category      
+        else if ( assign-to-color-full-house &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die, ?d5 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d1 ~= ?d5) & (?d2 ~= ?d3) &
+                          (?d2 ~= ?d4) & (?d2 ~= ?d5) & (?d3 ~= ?d4) & (?d3 ~= ?d5) & (?d4 ~= ?d5) &
+                          ((die-color-is-blue(?d1) & die-color-is-blue(?d2) & die-color-is-blue(?d3)) |
+                           (die-color-is-red(?d1) & die-color-is-red(?d2) & die-color-is-red(?d3)) |
+                           (die-color-is-green(?d1) & die-color-is-green(?d2) & die-color-is-green(?d3)) |
+                           (die-color-is-yellow(?d1) & die-color-is-yellow(?d2) & die-color-is-yellow(?d3)) |
+                           (die-color-is-purple(?d1) & die-color-is-purple(?d2) & die-color-is-purple(?d3)) ) &
+                          ((die-color-is-blue(?d4) & die-color-is-blue(?d5)) |
+                           (die-color-is-red(?d4) & die-color-is-red(?d5)) |
+                           (die-color-is-green(?d4) & die-color-is-green(?d5)) |
+                           (die-color-is-yellow(?d4) & die-color-is-yellow(?d5)) |
+                           (die-color-is-purple(?d4) & die-color-is-purple(?d5)) ) ] ) )
+            then SCORE_COLOR_FULL_HOUSE
+
+        // score in @flush category
+        else if ( assign-to-flush &
+                    ( exists_{?d1 : die, ?d2 : die, ?d3 : die, ?d4 : die, ?d5 : die}
+                        [ (?d1 ~= ?d2) & (?d1 ~= ?d3) & (?d1 ~= ?d4) & (?d1 ~= ?d5) & (?d2 ~= ?d3) &
+                          (?d2 ~= ?d4) & (?d2 ~= ?d5) & (?d3 ~= ?d4) & (?d3 ~= ?d5) & (?d4 ~= ?d5) &
+                          ((die-color-is-blue(?d1) & die-color-is-blue(?d2) & die-color-is-blue(?d3) & die-color-is-blue(?d4) & die-color-is-blue(?d5)) |
+                           (die-color-is-red(?d1) & die-color-is-red(?d2) & die-color-is-red(?d3) & die-color-is-red(?d4) & die-color-is-red(?d5)) |
+                           (die-color-is-green(?d1) & die-color-is-green(?d2) & die-color-is-green(?d3) & die-color-is-green(?d4) & die-color-is-green(?d5)) |
+                           (die-color-is-yellow(?d1) & die-color-is-yellow(?d2) & die-color-is-yellow(?d3) & die-color-is-yellow(?d4) & die-color-is-yellow(?d5)) |
+                           (die-color-is-purple(?d1) & die-color-is-purple(?d2) & die-color-is-purple(?d3) & die-color-is-purple(?d4) & die-color-is-purple(?d5)) ) ] ) )
+            then  ( sum_{?d : die} [ (1 * (die-value-is-one(?d))) + (2 * (die-value-is-two(?d))) + (3 * (die-value-is-three(?d))) +
+                                     (4 * (die-value-is-four(?d))) + (5 * (die-value-is-five(?d))) + (6 * (die-value-is-six(?d))) ] )
+
+        // score in @rainbow category
+        else if ( assign-to-rainbow &
+                    ( ~( exists_{?d1 : die, ?d2 : die}
+                        [ (die-color-is-blue(?d1) & die-color-is-red(?d2)) |
+                          (die-color-is-blue(?d1) & die-color-is-green(?d2)) |
+                          (die-color-is-blue(?d1) & die-color-is-yellow(?d2)) |
+                          (die-color-is-blue(?d1) & die-color-is-purple(?d2)) |
+                          (die-color-is-red(?d1) & die-color-is-green(?d2)) |
+                          (die-color-is-red(?d1) & die-color-is-yellow(?d2)) |
+                          (die-color-is-red(?d1) & die-color-is-purple(?d2)) |
+                          (die-color-is-green(?d1) & die-color-is-yellow(?d2)) |
+                          (die-color-is-green(?d1) & die-color-is-purple(?d2)) |
+                          (die-color-is-yellow(?d1) & die-color-is-purple(?d2)) ] ) ) )
+            then SCORE_RAINBOW
+
+        else 0 )
+
+        ///////////////////////////////////// BONI ///////////////////////////////////////
+        + ( if ( (current-phase-is-finish) & (bonus-level-value-part-is-1) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_1
+
+        else if ( (current-phase-is-finish) & (bonus-level-value-part-is-2) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_2
+
+        else if ( (current-phase-is-finish) & (bonus-level-value-part-is-3) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_3
+
+        else if ( (current-phase-is-finish) & (bonus-level-value-part-is-4) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_4
+
+        else if ( (current-phase-is-finish) & (bonus-level-value-part-is-5) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_5
+
+        else if ( (current-phase-is-finish) & (bonus-level-value-part-is-6) & receive-value-bonus )
+            then BONUS_VALUE_PART_LEVEL_6
+
+        else 0 )
+
+        + ( if ( (current-phase-is-finish) & (bonus-level-color-part-is-1) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_1
+
+        else if ( (current-phase-is-finish) & (bonus-level-color-part-is-2) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_2
+
+        else if ( (current-phase-is-finish) & (bonus-level-color-part-is-3) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_3
+
+        else if ( (current-phase-is-finish) & (bonus-level-color-part-is-4) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_4
+
+        else if ( (current-phase-is-finish) & (bonus-level-color-part-is-5) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_5
+
+        else if ( (current-phase-is-finish) & (bonus-level-color-part-is-6) & receive-color-bonus )
+            then BONUS_COLOR_PART_LEVEL_6
+
+        else 0 );
+
+    action-preconditions {
+        // assign only to categories that are not taken
+        (assign-to-ones => ~taken-ones);
+        (assign-to-twos => ~taken-twos);
+        (assign-to-threes => ~taken-threes);
+        (assign-to-fours => ~taken-fours);
+        (assign-to-fives => ~taken-fives);
+        (assign-to-sixes => ~taken-sixes);
+        (assign-to-blues => ~taken-blues);
+        (assign-to-reds => ~taken-reds);
+        (assign-to-greens => ~taken-greens);
+        (assign-to-yellows => ~taken-yellows);
+        (assign-to-purples => ~taken-purples);
+        (assign-to-two-pairs => ~taken-two-pairs);
+        (assign-to-three-of-a-kind => ~taken-three-of-a-kind);
+        (assign-to-four-of-a-kind => ~taken-four-of-a-kind);
+        (assign-to-full-house => ~taken-full-house);
+        (assign-to-small-straight => ~taken-small-straight);
+        (assign-to-large-straight => ~taken-large-straight);
+        (assign-to-chance => ~taken-chance);
+        (assign-to-five-of-a-kind => ~taken-five-of-a-kind);
+        (assign-to-three-of-a-color => ~taken-three-of-a-color);
+        (assign-to-four-of-a-color => ~taken-four-of-a-color);
+        (assign-to-color-full-house => ~taken-color-full-house);
+        (assign-to-flush => ~taken-flush);
+        (assign-to-rainbow => ~taken-rainbow);
+
+        // assign to exactly one entry on the scoreboard in the assign phase, and
+        // to none in other phases
+        (assign-to-ones + assign-to-twos + assign-to-threes + assign-to-fours + assign-to-fives + assign-to-sixes +
+         assign-to-blues + assign-to-reds + assign-to-greens + assign-to-yellows + assign-to-purples + assign-to-two-pairs +
+         assign-to-three-of-a-kind + assign-to-four-of-a-kind + assign-to-full-house + assign-to-small-straight +
+         assign-to-large-straight + assign-to-chance + assign-to-five-of-a-kind + assign-to-three-of-a-color +
+         assign-to-four-of-a-color + assign-to-color-full-house + assign-to-flush + assign-to-rainbow) <= 1;
+
+        (current-phase-is-assign =>
+            (assign-to-ones | assign-to-twos | assign-to-threes | assign-to-fours | assign-to-fives | assign-to-sixes => ~taken-sixes |
+             assign-to-blues | assign-to-reds | assign-to-greens | assign-to-yellows | assign-to-purples | assign-to-two-pairs |
+             assign-to-three-of-a-kind | assign-to-four-of-a-kind | assign-to-full-house | assign-to-small-straight |
+             assign-to-large-straight | assign-to-chance | assign-to-five-of-a-kind | assign-to-three-of-a-color |
+             assign-to-four-of-a-color | assign-to-color-full-house | assign-to-flush | assign-to-rainbow));
+        (assign-to-ones | assign-to-twos | assign-to-threes | assign-to-fours | assign-to-fives | assign-to-sixes => ~taken-sixes |
+         assign-to-blues | assign-to-reds | assign-to-greens | assign-to-yellows | assign-to-purples | assign-to-two-pairs |
+         assign-to-three-of-a-kind | assign-to-four-of-a-kind | assign-to-full-house | assign-to-small-straight |
+         assign-to-large-straight | assign-to-chance | assign-to-five-of-a-kind | assign-to-three-of-a-color |
+         assign-to-four-of-a-color | assign-to-color-full-house | assign-to-flush | assign-to-rainbow) => current-phase-is-assign;
+
+        // Don't role dice in the assign, assign-boni or finish phase
+        forall_{?d : die} [ roll(?d) => ( (~current-phase-is-assign) &
+                                          (~current-phase-is-assign-boni) &
+                                          (~current-phase-is-finish) ) ];
+
+        // In the initial role phase, all dice must be rolled
+        (current-phase-is-roll1) => (forall_{?d : die} [ roll(?d) ] );
+    };
+}

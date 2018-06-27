@@ -1004,331 +1004,6 @@ public class State {
 		return sb.toString();
 	}
 
-
-
-
-
-
-
-	//These Function are used for Emergency Domain Problem
-
-	public String getCurrentCode() {
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String,ArrayList<PVAR_NAME>> e : _hmTypeMap.entrySet()) {
-
-			if(e.getKey().equals("states")) {
-
-				for (PVAR_NAME p : e.getValue()) {
-					if(p.toString().equals("currentCallCode")) {
-
-						try {
-							// Go through all term groundings for variable p
-							PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-							boolean derived = (pvar_def instanceof PVARIABLE_INTERM_DEF) && ((PVARIABLE_INTERM_DEF)pvar_def)._bDerived;
-
-							ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
-							for (ArrayList<LCONST> gfluent : gfluents) {
-
-								if(!getPVariableAssign(p, gfluent).toString().equals("false")) {
-									sb.append( "" +
-											(gfluent.size() > 0 ? gfluent : "") );
-								}
-
-
-
-
-							}
-
-						} catch (EvalException ex) {
-							sb.append("- could not retrieve assignment" + e.getKey() + " for " + p + "\n");
-						}
-
-
-					}
-
-
-
-
-				}
-
-
-
-			}
-		}
-
-
-		return sb.toString();
-
-
-	}
-
-
-
-
-
-	public ArrayList<Object> getCauseRequirment(String call_Code) {
-		StringBuilder sb = new StringBuilder();
-		int requirements = 0;
-		ArrayList<Object> collect_requriement = new ArrayList<Object>();
-		for (Map.Entry<String,ArrayList<PVAR_NAME>> e : _hmTypeMap.entrySet()) {
-
-			if(e.getKey().equals("nonfluent")) {
-
-				for (PVAR_NAME p : e.getValue()) {
-					if(p.toString().equals("CauseRequirement")) {
-
-						try {
-							// Go through all term groundings for variable p
-							PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-							boolean derived = (pvar_def instanceof PVARIABLE_INTERM_DEF) && ((PVARIABLE_INTERM_DEF)pvar_def)._bDerived;
-
-							ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
-							for (ArrayList<LCONST> gfluent : gfluents) {
-
-								Object ob1 = getPVariableAssign(p, gfluent);
-								String s1 = gfluent.toString();
-								String s2  = s1.split(",")[0] + "]";
-								String vehicle_name = s1.split(",")[1];
-								vehicle_name = vehicle_name.substring(0, vehicle_name.length()-1);
-								String num_vehicles = getPVariableAssign(p, gfluent).toString();
-
-								if(!getPVariableAssign(p, gfluent).toString().equals("0") & call_Code.equals(s2)) {
-									sb.append(vehicle_name + "="+num_vehicles + ":");
-									requirements = requirements + 1;
-//								sb.append("- " + (derived ? "derived" : e.getKey()) + ": " + p +
-//										(gfluent.size() > 0 ? gfluent : "") + " := " +
-//										getPVariableAssign(p, gfluent) + "\n");
-
-
-								}
-
-
-
-
-							}
-
-						} catch (EvalException ex) {
-							sb.append("- could not retrieve assignment" + e.getKey() + " for " + p + "\n");
-						}
-
-
-					}
-
-
-
-
-				}
-
-
-
-			}
-		}
-
-		collect_requriement.add("["+sb.toString()+"]");
-		collect_requriement.add(requirements);
-
-		//return "["+sb.toString()+"]" ;
-
-		return collect_requriement;
-
-	}
-
-
-
-
-
-
-
-
-	public HashMap<String, Double> getCurrentCallLoction() {
-		StringBuilder sb = new StringBuilder();
-		HashMap<String, Double> hmap = new HashMap<String, Double>();
-
-
-		ArrayList<Object> collect_requriement = new ArrayList<Object>();
-		for (Map.Entry<String,ArrayList<PVAR_NAME>> e : _hmTypeMap.entrySet()) {
-
-			if(e.getKey().equals("states")) {
-
-				for (PVAR_NAME p : e.getValue()) {
-					if(p.toString().equals("currentCall")) {
-
-						try {
-							// Go through all term groundings for variable p
-							PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-							boolean derived = (pvar_def instanceof PVARIABLE_INTERM_DEF) && ((PVARIABLE_INTERM_DEF)pvar_def)._bDerived;
-
-							ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
-							for (ArrayList<LCONST> gfluent : gfluents) {
-
-								String s1 = gfluent.toString();
-								Double cur_pos = Double.parseDouble(getPVariableAssign(p, gfluent).toString());
-
-								hmap.put(s1, cur_pos);
-								sb.append(s1+"="+cur_pos+":");
-
-
-
-
-
-							}
-
-						} catch (EvalException ex) {
-							sb.append("- could not retrieve assignment" + e.getKey() + " for " + p + "\n");
-						}
-
-
-					}
-
-
-
-
-				}
-
-
-
-			}
-		}
-
-		collect_requriement.add("["+sb.toString()+"]");
-		//collect_requriement.add(requirements);
-
-		//return "["+sb.toString()+"]" ;
-
-		return hmap;
-
-	}
-
-
-
-
-
-	//Method written by Harish.
-	public HashMap<String, Double> getDistanceEmergency() {
-		StringBuilder sb = new StringBuilder();
-		HashMap<String, Double> hmap = new HashMap<String, Double>();
-
-
-		ArrayList<Object> collect_requriement = new ArrayList<Object>();
-		for (Map.Entry<String,ArrayList<PVAR_NAME>> e : _hmTypeMap.entrySet()) {
-
-			if(e.getKey().equals("interm")) {
-
-				for (PVAR_NAME p : e.getValue()) {
-					if(p.toString().equals("callMiles")) {
-
-						try {
-							// Go through all term groundings for variable p
-							PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-							boolean derived = (pvar_def instanceof PVARIABLE_INTERM_DEF) && ((PVARIABLE_INTERM_DEF)pvar_def)._bDerived;
-
-							ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
-							for (ArrayList<LCONST> gfluent : gfluents) {
-
-								String s1 = gfluent.toString();
-								Object ob1 = getPVariableAssign(p, gfluent);
-								Double cur_pos = Double.parseDouble(getPVariableAssign(p, gfluent).toString());
-
-								hmap.put(s1, cur_pos);
-								sb.append(s1+"="+cur_pos+":");
-
-
-
-
-
-							}
-
-						} catch (EvalException ex) {
-							sb.append("- could not retrieve assignment" + e.getKey() + " for " + p + "\n");
-						}
-
-
-					}
-
-
-
-
-				}
-
-
-
-			}
-		}
-
-		collect_requriement.add("["+sb.toString()+"]");
-		//collect_requriement.add(requirements);
-
-		//return "["+sb.toString()+"]" ;
-
-		return hmap;
-
-	}
-
-
-
-
-
-	public HashMap<String, String> getVehicleAvailability() {
-		StringBuilder sb = new StringBuilder();
-		HashMap<String, String> hmap = new HashMap<String, String>();
-
-
-		ArrayList<Object> collect_requriement = new ArrayList<Object>();
-		for (Map.Entry<String,ArrayList<PVAR_NAME>> e : _hmTypeMap.entrySet()) {
-
-			if(e.getKey().equals("interm")) {
-
-				for (PVAR_NAME p : e.getValue()) {
-					if(p.toString().equals("unitInService")) {
-
-						try {
-							// Go through all term groundings for variable p
-							PVARIABLE_DEF pvar_def = _hmPVariables.get(p);
-							boolean derived = (pvar_def instanceof PVARIABLE_INTERM_DEF) && ((PVARIABLE_INTERM_DEF)pvar_def)._bDerived;
-
-							ArrayList<ArrayList<LCONST>> gfluents = generateAtoms(p);
-							for (ArrayList<LCONST> gfluent : gfluents) {
-
-								String s1 = gfluent.toString();
-								String cur_avial = getPVariableAssign(p, gfluent).toString();
-
-								hmap.put(s1, cur_avial);
-
-
-
-
-
-
-							}
-
-						} catch (EvalException ex) {
-							sb.append("- could not retrieve assignment" + e.getKey() + " for " + p + "\n");
-						}
-
-
-					}
-
-
-
-
-				}
-
-
-
-			}
-		}
-
-
-
-		return hmap;
-
-	}
-
-
-
-
-
-
 	public void clearIntermFluents( ) {
 		_alIntermNames.forEach( new Consumer< PVAR_NAME >() {
 			@Override
@@ -1344,19 +1019,64 @@ public class State {
 		});
 	}
 
-
-
-
-
-
-
-
-
-
 	//This Method is added by Harish.
 
+
+	public static HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> deepCopyState(final State rddl_state) {
+
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> temp = rddl_state._state;
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> copied_state =  new HashMap<>();
+
+		for(PVAR_NAME pvar : temp.keySet()){
+			PVAR_NAME new_pvar = new PVAR_NAME(pvar._sPVarName);
+			HashMap<ArrayList<LCONST>,Object> temp_hashmap = temp.get(pvar);
+			HashMap<ArrayList<LCONST>,Object> new_hashmap =  new HashMap<>();
+			for(ArrayList<LCONST> temp_array : temp_hashmap.keySet()){
+				ArrayList<LCONST> new_array = new ArrayList<>();
+				for(int i=0; i<temp_array.size(); i++){
+					LCONST temp_lconst = temp_array.get(i);
+					if(temp_lconst instanceof RDDL.OBJECT_VAL){
+						LCONST new_lconst = new RDDL.OBJECT_VAL(temp_lconst._sConstValue);
+						new_array.add(new_lconst); }
+					if(temp_lconst instanceof RDDL.ENUM_VAL){
+						LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
+						new_array.add(new_lconst); }
+				}
+				//This is for deep copy for Object
+				Object temp_objval = temp_hashmap.get(temp_array);
+				Object new_objval = null;
+				if( temp_hashmap.get(temp_array) instanceof Boolean){
+					new_objval = new Boolean(((Boolean)temp_objval).booleanValue());
+				}
+				else if( temp_hashmap.get(temp_array) instanceof Double){
+					new_objval = new Double(((Double)temp_objval).doubleValue());
+				}
+				else if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
+					new_objval = new ENUM_VAL(((ENUM_VAL)temp_objval)._sConstValue);
+				}
+				else if(temp_hashmap.get(temp_array) instanceof  Integer){
+					new_objval = new Integer(((Integer)temp_objval).intValue());
+				}
+				else{
+					System.out.println(temp_objval + " instance of an Object is Not Implemented");
+					throw new AssertionError();
+				}
+				assert( new_objval != null );
+				new_hashmap.put(new_array, new_objval);
+			}
+			copied_state.put(new_pvar,new_hashmap);
+		}
+		return copied_state;
+	}
+
+
+
+
 	public void copyStateRDDLState(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value,Boolean clear_values) throws EvalException {
-		_state = state_value;
+		this._state = state_value;
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> temp_state = deepCopyState(this);
+		this._state = temp_state;
+
 
 		if(clear_values){
 			for (PVAR_NAME p : _interm.keySet())

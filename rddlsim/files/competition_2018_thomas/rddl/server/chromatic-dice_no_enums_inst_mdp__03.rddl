@@ -1,0 +1,45 @@
+instance chromatic-dice_inst_mdp__03 {
+    domain = chromatic-dice_mdp;
+
+    objects {
+        die : {d1, d2, d3, d4, d5};
+    };
+
+    non-fluents {
+        COLOR_PROB(@red) = 0.2;
+        COLOR_PROB(@green) = 0.2;
+        COLOR_PROB(@yellow) = 0.2;
+        COLOR_PROB(@blue) = 0.2;
+        COLOR_PROB(@purple) = 0.2;
+        
+        BONUS_PROB_VALUE_PART(@1) = 0.0;
+        BONUS_PROB_VALUE_PART(@2) = 0.25;
+        BONUS_PROB_VALUE_PART(@3) = 0.5;
+        BONUS_PROB_VALUE_PART(@4) = 1.0;
+        BONUS_PROB_VALUE_PART(@5) = 1.0;
+        BONUS_PROB_VALUE_PART(@6) = 1.0;
+
+        BONUS_VALUE_PART(@5) = 60;
+        BONUS_VALUE_PART(@6) = 90;
+
+        BONUS_PROB_COLOR_PART(@1) = 0.0;
+        BONUS_PROB_COLOR_PART(@2) = 0.25;
+        BONUS_PROB_COLOR_PART(@3) = 0.5;
+        BONUS_PROB_COLOR_PART(@4) = 0.75;
+        BONUS_PROB_COLOR_PART(@5) = 1.0;
+        BONUS_PROB_COLOR_PART(@6) = 1.0;
+
+        BONUS_COLOR_PART(@5) = 50;
+        BONUS_COLOR_PART(@6) = 60;
+    };
+
+    init-state {
+        // This is just a dummy as the server cannot deal with an empty initial state
+        die-value(d1) = @2;
+    };
+
+    // horizon is four times the number of remaining categories + 2 steps for the boni
+    horizon = 98;
+
+    discount = 1.0;
+}

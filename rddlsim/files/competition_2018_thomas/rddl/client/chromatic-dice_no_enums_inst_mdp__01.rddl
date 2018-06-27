@@ -1,0 +1,46 @@
+instance chromatic-dice_no_enums_inst_mdp__01 {
+    domain = chromatic-dice_no_enums_mdp;
+
+    objects {
+        die : {d1, d2, d3, d4, d5};
+    };
+
+    non-fluents {
+        COLOR_PROB_FOR_RED = 1.0;
+
+        BONUS_PROB_VALUE_PART_LEVEL_1 = 0.0;
+        BONUS_PROB_VALUE_PART_LEVEL_2 = 0.25;
+        BONUS_PROB_VALUE_PART_LEVEL_3 = 0.5;
+        BONUS_PROB_VALUE_PART_LEVEL_4 = 1.0;
+        BONUS_PROB_VALUE_PART_LEVEL_5 = 1.0;
+        BONUS_PROB_VALUE_PART_LEVEL_6 = 1.0;
+    };
+
+    init-state {
+        // remove the color specific categories if there is only one color
+        taken-reds;
+        taken-greens;
+        taken-yellows;
+        taken-blues;
+        taken-purples;
+        taken-three-of-a-color;
+        taken-four-of-a-color;
+        taken-color-full-house;
+        taken-flush;
+        taken-rainbow;
+
+        taken-two-pairs;
+        taken-three-of-a-kind;
+        taken-four-of-a-kind;
+        taken-full-house;
+        taken-small-straight;
+        taken-large-straight;
+        taken-chance;
+        taken-five-of-a-kind;
+    };
+
+    // horizon is four times the number of remaining categories + 2 steps for the boni
+    horizon = 26;
+
+    discount = 1.0;
+}

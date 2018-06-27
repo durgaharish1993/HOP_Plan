@@ -1,0 +1,92 @@
+////////////////////////////////////////////////////////////////////
+//
+// TODO
+//
+////////////////////////////////////////////////////////////////////
+
+domain earth-observation_mdp {
+    types {
+        patch            : object;
+        direction        : { @north-east, @south-east, @east };
+        visibility-level : { @high, @medium, @low };
+    };
+
+    pvariables {
+        FAILURE_PROB_HIGH_VIS              : { non-fluent, real, default = 0.05 };
+        FAILURE_PROB_MEDIUM_VIS            : { non-fluent, real, default = 0.3 };
+        FAILURE_PROB_LOW_VIS               : { non-fluent, real, default = 0.7 };
+
+        HIGH_TO_MEDIUM_VIS                 : { non-fluent, real, default = 0.3 };
+        HIGH_TO_LOW_VIS                    : { non-fluent, real, default = 0.1 };
+
+        MEDIUM_TO_HIGH_VIS                 : { non-fluent, real, default = 0.3 };
+        MEDIUM_TO_LOW_VIS                  : { non-fluent, real, default = 0.2 };
+
+        LOW_TO_MEDIUM_VIS                  : { non-fluent, real, default = 0.35 };
+        LOW_TO_HIGH_VIS                    : { non-fluent, real, default = 0.2 };
+
+        CONNECTED(patch, patch, direction) : { non-fluent, bool, default = false };
+
+        is-focal-point(patch)              : { state-fluent, bool, default = false };
+        is-target(patch)                   : { state-fluent, bool, default = false };
+        visibility(patch)                  : { state-fluent, visibility-level, default = @medium };
+
+        slew(direction)                    : { action-fluent, bool, default = false };
+        take-image                         : { action-fluent, bool, default = false }; 
+    };
+
+    cpfs {
+        // The next focal point of the camera is the patch in slew-direction of the current focal point
+        is-focal-point'(?next) =
+            exists_{ ?last : patch, ?d : direction } [ is-focal-point(?last) & CONNECTED(?last, ?next, ?d) & slew(?d) ];
+
+        // A patches target status doesn't change unless an image is taken successfully
+        // (which depends on the current visibility)
+        is-target'(?p) =
+            // if (is-target(?p) & is-focal-point(?p) & take-image) then 
+            //     switch( visibility(?p) ) {
+            //         case @high   : Bernoulli(FAILURE_PROB_HIGH_VIS),
+            //         case @medium : Bernoulli(FAILURE_PROB_MEDIUM_VIS),
+            //         case @low    : Bernoulli(FAILURE_PROB_LOW_VIS)
+            //     }
+            // else is-target(?p);
+            if (is-target(?p) & is-focal-point(?p) & take-image & (visibility(?p) == @high) )
+                then Bernoulli(FAILURE_PROB_HIGH_VIS)
+            else if (is-target(?p) & is-focal-point(?p) & take-image & (visibility(?p) == @medium) )
+                then Bernoulli(FAILURE_PROB_MEDIUM_VIS)
+            else if (is-target(?p) & is-focal-point(?p) & take-image & (visibility(?p) == @low) )
+                then Bernoulli(FAILURE_PROB_LOW_VIS)
+            else is-target(?p);
+
+        // The visibility is determined based on the current visibility.
+        visibility'(?p) = 
+            if(visibility(?p) == @high) then
+                Discrete( visibility-level,
+                    @high   : 1.0 - HIGH_TO_LOW_VIS - HIGH_TO_MEDIUM_VIS,
+                    @low    : HIGH_TO_LOW_VIS,
+                    @medium : HIGH_TO_MEDIUM_VIS)
+            else if(visibility(?p) == @low) then
+                Discrete( visibility-level,
+                    @high   : LOW_TO_HIGH_VIS,
+                    @low    : 1.0 - LOW_TO_HIGH_VIS - LOW_TO_MEDIUM_VIS,
+                    @medium : LOW_TO_MEDIUM_VIS)
+            else
+                Discrete( visibility-level,
+                    @high   : MEDIUM_TO_HIGH_VIS,
+                    @low    : MEDIUM_TO_LOW_VIS,
+                    @medium : 1.0 - MEDIUM_TO_HIGH_VIS - MEDIUM_TO_LOW_VIS);
+    };
+
+    // Each patch that hasn't been photographed incurs a penalty of one, as
+    // well as each action apart from slew(east) 
+    reward = 0 - (sum_{ ?p : patch } [ is-target(?p) ]) - (slew(@north-east) + slew(@south-east) + take-image);
+
+    action-preconditions {
+        // Do not slew the camera such that the focal point is out of the map
+        forall_{ ?p : patch, ?d : direction } [ ( is-focal-point(?p) & slew(?d) ) => exists_{ ?p2 : patch } [ CONNECTED(?p, ?p2, ?d) ] ];
+
+        // Execute one slew action and take-image only in conjunction with slew(@east)
+        slew(@north-east) + slew(@south-east) + (take-image | slew(@east)) == 1;
+        take-image => slew(@east);
+  };
+}
