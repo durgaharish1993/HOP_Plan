@@ -7175,7 +7175,7 @@ public class RDDL {
 
 							if(SHOW_MODIFIED_EXCEPTIONS)
 								System.out.println("Handled Exception ::  SampleDeterminization of SWITCH_EXPR  :: "+ toString());
-							throw new RuntimeException(e);
+							throw new NoStackTraceRuntimeException();
 
 
 						}
@@ -7235,7 +7235,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  isPWL of SWITCH_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 				}
 
 
@@ -7290,7 +7290,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  getGRB_TYpe of SWITCH_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 
 				}
 
@@ -7311,7 +7311,7 @@ public class RDDL {
 
 							if(SHOW_MODIFIED_EXCEPTIONS)
 								System.out.println("Handled Exception ::  addTerm of SWITCH_EXPR  :: "+ toString());
-							throw new RuntimeException(e);
+							throw new NoStackTraceRuntimeException();
 						}
 
 					})
@@ -7350,7 +7350,7 @@ public class RDDL {
 
 									if(SHOW_MODIFIED_EXCEPTIONS)
 										System.out.println("Handled Exception ::Substitute of SWITCH_EXPR:: "+ toString());
-									throw new RuntimeException(e);
+									throw new NoStackTraceRuntimeException();
 
 								}
 
@@ -7965,7 +7965,7 @@ public class RDDL {
 
 										if(SHOW_MODIFIED_EXCEPTIONS)
 											System.out.println("Handled Exception ::  getMean of CONN_EXPR  :: "+ toString());
-										throw new RuntimeException(e);
+										throw new NoStackTraceRuntimeException();
 									}
 								})
 								.collect(Collectors.toList() ) ), _sConn );
@@ -7994,7 +7994,7 @@ public class RDDL {
 
 							if(SHOW_MODIFIED_EXCEPTIONS)
 								System.out.println("Handled Exception ::  SampleDeterminization of CONN_EXPR  :: "+ toString());
-							throw new RuntimeException(e);
+							throw new NoStackTraceRuntimeException();
 						}
 					}).collect( Collectors.toList() ) ), _sConn );
 		}
@@ -8017,7 +8017,7 @@ public class RDDL {
 
 									if(SHOW_MODIFIED_EXCEPTIONS)
 										System.out.println("Handled Exception ::  addTerm of CONN_EXPR  :: "+ toString());
-									throw new RuntimeException(e);
+									throw new NoStackTraceRuntimeException();
 								}
 							})
 							.collect( Collectors.toList() ) ), _sConn );
@@ -8138,7 +8138,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  isPWL of CONN_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 				}
 			});
 		}
@@ -8237,7 +8237,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  isConstant of CONN_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 				}
 			}) ){
 				return true;
@@ -8256,7 +8256,7 @@ public class RDDL {
 
 									if(SHOW_MODIFIED_EXCEPTIONS)
 										System.out.println("Handled Exception ::  isConstant of CONN_EXPR  ^ :: "+ toString());
-									throw new RuntimeException(e);
+									throw new NoStackTraceRuntimeException();
 								}
 							});
 				case "|" :
@@ -8271,7 +8271,7 @@ public class RDDL {
 
 									if(SHOW_MODIFIED_EXCEPTIONS)
 										System.out.println("Handled Exception ::  isConstant of CONN_EXPR |  :: "+ toString());
-									throw new RuntimeException(e);
+									throw new NoStackTraceRuntimeException();
 								}
 							});
 				case "=>" :
@@ -8294,7 +8294,7 @@ public class RDDL {
 
 							if(SHOW_MODIFIED_EXCEPTIONS)
 								System.out.println("Handled Exception ::  isConstant of CONN_EXPR <=> :: "+ toString());
-							throw new RuntimeException(e);
+							throw new NoStackTraceRuntimeException();
 						}
 					});
 			}
@@ -8385,7 +8385,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  getDoubleValue of CONN_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 				}
 			}) ){
 
@@ -8399,7 +8399,7 @@ public class RDDL {
 
 							if(SHOW_MODIFIED_EXCEPTIONS)
 								System.out.println("Handled Exception ::  getDoubleValue of CONN_EXPR  :: "+ toString());
-							throw new RuntimeException(e);
+							throw new NoStackTraceRuntimeException();
 						}
 					}).sum();
 
@@ -8492,7 +8492,7 @@ public class RDDL {
 
 					if(SHOW_MODIFIED_EXCEPTIONS)
 						System.out.println("Handled Exception ::  substitute of CONN_EXPR  :: "+ toString());
-					throw new RuntimeException(e);
+					throw new NoStackTraceRuntimeException();
 				}
 			}).map(m -> {
 				try {
