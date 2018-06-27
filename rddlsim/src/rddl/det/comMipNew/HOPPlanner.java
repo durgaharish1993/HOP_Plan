@@ -2113,7 +2113,7 @@ public class HOPPlanner extends Policy {
             if(buffers==null)
                 buffers = runRandomPolicy(rddl_state, 2, 100);
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
-            EXPR final_expr   = earth_obj.fitPWL(sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
+            EXPR final_expr   = earth_obj.fitPWL(null, true, sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
             replace_reward_pwl = final_expr;
         }
@@ -2160,7 +2160,7 @@ public class HOPPlanner extends Policy {
                             if(buffers==null)
                                 buffers = runRandomPolicy(rddl_state, 2, 100);
                             pvar_npwl = true;
-                            EXPR final_expr = earth_obj.fitPWL(det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
+                            EXPR final_expr = earth_obj.fitPWL(cpf._exprVarName._pName,false,det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);
                         } else {
                             final_pwl_cond.add( det_expr );
