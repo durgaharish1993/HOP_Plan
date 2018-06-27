@@ -637,18 +637,13 @@ public class EarthForPlanner {
                 String [] hinge_values = hinge_str.split("-");
                 for(String key : variables.keySet()){
                     if(hinge_str.length() >= key.length() ){
-                        if(hinge_str.substring(0,key.length()).equals(key)){
-                            RDDL.PVAR_EXPR temp_pvar_expr        = new RDDL.PVAR_EXPR(variables.get(key)._o1._sPVarName,variables.get(key)._o2);
-                            hinge_function.put(key_val,temp_pvar_expr);
+                        if(hinge_str.substring(0,key.length()).equals(key)) {
+                            RDDL.PVAR_EXPR temp_pvar_expr = new RDDL.PVAR_EXPR(variables.get(key)._o1._sPVarName, variables.get(key)._o2);
+                            hinge_function.put(key_val, temp_pvar_expr);
                             break;
                         }
-
                     }
-
-
                 }
-
-
                 continue;
 
 
