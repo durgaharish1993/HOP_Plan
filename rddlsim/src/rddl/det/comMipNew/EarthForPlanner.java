@@ -51,7 +51,7 @@ public class EarthForPlanner {
         EXPR final_expr = null;
 
         //Degenerate case.
-        if (output_factors.size() == 0) {
+        if (output_factors.size() == 1) {
             String str_val = null;
             for (String key : output_factors) {
                 str_val = key;
@@ -78,15 +78,18 @@ public class EarthForPlanner {
         }
         ////////////////////////////////////////////////////////// we construct the value of the target.
         String earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,type_map,hm_variables,hmtypes);
-        ArrayList<String> temp_array = new ArrayList<>();
-        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
-        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
+        EXPR fin_expr =reconstruct_expr_new(earth_PWL,variables,feat_type_map,target_type,hm_variables,hmtypes);
+//        ArrayList<String> temp_array = new ArrayList<>();
+//        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
+//        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
+//        ArrayList<EXPR> input_exprs = new ArrayList<>();
+//        for(int i = 0 ; i<temp_array.size();i++){
+//
+//            EXPR temp_expr_mapp = reconstruct_expr_new(temp_array.get(i), variables, feat_type_map, target_type, hm_variables, hmtypes);
+//            input_exprs.add(temp_expr_mapp);
+//        }
         ArrayList<EXPR> input_exprs = new ArrayList<>();
-        for(int i = 0 ; i<temp_array.size();i++){
-
-            EXPR temp_expr_mapp = reconstruct_expr_new(temp_array.get(i), variables, feat_type_map, target_type, hm_variables, hmtypes);
-            input_exprs.add(temp_expr_mapp);
-        }
+        input_exprs.add(fin_expr);
 
         final_expr = get_final_target(input_exprs,output_factors,reward_type,target_pVar,type_map,hm_variables,hmtypes);
 
@@ -383,24 +386,24 @@ public class EarthForPlanner {
             //focus on one input_data.
             HashMap<String, String> temp_input_data = input_data.get(k);
 
-            for (String feat_name : variables.keySet()) {
+            for (final String feat_name : variables.keySet()) {
                 if (temp_input_data.containsKey(feat_name)) {
                     //When Feature is avialble in the data
-                    String input_temp_str = temp_input_data.get(feat_name);
-                    if (!input_Feat_R_array.containsKey(feat_name)) {
-                        input_Feat_R_array.put(feat_name, "c(" + input_temp_str);
+                    final StringBuffer input_temp_str1 = new StringBuffer(temp_input_data.get(feat_name));
+                    if (!input_Feat_R_array.containsKey(feat_name)) {//First time
+                        input_Feat_R_array.put(feat_name, "c(" + input_temp_str1.append("c("));
                         if (!input_factors.containsKey(feat_name)) {
                             TreeSet<String> temp_hashSet = new TreeSet<String>();
-                            temp_hashSet.add(input_temp_str);
+                            temp_hashSet.add(input_temp_str1);
                             input_factors.put(feat_name, temp_hashSet);
 
                         } else {
-                            input_factors.get(feat_name).add(input_temp_str);
+                            input_factors.get(feat_name).add(input_temp_str1);
                         }
 
                     } else {
-                        String cur_str = input_Feat_R_array.get(feat_name);
-                        String input_temp_str1 = temp_input_data.get(feat_name);
+                        final StringBuffer cur_str = input_Feat_R_array.get(feat_name);
+                        //final String input_temp_str1 = temp_input_data.get(feat_name);
                         if (k == data_length - 1) { //Last element.
                             input_Feat_R_array.put(feat_name, cur_str + ", " + input_temp_str1 + " )");
                             if (!input_factors.containsKey(feat_name)) {
@@ -659,7 +662,7 @@ public class EarthForPlanner {
             }
         }
 
-        String s1 = "model<-earth( target ~ " + feature_format + ",nprune=2)";
+        String s1 = "model<-earth( target ~ " + feature_format + ")";
         if (PRINT_TO_R_FILE) {
             writer.write(s1 + "\n");
             writer.flush();
@@ -674,7 +677,7 @@ public class EarthForPlanner {
         }
         engine.eval(s1);
 
-        s1 = "format(model,style='bf')";
+        s1 = "format(model)";
         if (PRINT_TO_R_FILE) {
             writer.write(s1 + "\n");
             writer.flush();
