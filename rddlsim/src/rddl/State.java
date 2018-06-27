@@ -1021,8 +1021,62 @@ public class State {
 
 	//This Method is added by Harish.
 
+
+	public static HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> deepCopyState(final State rddl_state) {
+
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> temp = rddl_state._state;
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> copied_state =  new HashMap<>();
+
+		for(PVAR_NAME pvar : temp.keySet()){
+			PVAR_NAME new_pvar = new PVAR_NAME(pvar._sPVarName);
+			HashMap<ArrayList<LCONST>,Object> temp_hashmap = temp.get(pvar);
+			HashMap<ArrayList<LCONST>,Object> new_hashmap =  new HashMap<>();
+			for(ArrayList<LCONST> temp_array : temp_hashmap.keySet()){
+				ArrayList<LCONST> new_array = new ArrayList<>();
+				for(int i=0; i<temp_array.size(); i++){
+					LCONST temp_lconst = temp_array.get(i);
+					if(temp_lconst instanceof RDDL.OBJECT_VAL){
+						LCONST new_lconst = new RDDL.OBJECT_VAL(temp_lconst._sConstValue);
+						new_array.add(new_lconst); }
+					if(temp_lconst instanceof RDDL.ENUM_VAL){
+						LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
+						new_array.add(new_lconst); }
+				}
+				//This is for deep copy for Object
+				Object temp_objval = temp_hashmap.get(temp_array);
+				Object new_objval = null;
+				if( temp_hashmap.get(temp_array) instanceof Boolean){
+					new_objval = new Boolean(((Boolean)temp_objval).booleanValue());
+				}
+				else if( temp_hashmap.get(temp_array) instanceof Double){
+					new_objval = new Double(((Double)temp_objval).doubleValue());
+				}
+				else if(temp_hashmap.get(temp_array) instanceof  ENUM_VAL){
+					new_objval = new ENUM_VAL(((ENUM_VAL)temp_objval)._sConstValue);
+				}
+				else if(temp_hashmap.get(temp_array) instanceof  Integer){
+					new_objval = new Integer(((Integer)temp_objval).intValue());
+				}
+				else{
+					System.out.println(temp_objval + " instance of an Object is Not Implemented");
+					throw new AssertionError();
+				}
+				assert( new_objval != null );
+				new_hashmap.put(new_array, new_objval);
+			}
+			copied_state.put(new_pvar,new_hashmap);
+		}
+		return copied_state;
+	}
+
+
+
+
 	public void copyStateRDDLState(HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> state_value,Boolean clear_values) throws EvalException {
-		_state = state_value;
+		this._state = state_value;
+		HashMap<PVAR_NAME,HashMap<ArrayList<LCONST>,Object>> temp_state = deepCopyState(this);
+		this._state = temp_state;
+
 
 		if(clear_values){
 			for (PVAR_NAME p : _interm.keySet())

@@ -6176,6 +6176,124 @@ public class TestCasesGurobi {
 
 
 
+
+    public static void testCaseIndicator() throws Exception{
+        initalizeGurobi();
+
+        //a*b where a=indicator(x==1) and b=x
+//        obj is max x
+//        such that I(x < 0)*x +5 <= 3
+//        x= -2  is also a solution
+//        will check
+
+
+
+
+
+
+
+
+
+
+
+
+        PVAR_EXPR p_x1 = new PVAR_EXPR("X1",new ArrayList());
+        PVAR_EXPR p_x2 = new PVAR_EXPR("X2",new ArrayList());
+
+        //This seciton is for ENUM
+        ENUM_VAL e1 = new ENUM_VAL("@1");
+        ENUM_VAL e2 = new ENUM_VAL("@2");
+        ENUM_VAL e3 = new ENUM_VAL("@3");
+        ENUM_VAL e4 = new ENUM_VAL("@4");
+        ENUM_VAL e5 = new ENUM_VAL("@5");
+        ENUM_VAL e6 = new ENUM_VAL("@6");
+
+        ArrayList<ENUM_VAL> array_enum = new ArrayList<>(); array_enum.add(e1);
+        array_enum.add(e2); array_enum.add(e3); array_enum.add(e4); array_enum.add(e5);
+        array_enum.add(e6);
+        HashMap<TYPE_NAME, TYPE_DEF> hmtypes = new HashMap<>();
+
+        //First Hmtype
+        TYPE_NAME s_int = new TYPE_NAME("small-int");
+        TYPE_DEF enum_t_def = new RDDL.ENUM_TYPE_DEF("small-int", array_enum);
+        hmtypes.put(s_int,enum_t_def);
+        //End of ENUM_Section
+
+
+        TYPE_NAME int_type = new TYPE_NAME("int");
+        RDDL.OBJECT_TYPE_DEF die_o_def = new RDDL.OBJECT_TYPE_DEF("die");
+        hmtypes.put(int_type,die_o_def);
+
+        //Adding hm_variables
+        HashMap<PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables = new HashMap<>();
+        RDDL.PVARIABLE_STATE_DEF x1_s_def = new RDDL.PVARIABLE_STATE_DEF("X1",false, "small-int", new ArrayList(), e1);
+        hm_variables.put(p_x1._pName,x1_s_def);
+
+        RDDL.PVARIABLE_STATE_DEF x2_s_def = new RDDL.PVARIABLE_STATE_DEF("X2",false, "small-int", new ArrayList(), e1);
+        hm_variables.put(p_x2._pName,x2_s_def);
+
+
+        //adding type_map
+        Map<PVAR_NAME,Character> type_map = new HashMap<>();
+        type_map.put(p_x1._pName,GRB.INTEGER);
+        type_map.put(p_x2._pName,GRB.INTEGER);
+
+
+
+        //Adding constants and objects
+        Map<PVAR_NAME, Map<ArrayList<LCONST>, Object>> constants = new HashMap<>();
+        Map<TYPE_NAME, OBJECTS_DEF> objects = new HashMap<>();
+        COMP_EXPR x1_comp_x2 = new COMP_EXPR(p_x1,p_x2,"~=");
+        COMP_EXPR x1_eq_x2   = new COMP_EXPR(p_x1,p_x2,"==");
+
+
+        //Adding Default values.
+        EXPR def_val1=e1;
+        EXPR def_val2=e2;
+
+
+        GRBVar x1_var_lhs = p_x1.getGRBConstr(GRB.EQUAL,static_grb_model,constants,objects,type_map,hmtypes,hm_variables);
+        GRBVar x1_var_rhs = def_val1.getGRBConstr(GRB.EQUAL,static_grb_model,constants,objects,type_map,hmtypes,hm_variables);
+        static_grb_model.addConstr(x1_var_lhs,GRB.EQUAL,x1_var_rhs, name_map.get(p_x1.toString()) +"="+ name_map.get( new RDDL.INT_CONST_EXPR(((ENUM_VAL)def_val1).enum_to_int(hmtypes,hm_variables)).toString() ));
+        GRBVar x2_var_lhs = p_x2.getGRBConstr(GRB.EQUAL,static_grb_model,constants,objects,type_map,hmtypes,hm_variables);
+        GRBVar x2_var_rhs = def_val2.getGRBConstr(GRB.EQUAL,static_grb_model,constants,objects,type_map,hmtypes,hm_variables);
+        static_grb_model.addConstr(x2_var_lhs,GRB.EQUAL,x2_var_rhs, name_map.get(p_x2.toString()) +"="+ name_map.get( new RDDL.INT_CONST_EXPR(((ENUM_VAL)def_val2).enum_to_int(hmtypes,hm_variables)).toString() ));
+
+
+
+        x1_comp_x2.getGRBConstr(GRB.EQUAL,static_grb_model,constants,objects,type_map,hmtypes,hm_variables);
+
+
+        static_grb_model.setObjective( new GRBLinExpr() );
+        GRBExpr old_obj = static_grb_model.getObjective();
+        GRBLinExpr all_sum = new GRBLinExpr();
+        all_sum.addTerm(1.0d,EXPR.grb_cache.get(x1_eq_x2));
+        static_grb_model.setObjective(all_sum);
+        static_grb_model.write("testing_eq_int.lp");
+
+        static_grb_model.optimize();
+        double val1 =grb_cache.get(x1_comp_x2).get(GRB.DoubleAttr.X);
+
+        System.out.println("#########################################################");
+        System.out.println("This is the value of  x1 : " +def_val1.toString() + "   x2 : "+ def_val2.toString() +  "    "+x1_comp_x2.toString()+ "   " +String.valueOf(val1) );
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
     public static void main(String[] args)throws Exception{
 
 

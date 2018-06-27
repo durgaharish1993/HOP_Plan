@@ -113,7 +113,7 @@ public class RandomPolicy extends Policy {
 					}
 				}
 			}
-			System.out.println(ret);
+			//System.out.println(ret);
 		}
 		
 		try{
@@ -136,7 +136,7 @@ public class RandomPolicy extends Policy {
 			final ArrayList<PVAR_INST_DEF> cur_action, 
 			final int start_index,
 			final ArrayList<ArrayList<PVAR_INST_DEF>> legal_actions) throws EvalException{
-		System.out.println("Current Index : " +String.valueOf(start_index) +  "  Action : " +  cur_action.toString() );
+		//System.out.println("Current Index : " +String.valueOf(start_index) +  "  Action : " +  cur_action.toString() );
 		if( start_index < MAX_DEPTH ){
 			Pair<PVAR_NAME, ArrayList<LCONST>> choice = choices.get(start_index);
 			final PVAR_NAME p = choice._o1;

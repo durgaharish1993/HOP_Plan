@@ -349,6 +349,11 @@ public class Client {
 						state.clearPVariables(state._state);
 						state.setPVariables(state._state, obs);
 					}
+
+
+					if (policy.DO_NPWL_PWL) {
+						((HOPPlanner)policy).checkNonLinearExpressions(state);
+					}
 //					policy.runRandompolicyForState(state);
 //					policy.convertNPWLtoPWL(state);
 					//Here I am setting Gurobi Time Limit, based on average remaining time.
@@ -369,8 +374,20 @@ public class Client {
 //					}
 //					//This will set TIME_LIMIT_MINS to avg of time left per time-step
 //					policy.TIME_LIMIT_MINS = avg_timeout_gurobi_step;
-					ArrayList<PVAR_INST_DEF> actions =
-							policy.getActions(obs == null ? null : state);
+					ArrayList<PVAR_INST_DEF> actions = null;
+					try {
+
+						actions = policy.getActions(obs == null ? null : state);
+						System.out.println("The Action Taken is >>" + actions.toString());
+						state.checkStateActionConstraints(actions);
+					}catch(Exception e1){
+						// This is the case when actions are infeasible or gurobi has infeasiblity.
+						actions = ((HOPPlanner)policy).baseLineAction(state);
+					}
+
+
+//					ArrayList<PVAR_INST_DEF> actions =
+//							policy.getActions(obs == null ? null : state);
 					msg = createXMLAction(actions);
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>The current State : "+state._state.toString());
 					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> Action Taken :"+actions.toString());
