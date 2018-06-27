@@ -4838,7 +4838,11 @@ public class RDDL {
 							_e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
 				}else if( _op.equals(TIMES) ){
 					return ( _e1.isConstant(constants, objects, hmtypes,hm_variables  ) && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
-							|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
+						|| ( _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
+						|| ( _e1 instanceof BOOL_EXPR && _e2 instanceof BOOL_EXPR )
+						|| ( _e1 instanceof BOOL_EXPR && _e2.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) )
+						|| ( _e2 instanceof BOOL_EXPR && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  ) );
+						
 				}else if( _op.equals(DIV) ){
 					return _e2.isConstant(constants, objects, hmtypes,hm_variables  ) && _e1.isPiecewiseLinear(constants, objects,  hmtypes,hm_variables  );
 				}else{
@@ -4911,6 +4915,12 @@ public class RDDL {
 							return e2_sub;
 						}else if( e2_const && e2_sub.getDoubleValue(constants, objects, hmtypes ,hm_variables,  null) == 1d ){
 							return e1_sub;
+						}else if( e1_sub instanceof BOOL_EXPR && e2_sub instanceof BOOL_EXPR ){
+							return new CONN_EXPR(e1_sub, e2_sub, CONN_EXPR.AND);
+						}else if( e1_sub instanceof BOOL_EXPR && !(e2_sub instanceof BOOL_EXPR) ){
+							return new IF_EXPR(e1_sub, e2_sub , new REAL_CONST_EXPR(0.0d) );
+						}else if( e2_sub instanceof BOOL_EXPR && !(e1_sub instanceof BOOL_EXPR) ){
+							return new IF_EXPR(e2_sub, e1_sub , new REAL_CONST_EXPR(0.0d) );
 						}
 						break;
 					case "/" :
