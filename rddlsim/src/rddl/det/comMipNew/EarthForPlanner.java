@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -29,7 +30,11 @@ public class EarthForPlanner {
 
         ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>>> buffer_state = buffers[0];
         ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action = buffers[1];
-
+        if(!reward_type){
+            if(target_pVar._bPrimed){
+                target_pVar = target_pVar._pvarUnprimed;
+            }
+        }
 
         ArrayList<Object> val = generateFeatureTargetEarth(e, s, buffer_state, buffer_action, type_map, hm_variables, hmtypes, random);
 
@@ -51,7 +56,7 @@ public class EarthForPlanner {
         EXPR final_expr = null;
 
         //Degenerate case.
-        if (output_factors.size() == 1) {
+        if (output_factors.size() == 0) {
             String str_val = null;
             for (String key : output_factors) {
                 str_val = key;
@@ -77,6 +82,9 @@ public class EarthForPlanner {
             return final_expr;
         }
         ////////////////////////////////////////////////////////// we construct the value of the target.
+
+        //  -1
+        //  + 0.1 * Feat____x1___d1__END__
         String earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,type_map,hm_variables,hmtypes);
         EXPR fin_expr =reconstruct_expr_new(earth_PWL,variables,feat_type_map,target_type,hm_variables,hmtypes);
 //        ArrayList<String> temp_array = new ArrayList<>();
@@ -118,8 +126,8 @@ public class EarthForPlanner {
                 assert input_exprs.size()==1;
                 EXPR temp_expr = input_exprs.get(0);
                 RDDL.BOOL_EXPR t1 =new RDDL.COMP_EXPR(temp_expr,new RDDL.REAL_CONST_EXPR(0.5),">");
-                EXPR t2 = new RDDL.IF_EXPR(t1,new RDDL.BOOL_CONST_EXPR(true), new RDDL.BOOL_CONST_EXPR(false));
-                final_expr = t2;
+//                EXPR t2 = new RDDL.IF_EXPR(t1,new RDDL.BOOL_CONST_EXPR(true), new RDDL.BOOL_CONST_EXPR(false));
+                final_expr = t1;
             }else if((hmtypes.get(hm_variables.get(target_pVar)._typeRange) instanceof RDDL.ENUM_TYPE_DEF)){
                 assert output_factors.size()==input_exprs.size();
                 int count =0 ;
@@ -361,6 +369,12 @@ public class EarthForPlanner {
         ArrayList<Object> out_val = new ArrayList<>();
         HashMap<String, TreeSet<String>> input_factors = new HashMap<>();
         TreeSet<String> output_factors = new TreeSet<>();
+        HashMap<String,ArrayList<String>> input_array = new HashMap();
+        ArrayList<String> output_array = new ArrayList<>();
+        for(String key : variables.keySet()){
+            input_array.put(key,new ArrayList<String>());
+
+        }
 
         //construction of Input and target vector in R format.
         try {
@@ -385,81 +399,42 @@ public class EarthForPlanner {
             //This is for input_features... This will make sure of the order. TreeMap (Important).
             //focus on one input_data.
             HashMap<String, String> temp_input_data = input_data.get(k);
-
             for (final String feat_name : variables.keySet()) {
                 if (temp_input_data.containsKey(feat_name)) {
                     //When Feature is avialble in the data
-                    final StringBuffer input_temp_str1 = new StringBuffer(temp_input_data.get(feat_name));
-                    if (!input_Feat_R_array.containsKey(feat_name)) {//First time
-                        input_Feat_R_array.put(feat_name, "c(" + input_temp_str1.append("c("));
-                        if (!input_factors.containsKey(feat_name)) {
-                            TreeSet<String> temp_hashSet = new TreeSet<String>();
-                            temp_hashSet.add(input_temp_str1);
-                            input_factors.put(feat_name, temp_hashSet);
-
-                        } else {
-                            input_factors.get(feat_name).add(input_temp_str1);
-                        }
+                    final String input_temp_str1 = temp_input_data.get(feat_name);
+                    input_array.get(feat_name).add(input_temp_str1);
+                    if (!input_factors.containsKey(feat_name)) {
+                        TreeSet<String> temp_hashSet = new TreeSet<String>();
+                        temp_hashSet.add(input_temp_str1);
+                        input_factors.put(feat_name, temp_hashSet);
 
                     } else {
-                        final StringBuffer cur_str = input_Feat_R_array.get(feat_name);
-                        //final String input_temp_str1 = temp_input_data.get(feat_name);
-                        if (k == data_length - 1) { //Last element.
-                            input_Feat_R_array.put(feat_name, cur_str + ", " + input_temp_str1 + " )");
-                            if (!input_factors.containsKey(feat_name)) {
-                                TreeSet<String> temp_hashSet = new TreeSet<String>();
-                                temp_hashSet.add(input_temp_str1);
-                                input_factors.put(feat_name, temp_hashSet);
-
-                            } else {
-                                input_factors.get(feat_name).add(input_temp_str1);
-                            }
-                        } else {
-                            input_Feat_R_array.put(feat_name, cur_str + ", " + input_temp_str1);
-                            if (!input_factors.containsKey(feat_name)) {
-                                TreeSet<String> temp_hashSet = new TreeSet<String>();
-                                temp_hashSet.add(input_temp_str1);
-                                input_factors.put(feat_name, temp_hashSet);
-
-                            } else {
-                                input_factors.get(feat_name).add(input_temp_str1);
-                            }
-                        }
-
+                        input_factors.get(feat_name).add(input_temp_str1);
                     }
-                } else {
-                    //When feature not availble.
-                    if (!input_Feat_R_array.containsKey(feat_name)) {
-                        input_Feat_R_array.put(feat_name, "c(" + "0");
-                    } else {
-                        String cur_str = input_Feat_R_array.get(feat_name);
-                        if (k == data_length - 1) { //Last element.
-                            input_Feat_R_array.put(feat_name, cur_str + ", " + "0 )");
-                            if (!input_factors.containsKey(feat_name)) {
-                                TreeSet<String> temp_hashSet = new TreeSet<String>();
-                                temp_hashSet.add("0");
-                                input_factors.put(feat_name, temp_hashSet);
-
-                            } else {
-                                input_factors.get(feat_name).add("0");
-                            }
-                        } else { // Not Last element.
-                            input_Feat_R_array.put(feat_name, cur_str + ", " + "0");
-                            if (!input_factors.containsKey(feat_name)) {
-                                TreeSet<String> temp_hashSet = new TreeSet<String>();
-                                temp_hashSet.add("0");
-                                input_factors.put(feat_name, temp_hashSet);
-
-                            } else {
-                                input_factors.get(feat_name).add("0");
-                            }
-                        }
-
                     }
                 }
             }
+
+
+
+        for(String key : input_array.keySet()){
+            input_Feat_R_array.put(key,"");
         }
 
+        for(String key : input_array.keySet()){
+            String temp_str = "";
+
+            for(int i=0 ;i<input_array.get(key).size();i++){
+                if(i==0){
+                    temp_str =  "c("+input_array.get(key).get(i);
+                }else{
+                    temp_str = temp_str + ","+ input_array.get(key).get(i);
+                }
+
+            }
+            input_Feat_R_array.put(key,temp_str + ")");
+        }
 
         out_val.add(input_Feat_R_array);
         out_val.add(output_R_array);
@@ -591,7 +566,7 @@ public class EarthForPlanner {
                 }
 
             } else if (input_type_map.get(key).equals("int")) {
-                String s1 = key + "<-" + value + ")";
+                String s1 = key + "<-" + value;
                 if (PRINT_TO_R_FILE) {
                     writer.write(s1 + "\n");
                     writer.flush();
@@ -600,7 +575,7 @@ public class EarthForPlanner {
 
 
             } else if (input_type_map.get(key).equals("real")) {
-                String s1 = key + "<-" + value + ")";
+                String s1 = key + "<-" + value ;
                 if (PRINT_TO_R_FILE) {
                     writer.write(s1 + "\n");
                     writer.flush();
@@ -758,7 +733,20 @@ public class EarthForPlanner {
                                 terms_exprs.add(t2);
 
 
+                            } else if(input_type_map.get(key_feat).equals("real")){
+                                EXPR t1 = new RDDL.PVAR_EXPR(mapping._o1._sPVarName, mapping._o2);
+                                EXPR t2 = new RDDL.OPER_EXPR(coeffic_expr, t1, "*");
+                                terms_exprs.add(t2);
+
+
+                            }else if(input_type_map.get(key_feat).equals("int")){
+                                EXPR t1 = new RDDL.PVAR_EXPR(mapping._o1._sPVarName, mapping._o2);
+                                EXPR t2 = new RDDL.OPER_EXPR(coeffic_expr, t1, "*");
+                                terms_exprs.add(t2);
+
+
                             }
+
 
 
                         }

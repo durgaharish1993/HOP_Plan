@@ -4821,10 +4821,10 @@ public class RDDL {
 				final HashMap<PVAR_NAME, PVARIABLE_DEF> hm_variables){
 			if( e instanceof BOOL_EXPR ){
 				if( e instanceof PVAR_EXPR ){
-					this_pvar = (PVAR_EXPR)e;
+					final PVAR_EXPR this_pvar = (PVAR_EXPR)e;
 					if( hm_variables != null 
 							&& hm_variables.containsKey(this_pvar._pName)){
-						return hm_variables.get(this_pvar.pName)._typeRange
+						return hm_variables.get(this_pvar._pName)._typeRange
 								.equals(TYPE_NAME.BOOL_TYPE);
 					}else{
 						return false;
@@ -4946,9 +4946,9 @@ public class RDDL {
 
 							return new CONN_EXPR(e1_sub, e2_sub, CONN_EXPR.AND);
 						}else if( isTrueBool(e1_sub, hm_variables) && 
-								e2_sub.isPiecewiseLinear() ) ){
+								e2_sub.isPiecewiseLinear(constants,objects,hmtypes,hm_variables) ){
 							return new IF_EXPR(e1_sub, e2_sub , new REAL_CONST_EXPR(0.0d) );
-						}else if( isTrueBool(e2_sub, hm_variables) && e1_sub.isPieceWiseLinear() ){
+						}else if( isTrueBool(e2_sub, hm_variables) && e1_sub.isPiecewiseLinear(constants,objects,hmtypes,hm_variables) ){
 							return new IF_EXPR(e2_sub, e1_sub , new REAL_CONST_EXPR(0.0d) );
 						}
 						break;
