@@ -1821,8 +1821,8 @@ public class HOPPlanner extends Policy {
         int exp_steps = 8;
         int exp_rounds = 10;
         HashMap<Pair<Integer,Integer>,Double> exploration_rewards = new HashMap<>();
-        int START_LOOKAHEAD_VALUE = 2;
-        int START_FUTURE_VALUE = 1;
+        int START_LOOKAHEAD_VALUE = 4;
+        int START_FUTURE_VALUE = 4;
         int current_lookAhead = START_LOOKAHEAD_VALUE;
         ////////////////////////////////////////////////////////////////////////////
 
@@ -2111,9 +2111,9 @@ public class HOPPlanner extends Policy {
         if(!check_pwl){
 
             if(buffers==null)
-                buffers = runRandomPolicy(rddl_state, 2, 100);
+                buffers = runRandomPolicy(rddl_state, 2, 1000);
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
-            EXPR final_expr   = earth_obj.fitPWL(null, true, sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
+            EXPR final_expr   = earth_obj.fitPWL(null,null, true, sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
             replace_reward_pwl = final_expr;
         }
@@ -2122,7 +2122,7 @@ public class HOPPlanner extends Policy {
         pvar_variables.add(rddl_state_vars); pvar_variables.add(rddl_interm_vars); pvar_variables.add(rddl_observ_vars);
         for( final HashMap<PVAR_NAME, ArrayList<ArrayList<LCONST>>> map : pvar_variables ) {
             for (final PVAR_NAME p : map.keySet()) {
-                Map<LVAR, LCONST> subs = new HashMap<>();
+
                 CPF_DEF cpf = null;
                 if (rddl_state_vars.containsKey(p)) {
                     cpf = rddl_state._hmCPFs.get(new PVAR_NAME(p._sPVarName + "'"));
@@ -2158,9 +2158,9 @@ public class HOPPlanner extends Policy {
                         if (!check_PWL) {
 
                             if(buffers==null)
-                                buffers = runRandomPolicy(rddl_state, 2, 100);
+                                buffers = runRandomPolicy(rddl_state, 2, 1000);
                             pvar_npwl = true;
-                            EXPR final_expr = earth_obj.fitPWL(cpf._exprVarName._pName,false,det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
+                            EXPR final_expr = earth_obj.fitPWL(cpf._exprVarName._pName,terms,false,det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);
                         } else {
                             final_pwl_cond.add( det_expr );

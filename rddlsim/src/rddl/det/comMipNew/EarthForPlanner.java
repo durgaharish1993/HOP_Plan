@@ -3,6 +3,7 @@ package rddl.det.comMipNew;
 import gurobi.GRB;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.rosuda.JRI.REXP;
 import org.rosuda.JRI.Rengine;
 import rddl.EvalException;
 import rddl.RDDL;
@@ -26,17 +27,18 @@ public class EarthForPlanner {
     protected boolean PRINT_TO_R_FILE = true;
     protected String R_FILE_NAME = "model.R";
 
-    public EXPR fitPWL(RDDL.PVAR_NAME target_pVar, boolean reward_type, EXPR e, State s, ArrayList[] buffers, HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception {
+    public EXPR fitPWL(RDDL.PVAR_NAME target_pVar, ArrayList<RDDL.LCONST> target_lconsts, boolean reward_type, EXPR e, State s, ArrayList[] buffers, HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception {
 
         ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>>> buffer_state = buffers[0];
         ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action = buffers[1];
+        ArrayList<ArrayList<Double>> buffer_reward   = buffers[2];
         if(!reward_type){
             if(target_pVar._bPrimed){
                 target_pVar = target_pVar._pvarUnprimed;
             }
         }
 
-        ArrayList<Object> val = generateFeatureTargetEarth(e, s, buffer_state, buffer_action, type_map, hm_variables, hmtypes, random);
+        ArrayList<Object> val = generateFeatureTargetEarth(e, s,target_pVar,target_lconsts,reward_type,buffer_state, buffer_action, buffer_reward, type_map, hm_variables, hmtypes, random);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>> variables = (TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>>) val.get(0);
@@ -85,19 +87,20 @@ public class EarthForPlanner {
 
         //  -1
         //  + 0.1 * Feat____x1___d1__END__
-        String earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,type_map,hm_variables,hmtypes);
-        EXPR fin_expr =reconstruct_expr_new(earth_PWL,variables,feat_type_map,target_type,hm_variables,hmtypes);
-//        ArrayList<String> temp_array = new ArrayList<>();
-//        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
-//        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
-//        ArrayList<EXPR> input_exprs = new ArrayList<>();
-//        for(int i = 0 ; i<temp_array.size();i++){
-//
-//            EXPR temp_expr_mapp = reconstruct_expr_new(temp_array.get(i), variables, feat_type_map, target_type, hm_variables, hmtypes);
-//            input_exprs.add(temp_expr_mapp);
-//        }
+        String [] earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,type_map,hm_variables,hmtypes);
+
+
+        //EXPR fin_expr =reconstruct_expr_new(earth_PWL,variables,feat_type_map,target_type,hm_variables,hmtypes);
+        ArrayList<String> temp_array = new ArrayList<>();
+        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
+        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
         ArrayList<EXPR> input_exprs = new ArrayList<>();
-        input_exprs.add(fin_expr);
+        for(String earth_str : earth_PWL){
+
+            EXPR temp_expr_mapp = reconstruct_expr_new(earth_str, variables, feat_type_map, target_type, hm_variables, hmtypes);
+            input_exprs.add(temp_expr_mapp);
+        }
+
 
         final_expr = get_final_target(input_exprs,output_factors,reward_type,target_pVar,type_map,hm_variables,hmtypes);
 
@@ -352,6 +355,8 @@ public class EarthForPlanner {
     }
 
 
+
+
     protected String _getRfactor(TreeSet<String> factors) {
         String temp_str = "levels=c(";
         for (String key : factors) {
@@ -444,10 +449,9 @@ public class EarthForPlanner {
 
     }
 
-    public ArrayList<Object> generateFeatureTargetEarth(RDDL.EXPR e, State s, ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>>> buffer_state, ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action,
+    public ArrayList<Object> generateFeatureTargetEarth(EXPR e, State s, RDDL.PVAR_NAME target_Pvar, ArrayList<RDDL.LCONST>target_lconsts,boolean reward_type, ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>>> buffer_state, ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action, ArrayList<ArrayList<Double>> buffer_reward,
                                                         HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception {
 
-        HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>> method_start_state = deepCopyState(s);
         TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>> variables = new TreeMap<>();
         HashMap<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>> var_lconsts = new HashMap<>();
         ArrayList<HashMap<String, String>> input_data = new ArrayList<>();
@@ -455,52 +459,60 @@ public class EarthForPlanner {
         HashMap<String, String> feat_type_map = new HashMap<>();
         String target_type = null;
 
+        HashSet<Pair> Gfluents = new HashSet<>();
+        HashMap<RDDL.LVAR, RDDL.LCONST> subs1 = new HashMap<>();
+        try{
+            e.collectGFluents(subs1, s, Gfluents);
+            for (Pair key : Gfluents) {
+                // "<rlevel, [$t1]>" this type feature name doesn't work in R.  converting to rlevel_t1_t2....
+                String str_key = _getRFeat(key);
+                String feat_type = _getFeatType((RDDL.PVAR_NAME) key._o1, type_map, hm_variables, hmtypes);
+                if (!feat_type_map.containsKey(str_key))
+                    feat_type_map.put(str_key, feat_type);
+                if (!variables.containsKey(str_key))
+                    variables.put(str_key, key);
+            }
+        }catch (Exception exc){
+            exc.printStackTrace();
+        }
+
+
 
         for (int i = 0; i < buffer_state.size(); i++) {
             ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>> state_trajectory = buffer_state.get(i);
             ArrayList<ArrayList<RDDL.PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
-            for (int j = 0; j < buffer_state.get(i).size(); j++) {
-                HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>> state_value = state_trajectory.get(j);
-                ArrayList<RDDL.PVAR_INST_DEF> action_value = action_trajectory.get(j);
+            assert buffer_state.get(i).size()==2;
 
-                HashSet<Pair> Gfluents = new HashSet<>();
-                e.collectGFluents(null, s, Gfluents);
-                for (Pair key : Gfluents) {
-                    // "<rlevel, [$t1]>" this type feature name doesn't work in R.  converting to rlevel_t1_t2....
-                    String str_key = _getRFeat(key);
-                    String feat_type = _getFeatType((RDDL.PVAR_NAME) key._o1, type_map, hm_variables, hmtypes);
-                    if (!feat_type_map.containsKey(str_key))
-                        feat_type_map.put(str_key, feat_type);
-
-
-                    if (!variables.containsKey(str_key))
-                        variables.put(str_key, key);
-                }
-
-                HashMap<String, String> si1 = null;
-                try {
-                    //<feat,val>
-                    si1 = getInputVector(variables, var_lconsts, state_value, action_value, hm_variables, hmtypes);
-                    HashMap subs = new HashMap<RDDL.LVAR, RDDL.LCONST>();
-                    s.copyStateRDDLState(state_value, true);
-                    Object target_val = e.sample(subs, s, random);
+            //Current State
+            HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>  data_state = buffer_state.get(i).get(0);
+            //Next State
+            HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>  next_data_state = buffer_state.get(i).get(1);
+            //Current Action
+            ArrayList<RDDL.PVAR_INST_DEF> data_action = buffer_action.get(i).get(0);
+            //Immediate Reward for taking action in state
+            Double data_reward = buffer_reward.get(i).get(0);
+            HashMap<String, String> si1 = null;
+            try {
+                //<feat,val>
+                si1 = getInputVector(variables, var_lconsts, data_state, data_action, hm_variables, hmtypes);
+                Object target_val = null;
+                if(reward_type){
+                    target_val = data_reward;
+                    target_type = "real";
+                }else{
+                    target_val = next_data_state.get(target_Pvar).get(target_lconsts);
                     target_type = _getTargetType(target_val);
-                    String target_val_str = _getTargetVal(target_val, hm_variables, hmtypes);
-                    input_data.add(si1);
-                    target_data.add(target_val_str);
-
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-
                 }
+                String target_val_str = _getTargetVal(target_val, hm_variables, hmtypes);
+                input_data.add(si1);
+                target_data.add(target_val_str);
 
+            } catch (Exception e1) {
+                e1.printStackTrace();
 
             }
+
         }
-
-        s.copyStateRDDLState(method_start_state, true);
-
-
         ArrayList final_output_list = new ArrayList<Object>();
         final_output_list.add(variables);
         final_output_list.add(feat_type_map);
@@ -513,7 +525,7 @@ public class EarthForPlanner {
     }
 
 
-    protected String runEarth(TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>> variables, HashMap<String, String> input_features, String output,
+    protected String[] runEarth(TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>> variables, HashMap<String, String> input_features, String output,
                               HashMap<String, String> input_type_map, String target_type, HashMap<String, TreeSet<String>> input_factors, TreeSet<String> target_factors,
                               HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,
                               HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
@@ -658,8 +670,14 @@ public class EarthForPlanner {
             writer.flush();
         }
 
-        String earth_output = engine.eval(s1).asString();
+        Object earth_output1 = engine.eval(s1);
+        String[] earth_output =null;
+        if(earth_output1!=null){
+            earth_output =(String[]) ((REXP)earth_output1).getContent();
 
+        }
+
+        //String earth_output = "kdfjkdjf";
         //Need to be careful or order of input features.
         return earth_output;
 
@@ -917,56 +935,6 @@ public class EarthForPlanner {
 
 
 
-
-
-
-
-    protected HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> deepCopyState(final State rddl_state) {
-
-        HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> temp = rddl_state._state;
-        HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> copied_state =  new HashMap<>();
-
-        for(RDDL.PVAR_NAME pvar : temp.keySet()){
-            RDDL.PVAR_NAME new_pvar = new RDDL.PVAR_NAME(pvar._sPVarName);
-            HashMap<ArrayList<RDDL.LCONST>,Object> temp_hashmap = temp.get(pvar);
-            HashMap<ArrayList<RDDL.LCONST>,Object> new_hashmap =  new HashMap<>();
-            for(ArrayList<RDDL.LCONST> temp_array : temp_hashmap.keySet()){
-                ArrayList<RDDL.LCONST> new_array = new ArrayList<>();
-                for(int i=0; i<temp_array.size(); i++){
-                    RDDL.LCONST temp_lconst = temp_array.get(i);
-                    if(temp_lconst instanceof RDDL.OBJECT_VAL){
-                        RDDL.LCONST new_lconst = new RDDL.OBJECT_VAL(temp_lconst._sConstValue);
-                        new_array.add(new_lconst); }
-                    if(temp_lconst instanceof RDDL.ENUM_VAL){
-                        RDDL.LCONST new_lconst = new RDDL.ENUM_VAL(temp_lconst._sConstValue);
-                        new_array.add(new_lconst); }
-                }
-                //This is for deep copy for Object
-                Object temp_objval = temp_hashmap.get(temp_array);
-                Object new_objval = null;
-                if( temp_hashmap.get(temp_array) instanceof Boolean){
-                    new_objval = new Boolean(((Boolean)temp_objval).booleanValue());
-                }
-                else if( temp_hashmap.get(temp_array) instanceof Double){
-                    new_objval = new Double(((Double)temp_objval).doubleValue());
-                }
-                else if(temp_hashmap.get(temp_array) instanceof RDDL.ENUM_VAL){
-                    new_objval = new RDDL.ENUM_VAL(((RDDL.ENUM_VAL)temp_objval)._sConstValue);
-                }
-                else if(temp_hashmap.get(temp_array) instanceof  Integer){
-                    new_objval = new Integer(((Integer)temp_objval).intValue());
-                }
-                else{
-                    System.out.println(temp_objval + " instance of an Object is Not Implemented");
-                    throw new AssertionError();
-                }
-                assert( new_objval != null );
-                new_hashmap.put(new_array, new_objval);
-            }
-            copied_state.put(new_pvar,new_hashmap);
-        }
-        return copied_state;
-    }
 
 
 
