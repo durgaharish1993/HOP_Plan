@@ -10,10 +10,7 @@ import rddl.RDDL;
 import rddl.State;
 import util.Pair;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.text.NumberFormat;
 import java.util.*;
@@ -26,8 +23,36 @@ public class EarthForPlanner {
 
     protected boolean PRINT_TO_R_FILE = true;
     protected String R_FILE_NAME = "model.R";
+    protected  Writer writer = null;
+    protected Writer output_writer = null;
+    protected boolean WRITE_NPWL_TO_PWL_EARTH =true;
+    protected String EARTH_OUT_FILE_NAME="earth_reconstruction_file.txt";
+    protected String REAL     = "real";
+    protected String INTEGER  = "int";
+    protected String ENUM     = "enum";
+    protected String BOOL     = "bool";
+
+
+    public  EarthForPlanner() throws Exception {
+        if(WRITE_NPWL_TO_PWL_EARTH){
+            output_writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(EARTH_OUT_FILE_NAME), "utf-8"));
+            output_writer.write("---------------Start of the R Approximation \n");
+        }
+
+    }
+
 
     public EXPR fitPWL(RDDL.PVAR_NAME target_pVar, ArrayList<RDDL.LCONST> target_lconsts, boolean reward_type, EXPR e, State s, ArrayList[] buffers, HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes, RandomDataGenerator random) throws Exception {
+
+        if(WRITE_NPWL_TO_PWL_EARTH){
+            output_writer.write("-----New Expression Reconstruction--------" +"\n");
+            output_writer.write(">>>>>>>>Expression ::: " + e.toString() +"\n");
+            output_writer.write(">>>>>>>>TargetPvar ::: " + target_pVar.toString() +"\n");
+            output_writer.write(">>>>>>>>TargetLconsts ::: " + target_lconsts.toString()+"\n");
+            output_writer.write(">>>>>>>>reward/not ::: " + (reward_type ? "true":"false") +"\n");
+            output_writer.flush();
+        }
 
         ArrayList<ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>>> buffer_state = buffers[0];
         ArrayList<ArrayList<ArrayList<RDDL.PVAR_INST_DEF>>> buffer_action = buffers[1];
@@ -47,7 +72,10 @@ public class EarthForPlanner {
         String target_type = (String) val.get(3);
         ArrayList<String> target_data = (ArrayList<String>) val.get(4);
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        if(WRITE_NPWL_TO_PWL_EARTH){
+            output_writer.write(">>>>>>>>Target Type ::: " + target_type.toString()+"\n");
+            output_writer.flush();
+        }
         ArrayList<Object> r_strings = constructRData(variables, input_data, target_data, feat_type_map, target_type);
         //////////////////////////////////////////////////////////////////////////////////
         HashMap<String, String> input_Feat_R_array = (HashMap<String, String>) r_strings.get(0);
@@ -58,7 +86,7 @@ public class EarthForPlanner {
         EXPR final_expr = null;
 
         //Degenerate case.
-        if (output_factors.size() == 0) {
+        if (output_factors.size() == 1) {
             String str_val = null;
             for (String key : output_factors) {
                 str_val = key;
@@ -67,13 +95,13 @@ public class EarthForPlanner {
                 final_expr = new RDDL.REAL_CONST_EXPR(Double.valueOf(str_val));
 
             } else {
-                if (target_type.equals("bool")) {
+                if (target_type.equals(BOOL)) {
                     final_expr = new RDDL.BOOL_CONST_EXPR(str_val == "1" ? true : false);
-                } else if (target_type.equals("int")) {
+                } else if (target_type.equals(INTEGER)) {
                     final_expr = new RDDL.INT_CONST_EXPR(Integer.valueOf(str_val));
-                } else if (target_type.equals("real")) {
+                } else if (target_type.equals(REAL)) {
                     final_expr = new RDDL.REAL_CONST_EXPR(Double.valueOf(str_val));
-                } else if (target_data.equals("enum")) {
+                } else if (target_type.equals(ENUM)) {
                     assert (hmtypes.get(hm_variables.get(target_pVar)._typeRange) instanceof RDDL.ENUM_TYPE_DEF);
                     int index = Integer.valueOf(str_val);
                     final_expr = (RDDL.ENUM_VAL) ((RDDL.ENUM_TYPE_DEF) hmtypes.get(hm_variables.get(target_pVar)._typeRange))._alPossibleValues.get(index);
@@ -81,19 +109,33 @@ public class EarthForPlanner {
             }
         }
         if (final_expr != null) {
+            if(WRITE_NPWL_TO_PWL_EARTH){
+                output_writer.write(">>>>>>>>Earth Output Start" + "\n");
+                output_writer.write(">>>>>>>>Earth Output End" + "\n");
+                output_writer.write(">>>>>>>>Reconstructed EXPR  ::: " + final_expr.toString() +"\n");
+                output_writer.write("----------------------------------------------------------------------\n");
+                output_writer.flush();
+            }
             return final_expr;
         }
         ////////////////////////////////////////////////////////// we construct the value of the target.
 
         //  -1
         //  + 0.1 * Feat____x1___d1__END__
-        String [] earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,type_map,hm_variables,hmtypes);
-
+        String [] earth_PWL = runEarth(variables,input_Feat_R_array,output_R_array,feat_type_map,target_type,input_factors,output_factors,hm_variables,hmtypes);
+        if(WRITE_NPWL_TO_PWL_EARTH){
+            output_writer.write(">>>>>>>>Earth Output Beginning " + "\n");
+            for(String str_val : earth_PWL){
+                output_writer.write(str_val.toString() + "\n");
+            }
+            output_writer.write(">>>>>>>>Earth Output End" + "\n");
+            output_writer.flush();
+        }
 
         //EXPR fin_expr =reconstruct_expr_new(earth_PWL,variables,feat_type_map,target_type,hm_variables,hmtypes);
-        ArrayList<String> temp_array = new ArrayList<>();
-        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
-        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
+//        ArrayList<String> temp_array = new ArrayList<>();
+//        temp_array.add("  0.05025126\n  + 0.9497487 * Feat____dievalueseen___5__END__1\n");
+//        temp_array.add("1.2\n + 0.54*Feat____dievalueseen___2__END__");
         ArrayList<EXPR> input_exprs = new ArrayList<>();
         for(String earth_str : earth_PWL){
 
@@ -103,14 +145,17 @@ public class EarthForPlanner {
 
 
         final_expr = get_final_target(input_exprs,output_factors,reward_type,target_pVar,type_map,hm_variables,hmtypes);
-
+        if(WRITE_NPWL_TO_PWL_EARTH){
+            output_writer.write(">>>>>>>>Reconstructed EXPR  ::: " + final_expr.toString() +"\n");
+            output_writer.write("----------------------------------------------------------------------\n");
+        }
 
         return final_expr;
 
 
     }
 
-    EXPR get_final_target(ArrayList<EXPR> input_exprs, TreeSet<String>output_factors, boolean reward_type, RDDL.PVAR_NAME target_pVar,
+    protected EXPR get_final_target(ArrayList<EXPR> input_exprs, TreeSet<String>output_factors, boolean reward_type, RDDL.PVAR_NAME target_pVar,
                           HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception{
 
 
@@ -126,32 +171,33 @@ public class EarthForPlanner {
         }else{
 
             if(type_map.get(target_pVar).equals(GRB.BINARY)){
+                //This is for reconstructing Binary CPT's
                 assert input_exprs.size()==1;
                 EXPR temp_expr = input_exprs.get(0);
                 RDDL.BOOL_EXPR t1 =new RDDL.COMP_EXPR(temp_expr,new RDDL.REAL_CONST_EXPR(0.5),">");
 //                EXPR t2 = new RDDL.IF_EXPR(t1,new RDDL.BOOL_CONST_EXPR(true), new RDDL.BOOL_CONST_EXPR(false));
                 final_expr = t1;
             }else if((hmtypes.get(hm_variables.get(target_pVar)._typeRange) instanceof RDDL.ENUM_TYPE_DEF)){
+                //This is for Reconstructing Enum's CPT's
                 assert output_factors.size()==input_exprs.size();
                 int count =0 ;
                 RDDL.FUN_EXPR max_exprs = new RDDL.FUN_EXPR("max",input_exprs);
                 ArrayList<RDDL.COMP_EXPR> comp_exprs = new ArrayList<>();
-
+                int ord_index =0;
+                ArrayList<EXPR> enum_expr_list = new ArrayList<>();
                 for(String ord : output_factors){
                     int enum_index = Integer.valueOf(ord);
-                    RDDL.ENUM_VAL enum_expr =(RDDL.ENUM_VAL) ((RDDL.ENUM_TYPE_DEF) hmtypes.get(hm_variables.get(target_pVar._sPVarName)._typeRange))._alPossibleValues.get(enum_index);
-                    RDDL.COMP_EXPR t1 = new RDDL.COMP_EXPR(max_exprs,enum_expr,"==");
+                    RDDL.ENUM_VAL enum_expr =(RDDL.ENUM_VAL) ((RDDL.ENUM_TYPE_DEF) hmtypes.get(hm_variables.get(target_pVar)._typeRange))._alPossibleValues.get(enum_index);
+                    RDDL.COMP_EXPR t1 = new RDDL.COMP_EXPR(max_exprs,input_exprs.get(ord_index),"==");
                     comp_exprs.add(t1);
+                    enum_expr_list.add(enum_expr);
+                    ord_index+=1;
 
                 }
-                RDDL.ENUM_VAL def_enum_expr = (RDDL.ENUM_VAL) ((RDDL.PVARIABLE_STATE_DEF) hm_variables.get(target_pVar._sPVarName))._oDefValue;
-                EXPR if_else_expr = recursiveIFELSE(comp_exprs,input_exprs,def_enum_expr);
+                RDDL.ENUM_VAL def_enum_expr = (RDDL.ENUM_VAL) ((RDDL.PVARIABLE_STATE_DEF) hm_variables.get(target_pVar))._oDefValue;
+                EXPR if_else_expr = recursiveIFELSE(comp_exprs,enum_expr_list,def_enum_expr);
                 final_expr = if_else_expr;
             }
-
-
-
-
         }
 
         return final_expr;
@@ -165,7 +211,7 @@ public class EarthForPlanner {
     protected EXPR recursiveIFELSE(ArrayList<RDDL.COMP_EXPR>comp_exps, ArrayList<EXPR>input_exprs, RDDL.ENUM_VAL def_enum_val){
 
         if(comp_exps.size()==1){
-            new RDDL.IF_EXPR(comp_exps.get(0),input_exprs.get(0),def_enum_val);
+            return new RDDL.IF_EXPR(comp_exps.get(0),input_exprs.get(0),def_enum_val);
         }
 
         ArrayList<RDDL.COMP_EXPR>temp_comp = new ArrayList<RDDL.COMP_EXPR>(comp_exps.subList(1,comp_exps.size()));
@@ -186,89 +232,80 @@ public class EarthForPlanner {
 
         //I need to debug and work.
         //This loop is for ordering the inputVariables via variables.
+
         HashMap<String, String> feat_values = new HashMap<>();
         for (String key : variables.keySet()) {
             ArrayList<RDDL.LCONST> cur_lconsts = variables.get(key)._o2;
-
-            if (state_value.containsKey(variables.get(key)._o1)) {
-                HashMap<ArrayList<RDDL.LCONST>, Object> cur_lconst_object = state_value.get(variables.get(key)._o1);
-                Object feat_val = null;
-                if (cur_lconst_object.containsKey(cur_lconsts)) {
-                    feat_val = cur_lconst_object.get(cur_lconsts);
-                } else {
-                    RDDL.PVAR_NAME pname = variables.get(key)._o1;
-                    if (hm_variables.get(pname) instanceof RDDL.PVARIABLE_STATE_DEF) {
-                        feat_val = ((RDDL.PVARIABLE_STATE_DEF) hm_variables.get(pname))._oDefValue;
-                    } else if (hm_variables.get(pname) instanceof RDDL.PVARIABLE_ACTION_DEF) {
-                        feat_val = ((RDDL.PVARIABLE_ACTION_DEF) hm_variables.get(pname))._oDefValue;
-                    } else {
-                        throw new Exception("This is no Default value for the type you are looking");
-                    }
-                }
-
-                if (feat_val instanceof Double) {
-                    feat_values.put(key, String.valueOf((Double) feat_val));
-                } else if (feat_val instanceof Integer) {
-                    feat_values.put(key, String.valueOf((Integer) feat_val));
-                } else if (feat_val instanceof Boolean) {
-                    String f_val = (Boolean) feat_val ? "1" : "0";
-                    feat_values.put(key, f_val);
-                } else if (feat_val instanceof RDDL.ENUM_VAL) {
-                    int f_val = ((RDDL.ENUM_VAL) feat_val).enum_to_int(hmtypes, hm_variables);
-                    feat_values.put(key, String.valueOf(f_val));
-
-                } else {
-                    throw new Exception("The value is not a Double,Integer,boolean or ENUM_VAL");
-                }
-
-            } else {
-                boolean found = false;
-                Object feat_val = null;
-                for (RDDL.PVAR_INST_DEF array_val : action_value) {
-                    if ((variables.get(key)._o1).equals(array_val._sPredName) && cur_lconsts.equals(array_val._alTerms)) {
-                        feat_val = array_val._oValue;
-                    }
-                }
-
-                if (!found) {
-                    RDDL.PVAR_NAME pname = variables.get(key)._o1;
-                    if (hm_variables.get(pname) instanceof RDDL.PVARIABLE_STATE_DEF) {
-                        feat_val = ((RDDL.PVARIABLE_STATE_DEF) hm_variables.get(pname))._oDefValue;
-                    } else if (hm_variables.get(pname) instanceof RDDL.PVARIABLE_ACTION_DEF) {
-                        feat_val = ((RDDL.PVARIABLE_ACTION_DEF) hm_variables.get(pname))._oDefValue;
-                    } else {
-                        throw new Exception("This is no Default value for the type you are looking");
-                    }
-                }
-
-
-                if (feat_val instanceof Double) {
-                    feat_values.put(key, String.valueOf((Double) feat_val));
-                } else if (feat_val instanceof Integer) {
-                    feat_values.put(key, String.valueOf((Integer) feat_val));
-                } else if (feat_val instanceof Boolean) {
-                    String f_val = (Boolean) feat_val ? "1" : "0";
-                    feat_values.put(key, f_val);
-                } else if (feat_val instanceof RDDL.ENUM_VAL) {
-                    int f_val = ((RDDL.ENUM_VAL) feat_val).enum_to_int(hmtypes, hm_variables);
-                    feat_values.put(key, String.valueOf(f_val));
-
-                } else {
-                    throw new Exception("In Action value did not find  a Double,Integer,boolean");
-                }
-            }
-
+            RDDL.PVAR_NAME cur_pvar = variables.get(key)._o1;
+            Object feat_val =_getpVarValue(cur_pvar,cur_lconsts,state_value,action_value,hm_variables,hmtypes);
+            String str_feat_val = rddlObj2String(feat_val,hm_variables,hmtypes);
+            feat_values.put(key,str_feat_val);
 
         }
+
 
         return feat_values;
 
 
     }
 
+    protected Object _getDefaultpVarValue(RDDL.PVAR_NAME pVarName,HashMap<RDDL.PVAR_NAME,RDDL.PVARIABLE_DEF> hm_variables) throws Exception {
+        Object out_val = null;
+
+        if (hm_variables.get(pVarName) instanceof RDDL.PVARIABLE_STATE_DEF) {
+            out_val = ((RDDL.PVARIABLE_STATE_DEF) hm_variables.get(pVarName))._oDefValue;
+        } else if (hm_variables.get(pVarName) instanceof RDDL.PVARIABLE_ACTION_DEF) {
+            out_val = ((RDDL.PVARIABLE_ACTION_DEF) hm_variables.get(pVarName))._oDefValue;
+        } else {
+            throw new Exception("This is no Default value for the type you are looking");
+        }
+        return out_val;
+
+    }
+
+
+    protected Object _getpVarValue(RDDL.PVAR_NAME pVarName, ArrayList<RDDL.LCONST> lconsts, HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>> state_value,
+                                        ArrayList<RDDL.PVAR_INST_DEF> action_value, HashMap<RDDL.PVAR_NAME,RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes ) throws Exception {
+        Object out_val = null;
+        //This is for State Value.
+        if (state_value.containsKey(pVarName)) {
+            HashMap<ArrayList<RDDL.LCONST>, Object> cur_lconst_object = state_value.get(pVarName);
+            if(cur_lconst_object.containsKey(lconsts)){
+                out_val = cur_lconst_object.get(lconsts);
+            }else if(cur_lconst_object.size()==0){
+                if(cur_lconst_object.get(lconsts)==null){
+                    out_val = _getDefaultpVarValue(pVarName,hm_variables);
+                }else {
+                    out_val = cur_lconst_object.get(lconsts);
+
+                }
+
+            }else{//This is getting Default Value Case.
+                out_val = _getDefaultpVarValue(pVarName,hm_variables);
+            }
+
+        }else {
+            //It can be in Action Val...
+            boolean found = false;
+            for (RDDL.PVAR_INST_DEF array_val : action_value) {
+                if (pVarName.equals(array_val._sPredName) && lconsts.equals(array_val._alTerms)) {
+                    out_val = array_val._oValue;
+                    found = true;
+                }
+            }
+            if(!found){
+                out_val = _getDefaultpVarValue(pVarName,hm_variables);
+            }
+
+        }
+
+
+        return out_val;
+    }
+
 
     //Helper function,
-    protected String _getRFeat(Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>> key_val) {
+    protected static String _getRFeat(Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>> key_val) {
         //LCONST  are serpated by ___
         //Feature value is separted by ____
         String val = key_val._o1._sPVarName;
@@ -293,13 +330,13 @@ public class EarthForPlanner {
     protected String _getFeatType(RDDL.PVAR_NAME pName, HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
 
         if ((hmtypes.get(hm_variables.get(pName)._typeRange) instanceof RDDL.ENUM_TYPE_DEF)) {
-            return "enum";
+            return ENUM;
         } else if (type_map.get(pName).equals(GRB.BINARY)) {
-            return "bool";
+            return BOOL;
         } else if (type_map.get(pName).equals(GRB.INTEGER)) {
-            return "int";
+            return INTEGER;
         } else if (type_map.get(pName).equals(GRB.CONTINUOUS)) {
-            return "real";
+            return REAL;
         } else {
             try {
                 throw new Exception("THis case is not handled in R.");
@@ -313,28 +350,8 @@ public class EarthForPlanner {
     }
 
 
-    protected String _getTargetType(Object target_val) throws Exception {
 
-        if (target_val instanceof Boolean) {
-            return "bool";
-        } else if (target_val instanceof RDDL.ENUM_VAL) {
-            return "enum";
-        } else if (target_val instanceof Double) {
-            return "real";
-        } else if (target_val instanceof Integer) {
-            return "int";
-        } else {
-            try {
-                throw new Exception("THis case is not handled in R.");
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw e;
-            }
-        }
-    }
-
-
-    protected String _getTargetVal(Object target_val, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
+    protected String rddlObj2String(Object target_val, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
         if (target_val instanceof Boolean) {
             return (Boolean) target_val ? "1" : "0";
         } else if (target_val instanceof RDDL.ENUM_VAL) {
@@ -466,7 +483,7 @@ public class EarthForPlanner {
             for (Pair key : Gfluents) {
                 // "<rlevel, [$t1]>" this type feature name doesn't work in R.  converting to rlevel_t1_t2....
                 String str_key = _getRFeat(key);
-                String feat_type = _getFeatType((RDDL.PVAR_NAME) key._o1, type_map, hm_variables, hmtypes);
+                String feat_type = _getFeatType((RDDL.PVAR_NAME) key._o1,type_map, hm_variables, hmtypes);
                 if (!feat_type_map.containsKey(str_key))
                     feat_type_map.put(str_key, feat_type);
                 if (!variables.containsKey(str_key))
@@ -479,9 +496,7 @@ public class EarthForPlanner {
 
 
         for (int i = 0; i < buffer_state.size(); i++) {
-            ArrayList<HashMap<RDDL.PVAR_NAME, HashMap<ArrayList<RDDL.LCONST>, Object>>> state_trajectory = buffer_state.get(i);
-            ArrayList<ArrayList<RDDL.PVAR_INST_DEF>> action_trajectory = buffer_action.get(i);
-            assert buffer_state.get(i).size()==2;
+            assert buffer_state.get(i).size()>=2;
 
             //Current State
             HashMap<RDDL.PVAR_NAME,HashMap<ArrayList<RDDL.LCONST>,Object>>  data_state = buffer_state.get(i).get(0);
@@ -498,12 +513,13 @@ public class EarthForPlanner {
                 Object target_val = null;
                 if(reward_type){
                     target_val = data_reward;
-                    target_type = "real";
+                    target_type = REAL;
                 }else{
-                    target_val = next_data_state.get(target_Pvar).get(target_lconsts);
-                    target_type = _getTargetType(target_val);
+                    //need to change the code for getting target value. ..
+                    target_val = _getpVarValue(target_Pvar,target_lconsts,next_data_state,data_action,hm_variables,hmtypes);
+                    target_type = _getFeatType(target_Pvar,type_map,hm_variables,hmtypes);
                 }
-                String target_val_str = _getTargetVal(target_val, hm_variables, hmtypes);
+                String target_val_str = rddlObj2String(target_val, hm_variables, hmtypes);
                 input_data.add(si1);
                 target_data.add(target_val_str);
 
@@ -527,11 +543,10 @@ public class EarthForPlanner {
 
     protected String[] runEarth(TreeMap<String, Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>>> variables, HashMap<String, String> input_features, String output,
                               HashMap<String, String> input_type_map, String target_type, HashMap<String, TreeSet<String>> input_factors, TreeSet<String> target_factors,
-                              HashMap<RDDL.PVAR_NAME, Character> type_map, HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables,
-                              HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
+                              HashMap<RDDL.PVAR_NAME, RDDL.PVARIABLE_DEF> hm_variables, HashMap<RDDL.TYPE_NAME, RDDL.TYPE_DEF> hmtypes) throws Exception {
 
         //Starting Rengine.
-        Writer writer = null;
+
         Rengine engine = Rengine.getMainEngine();
         if (engine == null)
             engine = new Rengine(new String[]{"--vanilla"}, false, null);
@@ -550,7 +565,7 @@ public class EarthForPlanner {
             String value = entry1.getValue();
             RDDL.PVAR_NAME temp_pvar = (variables.get(key)._o1);
 
-            if (input_type_map.get(key).equals("enum")) {
+            if (input_type_map.get(key).equals(ENUM)) {
                 ArrayList<RDDL.LCONST> enum_array = ((RDDL.ENUM_TYPE_DEF) hmtypes.get(hm_variables.get(temp_pvar)._typeRange))._alPossibleValues;
                 for (int k = 0; k < enum_array.size(); k++) {
                     int e_int = ((RDDL.ENUM_VAL) enum_array.get(k)).enum_to_int(hmtypes, hm_variables);
@@ -565,7 +580,7 @@ public class EarthForPlanner {
                 }
 
 
-            } else if (input_type_map.get(key).equals("bool")) {
+            } else if (input_type_map.get(key).equals(BOOL)) {
                 for (int k = 0; k < 2; k++) {
                     input_factors.get(key).add(String.valueOf(k));
                 }
@@ -577,7 +592,7 @@ public class EarthForPlanner {
                     writer.flush();
                 }
 
-            } else if (input_type_map.get(key).equals("int")) {
+            } else if (input_type_map.get(key).equals(INTEGER)) {
                 String s1 = key + "<-" + value;
                 if (PRINT_TO_R_FILE) {
                     writer.write(s1 + "\n");
@@ -586,7 +601,7 @@ public class EarthForPlanner {
                 Object temp = engine.eval(s1);
 
 
-            } else if (input_type_map.get(key).equals("real")) {
+            } else if (input_type_map.get(key).equals(REAL)) {
                 String s1 = key + "<-" + value ;
                 if (PRINT_TO_R_FILE) {
                     writer.write(s1 + "\n");
@@ -616,7 +631,7 @@ public class EarthForPlanner {
             writer.flush();
         }
         engine.eval(temp_s1);
-        if (target_type.equals("enum")) {
+        if (target_type.equals(ENUM)) {
             String r_factors = _getRfactor(target_factors);
             String s1 = "target <-" + "factor( target " + "," + r_factors + ")";
             if (PRINT_TO_R_FILE) {
@@ -626,7 +641,7 @@ public class EarthForPlanner {
             Object temp = engine.eval(s1);
 
 
-        } else if (target_type.equals("bool")) {
+        } else if (target_type.equals(BOOL)) {
             String r_factors = _getRfactor(target_factors);
             final String s1 = "target <-" + "factor( target " + "," + r_factors + ")";
             if (PRINT_TO_R_FILE) {
@@ -636,10 +651,10 @@ public class EarthForPlanner {
             Object temp = engine.eval(s1);
 
 
-        } else if (target_type.equals("int")) {
+        } else if (target_type.equals(INTEGER)) {
 
 
-        } else if (target_type.equals("real")) {
+        } else if (target_type.equals(REAL)) {
 
         } else {
             try {
@@ -649,7 +664,7 @@ public class EarthForPlanner {
             }
         }
 
-        String s1 = "model<-earth( target ~ " + feature_format + ")";
+        String s1 = "model<-earth( target ~ " + feature_format + ",nprune=3)";
         if (PRINT_TO_R_FILE) {
             writer.write(s1 + "\n");
             writer.flush();
@@ -723,7 +738,18 @@ public class EarthForPlanner {
                         RDDL.OPER_EXPR t4 = new RDDL.OPER_EXPR(new RDDL.REAL_CONST_EXPR(0.0), t3, "max");
                         RDDL.OPER_EXPR t5 = new RDDL.OPER_EXPR(coeffic_expr, t4, "*");
                         terms_exprs.add(t5);
+                    } else if(variables.containsKey(hinge_values[1])){
+                        double con1 = Double.parseDouble(hinge_values[0]);
+                        Pair<RDDL.PVAR_NAME, ArrayList<RDDL.LCONST>> mapping = variables.get(hinge_values[1]);
+                        EXPR t1 = new RDDL.PVAR_EXPR(mapping._o1._sPVarName, mapping._o2);
+                        EXPR t2 = new RDDL.REAL_CONST_EXPR(con1);
+                        RDDL.OPER_EXPR t3 = new RDDL.OPER_EXPR(t2, t1, "-");
+                        RDDL.OPER_EXPR t4 = new RDDL.OPER_EXPR(new RDDL.REAL_CONST_EXPR(0.0), t3, "max");
+                        RDDL.OPER_EXPR t5 = new RDDL.OPER_EXPR(coeffic_expr, t4, "*");
+                        terms_exprs.add(t5);
+
                     }
+
 
                 } else{
                     hinge_str = hinge_str.replace("h(", "");
@@ -797,7 +823,13 @@ public class EarthForPlanner {
 
 
 
+    protected void testEarthForData(){
 
+
+
+
+
+    }
 
 
 //

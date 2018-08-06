@@ -122,6 +122,8 @@ public class HOPPlanner extends Policy {
     //these are removed between invocations of getActions()
     protected List<EXPR> to_remove_expr = new ArrayList<RDDL.EXPR>();
     protected List<GRBConstr> to_remove_constr = new ArrayList<>();
+    protected EarthForPlanner earth_obj =new EarthForPlanner();
+
 
 
     public static enum FUTURE_SAMPLING{
@@ -2091,7 +2093,6 @@ public class HOPPlanner extends Policy {
 
         ArrayList[] buffers = null;
         //PASS BUFFERS TO FITTING
-        EarthForPlanner earth_obj =new EarthForPlanner();
 
         //Reward
         final Map<LVAR,LCONST> subs2 = new HashMap<>();
@@ -2111,7 +2112,7 @@ public class HOPPlanner extends Policy {
         if(!check_pwl){
 
             if(buffers==null)
-                buffers = runRandomPolicy(rddl_state, 2, 1000);
+                buffers = runRandomPolicy(rddl_state, 2, 10000);
             //EXPR e, ArrayList<RDDL.LTERM> raw_terms, State s, ArrayList[] buffers, RandomDataGenerator random
             EXPR final_expr   = earth_obj.fitPWL(null,null, true, sub_expr, rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
             //STORE THIS IS replace_reward_pwl
@@ -2158,7 +2159,7 @@ public class HOPPlanner extends Policy {
                         if (!check_PWL) {
 
                             if(buffers==null)
-                                buffers = runRandomPolicy(rddl_state, 2, 1000);
+                                buffers = runRandomPolicy(rddl_state, 2, 10000);
                             pvar_npwl = true;
                             EXPR final_expr = earth_obj.fitPWL(cpf._exprVarName._pName,terms,false,det_expr,rddl_state, buffers,type_map, hm_variables,hmtypes,this._random);
                             final_pwl_cond.add(final_expr);

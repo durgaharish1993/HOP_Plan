@@ -35,7 +35,7 @@ public class RDDL {
 	protected static final LVAR TIME_PREDICATE = new LVAR( "?time" );
 	protected static final LVAR FUTURE_PREDICATE  = new LVAR("?future");
 	protected static final String REG_EXPR_      = ".*(time|future).*";
-	protected static final Boolean SHOW_TRACE_EXCEPTIONS = false;
+	protected static final Boolean SHOW_TRACE_EXCEPTIONS = true;
 	protected static final Boolean SHOW_MODIFIED_EXCEPTIONS = false;
 
 	public RDDL() { }
